@@ -27,7 +27,6 @@ private:
 public:
     static void log(LogLevel level, const std::string& message);
     
-    // Convenience static methods
     static void trace(const std::string& message);
     static void debug(const std::string& message);
     static void info(const std::string& message);
@@ -41,7 +40,6 @@ public:
     static void memory(const std::string& message);
     static void security(const std::string& message);
     
-    // Template method for easy formatting
     template<typename... Args>
     static void logf(LogLevel level, const std::string& format, Args... args) {
         std::ostringstream oss;

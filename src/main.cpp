@@ -1,9 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include <optional>
 
-#include "Base/Constants.h"
-#include "Scene/SceneManager.h"
-#include "Utility/logger.h"
+#include "Base/Constants.hpp"
+#include "Scene/SceneManager.hpp"
+#include "Utility/logger.hpp"
 int main() {
     sf::CircleShape circle;
     circle.setRadius(100.f);
@@ -52,4 +52,5 @@ int main() {
         // }
     }
     Logger::success("Program exit success");
+    // Logger::debug("Program");
 }

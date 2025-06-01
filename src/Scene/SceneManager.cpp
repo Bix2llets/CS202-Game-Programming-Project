@@ -1,5 +1,5 @@
-#include "Scene/SceneManager.h"
-#include "Utility/logger.h"
+#include "Scene/SceneManager.hpp"
+#include "Utility/logger.hpp"
 template <typename SceneType>
 void SceneManager::registerScene(const std::string &sceneName) {
     try {
@@ -26,7 +26,7 @@ void SceneManager::render() {
         checkNullptr();
         window.draw(*currentScene);
     }
-    catch (...) {
+    catch(GameException exception) {
         Logger::critical("Drawing a non-existent scene");
     }
 }
@@ -37,7 +37,7 @@ void SceneManager::update() {
         checkNullptr();
         currentScene->update();
     }
-    catch (...) {
+    catch(GameException exception) {
         Logger::critical("Updating a non-existent scene");
     }
 }
@@ -47,7 +47,7 @@ void SceneManager::handleEvent(std::optional<sf::Event> &event) {
         checkNullptr();
         currentScene->handleEvent(event);
     }
-    catch (...) {
+    catch(GameException exception) {
         Logger::critical("Handling event on a non-existent scene");
     }
 }
@@ -57,11 +57,11 @@ void SceneManager::handleInput() {
         checkNullptr();
         currentScene->handleInput();
     }
-    catch (...) {
+    catch(GameException exception) {
         Logger::critical("Handling input on a non-existent scene");
     }
 }
 
 void SceneManager::checkNullptr() {
-    if (currentScene == nullptr) throw 0;
+    if (currentScene == nullptr) throw GameException("Error: nullptr access");
 }

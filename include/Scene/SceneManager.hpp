@@ -1,5 +1,6 @@
 #pragma once
-#include "Scene/Scene.h"
+#include "Scene/Scene.hpp"
+#include "Utility/exception.hpp"
 #include <map>
 class SceneManager{
     private:
