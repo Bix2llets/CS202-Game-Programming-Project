@@ -35,11 +35,13 @@ class MainMenu {
     +update()
 }
 class Gameplay {
+
     +handleEvent(std::optional~sf::Event~)
     +handleInput()
     +draw(sf::RenderTarget, sf::RenderStates)
     +update()
 }
+
 ```
 
 ## Entities
