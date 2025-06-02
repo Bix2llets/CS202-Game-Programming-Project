@@ -46,6 +46,10 @@ class Gameplay {
 
 ```mermaid
 classDiagram
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3cd1a92e853042126c1ad6dafbcb2f6988dace01
 class MouseInfo {
     - isLeftClicked: bool
     - isLeftHolded: bool
@@ -62,6 +66,10 @@ class MouseInfo {
     - holdInfo: Info
 
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3cd1a92e853042126c1ad6dafbcb2f6988dace01
 class Interactive {
     handleEvent(sf::RenderWindow, std::optional~sf::Event~ event)*
     handleInput(sf::RenderWindow)*
@@ -70,6 +78,10 @@ class Interactive {
 class GameObject {
     draw()*
     update()*
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3cd1a92e853042126c1ad6dafbcb2f6988dace01
 }
 
 
@@ -93,4 +105,9 @@ class EntitiesDisplay {
 }
 
 note for InfoPanel "Around 2 or 3 detailed bar, displaying health, mana and scrap remaining"
+<<<<<<< HEAD
+=======
+
+}
+>>>>>>> 3cd1a92e853042126c1ad6dafbcb2f6988dace01
 ```
