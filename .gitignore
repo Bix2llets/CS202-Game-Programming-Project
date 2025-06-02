@@ -12,6 +12,7 @@
 *.pch
 
 # Compiled Dynamic libraries
+*.dll
 *.so
 *.dylib
 
@@ -23,6 +24,7 @@
 *.lai
 *.la
 *.lib
+*.a
 
 # Executables
 *.exe
@@ -31,3 +33,4 @@
 
 build/
 .vscode
+lib/
