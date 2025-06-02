@@ -117,3 +117,12 @@ if(WIN32)
         endif()
     endforeach()
 endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Release") 
+add_custom_command(TARGET ${MAIN_EXECUTABLE_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    ${CMAKE_SOURCE_DIR}/Release
+    COMMENT "Copying assets to build directory"
+)
+endif()
