@@ -166,11 +166,12 @@ else()
     message(FATAL_ERROR "No source files found in src/ directory.")
 endif()
 
+# Copy assets to Release directory for Release builds
 if (CMAKE_BUILD_TYPE STREQUAL "Release") 
-add_custom_command(TARGET ${MAIN_EXECUTABLE_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-    ${CMAKE_SOURCE_DIR}/Release
-    COMMENT "Copying assets to build directory"
-)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+        ${CMAKE_SOURCE_DIR}/Release
+        COMMENT "Copying executable and DLLs to Release directory"
+    )
 endif()
