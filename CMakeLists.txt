@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(CS202_Game_Programming_Project)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 # Set SFML download URL and paths
 set(SFML_URL "https://github.com/SFML/SFML/releases/download/3.0.0/SFML-3.0.0-windows-gcc-14.2.0-mingw-64-bit.zip")
