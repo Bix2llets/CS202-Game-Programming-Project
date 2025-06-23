@@ -6,5 +6,5 @@ namespace GameConstants {
 
     constexpr float TICK_INTERVAL = 1.f / 60;
     constexpr float SUBTICK_INTERVAL = 1.f / 60 / 8;
-    constexpr int TARGET_FPS = 30;
+    constexpr int TARGET_FPS = 60;
 }
