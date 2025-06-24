@@ -122,12 +122,12 @@ add_library(CS202GameLib STATIC ${SOURCES})
 # Remove or comment out the global setting:
 # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
+# Set a single output directory for all executables and tests
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
+
 # Add your executable (main program)
 if(SOURCES)
     add_executable(${PROJECT_NAME} ${SOURCES})
-    set_target_properties(${PROJECT_NAME} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${PROJECT_NAME}/$<CONFIG>"
-    )
     target_include_directories(${PROJECT_NAME} PRIVATE 
         ${CMAKE_SOURCE_DIR}/include
         ${SFML_LIB_PATH}/include
@@ -158,27 +158,33 @@ if(SOURCES)
             ${SFML_LIB_PATH}/lib/libsfml-network.a
         )
     endif()
-    # Copy SFML DLLs to output directory for runtime ONLY IF the source directory exists
-    if(EXISTS "${SFML_LIB_PATH}/bin")
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-            ${SFML_LIB_PATH}/bin
-            $<TARGET_FILE_DIR:${PROJECT_NAME}>
-            COMMENT "Copying SFML DLLs to output directory"
-        )
-    else()
-        message(WARNING "SFML bin directory does not exist: ${SFML_LIB_PATH}/bin. Skipping DLL copy.")
-    endif()
 else()
     message(FATAL_ERROR "No source files found in src/ directory.")
+endif()
+
+# Ensure bin directory exists before copying DLLs and executables
+add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    COMMENT "Ensuring bin directory exists before copying files"
+)
+
+# Copy SFML DLLs to bin only once after building the main target
+if(EXISTS "${SFML_LIB_PATH}/bin")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${SFML_LIB_PATH}/bin
+        ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+        COMMENT "Copying SFML DLLs to bin directory"
+    )
+else()
+    message(WARNING "SFML bin directory does not exist: ${SFML_LIB_PATH}/bin. Skipping DLL copy.")
 endif()
 
 # Copy assets to output directory after building
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_SOURCE_DIR}/assets
-    $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
     COMMENT "Copying assets to output directory"
 )
 
@@ -203,9 +209,6 @@ file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/tests/*.cc")
 foreach(test_src ${TEST_SOURCES})
     get_filename_component(test_name ${test_src} NAME_WE)
     add_executable(${test_name} ${test_src})
-    set_target_properties(${test_name} PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${test_name}/$<CONFIG>"
-    )
     target_link_libraries(${test_name} PRIVATE gtest gtest_main CS202GameLib
         ${SFML_LIB_PATH}/lib/libsfml-system-d.a
         ${SFML_LIB_PATH}/lib/libsfml-window-d.a
@@ -214,7 +217,52 @@ foreach(test_src ${TEST_SOURCES})
         ${SFML_LIB_PATH}/lib/libsfml-network-d.a
     )
     target_include_directories(${test_name} PRIVATE ${CMAKE_SOURCE_DIR}/include)
-    gtest_discover_tests(${test_name})
+    gtest_discover_tests(${test_name} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endforeach()
 
+# Ensure all test executables depend on the main target so DLLs and assets are copied before tests run
+foreach(test_src ${TEST_SOURCES})
+    get_filename_component(test_name ${test_src} NAME_WE)
+    add_dependencies(${test_name} ${PROJECT_NAME})
+endforeach()
+
+# Copy all executables (main and tests) to bin after build
+foreach(test_src ${TEST_SOURCES})
+    get_filename_component(test_name ${test_src} NAME_WE)
+    add_custom_command(TARGET ${test_name} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${test_name}> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+        COMMENT "Copying test executable ${test_name} to bin directory"
+    )
+endforeach()
+
+endif()
+
+# Copy all DLL files from SFML and lib directories to bin after building the main target
+if(EXISTS "${SFML_LIB_PATH}/bin")
+    file(GLOB SFML_DLLS
+        "${SFML_LIB_PATH}/bin/*.dll"
+        "${SFML_LIB_PATH}/bin/*.DLL"
+    )
+    foreach(dll ${SFML_DLLS})
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dll}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
+            COMMENT "Copying ${dll} to bin directory"
+        )
+    endforeach()
+endif()
+
+# Delete zip files after extracting
+if(EXISTS ${SFML_DOWNLOAD_PATH})
+    file(REMOVE ${SFML_DOWNLOAD_PATH})
+endif()
+if(EXISTS ${GTEST_DOWNLOAD_PATH})
+    file(REMOVE ${GTEST_DOWNLOAD_PATH})
+endif()
+
+# Delete extracted SFML and Google Test folders after extraction and copying
+if(EXISTS ${SFML_EXTRACT_PATH})
+    file(REMOVE_RECURSE ${SFML_EXTRACT_PATH})
+endif()
+if(EXISTS ${GTEST_EXTRACT_PATH})
+    file(REMOVE_RECURSE ${GTEST_EXTRACT_PATH})
 endif()

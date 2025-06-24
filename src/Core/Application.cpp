@@ -12,6 +12,8 @@ Application::Application()
     else
         Logger::error("Window not intitialized");
     window.setFramerateLimit(60);
+    // * Loading the necessary sounds
+    resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
 }
 
 Application::~Application() {
@@ -26,6 +28,9 @@ void Application::run() {
             if (event->is<sf::Event::Closed>()) {
                 window.close();
                 isRunning = false;
+            }
+            if (event->is<sf::Event::KeyPressed>()) {
+                resourceManager.playSound("coin");
             }
             sceneManager.handleEvent(event);
         }

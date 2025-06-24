@@ -3,12 +3,16 @@
 
 #include "Utility/logger.hpp"
 #include "Core/Application.hpp"
+#include "Core/ResourceManager.hpp"
 int main() {
-    Logger::success("Program exit success");
-
-    // Application mainLoop;
-    // mainLoop.run();
+    Logger::success("Program start");
     
-    // Logger::debug("Program");
+
+
+    
+    Application mainLoop;
+    mainLoop.run();
+    
+    Logger::success("Program exit success");
 }
 
