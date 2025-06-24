@@ -118,9 +118,16 @@ file(GLOB_RECURSE SOURCES
 # Create a static library from the main program sources
 add_library(CS202GameLib STATIC ${SOURCES})
 
+# Set output directory for executables (per target, not global)
+# Remove or comment out the global setting:
+# set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+
 # Add your executable (main program)
 if(SOURCES)
     add_executable(${PROJECT_NAME} ${SOURCES})
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${PROJECT_NAME}/$<CONFIG>"
+    )
     target_include_directories(${PROJECT_NAME} PRIVATE 
         ${CMAKE_SOURCE_DIR}/include
         ${SFML_LIB_PATH}/include
@@ -151,22 +158,37 @@ if(SOURCES)
             ${SFML_LIB_PATH}/lib/libsfml-network.a
         )
     endif()
-    # Copy SFML DLLs to output directory for runtime
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${SFML_LIB_PATH}/bin
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>)
+    # Copy SFML DLLs to output directory for runtime ONLY IF the source directory exists
+    if(EXISTS "${SFML_LIB_PATH}/bin")
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            COMMAND ${CMAKE_COMMAND} -E copy_directory
+            ${SFML_LIB_PATH}/bin
+            $<TARGET_FILE_DIR:${PROJECT_NAME}>
+            COMMENT "Copying SFML DLLs to output directory"
+        )
+    else()
+        message(WARNING "SFML bin directory does not exist: ${SFML_LIB_PATH}/bin. Skipping DLL copy.")
+    endif()
 else()
     message(FATAL_ERROR "No source files found in src/ directory.")
 endif()
+
+# Copy assets to output directory after building
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets
+    $<TARGET_FILE_DIR:${PROJECT_NAME}>/assets
+    COMMENT "Copying assets to output directory"
+)
 
 # Copy assets to Release directory for Release builds
 if (CMAKE_BUILD_TYPE STREQUAL "Release") 
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-        $<TARGET_FILE_DIR:${PROJECT_NAME}>
-        ${CMAKE_SOURCE_DIR}/Release
-        COMMENT "Copying executable and DLLs to Release directory"
+        ${CMAKE_SOURCE_DIR}/assets
+        ${CMAKE_SOURCE_DIR}/Release/assets
+        COMMENT "Copying assets to Release directory"
     )
 endif()
 
@@ -181,6 +203,9 @@ file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/tests/*.cc")
 foreach(test_src ${TEST_SOURCES})
     get_filename_component(test_name ${test_src} NAME_WE)
     add_executable(${test_name} ${test_src})
+    set_target_properties(${test_name} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/${test_name}/$<CONFIG>"
+    )
     target_link_libraries(${test_name} PRIVATE gtest gtest_main CS202GameLib
         ${SFML_LIB_PATH}/lib/libsfml-system-d.a
         ${SFML_LIB_PATH}/lib/libsfml-window-d.a
