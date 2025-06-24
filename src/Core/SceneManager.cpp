@@ -1,4 +1,4 @@
-#include "Scene/SceneManager.hpp"
+#include "Core/SceneManager.hpp"
 #include "Utility/logger.hpp"
 
 void SceneManager::changeScene(const std::string &sceneName) {
