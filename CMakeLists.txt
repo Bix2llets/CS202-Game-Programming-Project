@@ -109,31 +109,28 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND EXISTS "${GTEST_LIB_PATH}/CMakeLists.tx
     set(INSTALL_GMOCK OFF CACHE BOOL "" FORCE)
 endif()
 
-# Collect all source files
+# Collect all source files for the main program
 file(GLOB_RECURSE SOURCES 
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/*.hpp"
 )
 
-# Add your executable
+# Create a static library from the main program sources
+add_library(CS202GameLib STATIC ${SOURCES})
+
+# Add your executable (main program)
 if(SOURCES)
     add_executable(${PROJECT_NAME} ${SOURCES})
-    
-    # Add include directories to the target (modern CMake approach)
     target_include_directories(${PROJECT_NAME} PRIVATE 
         ${CMAKE_SOURCE_DIR}/include
         ${SFML_LIB_PATH}/include
     )
-    
-    # Add Google Test include directories for Debug builds only
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         target_include_directories(${PROJECT_NAME} PRIVATE 
             ${GTEST_LIB_PATH}/googletest/include
             ${GTEST_LIB_PATH}/googlemock/include
         )
     endif()
-    
-    # Link SFML libraries with proper names
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         target_link_libraries(${PROJECT_NAME} 
             ${SFML_LIB_PATH}/lib/libsfml-system-d.a
@@ -142,8 +139,6 @@ if(SOURCES)
             ${SFML_LIB_PATH}/lib/libsfml-audio-d.a
             ${SFML_LIB_PATH}/lib/libsfml-network-d.a
         )
-        
-        # Link Google Test libraries for Debug builds only
         if(EXISTS "${GTEST_LIB_PATH}/CMakeLists.txt")
             target_link_libraries(${PROJECT_NAME} gtest gtest_main gmock gmock_main)
         endif()
@@ -156,7 +151,6 @@ if(SOURCES)
             ${SFML_LIB_PATH}/lib/libsfml-network.a
         )
     endif()
-    
     # Copy SFML DLLs to output directory for runtime
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -174,4 +168,28 @@ if (CMAKE_BUILD_TYPE STREQUAL "Release")
         ${CMAKE_SOURCE_DIR}/Release
         COMMENT "Copying executable and DLLs to Release directory"
     )
+endif()
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug") 
+# Enable testing and add test discovery
+include(GoogleTest)
+enable_testing()
+
+# Add test executables for all test files in tests/ recursively
+file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/tests/*.cc")
+
+foreach(test_src ${TEST_SOURCES})
+    get_filename_component(test_name ${test_src} NAME_WE)
+    add_executable(${test_name} ${test_src})
+    target_link_libraries(${test_name} PRIVATE gtest gtest_main CS202GameLib
+        ${SFML_LIB_PATH}/lib/libsfml-system-d.a
+        ${SFML_LIB_PATH}/lib/libsfml-window-d.a
+        ${SFML_LIB_PATH}/lib/libsfml-graphics-d.a
+        ${SFML_LIB_PATH}/lib/libsfml-audio-d.a
+        ${SFML_LIB_PATH}/lib/libsfml-network-d.a
+    )
+    target_include_directories(${test_name} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+    gtest_discover_tests(${test_name})
+endforeach()
+
 endif()

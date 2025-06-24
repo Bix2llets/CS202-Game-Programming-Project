@@ -6,8 +6,8 @@
 int main() {
     Logger::success("Program exit success");
 
-    Application mainLoop;
-    mainLoop.run();
+    // Application mainLoop;
+    // mainLoop.run();
     
     // Logger::debug("Program");
 }
