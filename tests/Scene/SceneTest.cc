@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "Scene/SceneManager.hpp"
+#include "Core/SceneManager.hpp"
 #include "Scene/BlankScene.hpp"
 
 #include <SFML/Graphics.hpp>
