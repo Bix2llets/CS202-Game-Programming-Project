@@ -19,28 +19,25 @@ set(GTEST_LIB_PATH "${CMAKE_SOURCE_DIR}/lib/gTest")
 file(MAKE_DIRECTORY ${SFML_LIB_PATH})
 file(MAKE_DIRECTORY ${GTEST_LIB_PATH})
 
-# Download SFML if not already downloaded
-if(NOT EXISTS ${SFML_DOWNLOAD_PATH})
-    message(STATUS "Downloading SFML...")
-    file(DOWNLOAD ${SFML_URL} ${SFML_DOWNLOAD_PATH}
-         SHOW_PROGRESS
-         STATUS download_status)
-    
-    list(GET download_status 0 status_code)
-    if(NOT status_code EQUAL 0)
-        message(FATAL_ERROR "Failed to download SFML")
-    endif()
-endif()
-
-# Extract SFML if not already extracted
-if(NOT EXISTS ${SFML_EXTRACT_PATH})
-    message(STATUS "Extracting SFML...")
-    file(ARCHIVE_EXTRACT INPUT ${SFML_DOWNLOAD_PATH}
-         DESTINATION ${SFML_EXTRACT_PATH})
-endif()
-
-# Copy SFML content to lib/SFML/ folder
+# Download SFML if not already present in lib/SFML/bin
 if(NOT EXISTS "${SFML_LIB_PATH}/bin")
+    if(NOT EXISTS ${SFML_DOWNLOAD_PATH})
+        message(STATUS "Downloading SFML...")
+        file(DOWNLOAD ${SFML_URL} ${SFML_DOWNLOAD_PATH}
+            SHOW_PROGRESS
+            STATUS download_status)
+        list(GET download_status 0 status_code)
+        if(NOT status_code EQUAL 0)
+            message(FATAL_ERROR "Failed to download SFML")
+        endif()
+    endif()
+    # Extract SFML if not already extracted
+    if(NOT EXISTS ${SFML_EXTRACT_PATH})
+        message(STATUS "Extracting SFML...")
+        file(ARCHIVE_EXTRACT INPUT ${SFML_DOWNLOAD_PATH}
+            DESTINATION ${SFML_EXTRACT_PATH})
+    endif()
+    # Copy SFML content to lib/SFML/ folder
     message(STATUS "Copying SFML to lib/SFML/ folder...")
     file(GLOB SFML_CONTENT "${SFML_EXTRACT_PATH}/SFML-3.0.0/*")
     foreach(item ${SFML_CONTENT})
@@ -49,28 +46,25 @@ if(NOT EXISTS "${SFML_LIB_PATH}/bin")
     endforeach()
 endif()
 
-# Download Google Test if not already downloaded (only for Debug builds)
-if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT EXISTS ${GTEST_DOWNLOAD_PATH})
-    message(STATUS "Downloading Google Test...")
-    file(DOWNLOAD ${GTEST_URL} ${GTEST_DOWNLOAD_PATH}
-         SHOW_PROGRESS
-         STATUS download_status)
-    
-    list(GET download_status 0 status_code)
-    if(NOT status_code EQUAL 0)
-        message(FATAL_ERROR "Failed to download Google Test")
-    endif()
-endif()
-
-# Extract Google Test if not already extracted (only for Debug builds)
-if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT EXISTS ${GTEST_EXTRACT_PATH})
-    message(STATUS "Extracting Google Test...")
-    file(ARCHIVE_EXTRACT INPUT ${GTEST_DOWNLOAD_PATH}
-         DESTINATION ${GTEST_EXTRACT_PATH})
-endif()
-
-# Copy Google Test content to lib/gTest/ folder (only for Debug builds)
+# Download Google Test if not already present in lib/gTest/googletest (only for Debug builds)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT EXISTS "${GTEST_LIB_PATH}/googletest")
+    if(NOT EXISTS ${GTEST_DOWNLOAD_PATH})
+        message(STATUS "Downloading Google Test...")
+        file(DOWNLOAD ${GTEST_URL} ${GTEST_DOWNLOAD_PATH}
+            SHOW_PROGRESS
+            STATUS download_status)
+        list(GET download_status 0 status_code)
+        if(NOT status_code EQUAL 0)
+            message(FATAL_ERROR "Failed to download Google Test")
+        endif()
+    endif()
+    # Extract Google Test if not already extracted
+    if(NOT EXISTS ${GTEST_EXTRACT_PATH})
+        message(STATUS "Extracting Google Test...")
+        file(ARCHIVE_EXTRACT INPUT ${GTEST_DOWNLOAD_PATH}
+            DESTINATION ${GTEST_EXTRACT_PATH})
+    endif()
+    # Copy Google Test content to lib/gTest/ folder
     message(STATUS "Copying Google Test to lib/gTest/ folder...")
     file(GLOB GTEST_CONTENT "${GTEST_EXTRACT_PATH}/googletest-1.14.0/*")
     foreach(item ${GTEST_CONTENT})
@@ -189,14 +183,14 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 )
 
 # Copy assets to Release directory for Release builds
-if (CMAKE_BUILD_TYPE STREQUAL "Release") 
-    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/assets
-        ${CMAKE_SOURCE_DIR}/Release/assets
-        COMMENT "Copying assets to Release directory"
-    )
-endif()
+# if (CMAKE_BUILD_TYPE STREQUAL "Release") 
+#     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_directory
+#         ${CMAKE_SOURCE_DIR}/assets
+#         ${CMAKE_SOURCE_DIR}/Release/assets
+#         COMMENT "Copying assets to Release directory"
+#     )
+# endif()
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug") 
 # Enable testing and add test discovery
