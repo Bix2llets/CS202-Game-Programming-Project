@@ -1,0 +1,587 @@
+
+@startuml Tower_Defense_Architecture_Moderate_Patterns
+
+!define CORE_COLOR #E8F4FD
+!define SCENE_COLOR #FFF2CC
+!define ENTITY_COLOR #D5E8D4
+!define BUILDER_COLOR #FFE6CC
+!define SYSTEM_COLOR #F8CECC
+!define UI_COLOR #E1D5E7
+!define COMPONENT_COLOR #FFEEEE
+
+package "Core Application" CORE_COLOR {
+  class Application {
+    -window: sf::RenderWindow
+    -sceneManager: SceneManager
+    -inputManager: InputManager
+    -resourceManager: ResourceManager
+    -running: bool
+    
+    +run()
+    +initialize()
+    +cleanup()
+  }
+  
+  class InputManager {
+    -mouseState: MouseState
+    -keyboardState: KeyboardState
+    
+    +update(sf::RenderWindow&)
+    +handleEvent(sf::Event&)
+    +getMouse(): MouseState&
+    +getKeyboard(): KeyboardState&
+  }
+  
+  class MouseState {
+     -window: sf::RenderWindow&
+     -position: sf::Vector2f
+     -buttonStates: map<MouseButton, ButtonState>
+     -observers: vector<MouseObserver*>
+     -mouseHoldInfo: MouseHoldInfo
+     
+     +handleEvent(sf::Event&)
+     +update()
+     +addObserver(MouseObserver*)
+     +removeObserver(MouseObserver*)
+     +isPressed(MouseButton): bool
+     +getPosition(): sf::Vector2f
+  }
+  note right of MouseState : "Observer Pattern\nNotifies UI elements of mouse events"
+  
+  interface MouseObserver {
+    +{abstract} onMousePress(MouseButton, sf::Vector2f)
+    +{abstract} onMouseRelease(MouseButton, sf::Vector2f)
+  }
+  
+  class ResourceManager {
+    -textures: map<string, sf::Texture>
+    -sounds: map<string, sf::Sound>
+    -fonts: map<string, sf::Font>
+    
+    +loadTexture(string): sf::Texture&
+    +loadSound(string): sf::Sound&
+    +getTexture(string): sf::Texture&
+  }
+}
+
+package "Scene Management" SCENE_COLOR {
+  class SceneManager {
+    -window: sf::RenderWindow&
+    -inputManager: InputManager&
+    -scenes: map<string, unique_ptr<Scene>>
+    -currentScene: Scene*
+    
+    +registerScene<T>(string)
+    +changeScene(string)
+    +handleEvent(sf::Event&)
+    +handleInput()
+    +update()
+    +render()
+  }
+  
+  abstract class Scene {
+    #window: sf::RenderWindow&
+    #inputManager: InputManager&
+    #sceneManager: SceneManager&
+    #background: sf::Sprite
+    #paused: bool
+    
+    {abstract} +handleEvent(sf::Event&)
+    {abstract} +handleInput()
+    {abstract} +update()
+    {abstract} +render()
+    +pause()
+    +resume()
+  }
+  
+  class MainMenuScene {
+    -uiElements: vector<unique_ptr<UIElement>>
+    
+    +handleEvent(sf::Event&)
+    +handleInput()
+    +update()
+    +render()
+  }
+  
+  class GameplayScene {
+    -gameWorld: GameWorld
+    -camera: Camera
+    -hud: HUD
+    -selectionSystem: SelectionSystem
+    -entities: vector<unique_ptr<Entity>>
+    -entityFactory: EntityFactory
+    
+    +handleEvent(sf::Event&)
+    +handleInput()
+    +update()
+    +render()
+    +addEntity(unique_ptr<Entity>)
+  }
+  
+  class PauseOverlay {
+    -parentScene: Scene*
+    -pauseMenu: vector<unique_ptr<UIElement>>
+    
+    +show()
+    +hide()
+    +handleEvent(sf::Event&)
+  }
+}
+
+package "Entity System" ENTITY_COLOR {
+  abstract class Entity {
+    #position: sf::Vector2f
+    #rotation: float
+    #health: int
+    #maxHealth: int
+    #sprite: sf::Sprite
+    #alive: bool
+    #entityId: int
+    
+    {abstract} +update()
+    {abstract} +render(sf::RenderTarget&)
+    +getPosition(): sf::Vector2f
+    +setPosition(sf::Vector2f)
+    +takeDamage(int)
+    +isAlive(): bool
+  }
+  
+  class Tower {
+    -range: float
+    -damage: int
+    -attackSpeed: float
+    -target: Enemy*
+    -towerType: TowerType
+    -level: int
+    -attackStrategy: AttackStrategy*
+    
+    +update()
+    +render(sf::RenderTarget&)
+    +attack()
+    +findTarget(vector<Enemy*>&): Enemy*
+    +upgrade()
+    +setAttackStrategy(AttackStrategy*)
+  }
+  note right of Tower : "Strategy Pattern\nDifferent attack behaviors"
+  
+  interface AttackStrategy {
+    +{abstract} attack(Tower*, vector<Enemy*>&)
+  }
+  
+  class SingleTargetAttack {
+    +attack(Tower*, vector<Enemy*>&)
+  }
+  
+  class AreaOfEffectAttack {
+    -radius: float
+    +attack(Tower*, vector<Enemy*>&)
+  }
+  
+  class Enemy {
+    -speed: float
+    -pathIndex: int
+    -waypoints: vector<sf::Vector2f>
+    -enemyType: EnemyType
+    -reward: int
+    -currentState: EnemyState*
+    
+    +update()
+    +render(sf::RenderTarget&)
+    +move()
+    +changeState(EnemyState*)
+    +takeDamage(int)
+  }
+  note right of Enemy : "State Pattern\nAI behavior states"
+  
+  abstract class EnemyState {
+    +{abstract} update(Enemy*)
+    +{abstract} enter(Enemy*)
+    +{abstract} exit(Enemy*)
+  }
+  
+  class MovingState {
+    +update(Enemy*)
+    +enter(Enemy*)
+    +exit(Enemy*)
+  }
+  
+  class AttackingState {
+    +update(Enemy*)
+    +enter(Enemy*)
+    +exit(Enemy*)
+  }
+  
+  class DyingState {
+    +update(Enemy*)
+    +enter(Enemy*)
+    +exit(Enemy*)
+  }
+  
+  class Projectile {
+    -velocity: sf::Vector2f
+    -damage: int
+    -target: Enemy*
+    -speed: float
+    
+    +update()
+    +render(sf::RenderTarget&)
+    +move()
+    +checkCollision(): bool
+  }
+  
+  class PlayerUnit {
+    -speed: float
+    -unitType: UnitType
+    -commands: queue<Command>
+    -selected: bool
+    
+    +update()
+    +render(sf::RenderTarget&)
+    +addCommand(Command)
+    +executeCommands()
+    +select()
+    +deselect()
+  }
+}
+
+package "Entity Creation" BUILDER_COLOR {
+  abstract class EntityBuilder {
+    #entity: unique_ptr<Entity>
+    #resourceManager: ResourceManager&
+    
+    +reset(): EntityBuilder&
+    {abstract} +setPosition(sf::Vector2f): EntityBuilder&
+    {abstract} +setHealth(int): EntityBuilder&
+    {abstract} +build(): unique_ptr<Entity>
+  }
+  note right of EntityBuilder : "Builder Pattern\nFlexible entity creation"
+  
+  class TowerBuilder {
+    +setPosition(sf::Vector2f): TowerBuilder&
+    +setHealth(int): TowerBuilder&
+    +setTowerType(TowerType): TowerBuilder&
+    +setDamage(int): TowerBuilder&
+    +setRange(float): TowerBuilder&
+    +build(): unique_ptr<Tower>
+  }
+  
+  class EnemyBuilder {
+    +setPosition(sf::Vector2f): EnemyBuilder&
+    +setHealth(int): EnemyBuilder&
+    +setEnemyType(EnemyType): EnemyBuilder&
+    +setSpeed(float): EnemyBuilder&
+    +setPath(vector<sf::Vector2f>): EnemyBuilder&
+    +build(): unique_ptr<Enemy>
+  }
+  
+  class EntityFactory {
+    -towerBuilder: TowerBuilder
+    -enemyBuilder: EnemyBuilder
+    -resourceManager: ResourceManager&
+    
+    +EntityFactory(ResourceManager&)
+    +createTower(TowerType, sf::Vector2f): unique_ptr<Tower>
+    +createEnemy(EnemyType, sf::Vector2f): unique_ptr<Enemy>
+    +createProjectile(sf::Vector2f, Enemy*): unique_ptr<Projectile>
+  }
+  note right of EntityFactory : "Factory Pattern\nCentralized entity creation"
+}
+
+package "Game Systems" SYSTEM_COLOR {
+  class GameWorld {
+    -map: Map
+    -waveManager: WaveManager
+    -grid: Grid
+    -towers: vector<Tower*>
+    -enemies: vector<Enemy*>
+    -projectiles: vector<Projectile*>
+    -entityFactory: EntityFactory&
+    
+    +update()
+    +addTower(TowerType, sf::Vector2f): Tower*
+    +spawnEnemy(EnemyType): Enemy*
+    +canPlaceTower(sf::Vector2f): bool
+    +getEntitiesInRange(sf::Vector2f, float): vector<Entity*>
+  }
+  
+  class WaveManager {
+    -waves: vector<Wave>
+    -currentWave: int
+    -spawnTimer: float
+    -enemiesRemaining: int
+    -entityFactory: EntityFactory&
+    
+    +update()
+    +startNextWave()
+    +spawnEnemy()
+    +isWaveComplete(): bool
+  }
+  
+  class SelectionSystem {
+    -selectedEntities: vector<Entity*>
+    -selectionBox: sf::RectangleShape
+    -isDragging: bool
+    
+    +update(MouseState&)
+    +selectEntity(Entity*)
+    +selectMultiple(sf::FloatRect)
+    +clearSelection()
+    +getSelected(): vector<Entity*>
+  }
+  
+  class CommandSystem {
+    -commandQueue: queue<unique_ptr<Command>>
+    
+    +executeCommand(unique_ptr<Command>)
+    +addMoveCommand(vector<Entity*>, sf::Vector2f)
+    +addAttackCommand(vector<Entity*>, Entity*)
+    +undo()
+  }
+  note right of CommandSystem : "Command Pattern\nUndoable RTS commands"
+  
+  abstract class Command {
+    +{abstract} execute()
+    +{abstract} undo()
+  }
+  
+  class MoveCommand {
+    -entities: vector<Entity*>
+    -destination: sf::Vector2f
+    -originalPositions: vector<sf::Vector2f>
+    
+    +execute()
+    +undo()
+  }
+  
+  class AttackCommand {
+    -attackers: vector<Entity*>
+    -target: Entity*
+    
+    +execute()
+    +undo()
+  }
+  
+  class Grid {
+    -tileMap: vector<vector<TileType>>
+    -tileSize: int
+    
+    +getTileAt(sf::Vector2f): TileType
+    +worldToGrid(sf::Vector2f): sf::Vector2i
+    +gridToWorld(sf::Vector2i): sf::Vector2f
+    +isWalkable(sf::Vector2f): bool
+  }
+  
+  class Camera {
+    -view: sf::View
+    -position: sf::Vector2f
+    -zoom: float
+    
+    +setPosition(sf::Vector2f)
+    +move(sf::Vector2f)
+    +zoomIn(float)
+    +getView(): sf::View
+  }
+}
+
+package "User Interface" UI_COLOR {
+  abstract class UIElement {
+    #position: sf::Vector2f
+    #size: sf::Vector2f
+    #visible: bool
+    #enabled: bool
+    
+    {abstract} +update()
+    {abstract} +render(sf::RenderTarget&)
+    {abstract} +handleEvent(sf::Event&)
+    +setPosition(sf::Vector2f)
+    +show()
+    +hide()
+  }
+  
+  class Button {
+    -text: sf::Text
+    -buttonSprite: sf::Sprite
+    -onClick: function<void()>
+    -hovered: bool
+    
+    +update()
+    +render(sf::RenderTarget&)
+    +handleEvent(sf::Event&)
+    +setOnClick(function<void()>)
+    +onMousePress(MouseButton, sf::Vector2f)
+    +onMouseRelease(MouseButton, sf::Vector2f)
+  }
+  
+  class HUD {
+    -resourceDisplay: ResourceDisplay
+    -miniMap: MiniMap
+    -buildMenu: BuildMenu
+    -selectedUnitInfo: UnitInfoPanel
+    
+    +update()
+    +render(sf::RenderTarget&)
+    +handleEvent(sf::Event&)
+    +updateSelectedUnit(Entity*)
+  }
+  
+  class BuildMenu {
+    -towerButtons: vector<unique_ptr<Button>>
+    -visible: bool
+    
+    +update()
+    +render(sf::RenderTarget&)
+    +show()
+    +hide()
+    +selectTowerType(TowerType)
+  }
+  
+  class MiniMap {
+    -mapTexture: sf::RenderTexture
+    -scale: float
+    
+    +update()
+    +render(sf::RenderTarget&)
+    +worldToMiniMap(sf::Vector2f): sf::Vector2f
+  }
+}
+
+package "Components" COMPONENT_COLOR {
+  class MouseHoldInfo {
+    -startPosition: sf::Vector2f
+    -isHolding: bool
+    -button: MouseButton
+    
+    +beginHolding(MouseButton, sf::Vector2f)
+    +stopHolding()
+    +getDragDistance(): float
+    +isHolding(): bool
+  }
+  
+  enum MouseButton {
+    LEFT
+    RIGHT
+    MIDDLE
+  }
+  
+  class ButtonState {
+    -pressed: bool
+    -held: bool
+    -released: bool
+    
+    +reset()
+    +press()
+    +release()
+  }
+  
+  enum TowerType {
+    BASIC_TURRET
+    LASER_TOWER
+    MISSILE_LAUNCHER
+    SLOW_TOWER
+  }
+  
+  enum EnemyType {
+    BASIC_ENEMY
+    FAST_ENEMY
+    ARMORED_ENEMY
+    FLYING_ENEMY
+    BOSS_ENEMY
+  }
+  
+  enum UnitType {
+    SOLDIER
+    TANK
+    ENGINEER
+  }
+  
+  class Wave {
+    -enemyTypes: vector<EnemyType>
+    -spawnDelays: vector<float>
+    -totalEnemies: int
+    
+    +getNextEnemy(): EnemyType
+    +getSpawnDelay(): float
+    +isEmpty(): bool
+  }
+}
+
+' Core Relationships
+Application --> SceneManager
+Application --> InputManager
+Application --> ResourceManager
+
+InputManager --> MouseState
+MouseState --> MouseObserver
+MouseState --> MouseHoldInfo
+MouseState --> ButtonState
+
+' Scene Relationships
+SceneManager --> Scene
+Scene <|-- MainMenuScene
+Scene <|-- GameplayScene
+GameplayScene --> PauseOverlay
+
+' Entity Relationships
+Entity <|-- Tower
+Entity <|-- Enemy
+Entity <|-- Projectile
+Entity <|-- PlayerUnit
+
+' Strategy Pattern for Tower Attacks
+Tower --> AttackStrategy
+AttackStrategy <|-- SingleTargetAttack
+AttackStrategy <|-- AreaOfEffectAttack
+
+' State Pattern for Enemy AI
+Enemy --> EnemyState
+EnemyState <|-- MovingState
+EnemyState <|-- AttackingState
+EnemyState <|-- DyingState
+
+' Builder Pattern for Entity Creation
+EntityBuilder <|-- TowerBuilder
+EntityBuilder <|-- EnemyBuilder
+EntityFactory --> TowerBuilder
+EntityFactory --> EnemyBuilder
+EntityFactory --> ResourceManager
+
+' System Relationships
+GameplayScene --> GameWorld
+GameplayScene --> SelectionSystem
+GameplayScene --> CommandSystem
+GameplayScene --> Camera
+GameplayScene --> HUD
+
+GameWorld --> WaveManager
+GameWorld --> Grid
+GameWorld --> EntityFactory
+
+' Command Pattern for RTS Commands
+CommandSystem --> Command
+Command <|-- MoveCommand
+Command <|-- AttackCommand
+
+' UI Relationships
+UIElement <|-- Button
+UIElement <|-- HUD
+UIElement <|-- BuildMenu
+UIElement <|-- MiniMap
+
+Button ..|> MouseObserver
+HUD --> BuildMenu
+HUD --> MiniMap
+
+' Component Relationships
+MouseState --> MouseButton
+Tower --> TowerType
+Enemy --> EnemyType
+PlayerUnit --> UnitType
+WaveManager --> Wave
+
+note bottom of EntityFactory : "Factory Pattern\nSimplifies entity creation"
+note top of CommandSystem : "Command Pattern\nEnables undo/redo for RTS"
+note left of MouseState : "Observer Pattern\nDecouples input from UI"
+note right of AttackStrategy : "Strategy Pattern\nDifferent tower behaviors"
+note bottom of EnemyState : "State Pattern\nClean AI state management"
+
+@enduml
