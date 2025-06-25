@@ -2,6 +2,7 @@
 #include <chrono>
 #include <iomanip>
 #include <ctime>
+#include <iostream>
 
 const char* Logger::RESET_COLOR = "\033[0m";
 

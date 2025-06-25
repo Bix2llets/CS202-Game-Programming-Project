@@ -1,3 +1,7 @@
+/**
+ * @file ResourceManager.hpp
+ * @brief Declares the ResourceManager class for managing game resources.
+ */
 #pragma once
 
 #include <SFML/Audio.hpp>
@@ -6,27 +10,36 @@
 #include <map>
 #include <memory>
 #include <string>
-/* Nang vang goc pho hoa nghieng dai trong mat*/
-
+/**
+ * @class ResourceManager
+ * @brief Manages loading, storing, and accessing game resources such as textures, sounds, and fonts.
+ */
 class ResourceManager {
    private:
-    std::map<std::string, std::unique_ptr<sf::Texture>> textures;
-    std::map<std::string, std::unique_ptr<sf::SoundBuffer>> soundBuffers;
-    std::map<std::string, std::unique_ptr<sf::Font>> fonts;
-    std::list<std::unique_ptr<sf::Sound>> playingSounds;
+    std::map<std::string, std::unique_ptr<sf::Texture>> textures; ///< Loaded textures.
+    std::map<std::string, std::unique_ptr<sf::SoundBuffer>> soundBuffers; ///< Loaded sound buffers.
+    std::map<std::string, std::unique_ptr<sf::Font>> fonts; ///< Loaded fonts.
+    std::list<std::unique_ptr<sf::Sound>> playingSounds; ///< Currently playing sounds.
 
     ResourceManager(const ResourceManager &rhs) = delete;
     ResourceManager operator=(const ResourceManager &rhs) = delete;
 
     /**
-     * @brief Removes sounds from the playingSounds list that have finished
-     * playing.
+     * @brief Removes sounds from the playingSounds list that have finished playing.
      */
     void freeSound();
 
    public:
-   ResourceManager() = default;
+    /**
+     * @brief Default constructor.
+     */
+    ResourceManager() = default;
+
+    /**
+     * @brief Move constructor.
+     */
     ResourceManager(ResourceManager &&rhs) noexcept = default;
+
     /**
      * @brief Loads a sound buffer from file and stores it with the given ID.
      * @param path Path to the sound file.
