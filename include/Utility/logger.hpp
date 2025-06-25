@@ -47,6 +47,12 @@ public:
         log(level, oss.str());
     }
     
+    static std::string messageAddress(const std::string& message, const void* address) {
+        std::ostringstream oss;
+        oss << message << " [Address: " << address << "]";
+        return oss.str();
+    }
+
 private:
     template<typename T>
     static void formatMessage(std::ostringstream& oss, const std::string& format, T&& value) {
