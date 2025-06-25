@@ -1,8 +1,14 @@
-#pragma once
-#include <string>
-#include <iostream>
-#include <sstream>
+/**
+ * @file logger.hpp
+ * @brief Provides logging utilities with various log levels and formatted output.
+ *
+ * The Logger class supports colored console output, log levels, and formatted messages for debugging and monitoring application state.
+ */
 
+/**
+ * @enum LogLevel
+ * @brief Represents the severity or category of a log message.
+ */
 enum class LogLevel {
     TRACE,
     DEBUGG,
@@ -18,6 +24,13 @@ enum class LogLevel {
     SECURITY
 };
 
+/**
+ * @class Logger
+ * @brief Static utility class for logging messages with different log levels and formatting.
+ *
+ * Logger provides methods to log messages at various levels (info, warning, error, etc.), including formatted output and address tagging.
+ * All methods are static and thread-safe for typical usage.
+ */
 class Logger {
 private:
     static const char* getColorCode(LogLevel level);
