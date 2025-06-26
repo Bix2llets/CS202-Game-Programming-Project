@@ -52,7 +52,7 @@ void ResourceManager::playSound(const std::string &ID) {
     std::unique_ptr<sf::Sound> sound = std::make_unique<sf::Sound>(*(soundBuffers[ID].get()));
     sound->play();
     playingSounds.push_back(std::move(sound));
-    std::cerr << playingSounds.size();
+    // std::cerr << playingSounds.size();
 }
 
 const sf::Texture *const ResourceManager::getTexture(const std::string &ID) const {
