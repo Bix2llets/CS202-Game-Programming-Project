@@ -17,6 +17,7 @@
 #include <map>
 #include <optional>
 
+#include "UserEvent.hpp"
 // Forward declaration to break circular dependency
 class MouseObserver;
 
@@ -25,7 +26,6 @@ class MouseObserver;
  * @brief Enum representing mouse buttons that can be observed.
  */
 enum class MouseButton { Left, Right };
-enum class MouseEvent { Release, Click };
 
 /**
  * @class MouseState
@@ -42,7 +42,7 @@ class MouseState {
      * @brief Maps each mouse button to a list of pointers to MouseObserver
      * objects that are subscribed to that button's events.
      */
-    std::map<MouseButton, std::map<MouseEvent, std::list<MouseObserver *>>>
+    std::map<MouseButton, std::map<UserEvent, std::list<MouseObserver *>>>
         subscriberList;
 
    public:
@@ -60,7 +60,7 @@ class MouseState {
      * @param button The mouse button to subscribe to.
      * @param subscriber Pointer to the MouseObserver to add.
      */
-    void addSubscriber(MouseButton button, MouseEvent event,
+    void addSubscriber(MouseButton button, UserEvent event,
                        MouseObserver *subscriber);
 
     /**
@@ -69,7 +69,7 @@ class MouseState {
      * @param button The mouse button to unsubscribe from.
      * @param subscriber Pointer to the MouseObserver to remove.
      */
-    void removeSubscriber(MouseButton button, MouseEvent event,
+    void removeSubscriber(MouseButton button, UserEvent event,
                           MouseObserver *subscriber);
 
     /**
@@ -81,5 +81,5 @@ class MouseState {
      * @brief Removes all subscribers from a specific mouse button.
      * @param button The mouse button whose subscribers will be cleared.
      */
-    void clearSubscriber(MouseButton button, MouseEvent event);
+    void clearSubscriber(MouseButton button, UserEvent event);
 };

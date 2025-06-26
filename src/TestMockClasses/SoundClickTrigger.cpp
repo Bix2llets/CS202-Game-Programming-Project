@@ -2,9 +2,9 @@
 
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
-void SoundClickTrigger::onLeftMouseClick(const sf::Vector2f &worldPosition,
-                                     const sf::Vector2i &windowPosition) {
-    Logger::info("Left click");
+void SoundClickTrigger::onLeftMousePress(const sf::Vector2f &worldPosition,
+                                       const sf::Vector2i &windowPosition) {
+    Logger::info("Left press");
 }
 
 SoundClickTrigger::SoundClickTrigger(ResourceManager &resManager)
@@ -12,15 +12,15 @@ SoundClickTrigger::SoundClickTrigger(ResourceManager &resManager)
 
 
 void SoundClickTrigger::onLeftMouseRelease(const sf::Vector2f &worldPosition, 
-    const sf::Vector2i &windowPosition) {
+                                           const sf::Vector2i &windowPosition) {
 
         Logger::info("Left release");
     }
-void SoundClickTrigger::onRightMouseClick(const sf::Vector2f &worldPosition, 
-                                    const sf::Vector2i &windowPosition) {
-                                        Logger::info("Right click");
+void SoundClickTrigger::onRightMousePress(const sf::Vector2f &worldPosition, 
+                                        const sf::Vector2i &windowPosition) {
+                                        Logger::info("Right press");
                                     }
 void SoundClickTrigger::onRightMouseRelease(const sf::Vector2f &worldPosition, 
-                                    const sf::Vector2i &windowPosition) {
+                                            const sf::Vector2i &windowPosition) {
                                         Logger::info("Right release");
                                     }
