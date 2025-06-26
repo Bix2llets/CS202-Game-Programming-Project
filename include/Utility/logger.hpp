@@ -1,3 +1,7 @@
+#pragma once
+#include <string>
+#include <iostream>
+#include <sstream>
 /**
  * @file logger.hpp
  * @brief Provides logging utilities with various log levels and formatted output.
