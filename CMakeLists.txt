@@ -168,7 +168,7 @@ if(EXISTS "${SFML_LIB_PATH}/bin")
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${SFML_LIB_PATH}/bin
         ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
-        COMMENT "Copying SFML DLLs to bin directory"
+        COMMENT "Copying SFML DLLs to output directory"
     )
 else()
     message(WARNING "SFML bin directory does not exist: ${SFML_LIB_PATH}/bin. Skipping DLL copy.")

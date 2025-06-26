@@ -6,10 +6,8 @@
  * This class allows observers to subscribe to mouse button events (left or
  * right) and be notified when those events occur.
  *
- * Dependencies:
- *   - SFML/Graphics.hpp
- *   - <map>, <optional>, <list>
- *   - Forward declaration of MouseObserver
+ * Dependencies: SFML/Graphics.hpp, <map>, <optional>, <list>, and a forward
+ * declaration of MouseObserver.
  */
 
 #pragma once
