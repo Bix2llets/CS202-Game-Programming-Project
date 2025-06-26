@@ -20,17 +20,17 @@ class SoundClickTrigger : public MouseObserver{
      */
     SoundClickTrigger(ResourceManager &resManager);
     /**
-     * @brief Called on left mouse click.
+     * @brief Called on left mouse press.
      * @param worldPosition Mouse position in world coordinates.
      * @param windowPosition Mouse position in window coordinates.
      */
-    void onLeftMouseClick(const sf::Vector2f &worldPosition, const sf::Vector2i& windowPosition);
+    void onLeftMousePress(const sf::Vector2f &worldPosition, const sf::Vector2i& windowPosition);
     /**
-     * @brief Called on right mouse click.
+     * @brief Called on right mouse press.
      * @param worldPosition Mouse position in world coordinates.
      * @param windowPosition Mouse position in window coordinates.
      */
-    void onRightMouseClick(const sf::Vector2f &worldPosition, const sf::Vector2i& windowPosition);
+    void onRightMousePress(const sf::Vector2f &worldPosition, const sf::Vector2i& windowPosition);
     /**
      * @brief Called on left mouse release.
      * @param worldPosition Mouse position in world coordinates.
