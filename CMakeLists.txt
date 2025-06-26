@@ -238,10 +238,16 @@ if(EXISTS "${SFML_LIB_PATH}/bin")
         "${SFML_LIB_PATH}/bin/*.DLL"
     )
     foreach(dll ${SFML_DLLS})
-        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dll}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/"
-            COMMENT "Copying ${dll} to bin directory"
-        )
+        get_filename_component(dll_name "${dll}" NAME)
+        set(target_path "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${dll_name}")
+        if(NOT EXISTS "${target_path}")
+            add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dll}" "${target_path}"
+                COMMENT "${dll} does not exist. Copying ${dll} to bin directory"
+            )
+        else()
+            message(STATUS "DLL ${dll_name} already exists in bin directory, skipping copy.")
+        endif()
     endforeach()
 endif()
 
