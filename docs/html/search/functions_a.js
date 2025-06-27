@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['registerscene_0',['registerScene',['../class_scene_manager.html#a4d81073d7adb8a07b02b828eab025c9c',1,'SceneManager']]],
-  ['removesubscriber_1',['removeSubscriber',['../class_mouse_state.html#a72055f498a39c6afa947e00e0974f663',1,'MouseState']]],
-  ['render_2',['render',['../class_scene_manager.html#a33896fec4566d8eb3dafdb01a5bd991c',1,'SceneManager']]],
-  ['resourcemanager_3',['ResourceManager',['../class_resource_manager.html#a2d9db4c26c604834c60702ded80947d8',1,'ResourceManager::ResourceManager()=default'],['../class_resource_manager.html#ac40813d3641a3d89efb9a513f2d0d0bc',1,'ResourceManager::ResourceManager(ResourceManager &amp;&amp;rhs) noexcept=default']]],
-  ['run_4',['run',['../class_application.html#a68965449404743bf1add056784d6cf81',1,'Application']]]
+  ['onkeyevent_0',['onKeyEvent',['../class_keyboard_observer.html#a3ab061a83ece08a5fbb7912d0c2a066f',1,'KeyboardObserver::onKeyEvent()'],['../class_sound_click_trigger.html#aefd84fe8e5e441df0ad6652f1429b3ee',1,'SoundClickTrigger::onKeyEvent()']]],
+  ['onmouseevent_1',['onMouseEvent',['../class_mouse_observer.html#ac8321513a81e6546dce9b68f2fc3d3e5',1,'MouseObserver::onMouseEvent()'],['../class_sound_click_trigger.html#a3b70c530c1ea9542ede88f646270ce7e',1,'SoundClickTrigger::onMouseEvent()']]]
 ];

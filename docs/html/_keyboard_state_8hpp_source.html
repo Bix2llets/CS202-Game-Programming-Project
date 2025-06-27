@@ -92,14 +92,74 @@ $(function(){initNavTree('_keyboard_state_8hpp_source.html','',''); });
   <div class="headertitle"><div class="title">KeyboardState.hpp</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span> </div>
+<a href="_keyboard_state_8hpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#pragma once</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span> </div>
+<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;SFML/Graphics.hpp&gt;</span></div>
+<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span><span class="preprocessor">#include &quot;<a class="code" href="_user_event_8hpp.html">Core/UserEvent.hpp</a>&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span> </div>
+<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span><span class="preprocessor">#include &lt;optional&gt;</span></div>
+<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span><span class="preprocessor">#include &lt;map&gt;</span></div>
+<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span><span class="preprocessor">#include &lt;list&gt;</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span><span class="keyword">class </span><a class="code hl_class" href="class_keyboard_observer.html">KeyboardObserver</a>;</div>
+<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span></div>
+<div class="foldopen" id="foldopen00025" data-start="{" data-end="};">
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno"><a class="line" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">   25</a></span><span class="keyword">enum class</span> <a class="code hl_enumeration" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> {</div>
+<div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    Unknown,</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>    A, B, C, D, E, F, G, H, I, J, K, L, M,</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>    N, O, P, Q, R, S, T, U, V, W, X, Y, Z,</div>
+<div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>    Num0, Num1, Num2, Num3, Num4, Num5, Num6, Num7, Num8, Num9,</div>
+<div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>    Escape, LControl, LShift, LAlt, LSystem,</div>
+<div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>    RControl, RShift, RAlt, RSystem,</div>
+<div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>    Menu, LBracket, RBracket, Semicolon, Comma, Period, Apostrophe, Slash, Backslash,</div>
+<div class="line"><a id="l00033" name="l00033"></a><span class="lineno">   33</span>    Grave, Equal, Hyphen, Space, Enter, Backspace, Tab, PageUp, PageDown,</div>
+<div class="line"><a id="l00034" name="l00034"></a><span class="lineno">   34</span>    End, Home, Insert, Delete, Add, Subtract, Multiply, Divide,</div>
+<div class="line"><a id="l00035" name="l00035"></a><span class="lineno">   35</span>    Left, Right, Up, Down,</div>
+<div class="line"><a id="l00036" name="l00036"></a><span class="lineno">   36</span>    Numpad0, Numpad1, Numpad2, Numpad3, Numpad4,</div>
+<div class="line"><a id="l00037" name="l00037"></a><span class="lineno">   37</span>    Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,</div>
+<div class="line"><a id="l00038" name="l00038"></a><span class="lineno">   38</span>    F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15,</div>
+<div class="line"><a id="l00039" name="l00039"></a><span class="lineno">   39</span>    Pause,</div>
+<div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>    KeyCount <span class="comment">// Keep this last</span></div>
+<div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
+</div>
+<div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span></div>
+<div class="foldopen" id="foldopen00051" data-start="{" data-end="};">
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno"><a class="line" href="class_keyboard_state.html">   51</a></span><span class="keyword">class </span><a class="code hl_function" href="class_keyboard_state.html#ac478856f66783a6fd0fde525d9f2ea0e">KeyboardState</a> {</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span> </div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>    <span class="keyword">private</span>: </div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>    sf::RenderWindow &amp;window; </div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>    std::map&lt;Key, std::map&lt;UserEvent, std::list&lt;KeyboardObserver*&gt;&gt;&gt; subscriberList;    </div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span>    <span class="keyword">public</span>:</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>    <a class="code hl_function" href="class_keyboard_state.html#ac478856f66783a6fd0fde525d9f2ea0e">KeyboardState</a>(sf::RenderWindow &amp;window);</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span></div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_keyboard_state.html#a1e647d2d89da92cb6a6bf2c98757b58c">addSubscriber</a>(<a class="code hl_enumeration" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="code hl_enumeration" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, <a class="code hl_class" href="class_keyboard_observer.html">KeyboardObserver</a>* subscriber);</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span></div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_keyboard_state.html#a690e7ae2845e3b639cc2afbba8acdd6f">removeSubscriber</a>(<a class="code hl_enumeration" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="code hl_enumeration" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, <a class="code hl_class" href="class_keyboard_observer.html">KeyboardObserver</a>* subscriber);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span></div>
+<div class="line"><a id="l00084" name="l00084"></a><span class="lineno">   84</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_keyboard_state.html#a5c4310b9417ac29300bddb161370aee4">clearSubscriber</a>(<a class="code hl_enumeration" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="code hl_enumeration" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event);</div>
+<div class="line"><a id="l00085" name="l00085"></a><span class="lineno">   85</span></div>
+<div class="line"><a id="l00089" name="l00089"></a><span class="lineno">   89</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_keyboard_state.html#a5c4310b9417ac29300bddb161370aee4">clearSubscriber</a>();</div>
+<div class="line"><a id="l00090" name="l00090"></a><span class="lineno">   90</span></div>
+<div class="line"><a id="l00095" name="l00095"></a><span class="lineno">   95</span>    <span class="keywordtype">void</span> <a class="code hl_function" href="class_keyboard_state.html#a440e210552e487883efc6773c6c889c6">handleEvent</a>(std::optional&lt;sf::Event&gt; &amp;event);</div>
+<div class="line"><a id="l00096" name="l00096"></a><span class="lineno">   96</span> </div>
+<div class="line"><a id="l00097" name="l00097"></a><span class="lineno">   97</span>};</div>
+</div>
+<div class="ttc" id="a_keyboard_state_8hpp_html_ab3c7af4820830f9166ede9e5623c4e73"><div class="ttname"><a href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a></div><div class="ttdeci">Key</div><div class="ttdoc">User-defined key codes for keyboard input abstraction.</div><div class="ttdef"><b>Definition</b> KeyboardState.hpp:25</div></div>
+<div class="ttc" id="a_user_event_8hpp_html"><div class="ttname"><a href="_user_event_8hpp.html">UserEvent.hpp</a></div><div class="ttdoc">Defines the UserEvent enum class for representing user input events.</div></div>
+<div class="ttc" id="a_user_event_8hpp_html_a48ad90a79ef941a6f743a415e5412ee3"><div class="ttname"><a href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a></div><div class="ttdeci">UserEvent</div><div class="ttdoc">Enum representing user input events (e.g., Release, Press).</div><div class="ttdef"><b>Definition</b> UserEvent.hpp:16</div></div>
+<div class="ttc" id="aclass_keyboard_observer_html"><div class="ttname"><a href="class_keyboard_observer.html">KeyboardObserver</a></div><div class="ttdoc">Abstract base class for objects that observe keyboard events.</div><div class="ttdef"><b>Definition</b> KeyboardObserver.hpp:22</div></div>
+<div class="ttc" id="aclass_keyboard_state_html_a1e647d2d89da92cb6a6bf2c98757b58c"><div class="ttname"><a href="class_keyboard_state.html#a1e647d2d89da92cb6a6bf2c98757b58c">KeyboardState::addSubscriber</a></div><div class="ttdeci">void addSubscriber(Key key, UserEvent event, KeyboardObserver *subscriber)</div><div class="ttdoc">Add an observer for a specific key and user event.</div><div class="ttdef"><b>Definition</b> KeyboardState.cpp:12</div></div>
+<div class="ttc" id="aclass_keyboard_state_html_a440e210552e487883efc6773c6c889c6"><div class="ttname"><a href="class_keyboard_state.html#a440e210552e487883efc6773c6c889c6">KeyboardState::handleEvent</a></div><div class="ttdeci">void handleEvent(std::optional&lt; sf::Event &gt; &amp;event)</div><div class="ttdoc">Handle an SFML event, dispatching to observers as appropriate.</div><div class="ttdef"><b>Definition</b> KeyboardState.cpp:45</div></div>
+<div class="ttc" id="aclass_keyboard_state_html_a5c4310b9417ac29300bddb161370aee4"><div class="ttname"><a href="class_keyboard_state.html#a5c4310b9417ac29300bddb161370aee4">KeyboardState::clearSubscriber</a></div><div class="ttdeci">void clearSubscriber()</div><div class="ttdoc">Remove all observers for all keys and events.</div><div class="ttdef"><b>Definition</b> KeyboardState.cpp:40</div></div>
+<div class="ttc" id="aclass_keyboard_state_html_a690e7ae2845e3b639cc2afbba8acdd6f"><div class="ttname"><a href="class_keyboard_state.html#a690e7ae2845e3b639cc2afbba8acdd6f">KeyboardState::removeSubscriber</a></div><div class="ttdeci">void removeSubscriber(Key key, UserEvent event, KeyboardObserver *subscriber)</div><div class="ttdoc">Remove an observer for a specific key and user event.</div><div class="ttdef"><b>Definition</b> KeyboardState.cpp:24</div></div>
+<div class="ttc" id="aclass_keyboard_state_html_ac478856f66783a6fd0fde525d9f2ea0e"><div class="ttname"><a href="class_keyboard_state.html#ac478856f66783a6fd0fde525d9f2ea0e">KeyboardState::KeyboardState</a></div><div class="ttdeci">KeyboardState(sf::RenderWindow &amp;window)</div><div class="ttdoc">Construct a KeyboardState for a given window.</div><div class="ttdef"><b>Definition</b> KeyboardState.cpp:68</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 </div><!-- container -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a href="dir_8213943ce0b792be39d34390845932ae.html">Core</a></li><li class="navelem"><b>KeyboardState.hpp</b></li>
+    <li class="navelem"><a href="dir_d44c64559bbebec7f509842c48db8b23.html">include</a></li><li class="navelem"><a href="dir_8213943ce0b792be39d34390845932ae.html">Core</a></li><li class="navelem"><a href="_keyboard_state_8hpp.html">KeyboardState.hpp</a></li>
     <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.14.0 </li>
   </ul>
 </div>

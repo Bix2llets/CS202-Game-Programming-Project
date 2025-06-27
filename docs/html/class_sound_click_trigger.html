@@ -103,7 +103,8 @@ Inheritance diagram for SoundClickTrigger:</div>
  <div class="center">
   <img src="class_sound_click_trigger.png" usemap="#SoundClickTrigger_map" alt=""/>
   <map id="SoundClickTrigger_map" name="SoundClickTrigger_map">
-<area href="class_mouse_observer.html" title="Abstract interface for mouse event observers." alt="MouseObserver" shape="rect" coords="0,0,117,24"/>
+<area href="class_mouse_observer.html" title="Abstract interface for mouse event observers." alt="MouseObserver" shape="rect" coords="0,0,121,24"/>
+<area href="class_keyboard_observer.html" title="Abstract base class for objects that observe keyboard events." alt="KeyboardObserver" shape="rect" coords="131,0,252,24"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -111,22 +112,23 @@ Inheritance diagram for SoundClickTrigger:</div>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa5393e3cd6cac50e1c1cd81c45cba8a3" id="r_aa5393e3cd6cac50e1c1cd81c45cba8a3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aa5393e3cd6cac50e1c1cd81c45cba8a3">SoundClickTrigger</a> (<a class="el" href="class_resource_manager.html">ResourceManager</a> &amp;resManager)</td></tr>
 <tr class="memdesc:aa5393e3cd6cac50e1c1cd81c45cba8a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="class_sound_click_trigger.html" title="Test class that plays a sound when mouse events occur.">SoundClickTrigger</a> with the given resource manager.  <br /></td></tr>
-<tr class="memitem:a569d6b83e039e45279e7d75854db8d80" id="r_a569d6b83e039e45279e7d75854db8d80"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a569d6b83e039e45279e7d75854db8d80">onLeftMouseClick</a> (const sf::Vector2f &amp;worldPosition, const sf::Vector2i &amp;windowPosition)</td></tr>
-<tr class="memdesc:a569d6b83e039e45279e7d75854db8d80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called on left mouse click.  <br /></td></tr>
-<tr class="memitem:a748c56afc77ecf973fa5782c12f18334" id="r_a748c56afc77ecf973fa5782c12f18334"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a748c56afc77ecf973fa5782c12f18334">onRightMouseClick</a> (const sf::Vector2f &amp;worldPosition, const sf::Vector2i &amp;windowPosition)</td></tr>
-<tr class="memdesc:a748c56afc77ecf973fa5782c12f18334"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called on right mouse click.  <br /></td></tr>
-<tr class="memitem:afe373d248f7c66ce94cf3e54b34c6b6b" id="r_afe373d248f7c66ce94cf3e54b34c6b6b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#afe373d248f7c66ce94cf3e54b34c6b6b">onLeftMouseRelease</a> (const sf::Vector2f &amp;worldPosition, const sf::Vector2i &amp;windowPosition)</td></tr>
-<tr class="memdesc:afe373d248f7c66ce94cf3e54b34c6b6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called on left mouse release.  <br /></td></tr>
-<tr class="memitem:a97c14b09acfb80f6afefac28bed31ed3" id="r_a97c14b09acfb80f6afefac28bed31ed3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a97c14b09acfb80f6afefac28bed31ed3">onRightMouseRelease</a> (const sf::Vector2f &amp;worldPosition, const sf::Vector2i &amp;windowPosition)</td></tr>
-<tr class="memdesc:a97c14b09acfb80f6afefac28bed31ed3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called on right mouse release.  <br /></td></tr>
+<tr class="memitem:a3b70c530c1ea9542ede88f646270ce7e" id="r_a3b70c530c1ea9542ede88f646270ce7e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3b70c530c1ea9542ede88f646270ce7e">onMouseEvent</a> (<a class="el" href="_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9">Mouse</a> button, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, const sf::Vector2f &amp;worldPosition, const sf::Vector2i &amp;windowPosition)</td></tr>
+<tr class="memdesc:a3b70c530c1ea9542ede88f646270ce7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when a mouse position is pressed.  <br /></td></tr>
+<tr class="memitem:aefd84fe8e5e441df0ad6652f1429b3ee" id="r_aefd84fe8e5e441df0ad6652f1429b3ee"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aefd84fe8e5e441df0ad6652f1429b3ee">onKeyEvent</a> (<a class="el" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, const sf::Vector2f &amp;worldPosition, const sf::Vector2i &amp;windowPosition)</td></tr>
+<tr class="memdesc:aefd84fe8e5e441df0ad6652f1429b3ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle a keyboard event. Should be overridden by derived classes.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_mouse_observer"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_mouse_observer')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_mouse_observer.html">MouseObserver</a></td></tr>
-<tr class="memitem:acbbd27c600fa77c9b81e74e95974a12c inherit pub_methods_class_mouse_observer" id="r_acbbd27c600fa77c9b81e74e95974a12c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mouse_observer.html#acbbd27c600fa77c9b81e74e95974a12c">subscribe</a> (<a class="el" href="_mouse_state_8hpp.html#ac1ec3647c005eacad401b06e7e18f711">MouseButton</a> button, MouseEvent event, <a class="el" href="class_mouse_state.html">MouseState</a> &amp;mouseState)</td></tr>
-<tr class="memdesc:acbbd27c600fa77c9b81e74e95974a12c inherit pub_methods_class_mouse_observer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribe this observer to a mouse button event in the given <a class="el" href="class_mouse_state.html" title="Manages mouse button event subscriptions and notifies observers. ] MouseState allows objects to subsc...">MouseState</a>.  <br /></td></tr>
-<tr class="memitem:a641438bd450064aff15aeee2d20d861a inherit pub_methods_class_mouse_observer" id="r_a641438bd450064aff15aeee2d20d861a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mouse_observer.html#a641438bd450064aff15aeee2d20d861a">unSubscribe</a> (<a class="el" href="_mouse_state_8hpp.html#ac1ec3647c005eacad401b06e7e18f711">MouseButton</a> button, MouseEvent event, <a class="el" href="class_mouse_state.html">MouseState</a> &amp;mouseState)</td></tr>
-<tr class="memdesc:a641438bd450064aff15aeee2d20d861a inherit pub_methods_class_mouse_observer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribe this observer from a mouse button event in the given <a class="el" href="class_mouse_state.html" title="Manages mouse button event subscriptions and notifies observers. ] MouseState allows objects to subsc...">MouseState</a>.  <br /></td></tr>
+<tr class="memitem:ac149870364aa6a29e64c8c2e1577ce1b inherit pub_methods_class_mouse_observer" id="r_ac149870364aa6a29e64c8c2e1577ce1b"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mouse_observer.html#ac149870364aa6a29e64c8c2e1577ce1b">subscribeMouse</a> (<a class="el" href="_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9">Mouse</a> button, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, <a class="el" href="class_mouse_state.html">MouseState</a> &amp;mouseState)</td></tr>
+<tr class="memdesc:ac149870364aa6a29e64c8c2e1577ce1b inherit pub_methods_class_mouse_observer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribe this observer to a mouse button event in the given <a class="el" href="class_mouse_state.html" title="Manages mouse button event subscriptions and notifies observers. ] MouseState allows objects to subsc...">MouseState</a>.  <br /></td></tr>
+<tr class="memitem:a2db85d41c9af4c0b1a2b09a71126d501 inherit pub_methods_class_mouse_observer" id="r_a2db85d41c9af4c0b1a2b09a71126d501"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_mouse_observer.html#a2db85d41c9af4c0b1a2b09a71126d501">unSubscribeMouse</a> (<a class="el" href="_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9">Mouse</a> button, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, <a class="el" href="class_mouse_state.html">MouseState</a> &amp;mouseState)</td></tr>
+<tr class="memdesc:a2db85d41c9af4c0b1a2b09a71126d501 inherit pub_methods_class_mouse_observer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribe this observer from a mouse button event in the given <a class="el" href="class_mouse_state.html" title="Manages mouse button event subscriptions and notifies observers. ] MouseState allows objects to subsc...">MouseState</a>.  <br /></td></tr>
 <tr class="memitem:a5c57e228f93ed5445537fc5af29b06c8 inherit pub_methods_class_mouse_observer" id="r_a5c57e228f93ed5445537fc5af29b06c8"><td class="memItemLeft" align="right" valign="top">
 virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b> ()=default</td></tr>
 <tr class="memdesc:a5c57e228f93ed5445537fc5af29b06c8 inherit pub_methods_class_mouse_observer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for safe polymorphic destruction. <br /></td></tr>
+<tr class="inherit_header pub_methods_class_keyboard_observer"><td colspan="2" onclick="javascript:dynsection.toggleInherit('pub_methods_class_keyboard_observer')"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_keyboard_observer.html">KeyboardObserver</a></td></tr>
+<tr class="memitem:a7503b37f98df737f00f10b3df04973d4 inherit pub_methods_class_keyboard_observer" id="r_a7503b37f98df737f00f10b3df04973d4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_keyboard_observer.html#a7503b37f98df737f00f10b3df04973d4">subscribeKeyboard</a> (<a class="el" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, <a class="el" href="class_keyboard_state.html">KeyboardState</a> &amp;state)</td></tr>
+<tr class="memdesc:a7503b37f98df737f00f10b3df04973d4 inherit pub_methods_class_keyboard_observer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribe to a specific key and user event combination.  <br /></td></tr>
+<tr class="memitem:a09c8a3df55e8b42d589d13cfc322c47c inherit pub_methods_class_keyboard_observer" id="r_a09c8a3df55e8b42d589d13cfc322c47c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_keyboard_observer.html#a09c8a3df55e8b42d589d13cfc322c47c">unSubscribeKeyboard</a> (<a class="el" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, <a class="el" href="class_keyboard_state.html">KeyboardState</a> &amp;state)</td></tr>
+<tr class="memdesc:a09c8a3df55e8b42d589d13cfc322c47c inherit pub_methods_class_keyboard_observer"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribe from a specific key and user event combination.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Test class that plays a sound when mouse events occur. </p>
@@ -157,8 +159,8 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b>
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="a569d6b83e039e45279e7d75854db8d80" name="a569d6b83e039e45279e7d75854db8d80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a569d6b83e039e45279e7d75854db8d80">&#9670;&#160;</a></span>onLeftMouseClick()</h2>
+<a id="aefd84fe8e5e441df0ad6652f1429b3ee" name="aefd84fe8e5e441df0ad6652f1429b3ee"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefd84fe8e5e441df0ad6652f1429b3ee">&#9670;&#160;</a></span>onKeyEvent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,8 +169,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void SoundClickTrigger::onLeftMouseClick </td>
+          <td class="memname">void SoundClickTrigger::onKeyEvent </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a></td>          <td class="paramname"><span class="paramname"><em>key</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a></td>          <td class="paramname"><span class="paramname"><em>event</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const sf::Vector2f &amp;</td>          <td class="paramname"><span class="paramname"><em>worldPosition</em></span>, </td>
         </tr>
         <tr>
@@ -184,21 +196,23 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b>
 </table>
 </div><div class="memdoc">
 
-<p>Called on left mouse click. </p>
+<p>Handle a keyboard event. Should be overridden by derived classes. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">worldPosition</td><td>Mouse position in world coordinates. </td></tr>
-    <tr><td class="paramname">windowPosition</td><td>Mouse position in window coordinates. </td></tr>
+    <tr><td class="paramname">key</td><td>The key involved in the event. </td></tr>
+    <tr><td class="paramname">event</td><td>The user-defined event (e.g., Press, Release). </td></tr>
+    <tr><td class="paramname">worldPosition</td><td>The world coordinates of the event (based on mouse position, if relevant). </td></tr>
+    <tr><td class="paramname">windowPosition</td><td>The window coordinates of the event (based on mouse position, if relevant). </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="class_mouse_observer.html#ac99b3c271c1ce9d30c644a6a6370befa">MouseObserver</a>.</p>
+<p>Implements <a class="el" href="class_keyboard_observer.html#a3ab061a83ece08a5fbb7912d0c2a066f">KeyboardObserver</a>.</p>
 
 </div>
 </div>
-<a id="afe373d248f7c66ce94cf3e54b34c6b6b" name="afe373d248f7c66ce94cf3e54b34c6b6b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afe373d248f7c66ce94cf3e54b34c6b6b">&#9670;&#160;</a></span>onLeftMouseRelease()</h2>
+<a id="a3b70c530c1ea9542ede88f646270ce7e" name="a3b70c530c1ea9542ede88f646270ce7e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b70c530c1ea9542ede88f646270ce7e">&#9670;&#160;</a></span>onMouseEvent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -207,8 +221,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void SoundClickTrigger::onLeftMouseRelease </td>
+          <td class="memname">void SoundClickTrigger::onMouseEvent </td>
           <td>(</td>
+          <td class="paramtype"><a class="el" href="_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9">Mouse</a></td>          <td class="paramname"><span class="paramname"><em>button</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a></td>          <td class="paramname"><span class="paramname"><em>event</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
           <td class="paramtype">const sf::Vector2f &amp;</td>          <td class="paramname"><span class="paramname"><em>worldPosition</em></span>, </td>
         </tr>
         <tr>
@@ -224,96 +248,18 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b>
 </table>
 </div><div class="memdoc">
 
-<p>Called on left mouse release. </p>
+<p>Called when a mouse position is pressed. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">worldPosition</td><td>Mouse position in world coordinates. </td></tr>
-    <tr><td class="paramname">windowPosition</td><td>Mouse position in window coordinates. </td></tr>
+    <tr><td class="paramname">button</td><td>The button that is pressed </td></tr>
+    <tr><td class="paramname">event</td><td>The button that user trigers </td></tr>
+    <tr><td class="paramname">worldPosition</td><td><a class="el" href="_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9" title="Enum representing mouse buttons that can be observed.">Mouse</a> position in world coordinates </td></tr>
+    <tr><td class="paramname">windowPosition</td><td><a class="el" href="_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9" title="Enum representing mouse buttons that can be observed.">Mouse</a> position in window coordinates </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Implements <a class="el" href="class_mouse_observer.html#aff084668c1477c2a53693c7325e0ddac">MouseObserver</a>.</p>
-
-</div>
-</div>
-<a id="a748c56afc77ecf973fa5782c12f18334" name="a748c56afc77ecf973fa5782c12f18334"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a748c56afc77ecf973fa5782c12f18334">&#9670;&#160;</a></span>onRightMouseClick()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void SoundClickTrigger::onRightMouseClick </td>
-          <td>(</td>
-          <td class="paramtype">const sf::Vector2f &amp;</td>          <td class="paramname"><span class="paramname"><em>worldPosition</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const sf::Vector2i &amp;</td>          <td class="paramname"><span class="paramname"><em>windowPosition</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel virtual">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Called on right mouse click. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">worldPosition</td><td>Mouse position in world coordinates. </td></tr>
-    <tr><td class="paramname">windowPosition</td><td>Mouse position in window coordinates. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implements <a class="el" href="class_mouse_observer.html#acc0258ba6782c73af03cf8882347b5ea">MouseObserver</a>.</p>
-
-</div>
-</div>
-<a id="a97c14b09acfb80f6afefac28bed31ed3" name="a97c14b09acfb80f6afefac28bed31ed3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a97c14b09acfb80f6afefac28bed31ed3">&#9670;&#160;</a></span>onRightMouseRelease()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void SoundClickTrigger::onRightMouseRelease </td>
-          <td>(</td>
-          <td class="paramtype">const sf::Vector2f &amp;</td>          <td class="paramname"><span class="paramname"><em>worldPosition</em></span>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const sf::Vector2i &amp;</td>          <td class="paramname"><span class="paramname"><em>windowPosition</em></span>&#160;)</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel virtual">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Called on right mouse release. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">worldPosition</td><td>Mouse position in world coordinates. </td></tr>
-    <tr><td class="paramname">windowPosition</td><td>Mouse position in window coordinates. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p>Implements <a class="el" href="class_mouse_observer.html#a2a22acad31380ecec89bcee1a05c74df">MouseObserver</a>.</p>
+<p>Implements <a class="el" href="class_mouse_observer.html#ac8321513a81e6546dce9b68f2fc3d3e5">MouseObserver</a>.</p>
 
 </div>
 </div>

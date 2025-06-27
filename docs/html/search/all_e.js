@@ -1,10 +1,9 @@
 var searchData=
 [
-  ['scene_0',['Scene',['../class_scene.html',1,'Scene'],['../class_scene.html#aeae5b089452559e7d10983673f6ee71c',1,'Scene::Scene()']]],
-  ['scene_2ehpp_1',['Scene.hpp',['../_scene_8hpp.html',1,'']]],
-  ['scenemanager_2',['SceneManager',['../class_scene_manager.html',1,'SceneManager'],['../class_scene_manager.html#a296b02777b81fb44c13a4a74090f490a',1,'SceneManager::SceneManager()']]],
-  ['scenemanager_2ehpp_3',['SceneManager.hpp',['../_scene_manager_8hpp.html',1,'']]],
-  ['soundclicktrigger_4',['SoundClickTrigger',['../class_sound_click_trigger.html',1,'SoundClickTrigger'],['../class_sound_click_trigger.html#aa5393e3cd6cac50e1c1cd81c45cba8a3',1,'SoundClickTrigger::SoundClickTrigger()']]],
-  ['soundclicktrigger_2ehpp_5',['SoundClickTrigger.hpp',['../_sound_click_trigger_8hpp.html',1,'']]],
-  ['subscribe_6',['subscribe',['../class_mouse_observer.html#acbbd27c600fa77c9b81e74e95974a12c',1,'MouseObserver']]]
+  ['registerscene_0',['registerScene',['../class_scene_manager.html#a4d81073d7adb8a07b02b828eab025c9c',1,'SceneManager']]],
+  ['removesubscriber_1',['removeSubscriber',['../class_keyboard_state.html#a690e7ae2845e3b639cc2afbba8acdd6f',1,'KeyboardState::removeSubscriber()'],['../class_mouse_state.html#aa718036b11fcea2c88b89816f65fd323',1,'MouseState::removeSubscriber()']]],
+  ['render_2',['render',['../class_scene_manager.html#a33896fec4566d8eb3dafdb01a5bd991c',1,'SceneManager']]],
+  ['resourcemanager_3',['ResourceManager',['../class_resource_manager.html',1,'ResourceManager'],['../class_resource_manager.html#a2d9db4c26c604834c60702ded80947d8',1,'ResourceManager::ResourceManager()=default'],['../class_resource_manager.html#ac40813d3641a3d89efb9a513f2d0d0bc',1,'ResourceManager::ResourceManager(ResourceManager &amp;&amp;rhs) noexcept=default']]],
+  ['resourcemanager_2ehpp_4',['ResourceManager.hpp',['../_resource_manager_8hpp.html',1,'']]],
+  ['run_5',['run',['../class_application.html#a68965449404743bf1add056784d6cf81',1,'Application']]]
 ];
