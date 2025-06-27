@@ -3,9 +3,10 @@
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
 #include "Core/MouseState.hpp"
+#include "Core/KeyboardState.hpp"
+#include "Scene/BlankScene.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-#include "Scene/BlankScene.hpp"
 Application::Application()
     : window(sf::VideoMode(
                  {GameConstants::WINDOW_WIDTH, GameConstants::WINDOW_HEIGHT}),
@@ -23,6 +24,14 @@ Application::Application()
     resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
     sceneManager.registerScene<BlankScene>("Blank");
     sceneManager.changeScene("Blank");
+    testTrigger.subscribeMouse(Mouse::Left, UserEvent::Press, inputManager.getMouseState());
+    // testTrigger.subscribeMouse(Mouse::Left, UserEvent::Press, inputManager.getMouseState());
+    testTrigger.subscribeMouse(Mouse::Right, UserEvent::Press, inputManager.getMouseState());
+    testTrigger.subscribeMouse(Mouse::Left, UserEvent::Release, inputManager.getMouseState());
+    testTrigger.subscribeMouse(Mouse::Right, UserEvent::Release, inputManager.getMouseState());
+
+    testTrigger.subscribeKeyboard(Key::A, UserEvent::Press, inputManager.getKeyboardState());
+    // testTrigger.unSubscribeMouse(Mouse::Left, UserEvent::Press, inputManager.getMouseState());
 }
 
 Application::~Application() {
