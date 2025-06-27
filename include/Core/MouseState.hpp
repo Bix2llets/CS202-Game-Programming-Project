@@ -22,10 +22,10 @@
 class MouseObserver;
 
 /**
- * @enum MouseButton
+ * @enum Mouse
  * @brief Enum representing mouse buttons that can be observed.
  */
-enum class MouseButton { Left, Right };
+enum class Mouse { Left, Right };
 
 /**
  * @class MouseState
@@ -42,7 +42,7 @@ class MouseState {
      * @brief Maps each mouse button to a list of pointers to MouseObserver
      * objects that are subscribed to that button's events.
      */
-    std::map<MouseButton, std::map<UserEvent, std::list<MouseObserver *>>>
+    std::map<Mouse, std::map<UserEvent, std::list<MouseObserver *>>>
         subscriberList;
 
    public:
@@ -57,10 +57,10 @@ class MouseState {
     /**
      * @brief Adds a MouseObserver pointer to the subscriber list for the
      * specified mouse button.
-     * @param button The mouse button to subscribe to.
+     * @param button The mouse button to subscribeMouse to.
      * @param subscriber Pointer to the MouseObserver to add.
      */
-    void addSubscriber(MouseButton button, UserEvent event,
+    void addSubscriber(Mouse button, UserEvent event,
                        MouseObserver *subscriber);
 
     /**
@@ -69,7 +69,7 @@ class MouseState {
      * @param button The mouse button to unsubscribe from.
      * @param subscriber Pointer to the MouseObserver to remove.
      */
-    void removeSubscriber(MouseButton button, UserEvent event,
+    void removeSubscriber(Mouse button, UserEvent event,
                           MouseObserver *subscriber);
 
     /**
@@ -81,5 +81,5 @@ class MouseState {
      * @brief Removes all subscribers from a specific mouse button.
      * @param button The mouse button whose subscribers will be cleared.
      */
-    void clearSubscriber(MouseButton button, UserEvent event);
+    void clearSubscriber(Mouse button, UserEvent event);
 };
