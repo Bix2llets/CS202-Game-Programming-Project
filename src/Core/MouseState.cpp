@@ -7,7 +7,8 @@
 
 #include "Core/MouseObserver.hpp"
 #include "Utility/logger.hpp"
-void MouseState::addSubscriber(MouseButton button, UserEvent event,
+#include "Utility/SignalMap.hpp"
+void MouseState::addSubscriber(Mouse button, UserEvent event,
                                MouseObserver* subscriber) {
     if (std::find(subscriberList[button][event].begin(),
                   subscriberList[button][event].end(),
@@ -22,7 +23,7 @@ void MouseState::addSubscriber(MouseButton button, UserEvent event,
     }
 }
 
-void MouseState::removeSubscriber(MouseButton button, UserEvent event,
+void MouseState::removeSubscriber(Mouse button, UserEvent event,
                                   MouseObserver* subscriber) {
     auto foundIterator =
         std::find(subscriberList[button][event].begin(),
@@ -41,7 +42,7 @@ void MouseState::clearSubscriber() {
     }
 }
 
-void MouseState::clearSubscriber(MouseButton button, UserEvent event) {
+void MouseState::clearSubscriber(Mouse button, UserEvent event) {
     subscriberList[button][event].clear();
 }
 
@@ -52,28 +53,20 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
     if (mouseClickEvent) {
         sf::Vector2i windowPosition = mouseClickEvent->position;
         sf::Vector2f worldPosition = window.mapPixelToCoords(windowPosition);
-        if (mouseClickEvent->button == sf::Mouse::Button::Left)
-            for (MouseObserver* observer :
-                 subscriberList[MouseButton::Left][UserEvent::Press])
-                observer->onLeftMousePress(worldPosition, windowPosition);
-    
-        if (mouseClickEvent->button == sf::Mouse::Button::Right)
-            for (MouseObserver* observer :
-                 subscriberList[MouseButton::Right][UserEvent::Press])
-                observer->onRightMousePress(worldPosition, windowPosition);
+        
+        Mouse pressedButton = SignalMap::mapSfmlMouseButton(mouseClickEvent->button);
+        for (MouseObserver* observer: subscriberList[pressedButton][UserEvent::Press])
+            observer->onMouseEvent(pressedButton, UserEvent::Press, worldPosition, windowPosition);
+        return;
     }
     if (mouseReleaseEvent) {
         sf::Vector2i windowPosition = mouseReleaseEvent->position;
         sf::Vector2f worldPosition = window.mapPixelToCoords(windowPosition);
-        if (mouseReleaseEvent->button == sf::Mouse::Button::Left)
-            for (MouseObserver* observer :
-                 subscriberList[MouseButton::Left][UserEvent::Release])
-                observer->onLeftMouseRelease(worldPosition, windowPosition);
-
-        if (mouseReleaseEvent->button == sf::Mouse::Button::Right)
-            for (MouseObserver* observer :
-                 subscriberList[MouseButton::Right][UserEvent::Release])
-                observer->onRightMouseRelease(worldPosition, windowPosition);
+        
+        Mouse pressedButton = SignalMap::mapSfmlMouseButton(mouseReleaseEvent->button);
+        for (MouseObserver* observer: subscriberList[pressedButton][UserEvent::Release])
+            observer->onMouseEvent(pressedButton, UserEvent::Release, worldPosition, windowPosition);
+        return;
     }
 }
 
