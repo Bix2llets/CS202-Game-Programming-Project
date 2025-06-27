@@ -1,10 +1,7 @@
 var class_mouse_observer =
 [
     [ "~MouseObserver", "class_mouse_observer.html#a5c57e228f93ed5445537fc5af29b06c8", null ],
-    [ "onLeftMouseClick", "class_mouse_observer.html#ac99b3c271c1ce9d30c644a6a6370befa", null ],
-    [ "onLeftMouseRelease", "class_mouse_observer.html#aff084668c1477c2a53693c7325e0ddac", null ],
-    [ "onRightMouseClick", "class_mouse_observer.html#acc0258ba6782c73af03cf8882347b5ea", null ],
-    [ "onRightMouseRelease", "class_mouse_observer.html#a2a22acad31380ecec89bcee1a05c74df", null ],
-    [ "subscribe", "class_mouse_observer.html#acbbd27c600fa77c9b81e74e95974a12c", null ],
-    [ "unSubscribe", "class_mouse_observer.html#a641438bd450064aff15aeee2d20d861a", null ]
+    [ "onMouseEvent", "class_mouse_observer.html#ac8321513a81e6546dce9b68f2fc3d3e5", null ],
+    [ "subscribeMouse", "class_mouse_observer.html#ac149870364aa6a29e64c8c2e1577ce1b", null ],
+    [ "unSubscribeMouse", "class_mouse_observer.html#a2db85d41c9af4c0b1a2b09a71126d501", null ]
 ];

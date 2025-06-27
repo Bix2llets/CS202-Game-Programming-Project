@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['mouseobserver_0',['MouseObserver',['../class_mouse_observer.html',1,'']]],
-  ['mousestate_1',['MouseState',['../class_mouse_state.html',1,'']]]
+  ['logger_0',['Logger',['../class_logger.html',1,'']]]
 ];

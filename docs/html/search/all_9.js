@@ -1,8 +1,9 @@
 var searchData=
 [
-  ['mousebutton_0',['MouseButton',['../_mouse_state_8hpp.html#ac1ec3647c005eacad401b06e7e18f711',1,'MouseState.hpp']]],
-  ['mouseobserver_1',['MouseObserver',['../class_mouse_observer.html',1,'']]],
-  ['mouseobserver_2ehpp_2',['MouseObserver.hpp',['../_mouse_observer_8hpp.html',1,'']]],
-  ['mousestate_3',['MouseState',['../class_mouse_state.html',1,'']]],
-  ['mousestate_2ehpp_4',['MouseState.hpp',['../_mouse_state_8hpp.html',1,'']]]
+  ['loadfont_0',['loadFont',['../class_resource_manager.html#acacf48de56f0b871c004fb820553df77',1,'ResourceManager']]],
+  ['loadsound_1',['loadSound',['../class_resource_manager.html#ad8bcc9d7eb46c89363d0509606f89827',1,'ResourceManager']]],
+  ['loadtexture_2',['loadTexture',['../class_resource_manager.html#a7dd2ff9929eaba7acf09770e5b0d259b',1,'ResourceManager']]],
+  ['logger_3',['Logger',['../class_logger.html',1,'']]],
+  ['logger_2ehpp_4',['logger.hpp',['../logger_8hpp.html',1,'']]],
+  ['loglevel_5',['LogLevel',['../logger_8hpp.html#aca1fd1d8935433e6ba2e3918214e07f9',1,'logger.hpp']]]
 ];
