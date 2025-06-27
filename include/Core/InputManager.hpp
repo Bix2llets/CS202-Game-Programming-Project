@@ -7,20 +7,22 @@
 #include <SFML/Graphics.hpp>
 #include <optional>
 
+#include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
 /**
  * @class InputManager
  * @brief Handles input events and manages mouse state.
  */
 class InputManager {
-    MouseState mouseState; ///< Manages mouse button subscriptions and events.
-    sf::RenderWindow &window; ///< Reference to the main window.
-    public:
+    MouseState mouseState;  ///< Manages mouse button subscriptions and events.
+    KeyboardState keyboardState;
+    sf::RenderWindow& window;  ///< Reference to the main window.
+   public:
     /**
      * @brief Constructs an InputManager for the given window.
      * @param window Reference to the SFML render window.
      */
-    InputManager(sf::RenderWindow &window);
+    InputManager(sf::RenderWindow& window);
     /**
      * @brief Handles an input event.
      * @param event Optional SFML event to handle.
@@ -31,4 +33,5 @@ class InputManager {
      * @return Reference to the MouseState object.
      */
     inline MouseState& getMouseState() { return mouseState; };
+    inline KeyboardState& getKeyboardState() { return keyboardState; }
 };
