@@ -31,6 +31,9 @@ class Scene : public sf::Drawable {
      * @brief Constructs a Scene with the given window and name.
      * @param window Reference to the SFML render window.
      * @param name Name of the scene.
+     * @param parentManager Reference to the parent SceneManager.
+     * @param inputManager Reference to the InputManager singleton.
+     * @param resourceManager Reference to the ResourceManager singleton.
      */
     Scene(sf::RenderWindow& window, const std::string& name,
           SceneManager& parentManager, InputManager& inputManager,
@@ -46,13 +49,14 @@ class Scene : public sf::Drawable {
      */
     const std::string& getName() const { return name; }
     /**
-     * @brief Handles an input event.
-     * @param event Optional SFML event to handle.
+     * @brief Draws the scene (pure virtual).
+     * @param target The render target to draw to.
+     * @param state Current render states.
      */
     virtual void draw(sf::RenderTarget& target,
                       sf::RenderStates state) const = 0;
     /**
-     * @brief Updates the scene.
+     * @brief Updates the scene (pure virtual).
      */
     virtual void update() = 0;
     /**
