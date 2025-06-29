@@ -78,6 +78,7 @@ set(SFML_DIR "${SFML_LIB_PATH}/lib/cmake/SFML")
 
 # Add project include directories
 include_directories(${CMAKE_SOURCE_DIR}/include)
+include_directories(${CMAKE_SOURCE_DIR}/tests/mockClasses)
 
 # Add SFML include directories
 include_directories(${SFML_LIB_PATH}/include)
@@ -243,7 +244,7 @@ if(EXISTS "${SFML_LIB_PATH}/bin")
         if(NOT EXISTS "${target_path}")
             add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                 COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dll}" "${target_path}"
-                COMMENT "${dll} does not exist. Copying ${dll} to bin directory"
+                COMMENT "${target_path} does not exist. Copying ${dll} to bin directory"
             )
         else()
             message(STATUS "DLL ${dll_name} already exists in bin directory, skipping copy.")
