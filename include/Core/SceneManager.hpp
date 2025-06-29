@@ -38,7 +38,7 @@ class SceneManager {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
                 sceneStorage[sceneName] =
-                    std::make_unique<SceneType>(window, sceneName, inputManager, resManager);
+                    std::make_unique<SceneType>(window, sceneName, *this, inputManager, resManager);
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");

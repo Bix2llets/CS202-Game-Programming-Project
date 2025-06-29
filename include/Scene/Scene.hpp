@@ -4,31 +4,47 @@
  */
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <string>
 #include <memory>
 #include <optional>
+#include <string>
+
+class SceneManager;
+class InputManager;
+class ResourceManager;
 /**
  * @class Scene
  * @brief Abstract base class for all game scenes.
  *
- * Scenes represent different states or screens in the game (e.g., menu, gameplay).
+ * Scenes represent different states or screens in the game (e.g., menu,
+ * gameplay).
  */
 class Scene : public sf::Drawable {
    protected:
-    sf::RenderWindow &window; ///< Reference to the main window.
-    std::string name; ///< Name of the scene.
+    sf::RenderWindow& window;  ///< Reference to the main window.
+    std::string name;          ///< Name of the scene.
+    InputManager& inputManager;
+    SceneManager& sceneManager;
+    ResourceManager& resourceManager;
+
    public:
     /**
      * @brief Constructs a Scene with the given window and name.
      * @param window Reference to the SFML render window.
      * @param name Name of the scene.
      */
-    Scene(sf::RenderWindow &window, const std::string &name) : window{window}, name{name} {};
+    Scene(sf::RenderWindow& window, const std::string& name,
+          SceneManager& parentManager, InputManager& inputManager,
+          ResourceManager& resourceManager)
+        : window{window},
+          name{name},
+          sceneManager{parentManager},
+          inputManager{inputManager},
+          resourceManager{resourceManager} {};
     /**
      * @brief Gets the name of the scene.
      * @return Reference to the scene name string.
      */
-    const std::string& getName() const {return name;}
+    const std::string& getName() const { return name; }
     /**
      * @brief Handles an input event.
      * @param event Optional SFML event to handle.

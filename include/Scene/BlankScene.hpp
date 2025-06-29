@@ -5,19 +5,20 @@
 #pragma once
 #include "Scene/Scene.hpp"
 
-
 /**
  * @class BlankScene
  * @brief Minimal scene implementation for unit testing.
  */
 class BlankScene : public Scene {
-    public:
+   public:
     /**
      * @brief Constructs a BlankScene with the given window and name.
      * @param window Reference to the SFML render window.
      * @param name Name of the scene.
      */
-    BlankScene(sf::RenderWindow &window, const std::string &name, InputManager &inputManager, ResourceManager &resManager) : Scene{window, name} {}
+    BlankScene(sf::RenderWindow &window, const std::string &name, SceneManager &parentManager, 
+               InputManager &inputManager, ResourceManager &resManager)
+        : Scene{window, name, parentManager, inputManager, resManager} {}
     /**
      * @brief Draws the scene (no-op for blank scene).
      */
