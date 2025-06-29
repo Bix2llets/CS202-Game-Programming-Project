@@ -4,18 +4,22 @@
  */
 #pragma once
 #include <map>
+
+#include "Core/InputManager.hpp"
+#include "Core/ResourceManager.hpp"
 #include "Scene/Scene.hpp"
-#include "Utility/exception.hpp"
 #include "Utility/Logger.hpp"
+#include "Utility/exception.hpp"
 /**
  * @class SceneManager
  * @brief Manages switching, updating, and rendering game scenes.
  */
 class SceneManager {
    private:
-    Scene *currentScene; ///< Pointer to the current active scene.
-    sf::RenderWindow &window; ///< Reference to the main window.
-    std::unordered_map<std::string, std::unique_ptr<Scene>> sceneStorage; ///< Storage for all registered scenes.
+    Scene *currentScene;       ///< Pointer to the current active scene.
+    sf::RenderWindow &window;  ///< Reference to the main window.
+    std::unordered_map<std::string, std::unique_ptr<Scene>>
+        sceneStorage;  ///< Storage for all registered scenes.
    public:
     /**
      * @brief Constructs a SceneManager for the given window.
@@ -29,11 +33,12 @@ class SceneManager {
      * @param sceneName The name to register the scene under.
      */
     template <typename SceneType>
-    void registerScene(const std::string &sceneName) {
+    void registerScene(const std::string &sceneName, InputManager &inputManager,
+                       ResourceManager &resManager) {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
                 sceneStorage[sceneName] =
-                    std::make_unique<SceneType>(window, sceneName);
+                    std::make_unique<SceneType>(window, sceneName, inputManager, resManager);
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");
@@ -53,7 +58,7 @@ class SceneManager {
      * @brief Gets a const reference to the current scene pointer.
      * @return Const reference to the current scene pointer.
      */
-    const Scene* const &getCurrentScene() { return currentScene; };
+    const Scene *const &getCurrentScene() { return currentScene; };
     /**
      * @brief Renders the current scene.
      */
@@ -66,11 +71,11 @@ class SceneManager {
      * @brief Handles an input event for the current scene.
      * @param event Optional SFML event to handle.
      */
-    void handleEvent(std::optional<sf::Event> &event);
+    // void handleEvent(std::optional<sf::Event> &event);
     /**
      * @brief Handles real-time input for the current scene.
      */
-    void handleInput();
+    // void handleInput();
 
    private:
     /**

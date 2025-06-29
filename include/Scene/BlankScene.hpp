@@ -17,15 +17,7 @@ class BlankScene : public Scene {
      * @param window Reference to the SFML render window.
      * @param name Name of the scene.
      */
-    BlankScene(sf::RenderWindow &window, const std::string &name) : Scene{window, name} {}
-    /**
-     * @brief Handles an event (no-op for blank scene).
-     */
-    void handleEvent(std::optional<sf::Event> & event) {}
-    /**
-     * @brief Handles input (no-op for blank scene).
-     */
-    void handleInput() {}
+    BlankScene(sf::RenderWindow &window, const std::string &name, InputManager &inputManager, ResourceManager &resManager) : Scene{window, name} {}
     /**
      * @brief Draws the scene (no-op for blank scene).
      */

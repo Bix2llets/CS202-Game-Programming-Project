@@ -30,25 +30,25 @@ void SceneManager::update() {
     }
 }
 
-void SceneManager::handleEvent(std::optional<sf::Event> &event) {
-    try {
-        checkNullptr();
-        currentScene->handleEvent(event);
-    }
-    catch(GameException exception) {
-        Logger::critical("Handling event on a non-existent scene");
-    }
-}
+// void SceneManager::handleEvent(std::optional<sf::Event> &event) {
+//     try {
+//         checkNullptr();
+//         currentScene->handleEvent(event);
+//     }
+//     catch(GameException exception) {
+//         Logger::critical("Handling event on a non-existent scene");
+//     }
+// }
 
-void SceneManager::handleInput() {
-    try {
-        checkNullptr();
-        currentScene->handleInput();
-    }
-    catch(GameException exception) {
-        Logger::critical("Handling input on a non-existent scene");
-    }
-}
+// void SceneManager::handleInput() {
+//     try {
+//         checkNullptr();
+//         currentScene->handleInput();
+//     }
+//     catch(GameException exception) {
+//         Logger::critical("Handling input on a non-existent scene");
+//     }
+// }
 
 void SceneManager::checkNullptr() {
     if (currentScene == nullptr) throw GameException("Error: nullptr access");

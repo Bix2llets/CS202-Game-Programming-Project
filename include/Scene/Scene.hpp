@@ -33,16 +33,6 @@ class Scene : public sf::Drawable {
      * @brief Handles an input event.
      * @param event Optional SFML event to handle.
      */
-    virtual void handleEvent(std::optional<sf::Event>& event) = 0;
-    /**
-     * @brief Handles real-time input.
-     */
-    virtual void handleInput() = 0;
-    /**
-     * @brief Draws the scene to the given render target.
-     * @param target The render target.
-     * @param state The render states.
-     */
     virtual void draw(sf::RenderTarget& target,
                       sf::RenderStates state) const = 0;
     /**

@@ -18,6 +18,7 @@
 #include <optional>
 
 #include "UserEvent.hpp"
+#include "Utility/Logger.hpp"
 // Forward declaration to break circular dependency
 class MouseObserver;
 

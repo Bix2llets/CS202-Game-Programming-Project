@@ -7,6 +7,8 @@
 #include "Scene/BlankScene.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
+
+#include "Scene/MainMenu.hpp"
 Application::Application()
     : window(sf::VideoMode(
                  {GameConstants::WINDOW_WIDTH, GameConstants::WINDOW_HEIGHT}),
@@ -22,8 +24,8 @@ Application::Application()
     window.setFramerateLimit(60);
     // * Loading the necessary sounds
     resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
-    sceneManager.registerScene<BlankScene>("Blank");
-    sceneManager.changeScene("Blank");
+    sceneManager.registerScene<MainMenu>("Main menu", inputManager, resourceManager);
+    sceneManager.changeScene("Main menu");
     testTrigger.subscribeMouse(Mouse::Left, UserEvent::Press, inputManager.getMouseState());
     // testTrigger.subscribeMouse(Mouse::Left, UserEvent::Press, inputManager.getMouseState());
     testTrigger.subscribeMouse(Mouse::Right, UserEvent::Press, inputManager.getMouseState());
@@ -48,9 +50,9 @@ void Application::run() {
                 isRunning = false;
             }
             inputManager.handleEvent(event);
-            sceneManager.handleEvent(event);
+            // sceneManager.handleEvent(event);
         }
-        sceneManager.handleInput();
+        // sceneManager.handleInput();
         sceneManager.update();
         sceneManager.render();
         window.display();
