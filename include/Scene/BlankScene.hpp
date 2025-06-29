@@ -36,4 +36,11 @@ class BlankScene : public Scene {
      * @brief Destructor.
      */
     ~BlankScene() = default;
+
+    void registerComponents() override {
+        // No components to register in a blank scene
+    };
+    void unRegisterComponents() override {
+        // No components to unregister in a blank scene
+    };
 };

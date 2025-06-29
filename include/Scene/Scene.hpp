@@ -8,6 +8,8 @@
 #include <optional>
 #include <string>
 
+#include "GUIComponents/Mediator.hpp"
+
 class SceneManager;
 class InputManager;
 class ResourceManager;
@@ -18,7 +20,7 @@ class ResourceManager;
  * Scenes represent different states or screens in the game (e.g., menu,
  * gameplay).
  */
-class Scene : public sf::Drawable {
+class Scene : public sf::Drawable, public Mediator {
    protected:
     sf::RenderWindow& window;  ///< Reference to the main window.
     std::string name;          ///< Name of the scene.
@@ -63,4 +65,13 @@ class Scene : public sf::Drawable {
      * @brief Virtual destructor for safe polymorphic destruction.
      */
     virtual ~Scene() = default;
+
+    /**
+     * @brief Register all GUI components to the inputManager.
+     */
+    virtual void registerComponents() = 0;
+    /**
+     * @brief un-register all GUI components to the inputManager.
+     */
+    virtual void unRegisterComponents() = 0;
 };

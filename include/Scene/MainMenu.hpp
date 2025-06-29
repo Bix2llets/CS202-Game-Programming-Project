@@ -20,10 +20,11 @@
  */
 class SceneManager;
 class MainMenu : public Scene {
-   private:
+   protected:
     Button testBtn;  ///< Test button for the main menu
     Mediator testGroup;  ///< Mediator for handling button group events
 
+    void testSceneSwitching();
    public:
     /**
      * @brief Constructs the MainMenu scene.
@@ -47,4 +48,7 @@ class MainMenu : public Scene {
      * @param state Current render states.
      */
     void draw(sf::RenderTarget &target, sf::RenderStates state) const;
+
+    void registerComponents() override;
+    void unRegisterComponents() override;
 };

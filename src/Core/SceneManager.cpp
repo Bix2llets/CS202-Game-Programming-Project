@@ -1,4 +1,5 @@
 #include "Core/SceneManager.hpp"
+
 #include "Utility/logger.hpp"
 
 void SceneManager::changeScene(const std::string &sceneName) {
@@ -6,26 +7,25 @@ void SceneManager::changeScene(const std::string &sceneName) {
         Logger::error("Switching to non-existent scene");
         return;
     }
+    if (currentScene) currentScene->unRegisterComponents();
     currentScene = sceneStorage[sceneName].get();
+    if (currentScene) currentScene->registerComponents();
 }
 
 void SceneManager::render() {
     try {
         checkNullptr();
         window.draw(*currentScene);
-    }
-    catch(GameException exception) {
+    } catch (GameException exception) {
         Logger::critical("Drawing a non-existent scene");
     }
 }
 
 void SceneManager::update() {
     try {
-        
         checkNullptr();
         currentScene->update();
-    }
-    catch(GameException exception) {
+    } catch (GameException exception) {
         Logger::critical("Updating a non-existent scene");
     }
 }

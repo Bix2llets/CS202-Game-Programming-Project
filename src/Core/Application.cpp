@@ -25,15 +25,8 @@ Application::Application()
     // * Loading the necessary sounds
     resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
     sceneManager.registerScene<MainMenu>("Main menu", inputManager, resourceManager);
+    sceneManager.registerScene<BlankScene>("Gameplay", inputManager, resourceManager);
     sceneManager.changeScene("Main menu");
-    testTrigger.subscribeMouse(Mouse::Left, UserEvent::Press, inputManager.getMouseState());
-    // testTrigger.subscribeMouse(Mouse::Left, UserEvent::Press, inputManager.getMouseState());
-    testTrigger.subscribeMouse(Mouse::Right, UserEvent::Press, inputManager.getMouseState());
-    testTrigger.subscribeMouse(Mouse::Left, UserEvent::Release, inputManager.getMouseState());
-    testTrigger.subscribeMouse(Mouse::Right, UserEvent::Release, inputManager.getMouseState());
-
-    testTrigger.subscribeKeyboard(Key::A, UserEvent::Press, inputManager.getKeyboardState());
-    // testTrigger.unSubscribeMouse(Mouse::Left, UserEvent::Press, inputManager.getMouseState());
 }
 
 Application::~Application() {
