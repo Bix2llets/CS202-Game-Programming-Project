@@ -26,7 +26,7 @@ void ResourceManager::loadFont(const std::string &path, const std::string &ID) {
         return;
     }
 
-    fonts.at(ID) = std::make_unique<sf::Font>(path);
+    fonts[ID] = std::make_unique<sf::Font>(path);
 }
 
 void ResourceManager::loadTexture(const std::string &path, const std::string &ID) {

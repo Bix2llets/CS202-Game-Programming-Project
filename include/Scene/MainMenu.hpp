@@ -24,7 +24,6 @@ class SceneManager;
 class MainMenu : public Scene {
    protected:
     Button testBtn;  ///< Test button for the main menu
-    Mediator testGroup;  ///< Mediator for handling button group events
     std::unique_ptr<Button> settingBtn;
     void testSceneSwitching();
    public:

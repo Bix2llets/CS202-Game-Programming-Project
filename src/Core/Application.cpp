@@ -24,11 +24,13 @@ Application::Application()
     else
         Logger::error("Window not intitialized");
     window.setFramerateLimit(60);
+    resourceManager.loadFont("assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf", "LeagueSpartan");
     // * Loading the necessary sounds
     resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
     sceneManager.registerScene<MainMenu>("Main menu", inputManager, resourceManager);
     sceneManager.registerScene<Setting>("Setting", inputManager, resourceManager);
     sceneManager.changeScene("Main menu");
+    
 }
 
 Application::~Application() {

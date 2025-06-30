@@ -74,4 +74,10 @@ class Scene : public sf::Drawable, public Mediator {
      * @brief un-register all GUI components to the inputManager.
      */
     virtual void unRegisterComponents() = 0;
+
+    /**
+     * @brief Get font for rendering use (should be reasonable as mediator stores UI component, which need font to display text)
+     * @param fontName the name of the font
+     */
+     const sf::Font* const getFont(std::string fontName) override;
 };

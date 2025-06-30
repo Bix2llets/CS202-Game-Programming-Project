@@ -76,7 +76,7 @@ class Button : public sf::Drawable, public MouseObserver {
                               const sf::Vector2f& windowPosition);
 
    private:
-    std::string label;
+    std::unique_ptr<sf::Text> label;
     sf::FloatRect geometricInfo;
     Mediator& mediator;
     std::function<void(Button*)> onClick;
