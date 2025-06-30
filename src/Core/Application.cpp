@@ -9,10 +9,12 @@
 #include "Utility/logger.hpp"
 
 #include "Scene/MainMenu.hpp"
+#include "Scene/Setting.hpp"
+
 Application::Application()
     : window(sf::VideoMode(
-                 {GameConstants::WINDOW_WIDTH, GameConstants::WINDOW_HEIGHT}),
-             "Rampart remains"),
+                 {GameConstants::DEFAULT_WINDOW_WIDTH, GameConstants::DEFAULT_WINDOW_HEIGHT}),
+             "Rampart remains", sf::Style::Close | sf::Style::Titlebar),
       testTrigger(resourceManager),
       isRunning{true},
       sceneManager{window},
@@ -25,7 +27,7 @@ Application::Application()
     // * Loading the necessary sounds
     resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
     sceneManager.registerScene<MainMenu>("Main menu", inputManager, resourceManager);
-    sceneManager.registerScene<BlankScene>("Gameplay", inputManager, resourceManager);
+    sceneManager.registerScene<Setting>("Setting", inputManager, resourceManager);
     sceneManager.changeScene("Main menu");
 }
 

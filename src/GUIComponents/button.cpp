@@ -3,22 +3,25 @@
 #include "Core/ResourceManager.hpp"
 
 #include <SFML/Graphics.hpp>
+#include "Base/Constants.hpp"
 Button::Button(const std::string& label, sf::FloatRect geometricInfo,
                Mediator& mediator)
-    : label(label), geometricInfo(geometricInfo), mediator(mediator) {}
+    : label(label), geometricInfo(geometricInfo), mediator(mediator),
+    onClickMessage("ButtonClicked") {}
 
 void Button::setOnClick(const std::function<void(Button*)>& callback) {
     onClick = callback;
 }
 
 void Button::click() {
-    mediator.notify("ButtonClicked", this);
+    mediator.notify(onClickMessage, this);
     if (onClick) onClick(this);
 }
 
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    sf::RectangleShape rect({100, 40});
+    sf::RectangleShape rect;
     rect.setPosition(geometricInfo.position);
+    rect.setSize(geometricInfo.size);
     rect.setFillColor(sf::Color::Blue);
     // sf::View prevView = target.getView();
     // target.setView(target.getDefaultView());
@@ -35,7 +38,11 @@ sf::Vector2f Button::getPosition() const { return geometricInfo.position; }
 
 void Button::onMouseEvent(Mouse button, UserEvent event,
                           const sf::Vector2f& worldPosition,
-                          const sf::Vector2i& windowPosition) {
+                          const sf::Vector2f& windowPosition) {
     if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition)))
         click();
+}
+
+void Button::setNotificationMessage(const std::string &str) {
+    onClickMessage = str;
 }

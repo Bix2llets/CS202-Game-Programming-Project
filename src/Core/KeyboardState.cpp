@@ -9,6 +9,8 @@
 #include "Core/UserEvent.hpp"
 #include "Utility/logger.hpp"
 #include "Utility/SignalMap.hpp"
+
+#include "Base/Constants.hpp"
 void KeyboardState::addSubscriber(Key key, UserEvent event,
                                   KeyboardObserver* subscriber) {
     std::list<KeyboardObserver*>& subscribers = subscriberList[key][event];
@@ -45,8 +47,10 @@ void KeyboardState::clearSubscriber() {
 void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
     auto keyPress = event->getIf<sf::Event::KeyPressed>();
     auto keyRelease = event->getIf<sf::Event::KeyReleased>();
-    auto windowPosition = sf::Mouse::getPosition(window);
-    auto worldPosititon = window.mapPixelToCoords(windowPosition);
+    sf::Vector2f windowPosition = static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
+    sf::Vector2f worldPosititon = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    windowPosition.x = (windowPosition.x * GameConstants::DEFAULT_WINDOW_WIDTH / window.getSize().x);
+    windowPosition.y = (windowPosition.y * GameConstants::DEFAULT_WINDOW_HEIGHT / window.getSize().y);
     if (keyPress) {
         Key key = SignalMap::mapSfmlKey(keyPress->code);
         for (auto subscriber : subscriberList[key][UserEvent::Press]) {

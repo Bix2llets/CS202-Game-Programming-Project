@@ -72,3 +72,19 @@ const sf::Font *const ResourceManager::getFont(const std::string &ID) const {
 
 
 }
+
+void ResourceManager::setSoundVolume(int volume) {
+    soundVolume = volume;
+}
+
+void ResourceManager::setMusicVolume(int volume) {
+    musicVolume = volume;
+}
+
+int ResourceManager::getSoundVolume() const {
+    return soundVolume;
+}
+
+int ResourceManager::getMusicVolume() const {
+    return musicVolume;
+}

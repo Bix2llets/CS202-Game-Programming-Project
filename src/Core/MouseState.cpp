@@ -5,9 +5,10 @@
 #include <sstream>
 #include <utility>
 
+#include "Base/Constants.hpp"
 #include "Core/MouseObserver.hpp"
-#include "Utility/logger.hpp"
 #include "Utility/SignalMap.hpp"
+#include "Utility/logger.hpp"
 void MouseState::addSubscriber(Mouse button, UserEvent event,
                                MouseObserver* subscriber) {
     if (std::find(subscriberList[button][event].begin(),
@@ -47,25 +48,50 @@ void MouseState::clearSubscriber(Mouse button, UserEvent event) {
 }
 
 void MouseState::handleEvent(const std::optional<sf::Event>& event) {
+    using namespace GameConstants;
     const auto mouseClickEvent = event->getIf<sf::Event::MouseButtonPressed>();
     const auto mouseReleaseEvent =
         event->getIf<sf::Event::MouseButtonReleased>();
     if (mouseClickEvent) {
-        sf::Vector2i windowPosition = mouseClickEvent->position;
-        sf::Vector2f worldPosition = window.mapPixelToCoords(windowPosition);
-        
-        Mouse pressedButton = SignalMap::mapSfmlMouseButton(mouseClickEvent->button);
-        for (MouseObserver* observer: subscriberList[pressedButton][UserEvent::Press])
-            observer->onMouseEvent(pressedButton, UserEvent::Press, worldPosition, windowPosition);
+        sf::Vector2f windowPosition =
+            static_cast<sf::Vector2f>(mouseClickEvent->position);
+        sf::Vector2f worldPosition =
+            window.mapPixelToCoords(mouseClickEvent->position);
+        windowPosition.x =
+            windowPosition.x * DEFAULT_WINDOW_WIDTH / window.getSize().x;
+        windowPosition.y =
+            windowPosition.y * DEFAULT_WINDOW_HEIGHT / window.getSize().y;
+        Logger::info(std::format("{} {} {} {}", windowPosition.x,
+                                 windowPosition.y, worldPosition.x,
+                                 worldPosition.y));
+
+        Mouse pressedButton =
+            SignalMap::mapSfmlMouseButton(mouseClickEvent->button);
+        for (MouseObserver* observer :
+             subscriberList[pressedButton][UserEvent::Press])
+            observer->onMouseEvent(pressedButton, UserEvent::Press,
+                                   worldPosition, windowPosition);
         return;
     }
     if (mouseReleaseEvent) {
-        sf::Vector2i windowPosition = mouseReleaseEvent->position;
-        sf::Vector2f worldPosition = window.mapPixelToCoords(windowPosition);
-        
-        Mouse pressedButton = SignalMap::mapSfmlMouseButton(mouseReleaseEvent->button);
-        for (MouseObserver* observer: subscriberList[pressedButton][UserEvent::Release])
-            observer->onMouseEvent(pressedButton, UserEvent::Release, worldPosition, windowPosition);
+        sf::Vector2f windowPosition =
+            static_cast<sf::Vector2f>(mouseReleaseEvent->position);
+        sf::Vector2f worldPosition =
+            window.mapPixelToCoords(mouseReleaseEvent->position);
+        windowPosition.x =
+            windowPosition.x * DEFAULT_WINDOW_WIDTH / window.getSize().x;
+        windowPosition.y =
+            windowPosition.y * DEFAULT_WINDOW_HEIGHT / window.getSize().y;
+        Logger::info(std::format("{} {} {} {}", windowPosition.x,
+                                 windowPosition.y, worldPosition.x,
+                                 worldPosition.y));
+
+        Mouse pressedButton =
+            SignalMap::mapSfmlMouseButton(mouseReleaseEvent->button);
+        for (MouseObserver* observer :
+             subscriberList[pressedButton][UserEvent::Release])
+            observer->onMouseEvent(pressedButton, UserEvent::Release,
+                                   worldPosition, windowPosition);
         return;
     }
 }

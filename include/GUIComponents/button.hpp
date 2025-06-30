@@ -34,6 +34,12 @@ class Button : public sf::Drawable, public MouseObserver {
     void setOnClick(const std::function<void(Button*)>& callback);
 
     /**
+     * @brief Sets the string to be notification message when notifying the mediator
+     * @param str the string to be used as message.
+     */
+    void setNotificationMessage(const std::string &str);
+
+    /**
      * @brief Simulates a button click: notifies the mediator and calls the
      * callback.
      */
@@ -67,11 +73,12 @@ class Button : public sf::Drawable, public MouseObserver {
      */
     virtual void onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
-                              const sf::Vector2i& windowPosition);
+                              const sf::Vector2f& windowPosition);
 
    private:
     std::string label;
     sf::FloatRect geometricInfo;
     Mediator& mediator;
     std::function<void(Button*)> onClick;
+    std::string onClickMessage;
 };
