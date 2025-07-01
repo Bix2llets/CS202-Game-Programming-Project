@@ -83,4 +83,7 @@ class MouseState {
      * @param button The mouse button whose subscribers will be cleared.
      */
     void clearSubscriber(Mouse button, UserEvent event);
+
+    private:
+    sf::Vector2f scalePosition(sf::Vector2f input);
 };
