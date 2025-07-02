@@ -31,9 +31,11 @@ void MouseState::removeSubscriber(Mouse button, UserEvent event,
                   subscriberList[button][event].end(), subscriber);
 
     if (foundIterator == subscriberList[button][event].end()) {
-        Logger::error("Removing non-existent subscriber");
+        Logger::error(Logger::messageAddress("Removing non-existent subscriber",
+                                             subscriber));
         return;
     }
+    Logger::success(Logger::messageAddress("Remove success ", subscriber));
     subscriberList[button][event].erase(foundIterator);
 }
 
@@ -65,8 +67,10 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
 
         Mouse pressedButton =
             SignalMap::mapSfmlMouseButton(mouseClickEvent->button);
-        for (MouseObserver* observer :
-             subscriberList[pressedButton][UserEvent::Press])
+
+        std::list<MouseObserver*> observerList =
+            subscriberList[pressedButton][UserEvent::Press];
+        for (MouseObserver* observer : observerList)
             observer->onMouseEvent(pressedButton, UserEvent::Press,
                                    worldPosition, windowPosition);
         return;
@@ -84,8 +88,9 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
 
         Mouse pressedButton =
             SignalMap::mapSfmlMouseButton(mouseReleaseEvent->button);
-        for (MouseObserver* observer :
-             subscriberList[pressedButton][UserEvent::Release])
+        std::list<MouseObserver*> observerList =
+            subscriberList[pressedButton][UserEvent::Press];
+        for (MouseObserver* observer : observerList)
             observer->onMouseEvent(pressedButton, UserEvent::Release,
                                    worldPosition, windowPosition);
         return;
@@ -95,7 +100,9 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
 MouseState::MouseState(sf::RenderWindow& window) : window{window} {}
 
 sf::Vector2f MouseState::scalePosition(sf::Vector2f input) {
-    input.x = input.x / window.getSize().x * GameConstants::DEFAULT_WINDOW_WIDTH;
-    input.y = input.y / window.getSize().y * GameConstants::DEFAULT_WINDOW_HEIGHT;
+    input.x =
+        input.x / window.getSize().x * GameConstants::DEFAULT_WINDOW_WIDTH;
+    input.y =
+        input.y / window.getSize().y * GameConstants::DEFAULT_WINDOW_HEIGHT;
     return input;
 }

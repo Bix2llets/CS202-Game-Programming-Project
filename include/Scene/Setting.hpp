@@ -25,6 +25,7 @@ class Setting : public Scene {
     std::unique_ptr<Button> resolution1;
     std::unique_ptr<Button> resolution2;
     std::unique_ptr<Button> resolution3;
+    std::unique_ptr<Button> backButton;
 
     std::vector<std::unique_ptr<Button>> alwaysShownElements;
 

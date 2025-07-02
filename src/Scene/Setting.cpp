@@ -9,6 +9,8 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/button.hpp"
+
+#include "Core/SceneManager.hpp"
 Setting::Setting(sf::RenderWindow &window, const std::string &name,
                  SceneManager &parentManager, InputManager &inputManager,
                  ResourceManager &resManager)
@@ -42,22 +44,25 @@ void Setting::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Setting::createButtons() {
-    sf::Vector2f buttonSize = {50, 50};
+    sf::Vector2f buttonSize = {120, 50};
     musicVolumeDecrement = std::make_unique<Button>(
-        "musicDec", sf::FloatRect({20.0, 20.0}, buttonSize), *this);
+        "musicDec", sf::FloatRect({220.0, 20.0}, buttonSize), *this);
     musicVolumeIncrement = std::make_unique<Button>(
-        "musicInc", sf::FloatRect({120.0, 20.0}, buttonSize), *this);
+        "musicInc", sf::FloatRect({370.0, 20.0}, buttonSize), *this);
     soundVolumeDecrement = std::make_unique<Button>(
-        "volumeDec", sf::FloatRect({20.0, 220.0}, buttonSize), *this);
+        "volumeDec", sf::FloatRect({220.0, 220.0}, buttonSize), *this);
     soundVolumeIncrement = std::make_unique<Button>(
-        "volumeInc", sf::FloatRect({120.0, 220.0}, buttonSize), *this);
+        "volumeInc", sf::FloatRect({370.0, 220.0}, buttonSize), *this);
 
     resolution1 = std::make_unique<Button>(
-        "Res1", sf::FloatRect{{100, 400}, buttonSize}, *this);
-    resolution2 = std::make_unique<Button>(
         "Res1", sf::FloatRect{{200, 400}, buttonSize}, *this);
+    resolution2 = std::make_unique<Button>(
+        "Res1", sf::FloatRect{{350, 400}, buttonSize}, *this);
     resolution3 = std::make_unique<Button>(
-        "Res1", sf::FloatRect{{300, 400}, buttonSize}, *this);
+        "Res1", sf::FloatRect{{500, 400}, buttonSize}, *this);
+
+    backButton = std::make_unique<Button>(
+        "Main menu", sf::FloatRect{{50, 50}, buttonSize}, *this);
 }
 
 void Setting::setupButtonMessages() {
@@ -68,6 +73,8 @@ void Setting::setupButtonMessages() {
     resolution1->setNotificationMessage("Resolution1");
     resolution2->setNotificationMessage("Resolution2");
     resolution3->setNotificationMessage("Resolution3");
+    backButton->setNotificationMessage("Main menu");
+
 }
 
 void Setting::setupHandlers() {
@@ -110,6 +117,12 @@ void Setting::setupHandlers() {
         Logger::info(std::format("Changed window size to {}x{}", WINDOW_WIDTH_2,
                                  WINDOW_HEIGHT_2));
     });
+    subscribe("Main menu", [this](std::any, std::any) {
+        using namespace GameConstants;
+        sceneManager.changeScene("Main menu");
+        Logger::info(std::format("Change Scene to {}", sceneManager.getCurrentScene()->getName()));
+    
+    });
 }
 
 void Setting::setupComponentVector() {
@@ -120,4 +133,5 @@ void Setting::setupComponentVector() {
     alwaysShownElements.push_back(std::move(resolution1));
     alwaysShownElements.push_back(std::move(resolution2));
     alwaysShownElements.push_back(std::move(resolution3));
+    alwaysShownElements.push_back(std::move(backButton));
 }
