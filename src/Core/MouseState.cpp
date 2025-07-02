@@ -89,7 +89,7 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
         Mouse pressedButton =
             SignalMap::mapSfmlMouseButton(mouseReleaseEvent->button);
         std::list<MouseObserver*> observerList =
-            subscriberList[pressedButton][UserEvent::Press];
+            subscriberList[pressedButton][UserEvent::Release];
         for (MouseObserver* observer : observerList)
             observer->onMouseEvent(pressedButton, UserEvent::Release,
                                    worldPosition, windowPosition);

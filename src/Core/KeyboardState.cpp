@@ -65,7 +65,7 @@ void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
     if (keyRelease) {
         Key key = SignalMap::mapSfmlKey(keyRelease->code);
         std::list<KeyboardObserver*> observerList =
-            subscriberList[key][UserEvent::Press];
+            subscriberList[key][UserEvent::Release];
         for (auto subscriber : observerList) {
             subscriber->onKeyEvent(key, UserEvent::Release, worldPosititon,
                                    windowPosition);
