@@ -50,10 +50,23 @@ void MouseState::clearSubscriber(Mouse button, UserEvent event) {
 }
 
 void MouseState::handleEvent(const std::optional<sf::Event>& event) {
-    using namespace GameConstants;
+    processMousePress(event);
+    processMouseRelease(event);
+    processMouseMovement(event);
+}
+
+MouseState::MouseState(sf::RenderWindow& window) : window{window} {}
+
+sf::Vector2f MouseState::scalePosition(sf::Vector2f input) {
+    input.x =
+        input.x / window.getSize().x * GameConstants::DEFAULT_WINDOW_WIDTH;
+    input.y =
+        input.y / window.getSize().y * GameConstants::DEFAULT_WINDOW_HEIGHT;
+    return input;
+}
+
+void MouseState::processMousePress(const std::optional<sf::Event>& event) {
     const auto mouseClickEvent = event->getIf<sf::Event::MouseButtonPressed>();
-    const auto mouseReleaseEvent =
-        event->getIf<sf::Event::MouseButtonReleased>();
     if (mouseClickEvent) {
         sf::Vector2f windowPosition =
             static_cast<sf::Vector2f>(mouseClickEvent->position);
@@ -75,6 +88,11 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
                                    worldPosition, windowPosition);
         return;
     }
+};
+
+void MouseState::processMouseRelease(const std::optional<sf::Event>& event) {
+    const auto mouseReleaseEvent =
+        event->getIf<sf::Event::MouseButtonReleased>();
     if (mouseReleaseEvent) {
         sf::Vector2f windowPosition =
             static_cast<sf::Vector2f>(mouseReleaseEvent->position);
@@ -97,12 +115,27 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
     }
 }
 
-MouseState::MouseState(sf::RenderWindow& window) : window{window} {}
+void MouseState::processMouseMovement(const std::optional<sf::Event>& event) {
+    const auto mouseMovement = event->getIf<sf::Event::MouseMoved>();
+    if (!mouseMovement) return;
+    sf::Vector2f windowPosition =
+        static_cast<sf::Vector2f>(mouseMovement->position);
+    sf::Vector2f worldPosition =
+        window.mapPixelToCoords(mouseMovement->position);
+    windowPosition = scalePosition(windowPosition);
+    worldPosition = scalePosition(worldPosition);
 
-sf::Vector2f MouseState::scalePosition(sf::Vector2f input) {
-    input.x =
-        input.x / window.getSize().x * GameConstants::DEFAULT_WINDOW_WIDTH;
-    input.y =
-        input.y / window.getSize().y * GameConstants::DEFAULT_WINDOW_HEIGHT;
-    return input;
+    Mouse mouseButton;
+    // * Mouse movement when left mouse button is holding
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+    mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Left);
+    else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+    mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Right);
+    else
+    mouseButton = Mouse::None;
+    
+    std::list<MouseObserver*> observerList = subscriberList[mouseButton][UserEvent::Move];
+    for (MouseObserver* observer: observerList) 
+        observer->onMouseEvent(mouseButton, UserEvent::Move, worldPosition, windowPosition);
+    
 }

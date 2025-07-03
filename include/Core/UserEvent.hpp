@@ -13,6 +13,6 @@
  * @enum UserEvent
  * @brief Enum representing user input events (e.g., Release, Press).
  */
-enum class UserEvent { Release, Press };
+enum class UserEvent { Release, Press, Move };
 
 

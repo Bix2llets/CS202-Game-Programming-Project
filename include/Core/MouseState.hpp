@@ -26,7 +26,7 @@ class MouseObserver;
  * @enum Mouse
  * @brief Enum representing mouse buttons that can be observed.
  */
-enum class Mouse { Left, Right };
+enum class Mouse { Left, Right, None };
 
 /**
  * @class MouseState
@@ -84,6 +84,10 @@ class MouseState {
      */
     void clearSubscriber(Mouse button, UserEvent event);
 
-    private:
+   private:
     sf::Vector2f scalePosition(sf::Vector2f input);
+
+    void processMousePress(const std::optional<sf::Event> &event);
+    void processMouseRelease(const std::optional<sf::Event> &event);
+    void processMouseMovement(const std::optional<sf::Event> &event);
 };
