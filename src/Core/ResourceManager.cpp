@@ -26,7 +26,11 @@ void ResourceManager::loadFont(const std::string &path, const std::string &ID) {
         return;
     }
 
+<<<<<<< HEAD
     fonts.at(ID) = std::make_unique<sf::Font>(path);
+=======
+    fonts[ID] = std::make_unique<sf::Font>(path);
+>>>>>>> Entity
 }
 
 void ResourceManager::loadTexture(const std::string &path, const std::string &ID) {
@@ -71,4 +75,23 @@ const sf::Font *const ResourceManager::getFont(const std::string &ID) const {
     return fonts.at(ID).get();
 
 
+<<<<<<< HEAD
+=======
+}
+
+void ResourceManager::setSoundVolume(int volume) {
+    soundVolume = volume;
+}
+
+void ResourceManager::setMusicVolume(int volume) {
+    musicVolume = volume;
+}
+
+int ResourceManager::getSoundVolume() const {
+    return soundVolume;
+}
+
+int ResourceManager::getMusicVolume() const {
+    return musicVolume;
+>>>>>>> Entity
 }

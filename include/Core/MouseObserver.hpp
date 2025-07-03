@@ -66,5 +66,5 @@ class MouseObserver {
      */
     virtual void onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
-                              const sf::Vector2i& windowPosition) = 0;
+                              const sf::Vector2f& windowPosition) = 0;
 };

@@ -21,6 +21,8 @@ class ResourceManager {
     std::map<std::string, std::unique_ptr<sf::Font>> fonts; ///< Loaded fonts.
     std::list<std::unique_ptr<sf::Sound>> playingSounds; ///< Currently playing sounds.
 
+    int soundVolume;
+    int musicVolume;
     ResourceManager(const ResourceManager &rhs) = delete;
     ResourceManager operator=(const ResourceManager &rhs) = delete;
 
@@ -85,4 +87,28 @@ class ResourceManager {
      * @return Pointer to the font, or nullptr if not found.
      */
     const sf::Font *const getFont(const std::string &ID) const;
+
+    /**
+     * @brief Sets the sound effects volume.
+     * @param volume Volume level (0-100).
+     */
+    void setSoundVolume(int volume);
+
+    /**
+     * @brief Gets the current sound effects volume.
+     * @return Current sound volume (0-100).
+     */
+    int getSoundVolume() const;
+
+    /**
+     * @brief Sets the music volume.
+     * @param volume Volume level (0-100).
+     */
+    void setMusicVolume(int volume);
+
+    /**
+     * @brief Gets the current music volume.
+     * @return Current music volume (0-100).
+     */
+    int getMusicVolume() const;
 };

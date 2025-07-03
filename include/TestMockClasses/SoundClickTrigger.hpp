@@ -28,28 +28,28 @@ class SoundClickTrigger : public MouseObserver, public KeyboardObserver {
      */
    private:
     void onLeftMousePress(const sf::Vector2f &worldPosition,
-                          const sf::Vector2i &windowPosition);
+                          const sf::Vector2f &windowPosition);
     /**
      * @brief Called on right mouse press.
      * @param worldPosition Mouse position in world coordinates.
      * @param windowPosition Mouse position in window coordinates.
      */
     void onRightMousePress(const sf::Vector2f &worldPosition,
-                           const sf::Vector2i &windowPosition);
+                           const sf::Vector2f &windowPosition);
     /**
      * @brief Called on left mouse release.
      * @param worldPosition Mouse position in world coordinates.
      * @param windowPosition Mouse position in window coordinates.
      */
     void onLeftMouseRelease(const sf::Vector2f &worldPosition,
-                            const sf::Vector2i &windowPosition);
+                            const sf::Vector2f &windowPosition);
     /**
      * @brief Called on right mouse release.
      * @param worldPosition Mouse position in world coordinates.
      * @param windowPosition Mouse position in window coordinates.
      */
     void onRightMouseRelease(const sf::Vector2f &worldPosition,
-                             const sf::Vector2i &windowPosition);
+                             const sf::Vector2f &windowPosition);
 
    public:
     /**
@@ -61,8 +61,8 @@ class SoundClickTrigger : public MouseObserver, public KeyboardObserver {
      */
     void onMouseEvent(Mouse button, UserEvent event,
                       const sf::Vector2f &worldPosition,
-                      const sf::Vector2i &windowPosition);
+                      const sf::Vector2f &windowPosition);
 
     void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
-                    const sf::Vector2i &windowPosition);
+                    const sf::Vector2f &windowPosition);
 };

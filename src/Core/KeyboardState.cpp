@@ -5,10 +5,18 @@
 #include <map>
 #include <optional>
 
+<<<<<<< HEAD
 #include "Core/KeyboardObserver.hpp"
 #include "Core/UserEvent.hpp"
 #include "Utility/logger.hpp"
 #include "Utility/SignalMap.hpp"
+=======
+#include "Base/Constants.hpp"
+#include "Core/KeyboardObserver.hpp"
+#include "Core/UserEvent.hpp"
+#include "Utility/SignalMap.hpp"
+#include "Utility/logger.hpp"
+>>>>>>> Entity
 void KeyboardState::addSubscriber(Key key, UserEvent event,
                                   KeyboardObserver* subscriber) {
     std::list<KeyboardObserver*>& subscribers = subscriberList[key][event];
@@ -45,11 +53,17 @@ void KeyboardState::clearSubscriber() {
 void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
     auto keyPress = event->getIf<sf::Event::KeyPressed>();
     auto keyRelease = event->getIf<sf::Event::KeyReleased>();
-    auto windowPosition = sf::Mouse::getPosition(window);
-    auto worldPosititon = window.mapPixelToCoords(windowPosition);
+    sf::Vector2f windowPosition =
+        static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
+    sf::Vector2f worldPosititon =
+        window.mapPixelToCoords(sf::Mouse::getPosition(window));
+    windowPosition = scalePosition(windowPosition);
+    worldPosititon = scalePosition(worldPosititon);
     if (keyPress) {
         Key key = SignalMap::mapSfmlKey(keyPress->code);
-        for (auto subscriber : subscriberList[key][UserEvent::Press]) {
+        std::list<KeyboardObserver*> observerList =
+            subscriberList[key][UserEvent::Press];
+        for (auto subscriber : observerList) {
             subscriber->onKeyEvent(key, UserEvent::Press, worldPosititon,
                                    windowPosition);
         }
@@ -57,7 +71,9 @@ void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
     }
     if (keyRelease) {
         Key key = SignalMap::mapSfmlKey(keyRelease->code);
-        for (auto subscriber : subscriberList[key][UserEvent::Release]) {
+        std::list<KeyboardObserver*> observerList =
+            subscriberList[key][UserEvent::Release];
+        for (auto subscriber : observerList) {
             subscriber->onKeyEvent(key, UserEvent::Release, worldPosititon,
                                    windowPosition);
         }
@@ -66,3 +82,10 @@ void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
 }
 
 KeyboardState::KeyboardState(sf::RenderWindow& window) : window{window} {}
+sf::Vector2f KeyboardState::scalePosition(sf::Vector2f input) {
+    input.x =
+        input.x / window.getSize().x * GameConstants::DEFAULT_WINDOW_WIDTH;
+    input.y =
+        input.y / window.getSize().y * GameConstants::DEFAULT_WINDOW_HEIGHT;
+    return input;
+}
