@@ -5,18 +5,11 @@
 #include <map>
 #include <optional>
 
-<<<<<<< HEAD
-#include "Core/KeyboardObserver.hpp"
-#include "Core/UserEvent.hpp"
-#include "Utility/logger.hpp"
-#include "Utility/SignalMap.hpp"
-=======
 #include "Base/Constants.hpp"
 #include "Core/KeyboardObserver.hpp"
 #include "Core/UserEvent.hpp"
 #include "Utility/SignalMap.hpp"
 #include "Utility/logger.hpp"
->>>>>>> Entity
 void KeyboardState::addSubscriber(Key key, UserEvent event,
                                   KeyboardObserver* subscriber) {
     std::list<KeyboardObserver*>& subscribers = subscriberList[key][event];
