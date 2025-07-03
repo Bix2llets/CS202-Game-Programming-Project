@@ -102,6 +102,9 @@ include_directories(${CMAKE_SOURCE_DIR}/tests/mockClasses)
 # Add SFML include directories
 include_directories(${SFML_LIB_PATH}/include)
 
+# Add JSON include directoris
+include_directories($(NLOHMANN_JSON_DIR))
+
 # Add Google Test include directories (only for Debug builds)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     include_directories(${GTEST_LIB_PATH}/googletest/include)
