@@ -15,10 +15,29 @@ set(GTEST_DOWNLOAD_PATH "${CMAKE_BINARY_DIR}/googletest.zip")
 set(GTEST_EXTRACT_PATH "${CMAKE_BINARY_DIR}/gtest_extracted")
 set(GTEST_LIB_PATH "${CMAKE_SOURCE_DIR}/lib/gTest")
 
+# Set nlohmann/json download URL and paths
+set(NLOHMANN_JSON_URL "https://github.com/nlohmann/json/releases/download/v3.12.0/json.hpp")
+set(NLOHMANN_JSON_PATH "${CMAKE_SOURCE_DIR}/lib/json/json.hpp")
+set(NLOHMANN_JSON_DIR "${CMAKE_SOURCE_DIR}/lib/json")
+
+# Create lib/json directory if it doesn't exist
+
+# Download json.hpp if not already present
+file(MAKE_DIRECTORY ${NLOHMANN_JSON_DIR})
 # Create lib directories if they don't exist
 file(MAKE_DIRECTORY ${SFML_LIB_PATH})
 file(MAKE_DIRECTORY ${GTEST_LIB_PATH})
 
+if(NOT EXISTS ${NLOHMANN_JSON_PATH})
+    message(STATUS "Downloading nlohmann/json.hpp...")
+    file(DOWNLOAD ${NLOHMANN_JSON_URL} ${NLOHMANN_JSON_PATH}
+        SHOW_PROGRESS
+        STATUS download_status)
+    list(GET download_status 0 status_code)
+    if(NOT status_code EQUAL 0)
+        message(FATAL_ERROR "Failed to download nlohmann/json.hpp")
+    endif()
+endif()
 # Download SFML if not already present in lib/SFML/bin
 if(NOT EXISTS "${SFML_LIB_PATH}/bin")
     if(NOT EXISTS ${SFML_DOWNLOAD_PATH})
@@ -98,14 +117,14 @@ find_package(SFML 3.0 COMPONENTS System Window Graphics Audio Network REQUIRED)
 # Add Google Test as subdirectory (only for Debug builds)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND EXISTS "${GTEST_LIB_PATH}/CMakeLists.txt")
     add_subdirectory(${GTEST_LIB_PATH} ${CMAKE_BINARY_DIR}/googletest)
-    
+
     # Disable install for Google Test
     set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
     set(INSTALL_GMOCK OFF CACHE BOOL "" FORCE)
 endif()
 
 # Collect all source files for the main program
-file(GLOB_RECURSE SOURCES 
+file(GLOB_RECURSE SOURCES
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/*.hpp"
 )
@@ -123,18 +142,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 # Add your executable (main program)
 if(SOURCES)
     add_executable(${PROJECT_NAME} ${SOURCES})
-    target_include_directories(${PROJECT_NAME} PRIVATE 
+    target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_SOURCE_DIR}/include
         ${SFML_LIB_PATH}/include
     )
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_include_directories(${PROJECT_NAME} PRIVATE 
+        target_include_directories(${PROJECT_NAME} PRIVATE
             ${GTEST_LIB_PATH}/googletest/include
             ${GTEST_LIB_PATH}/googlemock/include
         )
     endif()
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        target_link_libraries(${PROJECT_NAME} 
+        target_link_libraries(${PROJECT_NAME}
             ${SFML_LIB_PATH}/lib/libsfml-system-d.a
             ${SFML_LIB_PATH}/lib/libsfml-window-d.a
             ${SFML_LIB_PATH}/lib/libsfml-graphics-d.a
@@ -145,7 +164,7 @@ if(SOURCES)
             target_link_libraries(${PROJECT_NAME} gtest gtest_main gmock gmock_main)
         endif()
     else()
-        target_link_libraries(${PROJECT_NAME} 
+        target_link_libraries(${PROJECT_NAME}
             ${SFML_LIB_PATH}/lib/libsfml-system.a
             ${SFML_LIB_PATH}/lib/libsfml-window.a
             ${SFML_LIB_PATH}/lib/libsfml-graphics.a
@@ -193,42 +212,42 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 #     )
 # endif()
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug") 
-# Enable testing and add test discovery
-include(GoogleTest)
-enable_testing()
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    # Enable testing and add test discovery
+    include(GoogleTest)
+    enable_testing()
 
-# Add test executables for all test files in tests/ recursively
-file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/tests/*.cc")
+    # Add test executables for all test files in tests/ recursively
+    file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/tests/*.cc")
 
-foreach(test_src ${TEST_SOURCES})
-    get_filename_component(test_name ${test_src} NAME_WE)
-    add_executable(${test_name} ${test_src})
-    target_link_libraries(${test_name} PRIVATE gtest gtest_main CS202GameLib
-        ${SFML_LIB_PATH}/lib/libsfml-system-d.a
-        ${SFML_LIB_PATH}/lib/libsfml-window-d.a
-        ${SFML_LIB_PATH}/lib/libsfml-graphics-d.a
-        ${SFML_LIB_PATH}/lib/libsfml-audio-d.a
-        ${SFML_LIB_PATH}/lib/libsfml-network-d.a
-    )
-    target_include_directories(${test_name} PRIVATE ${CMAKE_SOURCE_DIR}/include)
-    gtest_discover_tests(${test_name} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-endforeach()
+    foreach(test_src ${TEST_SOURCES})
+        get_filename_component(test_name ${test_src} NAME_WE)
+        add_executable(${test_name} ${test_src})
+        target_link_libraries(${test_name} PRIVATE gtest gtest_main CS202GameLib
+            ${SFML_LIB_PATH}/lib/libsfml-system-d.a
+            ${SFML_LIB_PATH}/lib/libsfml-window-d.a
+            ${SFML_LIB_PATH}/lib/libsfml-graphics-d.a
+            ${SFML_LIB_PATH}/lib/libsfml-audio-d.a
+            ${SFML_LIB_PATH}/lib/libsfml-network-d.a
+        )
+        target_include_directories(${test_name} PRIVATE ${CMAKE_SOURCE_DIR}/include)
+        gtest_discover_tests(${test_name} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    endforeach()
 
-# Ensure all test executables depend on the main target so DLLs and assets are copied before tests run
-foreach(test_src ${TEST_SOURCES})
-    get_filename_component(test_name ${test_src} NAME_WE)
-    add_dependencies(${test_name} ${PROJECT_NAME})
-endforeach()
+    # Ensure all test executables depend on the main target so DLLs and assets are copied before tests run
+    foreach(test_src ${TEST_SOURCES})
+        get_filename_component(test_name ${test_src} NAME_WE)
+        add_dependencies(${test_name} ${PROJECT_NAME})
+    endforeach()
 
-# Copy all executables (main and tests) to bin after build
-foreach(test_src ${TEST_SOURCES})
-    get_filename_component(test_name ${test_src} NAME_WE)
-    add_custom_command(TARGET ${test_name} POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${test_name}> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
-        COMMENT "Copying test executable ${test_name} to bin directory"
-    )
-endforeach()
+    # Copy all executables (main and tests) to bin after build
+    foreach(test_src ${TEST_SOURCES})
+        get_filename_component(test_name ${test_src} NAME_WE)
+        add_custom_command(TARGET ${test_name} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${test_name}> ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/
+            COMMENT "Copying test executable ${test_name} to bin directory"
+        )
+    endforeach()
 
 endif()
 
