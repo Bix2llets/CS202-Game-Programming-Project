@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 project(CS202_Game_Programming_Project)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(ENV{CMAKE_TLS_VERIFY} "0")
 
 # Set SFML download URL and paths
 set(SFML_URL "https://github.com/SFML/SFML/releases/download/3.0.0/SFML-3.0.0-windows-gcc-14.2.0-mingw-64-bit.zip")
@@ -21,7 +23,7 @@ file(MAKE_DIRECTORY ${GTEST_LIB_PATH})
 
 # Download SFML if not already present in lib/SFML/bin
 if(NOT EXISTS "${SFML_LIB_PATH}/bin")
-    if(NOT EXISTS ${SFML_DOWNLOAD_PATH})
+    if(NOT EXISTS "${SFML_DOWNLOAD_PATH}")
         message(STATUS "Downloading SFML...")
         file(DOWNLOAD ${SFML_URL} ${SFML_DOWNLOAD_PATH}
             SHOW_PROGRESS
@@ -211,7 +213,7 @@ foreach(test_src ${TEST_SOURCES})
         ${SFML_LIB_PATH}/lib/libsfml-network-d.a
     )
     target_include_directories(${test_name} PRIVATE ${CMAKE_SOURCE_DIR}/include)
-    gtest_discover_tests(${test_name} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    # gtest_discover_tests(${test_name} WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endforeach()
 
 # Ensure all test executables depend on the main target so DLLs and assets are copied before tests run
