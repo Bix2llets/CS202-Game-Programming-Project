@@ -1,5 +1,5 @@
-#ifndef MOVING_STATE_HPP
-#define MOVING_STATE_HPP
+
+#pragma once
 
 #include "Entity/Enemy/EnemyState.hpp"
 
@@ -14,7 +14,7 @@ public:
      * @param enemy The enemy being updated
      * @param deltaTime Time elapsed since last update
      */
-    void update(Enemy* enemy, float deltaTime) override;
+    void update(Enemy* enemy) override;
 
     /**
      * @brief Called when entering the moving state
@@ -31,4 +31,4 @@ public:
     void exit(Enemy* enemy) override;
 };
 
-#endif // MOVING_STATE_HPP
+

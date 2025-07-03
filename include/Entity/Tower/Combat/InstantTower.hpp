@@ -1,5 +1,5 @@
-#ifndef INSTANT_TOWER_HPP
-#define INSTANT_TOWER_HPP
+
+#pragma once
 
 #include "Entity/Tower/Combat/CombatTower.hpp"
 #include "Entity/Tower/Combat/TargetSelection.hpp"
@@ -13,8 +13,6 @@
 class InstantTower : public CombatTower {
 private:
     float areaOfEffect;    // Radius for potential area damage, 0 means single target
-    float attackSpeed;     // Attacks per second
-    float lastAttackTime;  // Time of last attack
 
 public:
     /**
@@ -44,18 +42,9 @@ public:
     
     /**
      * @brief Update the instant tower's behavior
-     * 
-     * @param deltaTime Time elapsed since last update
      */
-    void update(float deltaTime) override;
+    void update() override;
     
-    /**
-     * @brief Check if the tower can attack based on attack speed
-     * 
-     * @param currentTime Current game time
-     * @return bool True if the tower can attack, false otherwise
-     */
-    bool canAttack(float currentTime) const;
     
     // Getters and setters
     float getAreaOfEffect() const { return areaOfEffect; }
@@ -63,6 +52,7 @@ public:
     
     float getAttackSpeed() const { return attackSpeed; }
     void setAttackSpeed(float speed) { attackSpeed = speed; }
+
 };
 
-#endif // INSTANT_TOWER_HPP
+

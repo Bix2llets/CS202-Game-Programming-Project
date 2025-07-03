@@ -6,7 +6,7 @@
 InstantTower::InstantTower(const sf::Vector2f& pos, float attackRange, int attackDamage, 
                          float attackSpeed, float aoe)
     : CombatTower(pos, attackRange, attackDamage), 
-      areaOfEffect(aoe), attackSpeed(attackSpeed), lastAttackTime(0.0f) {
+      areaOfEffect(aoe){
     // Initialize instant tower specific properties
 }
 
@@ -39,25 +39,19 @@ void InstantTower::executeAction(const std::vector<Enemy*>& targets) {
     }
     
     // Update last attack time
-    lastAttackTime = 0.0f; // This will be updated with current time in the update method
+    resetRemainingTime(); // This will be updated with current time in the update method
 }
 
-void InstantTower::update(float deltaTime) {
+void InstantTower::update() {
     // Call parent update first
-    CombatTower::update(deltaTime);
+    CombatTower::update();
     
     // Increment last attack time
-    lastAttackTime += deltaTime;
-    
     // Check if we can attack and have a target
-    if (target && canAttack(lastAttackTime)) {
+    if (target && canAttack()) {
         std::vector<Enemy*> targets = {target};
         executeAction(targets);
-        lastAttackTime = 0.0f;  // Reset attack timer
+        resetRemainingTime();  // Reset attack timer
     }
 }
 
-bool InstantTower::canAttack(float currentTime) const {
-    // Check if enough time has passed since last attack based on attack speed
-    return (currentTime >= (1.0f / attackSpeed));
-}

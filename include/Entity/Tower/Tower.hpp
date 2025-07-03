@@ -1,5 +1,5 @@
-#ifndef TOWER_HPP
-#define TOWER_HPP
+
+#pragma once
 
 #include "Entity/Entity.hpp"
 #include <memory>
@@ -34,17 +34,15 @@ public:
 
     /**
      * @brief Update the tower's behavior
-     * 
-     * @param deltaTime Time elapsed since last update
      */
-    void update(float deltaTime) override;
+    virtual void update();
 
     /**
      * @brief Render the tower
      * 
      * @param target Render target to draw on
      */
-    void render(sf::RenderTarget& target) override;
+    void draw(sf::RenderTarget &target, sf::RenderStates state) const override = 0;
     
     /**
      * @brief Update both base sprite and upper layer sprite positions
@@ -66,39 +64,12 @@ public:
     
     int getLevel() const { return level; }
     void setLevel(int newLevel) { level = newLevel; }
-    
-    int getMaxLevel() const { return maxLevel; }
-    void setMaxLevel(int newMax) { maxLevel = newMax; }
-    
-    /**
-     * @brief Set the base sprite for this tower (the non-rotating part)
-     * 
-     * @param newBaseSprite The sprite to use for the base
-     */
-    void setBaseSprite(const sf::Sprite& newBaseSprite);
-
     /**
      * @brief Create and set a base sprite from a texture
      * 
      * @param texture The texture to use for the base sprite
      */
-    void setBaseSpriteTexture(const sf::Texture& texture);
-
-    /**
-     * @brief Check if the tower has a base sprite
-     * 
-     * @return bool True if base sprite is set, false otherwise
-     */
-    bool hasBaseSprite() const { return baseSprite.has_value(); }
-
-    /**
-     * @brief Get the base sprite (if available)
-     * 
-     * @return const sf::Sprite* Pointer to base sprite or nullptr if not set
-     */
-    const sf::Sprite* getBaseSprite() const { 
-        return baseSprite.has_value() ? &baseSprite.value() : nullptr; 
-    }
+    void loadBaseTexture(const sf::Texture& texture);
 };
 
-#endif // TOWER_HPP
+

@@ -1,5 +1,5 @@
-#ifndef ENTITY_MANAGER_HPP
-#define ENTITY_MANAGER_HPP
+
+#pragma once
 
 #include "EntitySystem.hpp"
 #include <vector>
@@ -14,25 +14,27 @@
  */
 class EntityManager {
 private:
+    sf::RenderWindow &window;
     std::vector<std::unique_ptr<Entity>> entities;
     std::vector<std::unique_ptr<Tower>> towers;
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Projectile>> projectiles;
 
 public:
+    EntityManager(sf::RenderWindow &window) : window{window} {}
     /**
      * @brief Update all entities
      * 
      * @param deltaTime Time elapsed since last update
      */
-    void updateAll(float deltaTime);
+    void updateAll();
 
     /**
      * @brief Render all entities
      * 
      * @param target Render target to draw on
      */
-    void renderAll(sf::RenderTarget& target);
+    void renderAll();
 
     /**
      * @brief Clean up dead entities
@@ -87,4 +89,4 @@ public:
     size_t getTotalEntityCount() const;
 };
 
-#endif // ENTITY_MANAGER_HPP
+

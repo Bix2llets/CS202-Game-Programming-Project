@@ -1,5 +1,5 @@
-#ifndef RESOURCE_TOWER_HPP
-#define RESOURCE_TOWER_HPP
+
+#pragma once
 
 #include "Entity/Tower/Tower.hpp"
 
@@ -11,9 +11,10 @@
  */
 class ResourceTower : public Tower {
 protected:
-    int resourceAmount;     // Amount of resources generated per cycle
-    float generationRate;   // How often resources are generated (seconds)
-    float lastGenerateTime; // Time of last resource generation
+    int totalResource;
+    int generationRate;     // Amount of resources generated per cycle
+    float generationInterval;   // Time interval between each generation
+    float remainingTime; // Time since last generation
 
 public:
     /**
@@ -21,7 +22,7 @@ public:
      * 
      * @param pos Position to place the tower
      * @param amount Amount of resources generated per cycle
-     * @param rate How often resources are generated (seconds)
+     * @param rate Time interval between each generation
      */
     ResourceTower(const sf::Vector2f& pos = sf::Vector2f(0, 0),
                  int amount = 10, float rate = 5.0f);
@@ -33,17 +34,21 @@ public:
 
     /**
      * @brief Update the resource tower's behavior
-     * 
-     * @param deltaTime Time elapsed since last update
      */
-    void update(float deltaTime) override;
+    void update() override;
 
     // Getters and setters
-    int getResourceAmount() const { return resourceAmount; }
-    void setResourceAmount(int amount) { resourceAmount = amount; }
-    
-    float getGenerationRate() const { return generationRate; }
-    void setGenerationRate(float rate) { generationRate = rate; }
+
+    inline float getGenerationRate() const { return generationRate; }
+    inline float getRemainingTime() const {return remainingTime; }
+    inline float getGenerationInterval() const {return generationInterval;}
+    inline float getTotalResource() const {return totalResource; }
+
+
+    inline void setGenerationRate(float rate) { generationRate = rate; }
+    inline void setGenerationInterval(float interval) { generationInterval = interval; }
+    inline void setRemainingTime(float time) { remainingTime = time; }
+    inline void setTotalResource(int total) { totalResource = total; }
 };
 
-#endif // RESOURCE_TOWER_HPP
+ 

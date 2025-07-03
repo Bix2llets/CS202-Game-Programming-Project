@@ -1,5 +1,5 @@
-#ifndef PASSIVE_TOWER_HPP
-#define PASSIVE_TOWER_HPP
+
+#pragma once
 
 #include "Entity/Tower/Tower.hpp"
 
@@ -32,10 +32,8 @@ public:
 
     /**
      * @brief Update the passive tower's behavior
-     * 
-     * @param deltaTime Time elapsed since last update
      */
-    void update(float deltaTime) override;
+    void update() override;
 
     // Getters and setters
     float getEffectRange() const { return effectRange; }
@@ -45,4 +43,4 @@ public:
     void setEffectPower(float power) { effectPower = power; }
 };
 
-#endif // PASSIVE_TOWER_HPP
+

@@ -1,18 +1,26 @@
 #include "Entity/Tower/Projectile.hpp"
-#include "Entity/Enemy/Enemy.hpp"
+
+#include <Base/Constants.hpp>
 #include <cmath>
 
+#include "Entity/Enemy/Enemy.hpp"
+
 // Constructor for entity-targeting projectile
-Projectile::Projectile(const sf::Vector2f& pos, Enemy* targetEnemy, int projectileDamage, float projectileSpeed)
-    : Entity(pos), damage(projectileDamage), targetEntity(targetEnemy), speed(projectileSpeed), 
-      hasHit(false), projectileType(ProjectileType::TargetEntity) {
-    
+Projectile::Projectile(const sf::Vector2f& pos, Enemy* targetEnemy,
+                       int projectileDamage, float projectileSpeed)
+    : Entity(pos),
+      damage(projectileDamage),
+      targetEntity(targetEnemy),
+      speed(projectileSpeed),
+      hasHit(false),
+      projectileType(ProjectileType::TargetEntity) {
     if (targetEntity) {
         // Calculate initial velocity towards target
         targetLocation = targetEntity->getPosition();
         sf::Vector2f direction = targetLocation - position;
-        float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-        
+        float distance =
+            std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
         if (distance > 0) {
             velocity = (direction / distance) * speed;
         }
@@ -20,77 +28,85 @@ Projectile::Projectile(const sf::Vector2f& pos, Enemy* targetEnemy, int projecti
 }
 
 // Constructor for location-targeting projectile
-Projectile::Projectile(const sf::Vector2f& pos, const sf::Vector2f& targetPos, int projectileDamage, float projectileSpeed)
-    : Entity(pos), damage(projectileDamage), targetEntity(nullptr), targetLocation(targetPos), 
-      speed(projectileSpeed), hasHit(false), projectileType(ProjectileType::TargetLocation) {
-    
+Projectile::Projectile(const sf::Vector2f& pos, const sf::Vector2f& targetPos,
+                       int projectileDamage, float projectileSpeed)
+    : Entity(pos),
+      damage(projectileDamage),
+      targetEntity(nullptr),
+      targetLocation(targetPos),
+      speed(projectileSpeed),
+      hasHit(false),
+      projectileType(ProjectileType::TargetLocation) {
     // Calculate velocity towards target location
     sf::Vector2f direction = targetLocation - position;
-    float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-    
+    float distance =
+        std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
     if (distance > 0) {
         velocity = (direction / distance) * speed;
     }
 }
 
-void Projectile::update(float deltaTime) {
+void Projectile::update() {
     if (!hasHit) {
-        move(deltaTime);
-        
-        if (checkCollision()) {
+        move();
+
+        if (isCollided()) {
             // Handle collision based on projectile type
-            if (projectileType == ProjectileType::TargetEntity && targetEntity && targetEntity->isAlive()) {
+            if (projectileType == ProjectileType::TargetEntity &&
+                targetEntity && targetEntity->isAlive()) {
                 targetEntity->takeDamage(damage);
             }
-            // For location targeting, we just mark as hit when reaching the location
-            
+            // For location targeting, we just mark as hit when reaching the
+            // location
+
             hasHit = true;
-            setAlive(false); // Projectile is destroyed after hitting
+            takeDamage(getHealth());  // Projectile is destroyed after hitting
         }
     } else {
-        setAlive(false); // Ensure projectile is destroyed if already hit
+        takeDamage(
+            getHealth());  // Ensure projectile is destroyed if already hit
     }
 }
 
-void Projectile::render(sf::RenderTarget& target) {
-    if (!hasHit) {
-        Entity::render(target);
-    }
+void Projectile::draw(sf::RenderTarget &target, sf::RenderStates state) const {
+    if (hasHit) return;
+    target.draw(*sprite, state);
 }
 
-void Projectile::move(float deltaTime) {
-    if (projectileType == ProjectileType::TargetEntity && targetEntity && targetEntity->isAlive()) {
+void Projectile::move() {
+    if (projectileType == ProjectileType::TargetEntity && targetEntity &&
+        targetEntity->isAlive()) {
         // Update velocity to track moving target
         sf::Vector2f newTargetPos = targetEntity->getPosition();
         sf::Vector2f direction = newTargetPos - position;
-        float distance = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-        
+        float distance =
+            std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
         if (distance > 0) {
             velocity = (direction / distance) * speed;
         }
     }
-    // For location targeting, velocity remains constant
-    
-    // Move projectile
-    setPosition(position + velocity * deltaTime);
+    setPosition(position + velocity * GameConstants::TICK_INTERVAL);
 }
 
-bool Projectile::checkCollision() {
+bool Projectile::isCollided() {
     if (projectileType == ProjectileType::TargetEntity) {
         if (!targetEntity || !targetEntity->isAlive()) {
-            return true; // Consider it a "hit" if target is dead (cleanup)
+            return true;  // Consider it a "hit" if target is dead (cleanup)
         }
-        
-        return checkCollisionWithPosition(targetEntity->getPosition());
-    } else {
-        // Location targeting
-        return checkCollisionWithPosition(targetLocation);
+
+        return isCollidedWith(targetEntity->getPosition());
     }
+    if (projectileType == ProjectileType::TargetLocation)
+        return isCollidedWith(targetLocation);
 }
 
-bool Projectile::checkCollisionWithPosition(const sf::Vector2f& pos) const {
-    float distance = std::sqrt(std::pow(pos.x - position.x, 2) + 
+bool Projectile::isCollidedWith(const sf::Vector2f& pos) const {
+    float distance = std::sqrt(std::pow(pos.x - position.x, 2) +
                                std::pow(pos.y - position.y, 2));
-    
+
     return distance <= COLLISION_DISTANCE;
 }
+
+void Projectile::onDeath() {}

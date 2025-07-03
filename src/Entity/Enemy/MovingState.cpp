@@ -2,11 +2,11 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Enemy/AttackingState.hpp"
 
-void MovingState::update(Enemy* enemy, float deltaTime) {
+void MovingState::update(Enemy* enemy) {
     if (!enemy) return;
     
     // Move the enemy along its path
-    enemy->move(deltaTime);
+    enemy->move();
     
     // Check for state transitions
     // For example, if enemy reaches end of path or encounters an obstacle

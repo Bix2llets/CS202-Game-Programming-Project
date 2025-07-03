@@ -1,5 +1,5 @@
-#ifndef ENEMY_STATE_HPP
-#define ENEMY_STATE_HPP
+
+#pragma once
 
 // Forward declaration
 class Enemy;
@@ -20,7 +20,7 @@ public:
      * @param enemy The enemy being updated
      * @param deltaTime Time elapsed since last update
      */
-    virtual void update(Enemy* enemy, float deltaTime) = 0;
+    virtual void update(Enemy* enemy) = 0;
 
     /**
      * @brief Called when entering this state
@@ -37,4 +37,4 @@ public:
     virtual void exit(Enemy* enemy) = 0;
 };
 
-#endif // ENEMY_STATE_HPP
+

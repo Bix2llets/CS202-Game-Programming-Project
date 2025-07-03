@@ -1,6 +1,7 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Enemy/MovingState.hpp"
 #include "Entity/Enemy/DyingState.hpp"
+#include "Base/Constants.hpp"
 #include <cmath>
 
 Enemy::Enemy(const sf::Vector2f& pos, int hp, float moveSpeed, EnemyType type)
@@ -27,20 +28,17 @@ Enemy::Enemy(const sf::Vector2f& pos, int hp, float moveSpeed, EnemyType type)
     }
 }
 
-void Enemy::update(float deltaTime) {
+void Enemy::update() {
     if (currentState) {
-        currentState->update(this, deltaTime);
+        currentState->update(this);
     }
 }
 
-void Enemy::render(sf::RenderTarget& target) {
-    Entity::render(target);
-    
-    // Additional rendering for enemy-specific elements could go here
-    // For example, health bars, status effects, etc.
+void Enemy::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+    Entity::draw(target, state);
 }
 
-void Enemy::move(float deltaTime) {
+void Enemy::move() {
     if (waypoints.empty()) return;
     
     // Simple movement towards next waypoint
@@ -53,7 +51,7 @@ void Enemy::move(float deltaTime) {
         if (distance > 5.0f) {
             // Normalize direction and apply speed
             direction /= distance;
-            sf::Vector2f movement = direction * speed * deltaTime;
+            sf::Vector2f movement = direction * speed * GameConstants::TICK_INTERVAL;
             setPosition(position + movement);
         } else {
             // Reached waypoint, remove it
@@ -84,7 +82,6 @@ void Enemy::takeDamage(int damage) {
 }
 
 void Enemy::onDeath() {
-    setAlive(false);
     // Additional death handling could go here
     // e.g., play death sound, spawn particles, award points
 }

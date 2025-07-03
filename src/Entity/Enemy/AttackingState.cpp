@@ -3,7 +3,7 @@
 #include "Entity/Enemy/MovingState.hpp"
 #include "Entity/Enemy/DyingState.hpp"
 
-void AttackingState::update(Enemy* enemy, float deltaTime) {
+void AttackingState::update(Enemy* enemy) {
     if (!enemy) return;
     
     // Attacking behavior

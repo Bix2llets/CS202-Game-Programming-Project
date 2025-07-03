@@ -28,17 +28,17 @@ void ContinuousTower::executeAction(const std::vector<Enemy*>& targets) {
     }
 }
 
-void ContinuousTower::update(float deltaTime) {
+void ContinuousTower::update() {
     // Call parent update first to update position and rotation
-    CombatTower::update(deltaTime);
+    CombatTower::update();
     
     // Update charge based on target presence
     if (target && target->isAlive()) {
         // Increase charge when we have a target
-        charge = std::min(charge + (chargeUpRate * deltaTime), 1.5f);
+        charge = std::min(charge + (chargeUpRate * GameConstants::TICK_INTERVAL), 1.5f);
     } else {
         // Decrease charge when no target
-        charge = std::max(charge - (chargeDownRate * deltaTime), 0.0f);
+        charge = std::max(charge - (chargeDownRate * GameConstants::TICK_INTERVAL), 0.0f);
         isActive = false;
     }
     

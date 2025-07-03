@@ -1,10 +1,10 @@
 #include "EntityManager.hpp"
 
-void EntityManager::updateAll(float deltaTime) {
+void EntityManager::updateAll() {
     // Update towers
     for (auto& tower : towers) {
-        if (tower && tower->isAlive()) {
-            tower->update(deltaTime);
+        if (tower) {
+            tower->update();
             
             // Make towers attack enemies
             auto enemyPtrs = getEnemies();
@@ -15,14 +15,14 @@ void EntityManager::updateAll(float deltaTime) {
     // Update enemies
     for (auto& enemy : enemies) {
         if (enemy && enemy->isAlive()) {
-            enemy->update(deltaTime);
+            enemy->update();
         }
     }
 
     // Update projectiles
     for (auto& projectile : projectiles) {
         if (projectile && projectile->isAlive()) {
-            projectile->update(deltaTime);
+            projectile->update();
         }
     }
 
@@ -30,25 +30,25 @@ void EntityManager::updateAll(float deltaTime) {
     cleanup();
 }
 
-void EntityManager::renderAll(sf::RenderTarget& target) {
+void EntityManager::renderAll() {
     // Render towers
     for (const auto& tower : towers) {
-        if (tower && tower->isAlive()) {
-            tower->render(target);
+        if (tower) {
+            window.draw(*tower);
         }
     }
 
     // Render enemies
     for (const auto& enemy : enemies) {
         if (enemy && enemy->isAlive()) {
-            enemy->render(target);
+            window.draw(*enemy);
         }
     }
 
     // Render projectiles
     for (const auto& projectile : projectiles) {
         if (projectile && projectile->isAlive()) {
-            projectile->render(target);
+            window.draw(*projectile);
         }
     }
 }
@@ -58,7 +58,7 @@ void EntityManager::cleanup() {
     towers.erase(
         std::remove_if(towers.begin(), towers.end(),
             [](const std::unique_ptr<Tower>& tower) {
-                return !tower || !tower->isAlive();
+                return !tower;
             }),
         towers.end()
     );
@@ -114,7 +114,7 @@ std::vector<Enemy*> EntityManager::getEnemies() {
 std::vector<Tower*> EntityManager::getTowers() {
     std::vector<Tower*> towerPtrs;
     for (auto& tower : towers) {
-        if (tower && tower->isAlive()) {
+        if (tower) {
             towerPtrs.push_back(tower.get());
         }
     }

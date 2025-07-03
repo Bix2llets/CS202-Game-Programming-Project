@@ -1,5 +1,5 @@
-#ifndef ENEMY_HPP
-#define ENEMY_HPP
+
+#pragma once
 
 #include "Entity/Entity.hpp"
 #include "Entity/Damageable.hpp"
@@ -54,21 +54,21 @@ public:
      * 
      * @param deltaTime Time elapsed since last update
      */
-    void update(float deltaTime) override;
+    void update() override;
 
     /**
      * @brief Render the enemy
      * 
      * @param target Render target to draw on
      */
-    void render(sf::RenderTarget& target) override;
+    void draw(sf::RenderTarget &target, sf::RenderStates state) const override;
 
     /**
      * @brief Move the enemy along its path
      * 
      * @param deltaTime Time elapsed since last update
      */
-    void move(float deltaTime);
+    void move();
 
     /**
      * @brief Change the enemy's current state
@@ -106,4 +106,4 @@ protected:
     void onDeath() override;
 };
 
-#endif // ENEMY_HPP
+

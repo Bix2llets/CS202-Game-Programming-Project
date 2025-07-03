@@ -1,7 +1,7 @@
 #include "Entity/Enemy/DyingState.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 
-void DyingState::update(Enemy* enemy, float deltaTime) {
+void DyingState::update(Enemy* enemy) {
     if (!enemy) return;
     
     // Dying behavior

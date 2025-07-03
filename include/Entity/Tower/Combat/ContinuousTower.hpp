@@ -1,5 +1,5 @@
-#ifndef CONTINUOUS_TOWER_HPP
-#define CONTINUOUS_TOWER_HPP
+
+#pragma once
 
 #include "Entity/Tower/Combat/CombatTower.hpp"
 #include "Entity/Tower/Combat/TargetSelection.hpp"
@@ -53,7 +53,7 @@ public:
      * 
      * @param deltaTime Time elapsed since last update
      */
-    void update(float deltaTime) override;
+    void update() override;
     
     // Getters and setters
     float getCharge() const { return charge; }
@@ -75,4 +75,4 @@ public:
     void setIsActive(bool active) { isActive = active; }
 };
 
-#endif // CONTINUOUS_TOWER_HPP
+

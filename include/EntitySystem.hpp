@@ -1,5 +1,5 @@
-#ifndef ENTITY_SYSTEM_HPP
-#define ENTITY_SYSTEM_HPP
+
+#pragma once
 
 /**
  * @file EntitySystem.hpp
@@ -36,4 +36,4 @@
 #include "Entity/Enemy/AttackingState.hpp"
 #include "Entity/Enemy/DyingState.hpp"
 
-#endif // ENTITY_SYSTEM_HPP
+

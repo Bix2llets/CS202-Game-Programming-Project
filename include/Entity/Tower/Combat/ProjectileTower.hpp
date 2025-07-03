@@ -1,5 +1,5 @@
-#ifndef PROJECTILE_TOWER_HPP
-#define PROJECTILE_TOWER_HPP
+
+#pragma once
 
 #include "Entity/Tower/Combat/CombatTower.hpp"
 #include "Entity/Tower/Combat/TargetSelection.hpp"
@@ -14,8 +14,6 @@ class ProjectileTower : public CombatTower {
 private:
     float projectileSpeed;
     float splashRadius;    // Radius for splash damage, 0 means no splash
-    float attackSpeed;     // Attacks per second
-    float lastAttackTime;  // Time of last attack
 
 public:
     /**
@@ -47,18 +45,14 @@ public:
     
     /**
      * @brief Update the projectile tower's behavior
-     * 
-     * @param deltaTime Time elapsed since last update
      */
-    void update(float deltaTime) override;
+    void update() override;
     
     /**
      * @brief Check if the tower can attack based on attack speed
      * 
-     * @param currentTime Current game time
      * @return bool True if the tower can attack, false otherwise
      */
-    bool canAttack(float currentTime) const;
     
     /**
      * @brief Launch a projectile at the target
@@ -74,8 +68,6 @@ public:
     float getSplashRadius() const { return splashRadius; }
     void setSplashRadius(float radius) { splashRadius = radius; }
     
-    float getAttackSpeed() const { return attackSpeed; }
-    void setAttackSpeed(float speed) { attackSpeed = speed; }
 };
 
-#endif // PROJECTILE_TOWER_HPP
+
