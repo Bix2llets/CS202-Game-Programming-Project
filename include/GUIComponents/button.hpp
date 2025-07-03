@@ -56,7 +56,7 @@ class Button : public sf::Drawable, public MouseObserver {
      * @brief Gets the button's label.
      * @return The label string.
      */
-    const std::string& getLabel() const;
+    std::string getLabel() const;
 
     /**
      * @brief Gets the button's position.

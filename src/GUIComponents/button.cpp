@@ -41,7 +41,7 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(*label, states);
 }
 
-const std::string& Button::getLabel() const { return label->getString(); }
+std::string Button::getLabel() const { return label->getString(); }
 
 sf::Vector2f Button::getPosition() const { return geometricInfo.position; }
 
