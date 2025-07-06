@@ -4,7 +4,7 @@
 #include <vector>
 
 class Enemy;
-class CombatTower;
+class Tower;
 
 namespace Combat {
 
@@ -22,7 +22,7 @@ class TargetSelection {
      * @param enemies List of available enemy targets
      * @return Enemy* Selected enemy target or nullptr if no valid target found
      */
-    virtual Enemy* selectTarget(const CombatTower* tower,
+    virtual Enemy* selectTarget(const Tower* tower,
                                 const std::vector<Enemy*>& enemies) const = 0;
 };
 
@@ -38,7 +38,7 @@ class NearestTargetSelection : public TargetSelection {
      * @param enemies List of available enemy targets
      * @return Enemy* The nearest enemy or nullptr if no valid target found
      */
-    Enemy* selectTarget(const CombatTower* tower,
+    Enemy* selectTarget(const Tower* tower,
                         const std::vector<Enemy*>& enemies) const override;
 };
 
@@ -54,7 +54,7 @@ class FarthestTargetSelection : public TargetSelection {
      * @param enemies List of available enemy targets
      * @return Enemy* The farthest enemy or nullptr if no valid target found
      */
-    Enemy* selectTarget(const CombatTower* tower,
+    Enemy* selectTarget(const Tower* tower,
                         const std::vector<Enemy*>& enemies) const override;
 };
 
@@ -71,7 +71,7 @@ class LowestHealthTargetSelection : public TargetSelection {
      * @return Enemy* The enemy with lowest health or nullptr if no valid target
      * found
      */
-    Enemy* selectTarget(const CombatTower* tower,
+    Enemy* selectTarget(const Tower* tower,
                         const std::vector<Enemy*>& enemies) const override;
 };
 
@@ -88,7 +88,7 @@ class HighestHealthTargetSelection : public TargetSelection {
      * @return Enemy* The enemy with highest health or nullptr if no valid
      * target found
      */
-    Enemy* selectTarget(const CombatTower* tower,
+    Enemy* selectTarget(const Tower* tower,
                         const std::vector<Enemy*>& enemies) const override;
 };
 

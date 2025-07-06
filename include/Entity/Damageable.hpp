@@ -1,4 +1,3 @@
-
 #pragma once
 
 /**
@@ -8,97 +7,60 @@
  * and can be damaged, such as enemies, towers, and player units.
  */
 class Damageable {
-   protected:
-    int health;
-    int maxHealth;
-
    public:
-    /**
-     * @brief Construct a new Damageable object
-     *
-     * @param hp Initial health points
-     */
-    Damageable(int hp = 100) : health(hp), maxHealth(hp) {}
-
-    /**
-     * @brief Virtual destructor
-     */
-    virtual ~Damageable() = default;
-
     /**
      * @brief Deal damage to the entity
      *
      * @param damage Amount of damage to deal
      */
-    virtual void takeDamage(int damage) {
-        if (health > 0) {
-            health -= damage;
-            if (health <= 0) {
-                health = 0;
-                onDeath();
-            }
-        }
-    }
+    virtual void takeDamage(int damage) = 0;
 
     /**
      * @brief Heal the entity
      *
      * @param healAmount Amount of health to restore
      */
-    virtual void heal(int healAmount) {
-        health += healAmount;
-        if (health > maxHealth) {
-            health = maxHealth;
-        }
-    }
+    virtual void heal(int healAmount) = 0;
 
     /**
      * @brief Get the entity's current health
      *
      * @return int Current health points
      */
-    int getHealth() const { return health; }
+    virtual int getHealth() const = 0;
 
     /**
      * @brief Get the entity's maximum health
      *
      * @return int Maximum health points
      */
-    int getMaxHealth() const { return maxHealth; }
+    virtual int getMaxHealth() = 0;
 
     /**
      * @brief Set the maximum health
      *
      * @param newMaxHealth New maximum health value
      */
-    void setMaxHealth(int newMaxHealth) {
-        maxHealth = newMaxHealth;
-        if (health > maxHealth) {
-            health = maxHealth;
-        }
-    }
-
+    virtual void setMaxHealth(int newMaxHealth) = 0;
     /**
      * @brief Check if the entity is at full health
      *
      * @return bool True if at full health, false otherwise
      */
-    bool isFullHealth() const { return health == maxHealth; }
+    virtual bool isFullHealth() const = 0;
 
     /**
      * @brief Get health as a percentage
      *
      * @return float Health percentage (0.0 to 1.0)
      */
-    float getHealthPercentage() const {
-        return maxHealth > 0 ? static_cast<float>(health) / maxHealth : 0.0f;
-    }
+    virtual float getHealthPercentage() const = 0;
 
     /**
      * @brief Get the alive status
      *
      */
-    inline bool isAlive() { return static_cast<float>(health) == 0.0f; }
+    virtual bool isAlive() = 0;
 
    protected:
     /**

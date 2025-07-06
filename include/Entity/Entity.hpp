@@ -10,6 +10,7 @@
  * This class provides the common interface and properties for all game entities
  * including position, rotation, health, sprite rendering, and basic behaviors.
  */
+class Scene;
 class Entity : public sf::Drawable {
    protected:
     sf::Vector2f position;
@@ -17,6 +18,7 @@ class Entity : public sf::Drawable {
     // ! Sprite should be loaded from texture, and keep intact during lifetime
     std::optional<sf::Sprite> sprite;
     static int nextEntityId;
+    Scene& scene;
 
    public:
     const int entityId;
@@ -25,7 +27,7 @@ class Entity : public sf::Drawable {
      *
      * @param pos Initial position
      */
-    Entity(const sf::Vector2f& position = sf::Vector2f(0, 0), const sf::Angle& rotation = sf::degrees(0.f));
+    Entity(const Scene &scene, const sf::Vector2f& position = sf::Vector2f(0, 0), const sf::Angle& rotation = sf::degrees(0.f));
 
     /**
      * @brief Virtual destructor
@@ -56,7 +58,7 @@ class Entity : public sf::Drawable {
      *
      * @param pos New position
      */
-    virtual void setPosition(const sf::Vector2f& pos);
+    virtual void setPosition(const sf::Vector2f& pos) = 0;
 
     /**
      * @brief Get the current rotation of the entity
@@ -70,12 +72,12 @@ class Entity : public sf::Drawable {
      *
      * @param rot New rotation
      */
-    virtual void setRotation(const sf::Angle& rot);
+    virtual void setRotation(const sf::Angle& rot) = 0;
 
     /**
      * @brief Create and set a sprite from a texture
      *
      * @param texture The texture to use for the sprite
      */
-    void loadTexture(const sf::Texture& texture);
+    void loadSpriteTexture(const sf::Texture& texture);
 };

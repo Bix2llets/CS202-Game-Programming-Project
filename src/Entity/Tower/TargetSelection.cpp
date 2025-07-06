@@ -1,5 +1,3 @@
-#include "Entity/Tower/Combat/TargetSelection.hpp"
-#include "Entity/Tower/Combat/CombatTower.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
@@ -13,7 +11,7 @@ float calculateDistance(const sf::Vector2f& pos1, const sf::Vector2f& pos2) {
 
 namespace Combat {
 
-Enemy* NearestTargetSelection::selectTarget(const CombatTower* tower, const std::vector<Enemy*>& enemies) const {
+Enemy* NearestTargetSelection::selectTarget(const Tower* tower, const std::vector<Enemy*>& enemies) const {
     Enemy* selectedTarget = nullptr;
     float shortestDistance = std::numeric_limits<float>::max();
     sf::Vector2f towerPos = tower->getPosition();
@@ -35,7 +33,7 @@ Enemy* NearestTargetSelection::selectTarget(const CombatTower* tower, const std:
     return selectedTarget;
 }
 
-Enemy* FarthestTargetSelection::selectTarget(const CombatTower* tower, const std::vector<Enemy*>& enemies) const {
+Enemy* FarthestTargetSelection::selectTarget(const Tower* tower, const std::vector<Enemy*>& enemies) const {
     Enemy* selectedTarget = nullptr;
     float longestDistance = 0.0f;
     sf::Vector2f towerPos = tower->getPosition();
@@ -57,7 +55,7 @@ Enemy* FarthestTargetSelection::selectTarget(const CombatTower* tower, const std
     return selectedTarget;
 }
 
-Enemy* LowestHealthTargetSelection::selectTarget(const CombatTower* tower, const std::vector<Enemy*>& enemies) const {
+Enemy* LowestHealthTargetSelection::selectTarget(const Tower* tower, const std::vector<Enemy*>& enemies) const {
     Enemy* selectedTarget = nullptr;
     int lowestHealth = std::numeric_limits<int>::max();
     sf::Vector2f towerPos = tower->getPosition();
@@ -79,7 +77,7 @@ Enemy* LowestHealthTargetSelection::selectTarget(const CombatTower* tower, const
     return selectedTarget;
 }
 
-Enemy* HighestHealthTargetSelection::selectTarget(const CombatTower* tower, const std::vector<Enemy*>& enemies) const {
+Enemy* HighestHealthTargetSelection::selectTarget(const Tower* tower, const std::vector<Enemy*>& enemies) const {
     Enemy* selectedTarget = nullptr;
     int highestHealth = 0;
     sf::Vector2f towerPos = tower->getPosition();

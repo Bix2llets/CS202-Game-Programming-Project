@@ -1,75 +1,101 @@
 
-#pragma once
-
-#include "Entity/Entity.hpp"
-#include <memory>
 
 /**
- * @brief Base class for all tower entities
- * 
- * This is the base class for different types of towers in the game.
- * Specific functionality is implemented in derived classes.
+ * @file Tower.hpp
+ * @brief Declares the Tower base class for all tower entities in the game.
+ *
+ * The Tower class provides the common interface and properties for all tower types,
+ * including cost, cooldown management, and upgrade logic. Specific tower types should
+ * inherit from this class and implement their own behavior and rendering.
+ */
+#pragma once
+
+#include <memory>
+#include "Entity/Cooldown.hpp"
+#include "Entity/Entity.hpp"
+
+class Level;
+class TowerStat;
+class Scene;
+
+/**
+ * @class Tower
+ * @brief Abstract base class for all tower entities.
+ *
+ * Towers are defensive structures that can be placed in the game world. They have a cost,
+ * can be upgraded, and have cooldowns for their actions. Derived classes should implement
+ * specific attack or support behaviors.
  */
 class Tower : public Entity {
 protected:
-    int cost;               // Cost to build the tower
-    int level;              // Current upgrade level
-    int maxLevel;           // Maximum upgrade level
-    std::optional<sf::Sprite> baseSprite;  // Fixed base sprite that doesn't rotate
+    Cooldown timer;                  ///< Cooldown timer for tower actions
+    int cost;                        ///< Cost to build the tower
+    std::unique_ptr<TowerStat> stats;///< Pointer to tower statistics/attributes
 
 public:
     /**
      * @brief Construct a new Tower object
-     * 
+     *
      * @param pos Position to place the tower
+     * @param angle Initial rotation angle
      * @param buildCost Cost to build the tower
+     * @param scene Reference to the game scene
      */
     Tower(const sf::Vector2f& pos = sf::Vector2f(0, 0),
-          int buildCost = 100);
+          const sf::Angle& angle = sf::radians(0.f), int buildCost = 100,
+          const Scene& scene)
+        : Entity(scene, position, angle), cost(cost) {}
 
     /**
-     * @brief Destructor
+     * @brief Virtual destructor for safe polymorphic destruction.
      */
-    ~Tower() override = default;
+    virtual ~Tower() override = default;
 
     /**
-     * @brief Update the tower's behavior
+     * @brief Update the tower's behavior (pure virtual).
      */
-    virtual void update();
+    virtual void update() = 0;
 
     /**
-     * @brief Render the tower
-     * 
+     * @brief Render the tower (pure virtual).
      * @param target Render target to draw on
+     * @param state Current render states
      */
-    void draw(sf::RenderTarget &target, sf::RenderStates state) const override = 0;
-    
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates state) const override = 0;
+
     /**
-     * @brief Update both base sprite and upper layer sprite positions
-     * 
+     * @brief Update both base sprite and upper layer sprite positions (pure virtual).
      * @param pos New position
      */
-    void setPosition(const sf::Vector2f& pos);
+    virtual void setPosition(const sf::Vector2f& pos) = 0;
 
     /**
-     * @brief Upgrade the tower to the next level
-     * 
-     * @return bool True if upgrade successful, false if at max level
+     * @brief Set the tower's upgrade level.
+     * @param level New level
      */
-    virtual bool upgrade();
+    virtual void setLevel(Level level);
 
-    // Getters and setters
-    int getCost() const { return cost; }
-    void setCost(int newCost) { cost = newCost; }
-    
-    int getLevel() const { return level; }
-    void setLevel(int newLevel) { level = newLevel; }
     /**
-     * @brief Create and set a base sprite from a texture
-     * 
-     * @param texture The texture to use for the base sprite
+     * @brief Upgrade the tower along a specific path.
+     * @param pathNumber The upgrade path number
      */
-    void loadBaseTexture(const sf::Texture& texture);
+    virtual void upgradePath(int pathNumber);
+
+    /**
+     * @brief Check if the tower can be upgraded along a specific path.
+     * @param pathNumber The upgrade path number
+     * @return bool True if upgrade is possible, false otherwise
+     */
+    bool canUpgrade(int pathNumber);
+
+    /**
+     * @brief Called at the start of a round (pure virtual).
+     */
+    virtual void onRoundStart() = 0;
+
+    /**
+     * @brief Called at the end of a round (pure virtual).
+     */
+    virtual void onRoundEnd() = 0;
 };
-
-
