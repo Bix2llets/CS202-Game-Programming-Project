@@ -20,15 +20,8 @@
 #include "Entity/Tower/Projectile.hpp"
 
 // Tower types
-#include "Entity/Tower/Combat/CombatTower.hpp"
-#include "Entity/Tower/Combat/InstantTower.hpp"
-#include "Entity/Tower/Combat/ProjectileTower.hpp"
-#include "Entity/Tower/Combat/ContinuousTower.hpp"
-#include "Entity/Tower/Passive/PassiveTower.hpp"
-#include "Entity/Tower/Resource/ResourceTower.hpp"
 
 // Target Selection Strategy pattern
-#include "Entity/Tower/Combat/TargetSelection.hpp"
 
 // Enemy State pattern
 #include "Entity/Enemy/EnemyState.hpp"
