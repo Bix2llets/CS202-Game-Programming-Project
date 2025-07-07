@@ -32,3 +32,7 @@ void MovingState::exit(Enemy* enemy) {
     // Clean up moving state
     // Stop movement animations, etc.
 }
+
+std::unique_ptr<EnemyState> MovingState::clone() const {
+
+}

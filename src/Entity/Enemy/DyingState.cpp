@@ -30,3 +30,7 @@ void DyingState::exit(Enemy* enemy) {
     // Clean up dying state
     // This might not be called often since dying is usually a terminal state
 }
+
+std::unique_ptr<EnemyState> DyingState::clone() const {
+    
+}

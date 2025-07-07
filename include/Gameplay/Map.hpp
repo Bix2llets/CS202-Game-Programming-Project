@@ -1,9 +1,8 @@
 
 /**
  * @file Map.hpp
- * @brief Declares the Waypoint and Map classes for path and map management in the game.
+ * @brief Declares the Map class for managing paths and waypoints in the game.
  *
- * The Waypoint class represents a single point in a path, including its position and speed modifier.
  * The Map class manages collections of waypoints for different paths and provides drawing and access methods.
  */
 
@@ -12,24 +11,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-
-/**
- * @class Waypoint
- * @brief Represents a single waypoint in a path, with position and speed multiplier.
- */
-class Waypoint {
-public:
-    const sf::Vector2f position;      ///< Position of the waypoint
-    const float speedMultiplier;      ///< Speed multiplier at this waypoint
-
-    /**
-     * @brief Construct a new Waypoint object
-     * @param position The position of the waypoint
-     * @param speedMultiplier The speed multiplier at this waypoint
-     */
-    Waypoint(sf::Vector2f position, float speedMultiplier)
-        : position{position}, speedMultiplier{speedMultiplier} {}
-};
+#include "Gameplay/Waypoint.hpp"
 
 /**
  * @class Map

@@ -29,6 +29,8 @@ public:
      * @param enemy The enemy exiting this state
      */
     void exit(Enemy* enemy) override;
+
+    std::unique_ptr<EnemyState> clone() const;
 };
 
 

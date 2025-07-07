@@ -39,3 +39,7 @@ void AttackingState::exit(Enemy* enemy) {
     // Clean up attacking state
     // Stop attack animations, reset speed, etc.
 }
+
+std::unique_ptr<EnemyState> AttackingState::clone() const {
+    
+}

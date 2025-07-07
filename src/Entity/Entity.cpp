@@ -1,9 +1,5 @@
 #include "Entity/Entity.hpp"
 
-int Entity::nextEntityId = 1;
-
-Entity::Entity(const sf::Vector2f& position, const sf::Angle& rotation)
-    : position(position), rotation(rotation), entityId(nextEntityId++) {}
 
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     if (sprite.has_value()) target.draw(*sprite);
@@ -18,7 +14,7 @@ void Entity::setRotation(const sf::Angle& rot) {
     if (sprite.has_value()) sprite->setRotation(rotation);
 }
 
-void Entity::loadTexture(const sf::Texture& texture) {
+void Entity::loadSpriteTexture(const sf::Texture& texture) {
     if (sprite.has_value())
         sprite->setTexture(texture);
     else {

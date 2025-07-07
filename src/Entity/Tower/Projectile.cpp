@@ -6,85 +6,36 @@
 #include "Entity/Enemy/Enemy.hpp"
 
 // Constructor for entity-targeting projectile
-Projectile::Projectile(const sf::Vector2f& pos, Enemy* targetEnemy,
-                       int projectileDamage, float projectileSpeed)
-    : Entity(pos),
-      damage(projectileDamage),
-      targetEntity(targetEnemy),
-      speed(projectileSpeed),
-      hasHit(false),
-      projectileType(ProjectileType::TargetEntity) {
-    if (targetEntity) {
-        // Calculate initial velocity towards target
-        targetLocation = targetEntity->getPosition();
-        sf::Vector2f direction = targetLocation - position;
-        float distance =
-            std::sqrt(direction.x * direction.x + direction.y * direction.y);
-
-        if (distance > 0) {
-            velocity = (direction / distance) * speed;
-        }
-    }
-}
-
-// Constructor for location-targeting projectile
-Projectile::Projectile(const sf::Vector2f& pos, const sf::Vector2f& targetPos,
-                       int projectileDamage, float projectileSpeed)
-    : Entity(pos),
-      damage(projectileDamage),
-      targetEntity(nullptr),
-      targetLocation(targetPos),
-      speed(projectileSpeed),
-      hasHit(false),
-      projectileType(ProjectileType::TargetLocation) {
-    // Calculate velocity towards target location
-    sf::Vector2f direction = targetLocation - position;
-    float distance =
-        std::sqrt(direction.x * direction.x + direction.y * direction.y);
-
-    if (distance > 0) {
-        velocity = (direction / distance) * speed;
-    }
-}
+Projectile::Projectile(Scene& scene) : Entity{scene} {}
 
 void Projectile::update() {
-    if (!hasHit) {
-        move();
+    if (hitRemaining.getHealth() == 0) return;
 
-        if (isCollided()) {
-            // Handle collision based on projectile type
-            if (projectileType == ProjectileType::TargetEntity &&
-                targetEntity && targetEntity->isAlive()) {
-                targetEntity->takeDamage(damage);
-            }
-            // For location targeting, we just mark as hit when reaching the
-            // location
-
-            hasHit = true;
-            takeDamage(getHealth());  // Projectile is destroyed after hitting
-        }
-    } else {
-        takeDamage(
-            getHealth());  // Ensure projectile is destroyed if already hit
-    }
+    move();
+    if (isCollided()) hitRemaining.takeDamage(hitRemaining.getHealth());
+    return;
 }
 
-void Projectile::draw(sf::RenderTarget &target, sf::RenderStates state) const {
+void Projectile::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     if (hasHit) return;
     target.draw(*sprite, state);
 }
 
 void Projectile::move() {
     if (projectileType == ProjectileType::TargetEntity && targetEntity &&
-        targetEntity->isAlive()) {
+        targetEntity->isAlive() && hitRemaining.getHealth() > 0) {
         // Update velocity to track moving target
         sf::Vector2f newTargetPos = targetEntity->getPosition();
         sf::Vector2f direction = newTargetPos - position;
-        float distance =
-            std::sqrt(direction.x * direction.x + direction.y * direction.y);
+        if (direction.length() <
+            1e-6)  // * Check for very small distance,
+                   // * accomodated for floating pointer error
+        {
+            hitRemaining.takeDamage(hitRemaining.getHealth());
+        }
 
-        if (distance > 0) {
-            velocity = (direction / distance) * speed;
+        else {
+            velocity = (direction.normalized()) * speed;
         }
     }
     setPosition(position + velocity * GameConstants::TICK_INTERVAL);
@@ -96,17 +47,16 @@ bool Projectile::isCollided() {
             return true;  // Consider it a "hit" if target is dead (cleanup)
         }
 
-        return isCollidedWith(targetEntity->getPosition());
+        return isCollided(targetEntity->getPosition());
     }
     if (projectileType == ProjectileType::TargetLocation)
-        return isCollidedWith(targetLocation);
+        return isCollided(targetLocation);
 }
 
-bool Projectile::isCollidedWith(const sf::Vector2f& pos) const {
-    float distance = std::sqrt(std::pow(pos.x - position.x, 2) +
-                               std::pow(pos.y - position.y, 2));
+bool Projectile::isCollided(const sf::Vector2f& pos) const {
+    float distance = (position - pos).length();
 
-    return distance <= COLLISION_DISTANCE;
+    return distance <= collisionDistance;
 }
 
 void Projectile::onDeath() {}
