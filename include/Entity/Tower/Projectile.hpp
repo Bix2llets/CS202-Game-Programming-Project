@@ -45,7 +45,7 @@ private:
      * @brief Construct a new Projectile object (private, for factory use).
      * @param scene Reference to the scene this projectile belongs to.
      */
-    Projectile(Scene& scene);
+    Projectile(Scene& scene, const sf::Texture &texture);
     friend class ProjectileFactory;
 
 public:

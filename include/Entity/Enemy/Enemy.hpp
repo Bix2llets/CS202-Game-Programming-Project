@@ -46,7 +46,7 @@ private:
      * @brief Construct a new Enemy object (private, for factory use).
      * @param scene Reference to the scene this enemy belongs to.
      */
-    Enemy(Scene &scene) : Entity(scene) {}
+    Enemy(Scene &scene, const sf::Texture &texture) : Entity(scene, texture) {}
 
 public:
     /**

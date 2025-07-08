@@ -19,9 +19,7 @@
 #include "Entity/Entity.hpp"
 
 class Level;
-class TowerStat {
-
-};
+class TowerStat {};
 class Scene;
 enum class RoundEvent;
 
@@ -39,13 +37,16 @@ enum class TowerSpecs {
  * classes should implement specific attack or support behaviors.
  */
 class Tower : public Entity {
-private:
-    std::map<RoundEvent, std::function<void()>> roundEvents; ///< Event handlers for round events
-    Cooldown timer;  ///< Cooldown timer for tower actions
-    int cost;        ///< Cost to build the tower
-    std::unique_ptr<TowerStat> stats;  ///< Pointer to tower statistics/attributes
+   private:
+    std::map<RoundEvent, std::function<void()>>
+        roundEvents;  ///< Event handlers for round events
+    Cooldown timer;   ///< Cooldown timer for tower actions
+    int cost;         ///< Cost to build the tower
+    std::unique_ptr<TowerStat>
+        stats;  ///< Pointer to tower statistics/attributes
+    sf::Sprite baseSprite;
 
-public:
+   public:
     /**
      * @brief Construct a new Tower object.
      * @param scene Reference to the game scene.
@@ -53,9 +54,9 @@ public:
      * @param angle Initial rotation angle.
      * @param buildCost Cost to build the tower.
      */
-    Tower(Scene& scene, const sf::Vector2f& pos = sf::Vector2f(0, 0),
-          const sf::Angle& angle = sf::radians(0.f), int buildCost = 100)
-        : Entity(scene), cost(cost) {}
+    Tower(Scene& scene, const sf::Texture& bodyTexture,
+          const sf::Texture& baseTexture)
+        : Entity(scene, bodyTexture), baseSprite{baseTexture} {}
 
     /**
      * @brief Virtual destructor for safe polymorphic destruction.
@@ -118,4 +119,18 @@ public:
      * @return float Value of the requested stat.
      */
     float getSpecs(TowerSpecs specs) const {};
+
+    /**
+     * @brief Change the base texture of the tower.
+     *
+     * Updates the base sprite's texture to the provided texture. This can be
+     * used to visually represent upgrades, skin changes, or other visual
+     * modifications to the tower's base.
+     *
+     * @param baseTexture Reference to the new SFML texture to apply to the base
+     * sprite.
+     */
+    void changeBaseTexture(const sf::Texture& texture) {
+        baseSprite.setTexture(texture);
+    }
 };

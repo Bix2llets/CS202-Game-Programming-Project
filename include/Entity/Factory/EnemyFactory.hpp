@@ -11,6 +11,7 @@ class Enemy;
 enum class Difficulty;
 class Map;
 class Scene;
+class ResourceManager;
 
 /**
  * @class EnemyFactory
@@ -23,6 +24,7 @@ private:
     static constexpr float REWARD_BASIC = 7; ///< Base reward for defeating a basic enemy
     Map &map; ///< Reference to the game map for waypoint assignment
     Scene &scene; ///< Reference to the current scene
+    ResourceManager &resourceManager;
     float rewardMultiplier; ///< Multiplier for enemy rewards based on difficulty
     float speedMultiplier; ///< Multiplier for enemy speed based on difficulty
     float healthMultiplier; ///< Multiplier for enemy health based on difficulty
@@ -34,7 +36,7 @@ public:
      * @param map Reference to the game map
      * @param scene Reference to the current scene
      */
-    EnemyFactory(Difficulty difficulty, Map &map, Scene &scene);
+    EnemyFactory(Difficulty difficulty, Map &map, Scene &scene, ResourceManager &resourceManager);
 
     /**
      * @brief Create a basic enemy with specified position, rotation, and lane

@@ -6,7 +6,7 @@
 #include "Entity/Enemy/Enemy.hpp"
 
 // Constructor for entity-targeting projectile
-Projectile::Projectile(Scene& scene) : Entity{scene} {}
+Projectile::Projectile(Scene& scene, const sf::Texture& texture) : Entity{scene, texture} {}
 
 void Projectile::update() {
     if (hitRemaining.getHealth() == 0) return;
@@ -18,7 +18,7 @@ void Projectile::update() {
 
 void Projectile::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     if (hasHit) return;
-    target.draw(*sprite, state);
+    target.draw(sprite, state);
 }
 
 void Projectile::move() {

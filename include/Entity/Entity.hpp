@@ -23,7 +23,7 @@ class Entity : public sf::Drawable {
 protected:
     sf::Vector2f position; ///< Position of the entity in world coordinates
     sf::Angle rotation;     ///< Rotation of the entity
-    std::optional<sf::Sprite> sprite; ///< Optional sprite for rendering
+    sf::Sprite sprite; ///< Optional sprite for rendering
     Scene& scene; ///< Reference to the scene this entity belongs to
 
 public:
@@ -31,7 +31,7 @@ public:
      * @brief Construct a new Entity object.
      * @param scene Reference to the scene this entity belongs to.
      */
-    Entity(Scene &scene) : scene(scene) {}
+    Entity(Scene &scene, const sf::Texture& texture) : scene(scene), sprite(texture) {}
 
     /**
      * @brief Virtual destructor for safe polymorphic destruction.
@@ -79,5 +79,5 @@ public:
      * @brief Create and set a sprite from a texture.
      * @param texture The texture to use for the sprite.
      */
-    void loadSpriteTexture(const sf::Texture& texture);
+    void changeSprite(const sf::Texture& texture);
 };

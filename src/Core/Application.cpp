@@ -26,6 +26,8 @@ Application::Application()
     resourceManager.loadFont(
         "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
         "LeagueSpartan");
+
+    resourceManager.loadTexture("assets/texture/enemy/basic.png", "BasicEnemy");
     // * Loading the necessary sounds
     resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
     sceneManager.registerScene<MainMenu>("Main menu", inputManager,
