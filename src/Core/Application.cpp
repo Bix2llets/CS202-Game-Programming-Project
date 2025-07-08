@@ -9,7 +9,7 @@
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-
+#include "Scene/Level.hpp"
 Application::Application()
     : window(sf::VideoMode({GameConstants::DEFAULT_WINDOW_WIDTH,
                             GameConstants::DEFAULT_WINDOW_HEIGHT}),
@@ -35,6 +35,7 @@ Application::Application()
     sceneManager.registerScene<Setting>("Setting", inputManager,
                                         resourceManager);
     sceneManager.changeScene("Main menu");
+    sceneManager.registerScene<Level>("Gameplay", inputManager, resourceManager);
 }
 
 Application::~Application() {

@@ -10,6 +10,7 @@
 #include "Scene/Scene.hpp"
 #include "Utility/Logger.hpp"
 #include "Utility/exception.hpp"
+#include "Scene/Level.hpp"
 /**
  * @class SceneManager
  * @brief Manages switching, updating, and rendering game scenes.
@@ -37,8 +38,8 @@ class SceneManager {
                        ResourceManager &resManager) {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
-                sceneStorage[sceneName] =
-                    std::make_unique<SceneType>(window, sceneName, *this, inputManager, resManager);
+                sceneStorage[sceneName] = std::make_unique<SceneType>(
+                    window, sceneName, *this, inputManager, resManager);
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");
@@ -68,16 +69,10 @@ class SceneManager {
      */
     void update();
     /**
-     * @brief Handles an input event for the current scene.
-     * @param event Optional SFML event to handle.
+     * @brief Adds a Level scene from a unique pointer.
+     * @param levelPtr The unique pointer to the Level.
      */
-    // void handleEvent(std::optional<sf::Event> &event);
-    /**
-     * @brief Handles real-time input for the current scene.
-     */
-    // void handleInput();
-
-   private:
+    void addLevel(std::unique_ptr<Level> levelPtr);
     /**
      * @brief Checks if the current scene pointer is null and throws if so.
      */

@@ -52,3 +52,12 @@ void SceneManager::update() {
 void SceneManager::checkNullptr() {
     if (currentScene == nullptr) throw GameException("Error: nullptr access");
 }
+
+void SceneManager::addLevel(std::unique_ptr<Level> levelPtr) {
+    if (!levelPtr) {
+        Logger::error("Attempted to add a null level");
+        return;
+    }
+    std::string sceneName = levelPtr->getName();
+    sceneStorage[sceneName] = std::move(levelPtr);
+}

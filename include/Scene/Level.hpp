@@ -24,5 +24,9 @@ class Level : public Scene {
     void draw(sf::RenderTarget &target, sf::RenderStates state) const;
     void loadFromJson(const std::string &pathToFile);
     void loadFromJson(const nlohmann::json& jsonFile);
+    inline const std::string getID() const { return "Level" + levelID; }
+
+    void registerComponents() override;
+    void unRegisterComponents() override;
 
 };

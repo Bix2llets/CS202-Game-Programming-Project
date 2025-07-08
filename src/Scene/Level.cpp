@@ -39,3 +39,11 @@ void Level::loadWaypoints(const nlohmann::json &jsonFile) {
         map.loadWaypoints(waypoints, pathNumber);
     }
 }
+
+void Level::registerComponents() {
+    // TODO: Register enemies and towers on left click, open side menu showing stats
+}
+
+void Level::unRegisterComponents() {
+    // TODO: Unregister enemies and towers on left click, close side menu
+}
