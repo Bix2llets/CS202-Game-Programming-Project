@@ -1,15 +1,18 @@
 #include "Core/Application.hpp"
 
+#include <fstream>
+
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
 #include "Core/KeyboardState.hpp"
+#include "Core/LevelFactory.hpp"
 #include "Core/MouseState.hpp"
 #include "Scene/BlankScene.hpp"
+#include "Scene/Level.hpp"
 #include "Scene/MainMenu.hpp"
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-#include "Scene/Level.hpp"
 Application::Application()
     : window(sf::VideoMode({GameConstants::DEFAULT_WINDOW_WIDTH,
                             GameConstants::DEFAULT_WINDOW_HEIGHT}),
@@ -18,6 +21,8 @@ Application::Application()
       isRunning{true},
       sceneManager{window},
       inputManager{window} {
+    LevelFactory levelFactory(window, sceneManager, inputManager,
+                              resourceManager);
     if (window.isOpen())
         Logger::success("Window initialization success");
     else
@@ -26,7 +31,10 @@ Application::Application()
     resourceManager.loadFont(
         "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
         "LeagueSpartan");
-
+        std::fstream exampleJson("content/level/example.json");
+    nlohmann::json testLevelConfig =
+        nlohmann::json::parse(exampleJson);
+    levelFactory.loadConfig(testLevelConfig);
     resourceManager.loadTexture("assets/texture/enemy/basic.png", "BasicEnemy");
     // * Loading the necessary sounds
     resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
@@ -35,7 +43,9 @@ Application::Application()
     sceneManager.registerScene<Setting>("Setting", inputManager,
                                         resourceManager);
     sceneManager.changeScene("Main menu");
-    sceneManager.registerScene<Level>("Gameplay", inputManager, resourceManager);
+    sceneManager.registerScene<Level>("Gameplay", inputManager,
+                                      resourceManager);
+    sceneManager.addLevel(levelFactory.getLevel("exampleLevel"));
 }
 
 Application::~Application() {

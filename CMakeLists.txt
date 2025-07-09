@@ -199,13 +199,28 @@ else()
     message(WARNING "SFML bin directory does not exist: ${SFML_LIB_PATH}/bin. Skipping DLL copy.")
 endif()
 
-# Copy assets to output directory after building
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/assets
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
-    COMMENT "Copying assets to output directory"
-)
+# # Copy assets to output directory after building
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     ${CMAKE_SOURCE_DIR}/assets
+#     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
+#     COMMENT "Copying assets to output directory"
+# )
+
+# # Copy content to output directory after building
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     ${CMAKE_SOURCE_DIR}/content
+#     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/content
+#     COMMENT "Copying content to output directory"
+# )
+# # Copy assets to output directory after building
+# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+#     COMMAND ${CMAKE_COMMAND} -E copy_directory
+#     ${CMAKE_SOURCE_DIR}/mod
+#     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/mod
+#     COMMENT "Copying mod to output directory"
+# )
 
 # Copy assets to Release directory for Release builds
 # if (CMAKE_BUILD_TYPE STREQUAL "Release") 
@@ -265,14 +280,10 @@ if(EXISTS "${SFML_LIB_PATH}/bin")
     foreach(dll ${SFML_DLLS})
         get_filename_component(dll_name "${dll}" NAME)
         set(target_path "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${dll_name}")
-        if(NOT EXISTS "${target_path}")
-            add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different "${dll}" "${target_path}"
-                COMMENT "${target_path} does not exist. Copying ${dll} to bin directory"
-            )
-        else()
-            message(STATUS "DLL ${dll_name} already exists in bin directory, skipping copy.")
-        endif()
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy "${dll}" "${target_path}"
+            COMMENT "Copying ${dll} to bin directory (overwrite if exists)"
+        )
     endforeach()
 endif()
 

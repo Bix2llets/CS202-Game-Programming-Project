@@ -7,7 +7,11 @@ void LevelFactory::loadConfig(const nlohmann::json& configFile) {
         Logger::error("Not a JSON object");
         return;
     }
-    levelConfiguration[configFile["name"]] = configFile;
+    if (!configFile.contains("id")) {
+        Logger::error("Level config missing 'id' key");
+        return;
+    }
+    levelConfiguration[configFile["id"]] = configFile;
     return;
 }
 
