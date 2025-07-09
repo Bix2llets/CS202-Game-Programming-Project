@@ -14,13 +14,15 @@ MainMenu::MainMenu(sf::RenderWindow &window, const std::string &name,
     settingBtn = std::make_unique<Button>(
         "To setting", sf::FloatRect{{300.f, 100.f}, {50.f, 50.f}}, *this);
     settingBtn->setNotificationMessage("Setting");
-
+    testBtn.setNotificationMessage("exampleLevel");
     subscribe("Setting", [this](std::any, std::any) {
         sceneManager.changeScene("Setting");
     });
+    subscribe("exampleLevel", [this](std::any, std::any) {
+        sceneManager.changeScene("exampleLevel");
+    });
     testBtn.setOnClick([this](Button *a) {
         Logger::debug("Clicked test button 1");
-        this->testSceneSwitching();
     });
 }
 

@@ -8,10 +8,10 @@ const std::vector<Waypoint>* Map::getWaypoints(int pathNumber) {
     return &mapWaypoints[pathNumber];
 }
 
-void Map::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+void Map::draw(sf::RenderTarget& target,  sf::RenderStates state) const {
     for (const std::vector<Waypoint> path : mapWaypoints) {
         sf::VertexArray pathway(sf::PrimitiveType::TriangleStrip,
-                                static_cast<int>(path.size() * 2));
+                                static_cast<int>(path.size() * 4 - 4));
         for (int i = 0; i < path.size(); i++) {
             if (i < path.size() - 1) {
                 // Calculate direction vector
@@ -27,12 +27,14 @@ void Map::draw(sf::RenderTarget& target, sf::RenderStates state) const {
                 // Offset points
                 sf::Vector2f offset = (perp * (thickness / 2.f));
      
-                pathway[i * 2].position = path[i].position + offset;
-                pathway[i * 2 + 1].position = path[i].position - offset;
+                pathway[i * 4].position = path[i].position + offset;
+                pathway[i * 4 + 1].position = path[i].position - offset;
+                pathway[i * 4 + 2].position = path[i + 1].position + offset;
+                pathway[i * 4 + 3].position = path[i + 1].position - offset;
             } else {
                 // For the last point, repeat the previous offset
-                pathway[i * 2].position = (path[i].position - path[i - 1].position) + pathway[(i - 1) * 2].position;
-                pathway[i * 2 + 1].position = (path[i].position - path[i - 1].position) + pathway[(i - 1) * 2 + 1].position;
+                // pathway[i * 2].position = (path[i].position - path[i - 1].position) + pathway[(i - 1) * 2].position;
+                // pathway[i * 2 + 1].position = (path[i].position - path[i - 1].position) + pathway[(i - 1) * 2 + 1].position;
             }
         }
         for (int i = 0; i < pathway.getVertexCount(); i++)
@@ -45,7 +47,7 @@ void Map::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 void Map::loadWaypoints(const std::vector<Waypoint>& path, int pathID) {
     if (mapWaypoints.size() <
         pathID + 1)  //> Accomodate for the starting  index of 0
-        mapWaypoints.resize(pathID);
+        mapWaypoints.resize(pathID + 1);
 
     mapWaypoints[pathID] = path;
 }

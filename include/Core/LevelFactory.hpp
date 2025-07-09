@@ -13,7 +13,7 @@
 #pragma once
 
 #include <SFML/Window.hpp>
-#include <json/json.hpp>
+#include <json.hpp>
 #include <string>
 #include <unordered_map>
 
