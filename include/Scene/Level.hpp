@@ -4,6 +4,7 @@
 #include "Scene/Scene.hpp"
 #include <json.hpp>
 #include "Gameplay/Map.hpp"
+#include "Scene/GroupInfo.hpp"
 class SceneManager;
 class InputManager;
 class ResourceManager;
@@ -12,8 +13,10 @@ class Level : public Scene {
 
     std::string levelID;
     void loadWaypoints(const nlohmann::json& jsonFile);
+    void loadWaves(const nlohmann::json& jsonFile);
     void loadLevelID(const nlohmann::json& jsonfile);
     Map map;
+    std::vector<std::vector<EnemyGroupInfo>> waveInfo;
     public:
 
     Level(sf::RenderWindow &window, const std::string &name,

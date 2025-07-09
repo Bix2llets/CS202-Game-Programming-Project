@@ -4,12 +4,16 @@
 #include <fstream>
 #include <iostream>
 #include <json.hpp>
+
+#include "Utility/logger.hpp"
 Level::Level(sf::RenderWindow &window, const std::string &name,
              SceneManager &sceneManager, InputManager &inputManager,
              ResourceManager &resourceManager)
     : Scene(window, name, sceneManager, inputManager, resourceManager) {}
 
-void Level::update() {}
+void Level::update() {
+    
+}
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     target.draw(map, state);
@@ -21,6 +25,7 @@ void Level::loadFromJson(const std::string &pathToFile) {
 
 void Level::loadFromJson(const nlohmann::json &jsonFile) {
     loadWaypoints(jsonFile);
+    loadWaves(jsonFile);
 }
 
 void Level::loadWaypoints(const nlohmann::json &jsonFile) {
@@ -40,8 +45,35 @@ void Level::loadWaypoints(const nlohmann::json &jsonFile) {
     }
 }
 
+void Level::loadWaves(const nlohmann::json &jsonFile) {
+    using namespace nlohmann;
+    auto waveConfiguration = jsonFile["wave"];
+    if (waveConfiguration.is_array() == false) {
+        Logger::error("Not an array");
+        return;
+    }
+
+    for (auto waveIt = waveConfiguration.begin(); waveIt != waveConfiguration.end(); ++waveIt) {
+        std::vector<EnemyGroupInfo> enemyGroups;
+        auto waveComposition = (*waveIt)["waveComposition"];
+        for (auto groupIt = waveComposition.begin(); groupIt != waveComposition.end(); ++groupIt) {
+            EnemyGroupInfo groupInfo;
+            groupInfo.enemyType = (*groupIt)["enemyType"];
+            groupInfo.quantity = (*groupIt)["quantity"];
+            groupInfo.spawnDelay = (*groupIt)["spawnDelay"];
+            groupInfo.internalDelay = (*groupIt)["internalDelay"];
+
+            groupInfo.spawnDelayTimer = groupInfo.spawnDelay;
+            groupInfo.internalDelayTimer = groupInfo.internalDelay;
+            enemyGroups.push_back(groupInfo);
+        }
+        waveInfo.push_back(enemyGroups);
+    }
+}
+
 void Level::registerComponents() {
-    // TODO: Register enemies and towers on left click, open side menu showing stats
+    // TODO: Register enemies and towers on left click, open side menu showing
+    // stats
 }
 
 void Level::unRegisterComponents() {

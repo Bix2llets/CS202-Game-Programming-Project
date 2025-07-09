@@ -3,15 +3,50 @@
     "waypoints": [
         [
             [
-                100.0,
-                300.0,
+                100,
+                300,
                 1
             ],
             [
-                200.0,
-                300.0,
+                200,
+                250,
+                0.9
+            ],
+            [
+                400,
+                300,
+                0.9
+            ],
+            [
+                500,
+                600,
                 0.9
             ]
         ]
+    ],
+    "wave": [
+        {
+            "waveComposition": [
+                {
+                    "enemyType": "basic",
+                    "quantity": 10,
+                    "spawnDelay": 0,
+                    "internalDelay": 0.5 
+                },
+                {
+                    "enemyType": "basic",
+                    "quantity": 20,
+                    "spawnDelay": 4,
+                    "internalDelay": 0.1
+                },
+                {
+                    "enemyType": "basic",
+                    "quantity": 5,
+                    "spawnDelay": 1,
+                    "internalDelay": 1
+                }
+            ]
+            
+        }
     ]
 }
