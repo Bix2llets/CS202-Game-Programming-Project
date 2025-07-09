@@ -4,15 +4,39 @@
 #include <fstream>
 #include <iostream>
 #include <json.hpp>
+#include <format>
 
+#include "Base/Constants.hpp"
 #include "Utility/logger.hpp"
 Level::Level(sf::RenderWindow &window, const std::string &name,
              SceneManager &sceneManager, InputManager &inputManager,
              ResourceManager &resourceManager)
-    : Scene(window, name, sceneManager, inputManager, resourceManager) {}
+    : Scene(window, name, sceneManager, inputManager, resourceManager),
+      currentWave{0} {}
 
 void Level::update() {
-    
+    entityManager.update();
+    for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
+        for (EnemyGroupInfo &group : currentWave) {
+            if (group.quantity == 0) continue;
+            if (group.spawnDelayTimer > 0.f) {
+                group.spawnDelayTimer -= GameConstants::TICK_INTERVAL;
+                if (group.spawnDelayTimer < 0.f) {
+                    group.internalDelayTimer -= std::abs(group.spawnDelayTimer);
+                    group.spawnDelayTimer = 0.f;
+                }
+            } else {
+                group.internalDelayTimer -= GameConstants::TICK_INTERVAL;
+                while (group.internalDelayTimer <= 0 && group.quantity) {
+                    // ! Placeholder. Put enemy factory here
+                    Logger::info(std::format("Spawning {}", group.enemyType));
+                    group.internalDelayTimer += group.internalDelay;
+                    group.quantity--;
+                }
+                if (group.quantity == 0) group.internalDelayTimer = 0.f;
+            }
+        }
+    }
 }
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
@@ -53,10 +77,12 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
         return;
     }
 
-    for (auto waveIt = waveConfiguration.begin(); waveIt != waveConfiguration.end(); ++waveIt) {
+    for (auto waveIt = waveConfiguration.begin();
+         waveIt != waveConfiguration.end(); ++waveIt) {
         std::vector<EnemyGroupInfo> enemyGroups;
         auto waveComposition = (*waveIt)["waveComposition"];
-        for (auto groupIt = waveComposition.begin(); groupIt != waveComposition.end(); ++groupIt) {
+        for (auto groupIt = waveComposition.begin();
+             groupIt != waveComposition.end(); ++groupIt) {
             EnemyGroupInfo groupInfo;
             groupInfo.enemyType = (*groupIt)["enemyType"];
             groupInfo.quantity = (*groupIt)["quantity"];
@@ -78,4 +104,12 @@ void Level::registerComponents() {
 
 void Level::unRegisterComponents() {
     // TODO: Unregister enemies and towers on left click, close side menu
+}
+
+bool Level::isWaveFinished() {
+    std::vector<EnemyGroupInfo> &wave = waveInfo[currentWave];
+    for (EnemyGroupInfo &group : wave) {
+        if (group.quantity != 0) return false;
+    }
+    return true;
 }

@@ -28,22 +28,28 @@
         {
             "waveComposition": [
                 {
-                    "enemyType": "basic",
-                    "quantity": 10,
+                    "enemyType": "regular",
+                    "quantity": 200,
                     "spawnDelay": 0,
-                    "internalDelay": 0.5 
+                    "internalDelay": 0
                 },
                 {
-                    "enemyType": "basic",
+                    "enemyType": "advanced",
                     "quantity": 20,
                     "spawnDelay": 4,
-                    "internalDelay": 0.1
+                    "internalDelay": 3
                 },
                 {
-                    "enemyType": "basic",
+                    "enemyType": "high quality",
                     "quantity": 5,
                     "spawnDelay": 1,
-                    "internalDelay": 1
+                    "internalDelay": 10
+                },
+                {
+                    "enemyType": "honor",
+                    "quantity": 10,
+                    "spawnDelay": 0,
+                    "internalDelay": 5
                 }
             ]
             
