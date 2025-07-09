@@ -199,21 +199,14 @@ else()
     message(WARNING "SFML bin directory does not exist: ${SFML_LIB_PATH}/bin. Skipping DLL copy.")
 endif()
 
-# # Copy assets to output directory after building
-# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory
-#     ${CMAKE_SOURCE_DIR}/assets
-#     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
-#     COMMENT "Copying assets to output directory"
-# )
 
-# # Copy content to output directory after building
-# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-#     COMMAND ${CMAKE_COMMAND} -E copy_directory
-#     ${CMAKE_SOURCE_DIR}/content
-#     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/content
-#     COMMENT "Copying content to output directory"
-# )
+# Always copy assets and content after every build, before running
+add_custom_target(copy_resources ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/content ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/content
+    COMMENT "Always copying assets and content to output directory"
+)
+add_dependencies(${PROJECT_NAME} copy_resources)
 # # Copy assets to output directory after building
 # add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 #     COMMAND ${CMAKE_COMMAND} -E copy_directory

@@ -102,9 +102,9 @@ $(function(){initNavTree('class_scene_manager.html','','class_scene_manager-memb
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a296b02777b81fb44c13a4a74090f490a" id="r_a296b02777b81fb44c13a4a74090f490a"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a296b02777b81fb44c13a4a74090f490a">SceneManager</a> (sf::RenderWindow &amp;window)</td></tr>
 <tr class="memdesc:a296b02777b81fb44c13a4a74090f490a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="class_scene_manager.html" title="Manages switching, updating, and rendering game scenes.">SceneManager</a> for the given window.  <br /></td></tr>
-<tr class="memitem:a4d81073d7adb8a07b02b828eab025c9c" id="r_a4d81073d7adb8a07b02b828eab025c9c"><td class="memTemplParams" colspan="2">template&lt;typename SceneType&gt; </td></tr>
-<tr class="memitem:a4d81073d7adb8a07b02b828eab025c9c template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a4d81073d7adb8a07b02b828eab025c9c">registerScene</a> (const std::string &amp;sceneName)</td></tr>
-<tr class="memdesc:a4d81073d7adb8a07b02b828eab025c9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a new scene type with a given name.  <br /></td></tr>
+<tr class="memitem:ac59b07c69c039b8eb18aa846fe1e4641" id="r_ac59b07c69c039b8eb18aa846fe1e4641"><td class="memTemplParams" colspan="2">template&lt;typename SceneType&gt; </td></tr>
+<tr class="memitem:ac59b07c69c039b8eb18aa846fe1e4641 template"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac59b07c69c039b8eb18aa846fe1e4641">registerScene</a> (const std::string &amp;sceneName, <a class="el" href="class_input_manager.html">InputManager</a> &amp;inputManager, <a class="el" href="class_resource_manager.html">ResourceManager</a> &amp;resManager)</td></tr>
+<tr class="memdesc:ac59b07c69c039b8eb18aa846fe1e4641"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a new scene type with a given name.  <br /></td></tr>
 <tr class="memitem:a37b84799cda6050645ec4ed920cb4e6d" id="r_a37b84799cda6050645ec4ed920cb4e6d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37b84799cda6050645ec4ed920cb4e6d">changeScene</a> (const std::string &amp;sceneName)</td></tr>
 <tr class="memdesc:a37b84799cda6050645ec4ed920cb4e6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the current scene to the one with the given name.  <br /></td></tr>
 <tr class="memitem:a061d03a966bab213c2714b6a5ee405d8" id="r_a061d03a966bab213c2714b6a5ee405d8"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="class_scene.html">Scene</a> *const &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a061d03a966bab213c2714b6a5ee405d8">getCurrentScene</a> ()</td></tr>
@@ -115,11 +115,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>render</b> ()</td></t
 <tr class="memitem:aa1aca67532fca8ae38c1ef8b2a6eb637" id="r_aa1aca67532fca8ae38c1ef8b2a6eb637"><td class="memItemLeft" align="right" valign="top"><a id="aa1aca67532fca8ae38c1ef8b2a6eb637" name="aa1aca67532fca8ae38c1ef8b2a6eb637"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>update</b> ()</td></tr>
 <tr class="memdesc:aa1aca67532fca8ae38c1ef8b2a6eb637"><td class="mdescLeft">&#160;</td><td class="mdescRight">Updates the current scene. <br /></td></tr>
-<tr class="memitem:a1a0c6f80bb5da7772119b064605c0723" id="r_a1a0c6f80bb5da7772119b064605c0723"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1a0c6f80bb5da7772119b064605c0723">handleEvent</a> (std::optional&lt; sf::Event &gt; &amp;event)</td></tr>
-<tr class="memdesc:a1a0c6f80bb5da7772119b064605c0723"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles an input event for the current scene.  <br /></td></tr>
-<tr class="memitem:af179b92ccc47937af28016b56a8d825b" id="r_af179b92ccc47937af28016b56a8d825b"><td class="memItemLeft" align="right" valign="top"><a id="af179b92ccc47937af28016b56a8d825b" name="af179b92ccc47937af28016b56a8d825b"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>handleInput</b> ()</td></tr>
-<tr class="memdesc:af179b92ccc47937af28016b56a8d825b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handles real-time input for the current scene. <br /></td></tr>
+<tr class="memitem:ac650100b0c02dc0e4c295e3a55cef4a5" id="r_ac650100b0c02dc0e4c295e3a55cef4a5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac650100b0c02dc0e4c295e3a55cef4a5">addLevel</a> (std::unique_ptr&lt; <a class="el" href="class_level.html">Level</a> &gt; levelPtr)</td></tr>
+<tr class="memdesc:ac650100b0c02dc0e4c295e3a55cef4a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a <a class="el" href="class_level.html" title="Scene representing a gameplay level, with map, entities, and wave logic.">Level</a> scene from a unique pointer.  <br /></td></tr>
+<tr class="memitem:ab047213a1f2060e4032af8f87af45db0" id="r_ab047213a1f2060e4032af8f87af45db0"><td class="memItemLeft" align="right" valign="top"><a id="ab047213a1f2060e4032af8f87af45db0" name="ab047213a1f2060e4032af8f87af45db0"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>checkNullptr</b> ()</td></tr>
+<tr class="memdesc:ab047213a1f2060e4032af8f87af45db0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the current scene pointer is null and throws if so. <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Manages switching, updating, and rendering game scenes. </p>
@@ -158,6 +158,31 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>handleInput</b> ()</t
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="ac650100b0c02dc0e4c295e3a55cef4a5" name="ac650100b0c02dc0e4c295e3a55cef4a5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac650100b0c02dc0e4c295e3a55cef4a5">&#9670;&#160;</a></span>addLevel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SceneManager::addLevel </td>
+          <td>(</td>
+          <td class="paramtype">std::unique_ptr&lt; <a class="el" href="class_level.html">Level</a> &gt;</td>          <td class="paramname"><span class="paramname"><em>levelPtr</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Adds a <a class="el" href="class_level.html" title="Scene representing a gameplay level, with map, entities, and wave logic.">Level</a> scene from a unique pointer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">levelPtr</td><td>The unique pointer to the <a class="el" href="class_level.html" title="Scene representing a gameplay level, with map, entities, and wave logic.">Level</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a37b84799cda6050645ec4ed920cb4e6d" name="a37b84799cda6050645ec4ed920cb4e6d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a37b84799cda6050645ec4ed920cb4e6d">&#9670;&#160;</a></span>changeScene()</h2>
 
@@ -211,33 +236,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>handleInput</b> ()</t
 
 </div>
 </div>
-<a id="a1a0c6f80bb5da7772119b064605c0723" name="a1a0c6f80bb5da7772119b064605c0723"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a0c6f80bb5da7772119b064605c0723">&#9670;&#160;</a></span>handleEvent()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void SceneManager::handleEvent </td>
-          <td>(</td>
-          <td class="paramtype">std::optional&lt; sf::Event &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>event</em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Handles an input event for the current scene. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">event</td><td>Optional SFML event to handle. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a4d81073d7adb8a07b02b828eab025c9c" name="a4d81073d7adb8a07b02b828eab025c9c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d81073d7adb8a07b02b828eab025c9c">&#9670;&#160;</a></span>registerScene()</h2>
+<a id="ac59b07c69c039b8eb18aa846fe1e4641" name="ac59b07c69c039b8eb18aa846fe1e4641"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac59b07c69c039b8eb18aa846fe1e4641">&#9670;&#160;</a></span>registerScene()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -250,8 +250,17 @@ template&lt;typename SceneType&gt; </div>
         <tr>
           <td class="memname">void SceneManager::registerScene </td>
           <td>(</td>
-          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>sceneName</em></span></td><td>)</td>
+          <td class="paramtype">const std::string &amp;</td>          <td class="paramname"><span class="paramname"><em>sceneName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="class_input_manager.html">InputManager</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>inputManager</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_resource_manager.html">ResourceManager</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>resManager</em></span>&#160;)</td>
         </tr>
       </table>
   </td>

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['inputmanager_0',['InputManager',['../class_input_manager.html',1,'']]],
-  ['interative_1',['Interative',['../class_interative.html',1,'']]]
+  ['damageable_0',['Damageable',['../class_damageable.html',1,'']]],
+  ['dyingstate_1',['DyingState',['../class_dying_state.html',1,'']]]
 ];

@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['onkeyevent_0',['onKeyEvent',['../class_keyboard_observer.html#a3ab061a83ece08a5fbb7912d0c2a066f',1,'KeyboardObserver::onKeyEvent()'],['../class_sound_click_trigger.html#aefd84fe8e5e441df0ad6652f1429b3ee',1,'SoundClickTrigger::onKeyEvent()']]],
-  ['onmouseevent_1',['onMouseEvent',['../class_mouse_observer.html#ac8321513a81e6546dce9b68f2fc3d3e5',1,'MouseObserver::onMouseEvent()'],['../class_sound_click_trigger.html#a3b70c530c1ea9542ede88f646270ce7e',1,'SoundClickTrigger::onMouseEvent()']]]
+  ['mainmenu_0',['MainMenu',['../class_main_menu.html#a07ef58cfce1910b6e3776c557ce125c5',1,'MainMenu']]],
+  ['map_1',['Map',['../class_map.html#a1197ab65e40dd20b891ba165471e3163',1,'Map']]],
+  ['mapsfmlkey_2',['mapSfmlKey',['../class_signal_map.html#a0973ca110c5468b90b2a6139e82b1817',1,'SignalMap']]],
+  ['mapsfmlmousebutton_3',['mapSfmlMouseButton',['../class_signal_map.html#ab9b5c71917fa8036eb250ed53a6b7d08',1,'SignalMap']]],
+  ['move_4',['move',['../class_enemy.html#a9a398f8d12234f02563b27440aff7891',1,'Enemy']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['userevent_0',['UserEvent',['../_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3',1,'UserEvent.hpp']]]
+  ['loglevel_0',['LogLevel',['../logger_8hpp.html#aca1fd1d8935433e6ba2e3918214e07f9',1,'logger.hpp']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mouse_0',['Mouse',['../_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9',1,'MouseState.hpp']]]
+  ['key_0',['Key',['../_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73',1,'KeyboardState.hpp']]]
 ];

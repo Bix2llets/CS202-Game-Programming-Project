@@ -121,6 +121,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:abfd315ffd9454a7d9ff59bb1a028e3a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a pointer to a loaded texture by ID.  <br /></td></tr>
 <tr class="memitem:ac56f9c2dc7cbe8a337bd78b10c0f5c92" id="r_ac56f9c2dc7cbe8a337bd78b10c0f5c92"><td class="memItemLeft" align="right" valign="top">const sf::Font *const&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac56f9c2dc7cbe8a337bd78b10c0f5c92">getFont</a> (const std::string &amp;ID) const</td></tr>
 <tr class="memdesc:ac56f9c2dc7cbe8a337bd78b10c0f5c92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves a pointer to a loaded font by ID.  <br /></td></tr>
+<tr class="memitem:a7abfd8a77fcbf8c340ecd3ba6d89d522" id="r_a7abfd8a77fcbf8c340ecd3ba6d89d522"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a7abfd8a77fcbf8c340ecd3ba6d89d522">setSoundVolume</a> (int volume)</td></tr>
+<tr class="memdesc:a7abfd8a77fcbf8c340ecd3ba6d89d522"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the sound effects volume.  <br /></td></tr>
+<tr class="memitem:a34f06dfcb4e9b3d6506db284ddae1f73" id="r_a34f06dfcb4e9b3d6506db284ddae1f73"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a34f06dfcb4e9b3d6506db284ddae1f73">getSoundVolume</a> () const</td></tr>
+<tr class="memdesc:a34f06dfcb4e9b3d6506db284ddae1f73"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current sound effects volume.  <br /></td></tr>
+<tr class="memitem:ae3fa9c18c53cf508f68bb5903b6bd04d" id="r_ae3fa9c18c53cf508f68bb5903b6bd04d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae3fa9c18c53cf508f68bb5903b6bd04d">setMusicVolume</a> (int volume)</td></tr>
+<tr class="memdesc:ae3fa9c18c53cf508f68bb5903b6bd04d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the music volume.  <br /></td></tr>
+<tr class="memitem:a8ea8af17de99f9676184723bef51df58" id="r_a8ea8af17de99f9676184723bef51df58"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8ea8af17de99f9676184723bef51df58">getMusicVolume</a> () const</td></tr>
+<tr class="memdesc:a8ea8af17de99f9676184723bef51df58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current music volume.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Manages loading, storing, and accessing game resources such as textures, sounds, and fonts. </p>
@@ -148,6 +156,46 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pointer to the font, or nullptr if not found. </dd></dl>
+
+</div>
+</div>
+<a id="a8ea8af17de99f9676184723bef51df58" name="a8ea8af17de99f9676184723bef51df58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ea8af17de99f9676184723bef51df58">&#9670;&#160;</a></span>getMusicVolume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ResourceManager::getMusicVolume </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the current music volume. </p>
+<dl class="section return"><dt>Returns</dt><dd>Current music volume (0-100). </dd></dl>
+
+</div>
+</div>
+<a id="a34f06dfcb4e9b3d6506db284ddae1f73" name="a34f06dfcb4e9b3d6506db284ddae1f73"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34f06dfcb4e9b3d6506db284ddae1f73">&#9670;&#160;</a></span>getSoundVolume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int ResourceManager::getSoundVolume </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the current sound effects volume. </p>
+<dl class="section return"><dt>Returns</dt><dd>Current sound volume (0-100). </dd></dl>
 
 </div>
 </div>
@@ -286,6 +334,56 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ID</td><td><a class="el" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73" title="User-defined key codes for keyboard input abstraction.">Key</a> of the sound buffer to play. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae3fa9c18c53cf508f68bb5903b6bd04d" name="ae3fa9c18c53cf508f68bb5903b6bd04d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3fa9c18c53cf508f68bb5903b6bd04d">&#9670;&#160;</a></span>setMusicVolume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ResourceManager::setMusicVolume </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>volume</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the music volume. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">volume</td><td>Volume level (0-100). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a7abfd8a77fcbf8c340ecd3ba6d89d522" name="a7abfd8a77fcbf8c340ecd3ba6d89d522"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7abfd8a77fcbf8c340ecd3ba6d89d522">&#9670;&#160;</a></span>setSoundVolume()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void ResourceManager::setSoundVolume </td>
+          <td>(</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>volume</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets the sound effects volume. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">volume</td><td>Volume level (0-100). </td></tr>
   </table>
   </dd>
 </dl>

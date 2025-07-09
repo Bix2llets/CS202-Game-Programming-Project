@@ -103,7 +103,8 @@ Inheritance diagram for MouseObserver:</div>
  <div class="center">
   <img src="class_mouse_observer.png" usemap="#MouseObserver_map" alt=""/>
   <map id="MouseObserver_map" name="MouseObserver_map">
-<area href="class_sound_click_trigger.html" title="Test class that plays a sound when mouse events occur." alt="SoundClickTrigger" shape="rect" coords="0,56,117,80"/>
+<area href="class_button.html" title="A clickable UI button that notifies a mediator and supports custom callbacks." alt="Button" shape="rect" coords="0,56,117,80"/>
+<area href="class_sound_click_trigger.html" title="Test class that plays a sound when mouse events occur." alt="SoundClickTrigger" shape="rect" coords="127,56,244,80"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -116,15 +117,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5c57e228f93ed5445537fc5af29b06c8" id="r_a5c57e228f93ed5445537fc5af29b06c8"><td class="memItemLeft" align="right" valign="top"><a id="a5c57e228f93ed5445537fc5af29b06c8" name="a5c57e228f93ed5445537fc5af29b06c8"></a>
 virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b> ()=default</td></tr>
 <tr class="memdesc:a5c57e228f93ed5445537fc5af29b06c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for safe polymorphic destruction. <br /></td></tr>
-<tr class="memitem:ac8321513a81e6546dce9b68f2fc3d3e5" id="r_ac8321513a81e6546dce9b68f2fc3d3e5"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac8321513a81e6546dce9b68f2fc3d3e5">onMouseEvent</a> (<a class="el" href="_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9">Mouse</a> button, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, const sf::Vector2f &amp;worldPosition, const sf::Vector2i &amp;windowPosition)=0</td></tr>
-<tr class="memdesc:ac8321513a81e6546dce9b68f2fc3d3e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when a mouse button is pressed.  <br /></td></tr>
+<tr class="memitem:a0e3fce44a3840025c8d9c58ba8a7f5d8" id="r_a0e3fce44a3840025c8d9c58ba8a7f5d8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0e3fce44a3840025c8d9c58ba8a7f5d8">onMouseEvent</a> (<a class="el" href="_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9">Mouse</a> button, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, const sf::Vector2f &amp;worldPosition, const sf::Vector2f &amp;windowPosition)=0</td></tr>
+<tr class="memdesc:a0e3fce44a3840025c8d9c58ba8a7f5d8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called when a mouse button is pressed.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract interface for mouse event observers. </p>
 <p>Classes inheriting from <a class="el" href="class_mouse_observer.html" title="Abstract interface for mouse event observers.">MouseObserver</a> can subscribe to mouse button events managed by <a class="el" href="class_mouse_state.html" title="Manages mouse button event subscriptions and notifies observers. ] MouseState allows objects to subsc...">MouseState</a>. They must implement the mouse event handler methods for press and release events. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="ac8321513a81e6546dce9b68f2fc3d3e5" name="ac8321513a81e6546dce9b68f2fc3d3e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8321513a81e6546dce9b68f2fc3d3e5">&#9670;&#160;</a></span>onMouseEvent()</h2>
+<a id="a0e3fce44a3840025c8d9c58ba8a7f5d8" name="a0e3fce44a3840025c8d9c58ba8a7f5d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e3fce44a3840025c8d9c58ba8a7f5d8">&#9670;&#160;</a></span>onMouseEvent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -150,7 +151,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const sf::Vector2i &amp;</td>          <td class="paramname"><span class="paramname"><em>windowPosition</em></span>&#160;)</td>
+          <td class="paramtype">const sf::Vector2f &amp;</td>          <td class="paramname"><span class="paramname"><em>windowPosition</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -171,7 +172,7 @@ virtual&#160;</td><td class="memItemRight" valign="bottom"><b>~MouseObserver</b>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_sound_click_trigger.html#a3b70c530c1ea9542ede88f646270ce7e">SoundClickTrigger</a>.</p>
+<p>Implemented in <a class="el" href="class_button.html#a4670bfefa63dcc7544f588f353b1ed1f">Button</a>, and <a class="el" href="class_sound_click_trigger.html#af1123c3dc59ac94fb0faff722fd76951">SoundClickTrigger</a>.</p>
 
 </div>
 </div>

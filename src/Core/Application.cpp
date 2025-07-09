@@ -31,9 +31,10 @@ Application::Application()
     resourceManager.loadFont(
         "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
         "LeagueSpartan");
-        std::fstream exampleJson("content/level/example.json");
-    nlohmann::json testLevelConfig =
-        nlohmann::json::parse(exampleJson);
+    Logger::debug("load fond succ");
+    std::fstream exampleJson("content/level/example.json");
+    nlohmann::json testLevelConfig = nlohmann::json::parse(exampleJson);
+    Logger::debug("parse json succ");
     levelFactory.loadConfig(testLevelConfig);
     resourceManager.loadTexture("assets/texture/enemy/basic.png", "BasicEnemy");
     // * Loading the necessary sounds

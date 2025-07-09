@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['loglevel_0',['LogLevel',['../logger_8hpp.html#aca1fd1d8935433e6ba2e3918214e07f9',1,'logger.hpp']]]
+  ['enemytype_0',['EnemyType',['../_enemy_8hpp.html#ac3e413a86119db4b031458c7259e268e',1,'Enemy.hpp']]]
 ];

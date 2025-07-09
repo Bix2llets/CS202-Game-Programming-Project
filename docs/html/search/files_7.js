@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['logger_2ehpp_0',['logger.hpp',['../logger_8hpp.html',1,'']]]
+  ['inputmanager_2ehpp_0',['InputManager.hpp',['../_input_manager_8hpp.html',1,'']]],
+  ['interactive_2ehpp_1',['Interactive.hpp',['../_interactive_8hpp.html',1,'']]]
 ];

@@ -6,6 +6,8 @@
  */
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <string>
+#include <json.hpp>
 
 class Enemy;
 enum class Difficulty;
@@ -40,11 +42,18 @@ public:
 
     /**
      * @brief Create a basic enemy with specified position, rotation, and lane
-     * @param position Spawn position
-     * @param angle Initial rotation
+     * @param ID The enemy's ID
+     * @param distance distance from starting point of the path
      * @param laneID Path/lane identifier
      * @return Enemy instance
      */
-    Enemy createBasicEnemy(sf::Vector2f position, sf::Angle angle, int laneID);
-    // * To be added more later
+    Enemy createEnemy(std::string ID, float distance, int laneID);
+
+
+    /**
+     * @brief Load enemy configuration from a nlohmann::json object.
+     * @param jsonObj The JSON object containing enemy configuration.
+     * @return true if loading was successful, false otherwise.
+     */
+    bool loadJSON(const nlohmann::json& jsonObj);
 };

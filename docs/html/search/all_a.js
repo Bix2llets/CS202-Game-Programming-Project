@@ -1,10 +1,8 @@
 var searchData=
 [
-  ['mapsfmlkey_0',['mapSfmlKey',['../class_signal_map.html#a0973ca110c5468b90b2a6139e82b1817',1,'SignalMap']]],
-  ['mapsfmlmousebutton_1',['mapSfmlMouseButton',['../class_signal_map.html#ab9b5c71917fa8036eb250ed53a6b7d08',1,'SignalMap']]],
-  ['mouse_2',['Mouse',['../_mouse_state_8hpp.html#a6823a62e33fc2bc26d3dba7283e65cc9',1,'MouseState.hpp']]],
-  ['mouseobserver_3',['MouseObserver',['../class_mouse_observer.html',1,'']]],
-  ['mouseobserver_2ehpp_4',['MouseObserver.hpp',['../_mouse_observer_8hpp.html',1,'']]],
-  ['mousestate_5',['MouseState',['../class_mouse_state.html',1,'']]],
-  ['mousestate_2ehpp_6',['MouseState.hpp',['../_mouse_state_8hpp.html',1,'']]]
+  ['key_0',['Key',['../_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73',1,'KeyboardState.hpp']]],
+  ['keyboardobserver_1',['KeyboardObserver',['../class_keyboard_observer.html',1,'']]],
+  ['keyboardobserver_2ehpp_2',['KeyboardObserver.hpp',['../_keyboard_observer_8hpp.html',1,'']]],
+  ['keyboardstate_3',['KeyboardState',['../class_keyboard_state.html',1,'KeyboardState'],['../class_keyboard_state.html#ac478856f66783a6fd0fde525d9f2ea0e',1,'KeyboardState::KeyboardState()']]],
+  ['keyboardstate_2ehpp_4',['KeyboardState.hpp',['../_keyboard_state_8hpp.html',1,'']]]
 ];

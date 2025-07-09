@@ -35,18 +35,3 @@ EnemyFactory::EnemyFactory(Difficulty difficulty, Map& map,
     }
 }
 
-Enemy EnemyFactory::createBasicEnemy(sf::Vector2f position, sf::Angle angle,
-                                     int laneID) {
-    Enemy result(scene, *resourceManager.getTexture("BasicEnemy"));
-    result.setMaxHealth(100);
-    result.setHealth(100);
-    result.reward = 7;
-    result.setPosition(position);
-    result.setRotation(angle);
-    result.enemyType = EnemyType::Ground;
-    result.setWaypoints(map.getWaypoints(laneID));
-    result.speed = 10;
-    result.currentState = std::make_unique<MovingState>();
-    // * load sprite here
-    return result;
-}

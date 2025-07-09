@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['key_0',['Key',['../_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73',1,'KeyboardState.hpp']]]
+  ['difficulty_0',['Difficulty',['../_difficulty_8hpp.html#a43efb0a2e61815a66134dfa5ccea0a83',1,'Difficulty.hpp']]]
 ];

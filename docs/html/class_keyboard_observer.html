@@ -113,15 +113,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a7503b37f98df737f00f10b3df04973d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribe to a specific key and user event combination.  <br /></td></tr>
 <tr class="memitem:a09c8a3df55e8b42d589d13cfc322c47c" id="r_a09c8a3df55e8b42d589d13cfc322c47c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a09c8a3df55e8b42d589d13cfc322c47c">unSubscribeKeyboard</a> (<a class="el" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, <a class="el" href="class_keyboard_state.html">KeyboardState</a> &amp;state)</td></tr>
 <tr class="memdesc:a09c8a3df55e8b42d589d13cfc322c47c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unsubscribe from a specific key and user event combination.  <br /></td></tr>
-<tr class="memitem:a3ab061a83ece08a5fbb7912d0c2a066f" id="r_a3ab061a83ece08a5fbb7912d0c2a066f"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3ab061a83ece08a5fbb7912d0c2a066f">onKeyEvent</a> (<a class="el" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, const sf::Vector2f &amp;worldPosition, const sf::Vector2i &amp;windowPosition)=0</td></tr>
-<tr class="memdesc:a3ab061a83ece08a5fbb7912d0c2a066f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle a keyboard event. Should be overridden by derived classes.  <br /></td></tr>
+<tr class="memitem:a60ffcb532d0a7b637fdff4ef727d817a" id="r_a60ffcb532d0a7b637fdff4ef727d817a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a60ffcb532d0a7b637fdff4ef727d817a">onKeyEvent</a> (<a class="el" href="_keyboard_state_8hpp.html#ab3c7af4820830f9166ede9e5623c4e73">Key</a> key, <a class="el" href="_user_event_8hpp.html#a48ad90a79ef941a6f743a415e5412ee3">UserEvent</a> event, const sf::Vector2f &amp;worldPosition, const sf::Vector2f &amp;windowPosition)=0</td></tr>
+<tr class="memdesc:a60ffcb532d0a7b637fdff4ef727d817a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle a keyboard event. Should be overridden by derived classes.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract base class for objects that observe keyboard events. </p>
 <p><a class="el" href="class_keyboard_observer.html" title="Abstract base class for objects that observe keyboard events.">KeyboardObserver</a> provides an interface for subscribing to, unsubscribing from, and handling keyboard events. Derived classes should implement the onKeyEvent method to define custom behavior for specific key events. </p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
-<a id="a3ab061a83ece08a5fbb7912d0c2a066f" name="a3ab061a83ece08a5fbb7912d0c2a066f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3ab061a83ece08a5fbb7912d0c2a066f">&#9670;&#160;</a></span>onKeyEvent()</h2>
+<a id="a60ffcb532d0a7b637fdff4ef727d817a" name="a60ffcb532d0a7b637fdff4ef727d817a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a60ffcb532d0a7b637fdff4ef727d817a">&#9670;&#160;</a></span>onKeyEvent()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -147,7 +147,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const sf::Vector2i &amp;</td>          <td class="paramname"><span class="paramname"><em>windowPosition</em></span>&#160;)</td>
+          <td class="paramtype">const sf::Vector2f &amp;</td>          <td class="paramname"><span class="paramname"><em>windowPosition</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -168,7 +168,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Implemented in <a class="el" href="class_sound_click_trigger.html#aefd84fe8e5e441df0ad6652f1429b3ee">SoundClickTrigger</a>.</p>
+<p>Implemented in <a class="el" href="class_sound_click_trigger.html#ad6feea1e7c5f1287a8391d006bd6c279">SoundClickTrigger</a>.</p>
 
 </div>
 </div>
