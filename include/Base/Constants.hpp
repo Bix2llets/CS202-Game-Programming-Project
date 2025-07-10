@@ -24,5 +24,5 @@ namespace GameConstants {
     constexpr float SUBTICK_INTERVAL = 1.f / 60 / 8;
     constexpr int TARGET_FPS = 60;
 
-    constexpr sf::Texture BLANK_TEXTURE;
+    const sf::Texture BLANK_TEXTURE;
 }

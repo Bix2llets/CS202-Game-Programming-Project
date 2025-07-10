@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <optional>
+#include "Base/Constants.hpp"
 
 class Scene;
 

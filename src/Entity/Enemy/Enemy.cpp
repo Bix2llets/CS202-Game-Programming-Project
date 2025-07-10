@@ -11,11 +11,9 @@
 Enemy::Enemy(const Enemy &other)
     : Entity(other),
       Damageable(other),
-      waypoints(other.waypoints),
       currentState(other.currentState ? other.currentState->clone() : nullptr),
       health(other.health),
       enemyType(other.enemyType),
-      speed(other.speed),
       reward(other.reward) {
     // Deep copy of state and health
     // If Enemy has any additional pointer or resource members, copy them here
@@ -25,16 +23,25 @@ void Enemy::update() {
     if (currentState) {
         currentState->update(this);
     }
-    move();
+    animation.update();
+    healTimer.update();
+
+    position = path.getPosition();
+    sprite = changeSpriteContent(sprite, animation.getCurrentSprite());
+    while(healTimer.isAvailable()) {
+        healTimer.use();
+        health.heal(healAmount);
+    }
+}
+
+void Enemy::move() {
+    path.update();
 }
 
 void Enemy::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     Entity::draw(target, state);
 }
 
-void Enemy::move() {
-    if (waypoints->empty()) return;
-}
 
 void Enemy::changeState(std::unique_ptr<EnemyState> newState) {
     if (currentState) {
@@ -65,3 +72,24 @@ void Enemy::setPosition(const sf::Vector2f &position) {}
 void Enemy::setRotation(const sf::Angle &angle) {}
 void Enemy::onHeal(int healAmount) { health.heal(healAmount); }
 bool Enemy::isAlive() { return health.getHealth() > 0; }
+
+Enemy::Enemy(Scene &scene, const nlohmann::json &jsonFile) : Entity(scene) {
+    loadJson(jsonFile);
+}
+
+void Enemy::loadJson(const nlohmann::json &jsonFile) {
+    
+}
+
+sf::Sprite Enemy::changeSpriteContent(sf::Sprite current, sf::Sprite target) {
+    auto rotation = current.getRotation();
+    auto origin = current.getOrigin();
+    auto scale = current.getScale();
+    auto positon = current.getPosition();
+    current = target;
+    current.setRotation(rotation);
+    current.setOrigin(origin);
+    current.setScale(scale);
+    current.setPosition(position);
+    return current;
+}

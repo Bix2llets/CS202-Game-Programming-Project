@@ -29,6 +29,7 @@ class Timer {
     int available;        ///< Number of available uses (for continuous mode)
 
    public:
+   Timer() = default;
     /**
      * @brief Constructs a Timer with a given interval and mode.
      * @param timeInterval The interval duration.

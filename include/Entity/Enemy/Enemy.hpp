@@ -3,7 +3,8 @@
  * @file Enemy.hpp
  * @brief Declares the Enemy class for enemy entities in the game.
  *
- * Enemy objects move along paths, can be attacked by towers, and use the State pattern for AI behavior.
+ * Enemy objects move along paths, can be attacked by towers, and use the State
+ * pattern for AI behavior.
  */
 #pragma once
 
@@ -11,11 +12,12 @@
 #include <vector>
 
 #include "Entity/Damageable.hpp"
+#include "Entity/Enemy/EnemyState.hpp"
 #include "Entity/Entity.hpp"
 #include "Entity/Health.hpp"
-#include "Entity/Enemy/EnemyState.hpp"
-#include "Gameplay/Waypoint.hpp"
+#include "Entity/Modules/EntityPath.hpp"
 #include "Entity/Modules/SpriteAnimation.hpp"
+#include "Gameplay/Waypoint.hpp"
 class Map;
 class EnemyFactory;
 class Scene;
@@ -30,27 +32,33 @@ enum class EnemyType { Ground, Aerial };
  * @class Enemy
  * @brief Enemy entity that moves along paths and can be attacked by towers.
  *
- * Uses the State pattern for AI behavior and supports health, movement, and state transitions.
+ * Uses the State pattern for AI behavior and supports health, movement, and
+ * state transitions.
  */
 class Enemy : public Entity, public Damageable {
     friend class EnemyFactory;
 
-private:
-    const std::vector<Waypoint>* waypoints; ///< Pointer to the path waypoints
-    std::unique_ptr<EnemyState> currentState; ///< Current AI state
+   private:
+    EntityPath path;
     SpriteAnimation animation;
-    Health health; ///< Health component
-    EnemyType enemyType; ///< Type of enemy (ground, aerial, etc.)
-    float speed; ///< Movement speed
-    int reward; ///< Reward for defeating this enemy
+    Health health;  ///< Health component
+    Timer healTimer;
+    float healAmount;
+
+
+    std::unique_ptr<EnemyState> currentState;  ///< Current AI state
+    EnemyType enemyType;  ///< Type of enemy (ground, aerial, etc.)
+    int reward;           ///< Reward for defeating this enemy
 
     /**
      * @brief Construct a new Enemy object (private, for factory use).
      * @param scene Reference to the scene this enemy belongs to.
      */
-    Enemy(Scene &scene);
-    void loadJson(const nlohmann::json &jsonFile);
-public:
+    Enemy(Scene& scene, const nlohmann::json& jsonFile);
+    void loadJson(const nlohmann::json& jsonFile);
+
+    sf::Sprite changeSpriteContent(sf::Sprite current, sf::Sprite target);
+   public:
     /**
      * @brief Copy constructor (deep copy).
      * @param other Enemy to copy from.
@@ -109,7 +117,7 @@ public:
      * @brief Get the enemy's movement speed.
      * @return float Speed value.
      */
-    float getSpeed() const { return speed; }
+    float getSpeed() const { return path.getActualSpeed(); }
 
     /**
      * @brief Get the enemy's type.
@@ -127,14 +135,14 @@ public:
      * @brief Get the waypoints for this enemy's path.
      * @return Pointer to the vector of waypoints.
      */
-    const std::vector<Waypoint>* getWaypoints() const { return waypoints; }
+    const std::vector<Waypoint>* getWaypoints() const { return path.getWaypoints(); }
 
     /**
      * @brief Set the waypoints for this enemy's path.
      * @param newWaypoints Pointer to the new waypoints vector.
      */
     void setWaypoints(const std::vector<Waypoint>* newWaypoints) {
-        waypoints = newWaypoints;
+        path.setWaypoints(newWaypoints);
     }
 
     /**
@@ -147,20 +155,21 @@ public:
      * @brief Set the position of the enemy.
      * @param pos New position.
      */
-    void setPosition(const sf::Vector2f &pos) override;
+    void setPosition(const sf::Vector2f& pos) override;
 
     /**
      * @brief Set the rotation of the enemy.
      * @param rot New rotation.
      */
-    void setRotation(const sf::Angle &rot) override;
+    void setRotation(const sf::Angle& rot) override;
 
     /**
      * @brief Get the current health
      * @return Current health
      */
     inline int getHealth() const { return health.getHealth(); }
-protected:
+
+   protected:
     /**
      * @brief Called when the enemy dies.
      * Handles death logic, reward, and cleanup.
