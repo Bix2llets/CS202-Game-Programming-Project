@@ -5,8 +5,8 @@ Timer::Timer(float timeInterval, TimerMode mode)
 Timer::Timer(float timeInterval, float remainingTime, TimerMode mode)
     : timeInterval{timeInterval}, remainingTime{remainingTime}, mode{mode} {}
 
-bool isAvailable() {
-    return isAvailable > 0;
+bool Timer::isAvailable() {
+    return available > 0;
 }
 
 void Timer::update() {
@@ -27,10 +27,6 @@ void Timer::update() {
             available++;
         }
     }
-}
-
-bool Timer::isAvailable() {
-    return available > 0;
 }
 
 void Timer::reset() {

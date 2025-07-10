@@ -26,5 +26,5 @@ void Health::setMaxHealth(float amount) {
     if (maxHealth < 0) maxHealth = 0;
 }
 
-float Health::getMaxHealth() { return maxHealth; }
-float Health::getHealth() { return currentHealth; }
+float Health::getMaxHealth() const { return maxHealth; }
+float Health::getHealth() const { return currentHealth; }
