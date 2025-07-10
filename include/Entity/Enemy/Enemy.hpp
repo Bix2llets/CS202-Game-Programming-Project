@@ -15,6 +15,7 @@
 #include "Entity/Health.hpp"
 #include "Entity/Enemy/EnemyState.hpp"
 #include "Gameplay/Waypoint.hpp"
+#include "Entity/Modules/SpriteAnimation.hpp"
 class Map;
 class EnemyFactory;
 class Scene;
@@ -37,6 +38,7 @@ class Enemy : public Entity, public Damageable {
 private:
     const std::vector<Waypoint>* waypoints; ///< Pointer to the path waypoints
     std::unique_ptr<EnemyState> currentState; ///< Current AI state
+    SpriteAnimation animation;
     Health health; ///< Health component
     EnemyType enemyType; ///< Type of enemy (ground, aerial, etc.)
     float speed; ///< Movement speed
@@ -46,8 +48,8 @@ private:
      * @brief Construct a new Enemy object (private, for factory use).
      * @param scene Reference to the scene this enemy belongs to.
      */
-    Enemy(Scene &scene, const sf::Texture &texture) : Entity(scene, texture) {}
-
+    Enemy(Scene &scene);
+    void loadJson(const nlohmann::json &jsonFile);
 public:
     /**
      * @brief Copy constructor (deep copy).
@@ -89,49 +91,13 @@ public:
      * @brief Take damage and handle death.
      * @param damage Amount of damage to take.
      */
-    void takeDamage(int damage) override;
+    void onHit(int damage) override;
 
     /**
      * @brief Heal the enemy by a specified amount.
      * @param healAmount Amount of health to restore.
      */
-    void heal(int healAmount);
-
-    /**
-     * @brief Get the enemy's current health.
-     * @return int Current health points.
-     */
-    int getHealth() const;
-
-    /**
-     * @brief Get the enemy's maximum health.
-     * @return int Maximum health points.
-     */
-    int getMaxHealth() const;
-
-    /**
-     * @brief Set the enemy's current health.
-     * @param newHealth New health value.
-     */
-    void setHealth(int newHealth);
-
-    /**
-     * @brief Set the enemy's maximum health.
-     * @param newMaxHealth New maximum health value.
-     */
-    void setMaxHealth(int newMaxHealth);
-
-    /**
-     * @brief Check if the enemy is at full health.
-     * @return bool True if at full health, false otherwise.
-     */
-    bool isFullHealth() const;
-
-    /**
-     * @brief Get health as a percentage (0.0 to 1.0).
-     * @return float Health percentage.
-     */
-    float getHealthPercentage() const;
+    void onHeal(int healAmount) override;
 
     /**
      * @brief Check if the enemy is alive.
@@ -189,6 +155,11 @@ public:
      */
     void setRotation(const sf::Angle &rot) override;
 
+    /**
+     * @brief Get the current health
+     * @return Current health
+     */
+    inline int getHealth() const { return health.getHealth(); }
 protected:
     /**
      * @brief Called when the enemy dies.

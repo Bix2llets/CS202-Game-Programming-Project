@@ -33,6 +33,8 @@ public:
      */
     Entity(Scene &scene, const sf::Texture& texture) : scene(scene), sprite(texture) {}
 
+    Entity(Scene &scene) : scene(scene), sprite(GameConstants::BLANK_TEXTURE) {}
+
     /**
      * @brief Virtual destructor for safe polymorphic destruction.
      */
