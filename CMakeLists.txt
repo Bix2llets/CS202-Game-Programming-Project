@@ -215,7 +215,7 @@ add_dependencies(${PROJECT_NAME} copy_resources)
 #     COMMENT "Copying mod to output directory"
 # )
 
-# Copy assets to Release directory for Release builds
+# Copy assets to Release directory for Release buildsz
 # if (CMAKE_BUILD_TYPE STREQUAL "Release") 
 #     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 #         COMMAND ${CMAKE_COMMAND} -E copy_directory

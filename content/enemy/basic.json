@@ -1,0 +1,28 @@
+{
+    "id": "basic",
+    "displayName": "Basic enemy",
+    "health": {
+        "maxHealth": 100,
+        "healAmount": 1,
+        "healInterval": 0.5,
+        "resistance": 20
+    },
+    "sprite": {
+        "textureID": "basicEnemy",
+        "sizeX": 32,
+        "sizeY": 32,
+        "animationInterval": 0.25,
+        "type": "circular"
+    },
+    "speed": 20,
+    "type": "land",
+    "reward": 9,
+    "spawnEffect": {
+        "audio": [],
+        "visual": []
+    },
+    "deathEffect": {
+        "audio": [],
+        "visual": []
+    }
+}
