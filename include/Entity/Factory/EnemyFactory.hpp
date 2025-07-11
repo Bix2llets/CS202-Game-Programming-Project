@@ -9,6 +9,8 @@
 #include <string>
 #include <json.hpp>
 
+#include "Core/JSONLoader.hpp"
+
 class Enemy;
 enum class Difficulty;
 class Map;
@@ -26,7 +28,8 @@ private:
     static constexpr float REWARD_BASIC = 7; ///< Base reward for defeating a basic enemy
     Map &map; ///< Reference to the game map for waypoint assignment
     Scene &scene; ///< Reference to the current scene
-    ResourceManager &resourceManager;
+    JSONLoader &loader;
+    ResourceManager &resManager;
     float rewardMultiplier; ///< Multiplier for enemy rewards based on difficulty
     float speedMultiplier; ///< Multiplier for enemy speed based on difficulty
     float healthMultiplier; ///< Multiplier for enemy health based on difficulty
@@ -38,7 +41,7 @@ public:
      * @param map Reference to the game map
      * @param scene Reference to the current scene
      */
-    EnemyFactory(Difficulty difficulty, Map &map, Scene &scene, ResourceManager &resourceManager);
+    EnemyFactory(Difficulty difficulty, Map &map, Scene &scene, JSONLoader &jsonLoader, ResourceManager &resManager);
 
     /**
      * @brief Create a basic enemy with specified position, rotation, and lane
@@ -47,7 +50,7 @@ public:
      * @param laneID Path/lane identifier
      * @return Enemy instance
      */
-    Enemy createEnemy(std::string ID, float distance, int laneID);
+    Enemy createEnemy(const std::string &ID, float distance, int laneID);
 
 
     /**

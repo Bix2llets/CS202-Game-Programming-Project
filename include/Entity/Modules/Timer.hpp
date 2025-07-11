@@ -29,7 +29,7 @@ class Timer {
     int available;        ///< Number of available uses (for continuous mode)
 
    public:
-   Timer() = default;
+    Timer() = default;
     /**
      * @brief Constructs a Timer with a given interval and mode.
      * @param timeInterval The interval duration.
@@ -73,4 +73,10 @@ class Timer {
      * @brief Updates the timer based on elapsed time.
      */
     void update();
+
+    /**
+     * @brief Set the timer mode
+     * @param mode
+     */
+    inline void setTimerMode(TimerMode mode) { this->mode = mode; }
 };

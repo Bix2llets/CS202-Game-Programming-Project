@@ -8,6 +8,7 @@
 #include "Core/SceneManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/InputManager.hpp"
+#include "Core/JSONLoader.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 /**
  * @class Application
@@ -20,6 +21,7 @@ class Application {
     ResourceManager resourceManager; ///< Manages resources (textures, sounds, etc.).
     InputManager inputManager; ///< Handles input events.
     SoundClickTrigger testTrigger; ///< Test trigger for sound on click.
+    JSONLoader loader;
     bool isRunning; ///< Indicates if the application is running.
     public:
     /**

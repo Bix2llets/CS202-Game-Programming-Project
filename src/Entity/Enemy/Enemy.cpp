@@ -28,20 +28,17 @@ void Enemy::update() {
 
     position = path.getPosition();
     sprite = changeSpriteContent(sprite, animation.getCurrentSprite());
-    while(healTimer.isAvailable()) {
+    while (healTimer.isAvailable()) {
         healTimer.use();
         health.heal(healAmount);
     }
 }
 
-void Enemy::move() {
-    path.update();
-}
+void Enemy::move() { path.update(); }
 
 void Enemy::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     Entity::draw(target, state);
 }
-
 
 void Enemy::changeState(std::unique_ptr<EnemyState> newState) {
     if (currentState) {
@@ -73,13 +70,7 @@ void Enemy::setRotation(const sf::Angle &angle) {}
 void Enemy::onHeal(int healAmount) { health.heal(healAmount); }
 bool Enemy::isAlive() { return health.getHealth() > 0; }
 
-Enemy::Enemy(Scene &scene, const nlohmann::json &jsonFile) : Entity(scene) {
-    loadJson(jsonFile);
-}
-
-void Enemy::loadJson(const nlohmann::json &jsonFile) {
-    
-}
+Enemy::Enemy(Scene &scene) : Entity(scene) {}
 
 sf::Sprite Enemy::changeSpriteContent(sf::Sprite current, sf::Sprite target) {
     auto rotation = current.getRotation();

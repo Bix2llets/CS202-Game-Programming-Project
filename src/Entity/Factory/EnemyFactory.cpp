@@ -1,14 +1,16 @@
-#include <SFML/Graphics.hpp>
-
 #include "Entity/Factory/EnemyFactory.hpp"
 
+#include <SFML/Graphics.hpp>
+
+#include "Core/ResourceManager.hpp"
 #include "Entity/Enemy/Enemy.hpp"
+#include "Entity/Enemy/MovingState.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Map.hpp"
-#include "Entity/Enemy/MovingState.hpp"
-#include "Core/ResourceManager.hpp"
-EnemyFactory::EnemyFactory(Difficulty difficulty, Map& map, Scene& scene, ResourceManager &resourceManager)
-    : map(map), scene(scene), resourceManager(resourceManager) {
+#include "Scene/Scene.hpp"
+EnemyFactory::EnemyFactory(Difficulty difficulty, Map &map, Scene &scene,
+                           JSONLoader &loader, ResourceManager &resManager)
+    : map(map), scene(scene), loader{loader}, resManager{resManager} {
     switch (difficulty) {
         case Difficulty::Easy: {
             rewardMultiplier = 1.2f;
@@ -34,3 +36,24 @@ EnemyFactory::EnemyFactory(Difficulty difficulty, Map& map, Scene& scene, Resour
     }
 }
 
+Enemy EnemyFactory::createEnemy(const std::string &id, float distance,
+                                int laneID) {
+    nlohmann::json enemyFile = (loader.getEnemy(id));
+    if (!enemyFile.contains("sprite") || !enemyFile.contains("stats") ||
+        !enemyFile.contains("type"))
+        throw std::runtime_error("Missing required enemy fields in JSON");
+    Enemy result(scene);
+    result.animation.loadJson(resManager, enemyFile["sprite"]);
+    result.path.setWaypoints(map.getWaypoints(laneID));
+    result.path.setDistanceFromStart(distance);
+    result.path.setSpeed(enemyFile["stats"]["speed"]);
+    result.health.setMaxHealth(enemyFile["stats"]["maxHealth"]);
+    result.health.setHealth(result.health.getMaxHealth());
+    result.healTimer.setTimerMode(TimerMode::Continuous);
+    result.healAmount = enemyFile["stats"]["healAmount"];
+    result.enemyType =
+        (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);
+
+    result.reward = static_cast<float>(enemyFile["stats"]["reward"]) * rewardMultiplier;
+    return result;
+}

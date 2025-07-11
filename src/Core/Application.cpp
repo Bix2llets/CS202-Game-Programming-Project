@@ -6,8 +6,8 @@
 #include "Core/MouseState.hpp"
 #include "Scene/BlankScene.hpp"
 #include "Scene/MainMenu.hpp"
-#include "Scene/Setting.hpp"
 #include "Scene/Mock/TowerRotationMockScene.hpp"
+#include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
 
@@ -24,18 +24,26 @@ Application::Application()
     else
         Logger::error("Window not intitialized");
     window.setFramerateLimit(60);
-    resourceManager.loadFont(
-        "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
-        "LeagueSpartan");
+    loader.loadAll();
+
     // * Loading the necessary sounds
-    resourceManager.loadSound("assets/sounds/pickupCoin.wav", "coin");
+    for (auto [id, soundFile] : loader.getAllSounds())
+        resourceManager.loadSound(soundFile);
+    for (auto [id, textureFile] : loader.getAllTextures())
+        resourceManager.loadTexture(textureFile);
+    for (auto [id, musicFile] : loader.getAllMusics())
+        resourceManager.loadMusic(musicFile);
+    for (auto [id, fontFile] : loader.getAllFonts())
+        resourceManager.loadFont(fontFile);
+
+    Logger::success("Resource loading");
     sceneManager.registerScene<MainMenu>("Main menu", inputManager,
                                          resourceManager);
     sceneManager.registerScene<Setting>("Setting", inputManager,
                                         resourceManager);
-    sceneManager.registerScene<TowerRotationMockScene>("Tower Test", inputManager,
-                                                        resourceManager);
-    sceneManager.changeScene("Tower Test"); // Start with the tower test scene
+    sceneManager.registerScene<TowerRotationMockScene>(
+        "Tower Test", inputManager, resourceManager);
+    sceneManager.changeScene("Tower Test");  // Start with the tower test scene
 }
 
 Application::~Application() {
@@ -52,17 +60,18 @@ void Application::run() {
                 window.close();
                 isRunning = false;
             }
-            
+
             // Add key to switch between scenes for testing
             if (event->is<sf::Event::KeyPressed>()) {
                 auto keyPress = event->getIf<sf::Event::KeyPressed>();
                 if (keyPress && keyPress->code == sf::Keyboard::Key::F1) {
                     sceneManager.changeScene("Main menu");
-                } else if (keyPress && keyPress->code == sf::Keyboard::Key::F2) {
+                } else if (keyPress &&
+                           keyPress->code == sf::Keyboard::Key::F2) {
                     sceneManager.changeScene("Tower Test");
                 }
             }
-            
+
             inputManager.handleEvent(event);
             // sceneManager.handleEvent(event);
         }

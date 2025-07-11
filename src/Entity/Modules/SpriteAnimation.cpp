@@ -8,16 +8,16 @@ SpriteAnimation::SpriteAnimation()
 void SpriteAnimation::loadJson(ResourceManager& resManager,
                                const nlohmann::json& jsonFile) {
     const sf::Texture* texture = resManager.getTexture(jsonFile["textureID"]);
-    int sizeX = static_cast<int>(jsonFile["sizeX"]);
-    int sizeY = static_cast<int>(jsonFile["sizeY"]);
+    int width = static_cast<int>(jsonFile["width"]);
+    int height = static_cast<int>(jsonFile["height"]);
     sf::Vector2i numberOfFrame = {
-        static_cast<int>(texture->getSize().x / sizeX),
-        static_cast<int>(texture->getSize().y / sizeY)};
+        static_cast<int>(texture->getSize().x / width),
+        static_cast<int>(texture->getSize().y / height)};
 
     for (int j = 0; j < numberOfFrame.y; j++)
         for (int i = 0; i < numberOfFrame.x; i++)
             sprites.push_back(sf::Sprite(
-                *texture, sf::IntRect{{i * sizeX, j * sizeY}, {sizeX, sizeY}}));
+                *texture, sf::IntRect{{i * width, j * height}, {width, height}}));
 
     std::string animationType = jsonFile["type"];
     if (animationType == "circular") type = AnimationType::Circular;

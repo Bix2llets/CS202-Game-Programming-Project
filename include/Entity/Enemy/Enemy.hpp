@@ -35,6 +35,10 @@ enum class EnemyType { Ground, Aerial };
  *
  * Uses the State pattern for AI behavior and supports health, movement, and
  * state transitions.
+ *
+ * This class must be constructed via enemy factory class, which require a json
+ * object describing its stats. It may not and cannot be initiated outside of
+ * the provided factory
  */
 class Enemy : public Entity, public Damageable {
     friend class EnemyFactory;
@@ -46,19 +50,20 @@ class Enemy : public Entity, public Damageable {
     Timer healTimer;
     float healAmount;
 
-
     std::unique_ptr<EnemyState> currentState;  ///< Current AI state
     EnemyType enemyType;  ///< Type of enemy (ground, aerial, etc.)
     int reward;           ///< Reward for defeating this enemy
+
+    std::string name;
 
     /**
      * @brief Construct a new Enemy object (private, for factory use).
      * @param scene Reference to the scene this enemy belongs to.
      */
-    Enemy(Scene& scene, const nlohmann::json& jsonFile);
-    void loadJson(const nlohmann::json& jsonFile);
+    Enemy(Scene& scene);
 
     sf::Sprite changeSpriteContent(sf::Sprite current, sf::Sprite target);
+
    public:
     /**
      * @brief Copy constructor (deep copy).
@@ -136,7 +141,9 @@ class Enemy : public Entity, public Damageable {
      * @brief Get the waypoints for this enemy's path.
      * @return Pointer to the vector of waypoints.
      */
-    const std::vector<Waypoint>* getWaypoints() const { return path.getWaypoints(); }
+    const std::vector<Waypoint>* getWaypoints() const {
+        return path.getWaypoints();
+    }
 
     /**
      * @brief Set the waypoints for this enemy's path.
