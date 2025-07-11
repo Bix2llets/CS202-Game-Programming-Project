@@ -27,14 +27,14 @@ public:
      * 
      * @param deltaTime Time elapsed since last update
      */
-    void updateAll();
+    void update();
 
     /**
      * @brief Render all entities
      * 
      * @param target Render target to draw on
      */
-    void renderAll();
+    void render(sf::RenderStates state);
 
     /**
      * @brief Clean up dead entities

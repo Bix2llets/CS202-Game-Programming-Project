@@ -1,6 +1,6 @@
 #include "EntityManager.hpp"
 
-void EntityManager::updateAll() {
+void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
         if (tower) {
@@ -30,25 +30,25 @@ void EntityManager::updateAll() {
     cleanup();
 }
 
-void EntityManager::renderAll() {
+void EntityManager::render(sf::RenderStates state) {
     // Render towers
     for (const auto& tower : towers) {
         if (tower) {
-            window.draw(*tower);
+            window.draw(*tower, state);
         }
     }
 
     // Render enemies
     for (const auto& enemy : enemies) {
         if (enemy && enemy->isAlive()) {
-            window.draw(*enemy);
+            window.draw(*enemy, state);
         }
     }
 
     // Render projectiles
     for (const auto& projectile : projectiles) {
         if (projectile && projectile->isAlive()) {
-            window.draw(*projectile);
+            window.draw(*projectile, state);
         }
     }
 }
