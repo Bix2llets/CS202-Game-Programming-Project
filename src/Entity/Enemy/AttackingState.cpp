@@ -41,5 +41,5 @@ void AttackingState::exit(Enemy* enemy) {
 }
 
 std::unique_ptr<EnemyState> AttackingState::clone() const {
-    
+    return nullptr; // Cloning is not implemented, return nullptr
 }

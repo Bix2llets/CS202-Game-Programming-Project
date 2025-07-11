@@ -7,6 +7,7 @@
 #include "Scene/BlankScene.hpp"
 #include "Scene/MainMenu.hpp"
 #include "Scene/Setting.hpp"
+#include "Scene/Mock/TowerRotationMockScene.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
 
@@ -32,7 +33,9 @@ Application::Application()
                                          resourceManager);
     sceneManager.registerScene<Setting>("Setting", inputManager,
                                         resourceManager);
-    sceneManager.changeScene("Main menu");
+    sceneManager.registerScene<TowerRotationMockScene>("Tower Test", inputManager,
+                                                        resourceManager);
+    sceneManager.changeScene("Tower Test"); // Start with the tower test scene
 }
 
 Application::~Application() {
@@ -49,6 +52,17 @@ void Application::run() {
                 window.close();
                 isRunning = false;
             }
+            
+            // Add key to switch between scenes for testing
+            if (event->is<sf::Event::KeyPressed>()) {
+                auto keyPress = event->getIf<sf::Event::KeyPressed>();
+                if (keyPress && keyPress->code == sf::Keyboard::Key::F1) {
+                    sceneManager.changeScene("Main menu");
+                } else if (keyPress && keyPress->code == sf::Keyboard::Key::F2) {
+                    sceneManager.changeScene("Tower Test");
+                }
+            }
+            
             inputManager.handleEvent(event);
             // sceneManager.handleEvent(event);
         }

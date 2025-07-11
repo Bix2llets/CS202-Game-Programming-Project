@@ -105,7 +105,7 @@ include_directories(${CMAKE_SOURCE_DIR}/tests/mockClasses)
 include_directories(${SFML_LIB_PATH}/include)
 
 # Add JSON include directoris
-include_directories($(NLOHMANN_JSON_DIR))
+include_directories(${NLOHMANN_JSON_DIR})
 
 # Add Google Test include directories (only for Debug builds)
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -146,7 +146,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")
 
 # Add your executable (main program)
 if(SOURCES)
-    add_executable(${PROJECT_NAME} ${SOURCES})
+    add_executable(${PROJECT_NAME} src/main.cpp)
     target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_SOURCE_DIR}/include
         ${SFML_LIB_PATH}/include
@@ -159,6 +159,7 @@ if(SOURCES)
     endif()
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
         target_link_libraries(${PROJECT_NAME}
+            CS202GameLib  # Link against our static library
             ${SFML_LIB_PATH}/lib/libsfml-system-d.a
             ${SFML_LIB_PATH}/lib/libsfml-window-d.a
             ${SFML_LIB_PATH}/lib/libsfml-graphics-d.a
@@ -170,6 +171,7 @@ if(SOURCES)
         endif()
     else()
         target_link_libraries(${PROJECT_NAME}
+            CS202GameLib  # Link against our static library
             ${SFML_LIB_PATH}/lib/libsfml-system.a
             ${SFML_LIB_PATH}/lib/libsfml-window.a
             ${SFML_LIB_PATH}/lib/libsfml-graphics.a
@@ -199,15 +201,15 @@ else()
     message(WARNING "SFML bin directory does not exist: ${SFML_LIB_PATH}/bin. Skipping DLL copy.")
 endif()
 
-# Copy assets to output directory after building
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    ${CMAKE_SOURCE_DIR}/assets
-    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
-    COMMENT "Copying assets to output directory"
+# Always copy assets and content after every build, before running
+add_custom_target(copy_resources ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/assets ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/assets
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/content ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/content
+    COMMENT "Always copying assets and content to output directory"
 )
+add_dependencies(${PROJECT_NAME} copy_resources)
 
-# Copy assets to Release directory for Release builds
+# Copy assets to Release directory for Release buildsz
 # if (CMAKE_BUILD_TYPE STREQUAL "Release") 
 #     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
 #         COMMAND ${CMAKE_COMMAND} -E copy_directory

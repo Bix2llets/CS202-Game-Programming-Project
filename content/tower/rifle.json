@@ -1,0 +1,126 @@
+{
+  "id": "rifle",
+  "texture": {
+    "width": 128,
+    "height": 128,
+    "base": "assets/texture/towers/rifle_base.png",
+    "turret": "assets/texture/towers/rifle_turret.png",
+    "turret_shooting": "assets/texture/towers/rifle_turret_shooting.png"
+  },
+  "name": "Rifle Tower",
+  "description": "A versatile, well-rounded tower with balanced range and damage. Good for early defense.",
+  "buildable": true,
+  "cost": {
+    "scrap": 100,
+    "petroleum": 0
+  },
+  "stats": {
+    "damage": 10,
+    "fire_rate": 1.2,
+    "range": 120
+  },
+  "upgrades": {
+    "max_total_upgrades": 5,
+    "upgrade_types": 3,
+    "1": {
+      "name": "Speed",
+      "display_name": "Rapid Fire",
+      "description": "Increases fire rate by {bonus_fire_rate}.",
+      "max_level": 3,
+      "upgrade_cost": {
+        "1": {
+          "scrap": 50,
+          "petroleum": 0,
+          "bonus_stats": {
+            "fire_rate": 0.1
+          }
+        },
+        "2": {
+          "scrap": 75,
+          "petroleum": 25,
+          "bonus_stats": {
+            "fire_rate": 0.1
+          }
+        },
+        "3": {
+          "scrap": 150,
+          "petroleum": 50,
+          "bonus_stats": {
+            "fire_rate": 0.1
+          }
+        }
+      },
+      "icon": "icons/upgrades/speed.png",
+      "evolve_to": "machinegun"
+    },
+    "2": {
+      "name": "Range",
+      "display_name": "Extended Range",
+      "description": "Extends tower range by {bonus_range}.",
+      "max_level": 3,
+      "upgrade_cost": {
+        "1": {
+          "scrap": 50,
+          "petroleum": 0,
+          "bonus_stats": {
+            "range": 20
+          }
+        },
+        "2": {
+          "scrap": 75,
+          "petroleum": 25,
+          "bonus_stats": {
+            "range": 20
+          }
+        },
+        "3": {
+          "scrap": 150,
+          "petroleum": 50,
+          "bonus_stats": {
+            "range": 20
+          }
+        }
+      },
+      "icon": "icons/upgrades/range.png",
+      "evolve_to": "sniper"
+    },
+    "3": {
+      "name": "Power",
+      "display_name": "High-Caliber Rounds",
+      "description": "Increases damage by {bonus_damage}.",
+      "max_level": 3,
+      "upgrade_cost": {
+        "1": {
+          "scrap": 50,
+          "petroleum": 0,
+          "bonus_stats": {
+            "damage": 1
+          }
+        },
+        "2": {
+          "scrap": 75,
+          "petroleum": 25,
+          "bonus_stats": {
+            "damage": 1
+          }
+        },
+        "3": {
+          "scrap": 150,
+          "petroleum": 50,
+          "bonus_stats": {
+            "damage": 1
+          }
+        }
+      },
+      "icon": "icons/upgrades/power.png",
+      "evolve_to": "railgun"
+    }
+  },
+  "behaviors": {
+    "combat": {
+      "type": "instant",
+      "targeting": "nearest",
+      "effects": []
+    }
+  }
+}

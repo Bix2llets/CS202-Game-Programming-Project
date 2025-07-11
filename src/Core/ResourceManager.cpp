@@ -34,6 +34,17 @@ void ResourceManager::loadTexture(const std::string &path, const std::string &ID
         Logger::error("Texture ID collision while importing: " + ID);
         return;
     }
+    
+    // Create new texture and attempt to load from file
+    auto texture = std::make_unique<sf::Texture>();
+    if (!texture->loadFromFile(path)) {
+        Logger::error("Failed to load texture from path: " + path);
+        return;
+    }
+    
+    // Store the successfully loaded texture
+    textures[ID] = std::move(texture);
+    Logger::success("Successfully loaded texture: " + ID + " from " + path);
 }
 
 

@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <optional>
+#include "Base/Constants.hpp"
 
 class Scene;
 
@@ -23,7 +24,7 @@ class Entity : public sf::Drawable {
 protected:
     sf::Vector2f position; ///< Position of the entity in world coordinates
     sf::Angle rotation;     ///< Rotation of the entity
-    std::optional<sf::Sprite> sprite; ///< Optional sprite for rendering
+    sf::Sprite sprite; ///< Optional sprite for rendering
     Scene& scene; ///< Reference to the scene this entity belongs to
 
 public:
@@ -31,7 +32,9 @@ public:
      * @brief Construct a new Entity object.
      * @param scene Reference to the scene this entity belongs to.
      */
-    Entity(Scene &scene) : scene(scene) {}
+    Entity(Scene &scene, const sf::Texture& texture) : scene(scene), sprite(texture) {}
+
+    Entity(Scene &scene) : scene(scene), sprite(GameConstants::BLANK_TEXTURE) {}
 
     /**
      * @brief Virtual destructor for safe polymorphic destruction.

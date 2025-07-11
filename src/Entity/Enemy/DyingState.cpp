@@ -32,5 +32,5 @@ void DyingState::exit(Enemy* enemy) {
 }
 
 std::unique_ptr<EnemyState> DyingState::clone() const {
-    
+    return nullptr; // Not implemented, return nullptr
 }

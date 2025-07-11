@@ -34,5 +34,5 @@ void MovingState::exit(Enemy* enemy) {
 }
 
 std::unique_ptr<EnemyState> MovingState::clone() const {
-
+    return nullptr; // Not implemented, return nullptr
 }

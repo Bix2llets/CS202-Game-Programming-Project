@@ -81,4 +81,18 @@ class Scene : public sf::Drawable, public Mediator {
      * @param fontName the name of the font
      */
      const sf::Font* const getFont(std::string fontName) override;
+     
+    /**
+     * @brief Load a texture into the ResourceManager
+     * @param path Path to the texture file
+     * @param ID Unique identifier for the texture
+     */
+    void loadTexture(const std::string& path, const std::string& ID);
+    
+    /**
+     * @brief Get a texture from the ResourceManager
+     * @param ID Unique identifier for the texture
+     * @return Pointer to the texture, or nullptr if not found
+     */
+    const sf::Texture* const getTexture(const std::string& ID);
 };

@@ -1,0 +1,58 @@
+{
+    "id": "exampleLevel",
+    "waypoints": [
+        [
+            [
+                100,
+                300,
+                1
+            ],
+            [
+                200,
+                250,
+                0.9
+            ],
+            [
+                400,
+                300,
+                0.9
+            ],
+            [
+                500,
+                600,
+                0.9
+            ]
+        ]
+    ],
+    "wave": [
+        {
+            "waveComposition": [
+                {
+                    "enemyType": "regular",
+                    "quantity": 200,
+                    "spawnDelay": 0,
+                    "internalDelay": 0
+                },
+                {
+                    "enemyType": "advanced",
+                    "quantity": 20,
+                    "spawnDelay": 4,
+                    "internalDelay": 3
+                },
+                {
+                    "enemyType": "high quality",
+                    "quantity": 5,
+                    "spawnDelay": 1,
+                    "internalDelay": 10
+                },
+                {
+                    "enemyType": "honor",
+                    "quantity": 10,
+                    "spawnDelay": 0,
+                    "internalDelay": 5
+                }
+            ]
+            
+        }
+    ]
+}

@@ -20,12 +20,12 @@ public:
     /**
      * @brief Position of the waypoint in world coordinates.
      */
-    const sf::Vector2f position;
+    sf::Vector2f position;
 
     /**
      * @brief Speed multiplier at this waypoint (e.g., for slow/boost zones).
      */
-    const float speedMultiplier;
+    float speedMultiplier;
 
     /**
      * @brief Construct a new Waypoint object
@@ -34,4 +34,11 @@ public:
      */
     Waypoint(sf::Vector2f position, float speedMultiplier)
         : position{position}, speedMultiplier{speedMultiplier} {}
+    /**
+     * @brief Default constructor for Waypoint.
+     *
+     * Initializes the position to (0, 0) and the speed multiplier to 1.0f.
+     */
+    Waypoint()
+        : position{0.f, 0.f}, speedMultiplier{1.0f} {}
 };

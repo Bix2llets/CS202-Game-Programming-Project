@@ -1,12 +1,14 @@
+#include <SFML/Graphics.hpp>
+
 #include "Entity/Factory/EnemyFactory.hpp"
 
 #include "Entity/Enemy/Enemy.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Map.hpp"
 #include "Entity/Enemy/MovingState.hpp"
-EnemyFactory::EnemyFactory(Difficulty difficulty, Map& map,
-                           Scene& scene)
-    : map{map}, scene{scene} {
+#include "Core/ResourceManager.hpp"
+EnemyFactory::EnemyFactory(Difficulty difficulty, Map& map, Scene& scene, ResourceManager &resourceManager)
+    : map(map), scene(scene), resourceManager(resourceManager) {
     switch (difficulty) {
         case Difficulty::Easy: {
             rewardMultiplier = 1.2f;
@@ -32,19 +34,3 @@ EnemyFactory::EnemyFactory(Difficulty difficulty, Map& map,
     }
 }
 
-Enemy EnemyFactory::createBasicEnemy(sf::Vector2f position, sf::Angle angle,
-                                     int laneID) {
-    Enemy result(scene);
-    result.setMaxHealth(100);
-    result.setHealth(100);
-    result.reward = 7;
-    result.setPosition(position);
-    result.setRotation(angle);
-    result.enemyType = EnemyType::Ground;
-    result.setWaypoints(map.getWaypoints(laneID));
-    result.speed = 10;
-    result.currentState = std::make_unique<MovingState>();
-
-    // * load sprite here
-    return result;
-}

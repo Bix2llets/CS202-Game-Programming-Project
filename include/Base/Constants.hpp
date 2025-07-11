@@ -7,6 +7,7 @@
  * @namespace GameConstants
  * @brief Namespace for storing game-wide constant values.
  */
+#include <SFML/Graphics.hpp>
 namespace GameConstants {
     constexpr int DEFAULT_WINDOW_WIDTH = 1200;
     constexpr int DEFAULT_WINDOW_HEIGHT = 900;
@@ -22,4 +23,6 @@ namespace GameConstants {
     constexpr float TICK_INTERVAL = 1.f / 60;
     constexpr float SUBTICK_INTERVAL = 1.f / 60 / 8;
     constexpr int TARGET_FPS = 60;
+
+    const sf::Texture BLANK_TEXTURE;
 }
