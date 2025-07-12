@@ -11,10 +11,10 @@
 #include "GUIComponents/button.hpp"
 
 #include "Core/SceneManager.hpp"
-Setting::Setting(sf::RenderWindow &window, const std::string &name,
+Setting::Setting(sf::RenderWindow &window,
                  SceneManager &parentManager, InputManager &inputManager,
                  ResourceManager &resManager)
-    : Scene(window, name, parentManager, inputManager, resManager) {
+    : Scene(window, parentManager, inputManager, resManager) {
     createButtons();
     setupButtonMessages();
     setupHandlers();
@@ -120,7 +120,6 @@ void Setting::setupHandlers() {
     subscribe("Main menu", [this](std::any, std::any) {
         using namespace GameConstants;
         sceneManager.changeScene("Main menu");
-        Logger::info(std::format("Change Scene to {}", sceneManager.getCurrentScene()->getName()));
     
     });
 }

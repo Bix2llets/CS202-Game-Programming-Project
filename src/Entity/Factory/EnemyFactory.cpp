@@ -8,9 +8,12 @@
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Map.hpp"
 #include "Scene/Scene.hpp"
-EnemyFactory::EnemyFactory(Difficulty difficulty, Map &map, Scene &scene,
-                           JSONLoader &loader, ResourceManager &resManager)
-    : map(map), scene(scene), loader{loader}, resManager{resManager} {
+EnemyFactory::EnemyFactory(Map &map, Scene &scene, JSONLoader &loader,
+                           ResourceManager &resManager)
+    : map(map), scene(scene), loader{loader}, resManager{resManager} {}
+void EnemyFactory::setDifficulty(Difficulty difficulty)
+
+{
     switch (difficulty) {
         case Difficulty::Easy: {
             rewardMultiplier = 1.2f;
@@ -36,24 +39,25 @@ EnemyFactory::EnemyFactory(Difficulty difficulty, Map &map, Scene &scene,
     }
 }
 
-Enemy EnemyFactory::createEnemy(const std::string &id, float distance,
-                                int laneID) {
+std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
+                                                 float distance, int laneID) {
     nlohmann::json enemyFile = (loader.getEnemy(id));
     if (!enemyFile.contains("sprite") || !enemyFile.contains("stats") ||
         !enemyFile.contains("type"))
         throw std::runtime_error("Missing required enemy fields in JSON");
-    Enemy result(scene);
-    result.animation.loadJson(resManager, enemyFile["sprite"]);
-    result.path.setWaypoints(map.getWaypoints(laneID));
-    result.path.setDistanceFromStart(distance);
-    result.path.setSpeed(enemyFile["stats"]["speed"]);
-    result.health.setMaxHealth(enemyFile["stats"]["maxHealth"]);
-    result.health.setHealth(result.health.getMaxHealth());
-    result.healTimer.setTimerMode(TimerMode::Continuous);
-    result.healAmount = enemyFile["stats"]["healAmount"];
-    result.enemyType =
+    std::unique_ptr<Enemy> result(new Enemy(scene));
+    result->animation.loadJson(resManager, enemyFile["sprite"]);
+    result->path.setWaypoints(map.getWaypoints(laneID));
+    result->path.setDistanceFromStart(distance);
+    result->path.setSpeed(enemyFile["stats"]["speed"]);
+    result->health.setMaxHealth(enemyFile["stats"]["maxHealth"]);
+    result->health.setHealth(result->health.getMaxHealth());
+    result->healTimer = Timer(enemyFile["stats"]["healInterval"], TimerMode::Continuous);
+    result->healAmount = enemyFile["stats"]["healAmount"];
+    result->enemyType =
         (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);
 
-    result.reward = static_cast<float>(enemyFile["stats"]["reward"]) * rewardMultiplier;
-    return result;
+    result->reward =
+        static_cast<float>(enemyFile["stats"]["reward"]) * rewardMultiplier;
+    return std::move(result);
 }

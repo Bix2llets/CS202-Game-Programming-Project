@@ -1,5 +1,8 @@
 {
     "id": "exampleLevel",
+    "name": "The example Level",
+    "description": "A template made for creation of the default level",
+    "difficulty": "medium",
     "waypoints": [
         [
             [
@@ -22,37 +25,46 @@
                 600,
                 0.9
             ]
+        ],
+        [
+            [
+                200,
+                300,
+                1
+            ],
+            [
+                300,
+                250,
+                0.9
+            ],
+            [
+                500,
+                300,
+                0.9
+            ],
+            [
+                600,
+                600,
+                0.9
+            ]
         ]
     ],
     "wave": [
-        {
-            "waveComposition": [
-                {
-                    "enemyType": "regular",
-                    "quantity": 200,
-                    "spawnDelay": 0,
-                    "internalDelay": 0
-                },
-                {
-                    "enemyType": "advanced",
-                    "quantity": 20,
-                    "spawnDelay": 4,
-                    "internalDelay": 3
-                },
-                {
-                    "enemyType": "high quality",
-                    "quantity": 5,
-                    "spawnDelay": 1,
-                    "internalDelay": 10
-                },
-                {
-                    "enemyType": "honor",
-                    "quantity": 10,
-                    "spawnDelay": 0,
-                    "internalDelay": 5
-                }
-            ]
-            
-        }
+        [
+            {
+                "id": "basic",
+                "quantity": 2,
+                "spawnDelay": 0,
+                "internalDelay": 1,
+                "lane": 0
+            },
+            {
+                "id": "basic",
+                "quantity": 5,
+                "spawnDelay": 2,
+                "internalDelay": 5,
+                "lane": 1
+            }
+        ]
     ]
 }

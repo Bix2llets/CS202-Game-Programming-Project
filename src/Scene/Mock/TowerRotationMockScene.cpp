@@ -5,10 +5,10 @@
 #include <cmath>
 #include <iostream>
 
-TowerRotationMockScene::TowerRotationMockScene(sf::RenderWindow& window, const std::string& name,
+TowerRotationMockScene::TowerRotationMockScene(sf::RenderWindow& window,
                                               SceneManager& parentManager, InputManager& inputManager, 
                                               ResourceManager& resourceManager)
-    : Scene(window, name, parentManager, inputManager, resourceManager),
+    : Scene(window, parentManager, inputManager, resourceManager),
       rotationSpeed(1.0f), // 1 radian per second (slow rotation)
       font(nullptr) {
     initialize();

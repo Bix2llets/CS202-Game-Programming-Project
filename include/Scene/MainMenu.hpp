@@ -30,12 +30,11 @@ class MainMenu : public Scene {
     /**
      * @brief Constructs the MainMenu scene.
      * @param window Reference to the SFML render window.
-     * @param name Name of the scene.
      * @param parentManager Reference to the parent SceneManager.
      * @param inputManager Reference to the InputManager singleton.
      * @param resManager Reference to the ResourceManager singleton.
      */
-    MainMenu(sf::RenderWindow &window, const std::string &name, SceneManager& parentManager,
+    MainMenu(sf::RenderWindow &window, SceneManager& parentManager,
              InputManager &inputManager, ResourceManager &resManager);
 
     /**

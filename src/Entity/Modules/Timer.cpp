@@ -1,9 +1,9 @@
 #include "Entity/Modules/Timer.hpp"
 #include "Base/Constants.hpp"
 Timer::Timer(float timeInterval, TimerMode mode)
-    : timeInterval{timeInterval}, remainingTime{0}, mode{mode} {}
+    : timeInterval{timeInterval}, remainingTime{0}, mode{mode}, available{0} {}
 Timer::Timer(float timeInterval, float remainingTime, TimerMode mode)
-    : timeInterval{timeInterval}, remainingTime{remainingTime}, mode{mode} {}
+    : timeInterval{timeInterval}, remainingTime{remainingTime}, mode{mode}, available{0} {}
 
 bool Timer::isAvailable() {
     return available > 0;

@@ -52,3 +52,12 @@ void SceneManager::update() {
 void SceneManager::checkNullptr() {
     if (currentScene == nullptr) throw GameException("Error: nullptr access");
 }
+
+void SceneManager::loadLevel(std::string ID, std::unique_ptr<Level> level) {
+    if (sceneStorage.find(ID) != sceneStorage.end()) {
+        Logger::error("Level ID conflict");
+        return;
+    }
+
+    sceneStorage[ID] = std::move(level);
+}

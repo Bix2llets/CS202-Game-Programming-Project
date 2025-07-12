@@ -30,7 +30,7 @@ void EntityManager::update() {
     cleanup();
 }
 
-void EntityManager::render(sf::RenderStates state) {
+void EntityManager::render(sf::RenderStates state) const {
     // Render towers
     for (const auto& tower : towers) {
         if (tower) {

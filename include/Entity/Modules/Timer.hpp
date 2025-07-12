@@ -29,7 +29,7 @@ class Timer {
     int available;        ///< Number of available uses (for continuous mode)
 
    public:
-    Timer() = default;
+    Timer() : timeInterval{1}, remainingTime{1}, mode{TimerMode::Single}, available{0} {};
     /**
      * @brief Constructs a Timer with a given interval and mode.
      * @param timeInterval The interval duration.

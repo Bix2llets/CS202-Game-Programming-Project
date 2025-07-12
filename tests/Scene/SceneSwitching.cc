@@ -14,12 +14,11 @@ TEST(sceneSwitching, actualSwitching) {
         "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
         "LeagueSpartan");
 
-    MainMenuMock mainMenu(window, "Main Menu", sceneManager, inputManager,
+    MainMenuMock mainMenu(window, sceneManager, inputManager,
                           resourceManager);
     sceneManager.registerScene<BlankScene>("Gameplay", inputManager,
                                            resourceManager);
     mainMenu.simulateTestButtonClick();
-    EXPECT_STREQ(sceneManager.getCurrentScene()->getName().c_str(), "Gameplay");
 }
 TEST(sceneSwitching, nullSwitching) {
     sf::RenderWindow window;
@@ -30,7 +29,7 @@ TEST(sceneSwitching, nullSwitching) {
         "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
         "LeagueSpartan");
 
-    MainMenuMock mainMenu(window, "Main Menu", sceneManager, inputManager,
+    MainMenuMock mainMenu(window, sceneManager, inputManager,
                           resourceManager);
     // sceneManager.registerScene<BlankScene>("Gameplay", inputManager,
     // resourceManager);

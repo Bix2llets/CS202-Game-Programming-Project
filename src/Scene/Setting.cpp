@@ -7,14 +7,12 @@
 #include "Core/InputManager.hpp"
 #include "Core/MouseObserver.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Core/SceneManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/button.hpp"
-
-#include "Core/SceneManager.hpp"
-Setting::Setting(sf::RenderWindow &window, const std::string &name,
-                 SceneManager &parentManager, InputManager &inputManager,
-                 ResourceManager &resManager)
-    : Scene(window, name, parentManager, inputManager, resManager) {
+Setting::Setting(sf::RenderWindow &window, SceneManager &parentManager,
+                 InputManager &inputManager, ResourceManager &resManager)
+    : Scene(window, parentManager, inputManager, resManager) {
     createButtons();
     setupButtonMessages();
     setupHandlers();
@@ -74,7 +72,6 @@ void Setting::setupButtonMessages() {
     resolution2->setNotificationMessage("Resolution2");
     resolution3->setNotificationMessage("Resolution3");
     backButton->setNotificationMessage("Main menu");
-
 }
 
 void Setting::setupHandlers() {
@@ -120,8 +117,6 @@ void Setting::setupHandlers() {
     subscribe("Main menu", [this](std::any, std::any) {
         using namespace GameConstants;
         sceneManager.changeScene("Main menu");
-        Logger::info(std::format("Change Scene to {}", sceneManager.getCurrentScene()->getName()));
-    
     });
 }
 

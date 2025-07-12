@@ -16,11 +16,14 @@ void EntityPath::setDistanceFromStart(float distance) {
     // Find the segment where the distance falls
     float accumulated = 0.f;
     for (size_t i = 0; i < waypoints->size() - 1; ++i) {
-        float segmentLength = ((*waypoints)[i + 1].position - (*waypoints)[i].position).length();
+        float segmentLength =
+            ((*waypoints)[i + 1].position - (*waypoints)[i].position).length();
         if (accumulated + segmentLength >= distanceFromStart) {
             waypointIndex = i;
             float t = (distanceFromStart - accumulated) / segmentLength;
-            position = (*waypoints)[i].position + t * ((*waypoints)[i + 1].position - (*waypoints)[i].position);
+            position =
+                (*waypoints)[i].position +
+                t * ((*waypoints)[i + 1].position - (*waypoints)[i].position);
             return;
         }
         accumulated += segmentLength;
@@ -38,8 +41,10 @@ void EntityPath::setSpeed(float s) { speed = s; }
 void EntityPath::update() {
     distanceFromStart += speed * GameConstants::TICK_INTERVAL * multiplier;
 
-    float remainingTravelDistance = speed * GameConstants::TICK_INTERVAL * multiplier;
-    while (remainingTravelDistance > 0 && waypointIndex + 1 < waypoints->size()) {
+    float remainingTravelDistance =
+        speed * GameConstants::TICK_INTERVAL * multiplier;
+    while (remainingTravelDistance > 0 &&
+           waypointIndex + 1 < waypoints->size()) {
         sf::Vector2f unitVector = (waypoints->at(waypointIndex + 1).position -
                                    waypoints->at(waypointIndex).position)
                                       .normalized();
@@ -56,8 +61,7 @@ void EntityPath::update() {
                 ((*waypoints)[waypointIndex].position - position).length();
             position = (*waypoints)[waypointIndex].position;
             multiplier *= (*waypoints)[waypointIndex].speedMultiplier;
-        }
-        else {
+        } else {
             position = supposedNextPosition;
             remainingTravelDistance = 0;
         }
@@ -78,4 +82,12 @@ void EntityPath::setWaypoints(const std::vector<Waypoint>* newWaypoints) {
         position = waypoints->front().position;
         multiplier = waypoints->front().speedMultiplier;
     }
+}
+
+sf::Angle EntityPath::angleByVertical() {
+    sf::Vector2f displacement = ((*waypoints)[waypointIndex + 1].position -
+                                 (*waypoints)[waypointIndex].position)
+                                    .normalized();
+    sf::Vector2f vertical = sf::Vector2f{0, -1}.normalized();
+    return displacement.angle();
 }

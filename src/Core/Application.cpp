@@ -18,7 +18,8 @@ Application::Application()
       testTrigger(resourceManager),
       isRunning{true},
       sceneManager{window},
-      inputManager{window} {
+      inputManager{window},
+      levelFactory{window, sceneManager, inputManager, resourceManager, loader} {
     if (window.isOpen())
         Logger::success("Window initialization success");
     else
@@ -35,7 +36,8 @@ Application::Application()
         resourceManager.loadMusic(musicFile);
     for (auto [id, fontFile] : loader.getAllFonts())
         resourceManager.loadFont(fontFile);
-
+    for (auto [id, levelFile]: loader.getAllLevels()) 
+        levelFactory.loadConfig(levelFile);
     Logger::success("Resource loading");
     sceneManager.registerScene<MainMenu>("Main menu", inputManager,
                                          resourceManager);
@@ -44,6 +46,8 @@ Application::Application()
     sceneManager.registerScene<TowerRotationMockScene>(
         "Tower Test", inputManager, resourceManager);
     sceneManager.changeScene("Tower Test");  // Start with the tower test scene
+    sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
+    sceneManager.changeScene("Main menu");
 }
 
 Application::~Application() {

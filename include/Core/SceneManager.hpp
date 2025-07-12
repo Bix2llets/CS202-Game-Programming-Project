@@ -7,6 +7,7 @@
 
 #include "Core/InputManager.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Scene/Level.hpp"
 #include "Scene/Scene.hpp"
 #include "Utility/Logger.hpp"
 #include "Utility/exception.hpp"
@@ -37,8 +38,8 @@ class SceneManager {
                        ResourceManager &resManager) {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
-                sceneStorage[sceneName] =
-                    std::make_unique<SceneType>(window, sceneName, *this, inputManager, resManager);
+                sceneStorage[sceneName] = std::make_unique<SceneType>(
+                    window, *this, inputManager, resManager);
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");
@@ -68,14 +69,11 @@ class SceneManager {
      */
     void update();
     /**
-     * @brief Handles an input event for the current scene.
-     * @param event Optional SFML event to handle.
+     * @brief Load a level from a unique poiner of level
+     * @param ID The scene's ID
+     * @param level the unique_ptr of the Level
      */
-    // void handleEvent(std::optional<sf::Event> &event);
-    /**
-     * @brief Handles real-time input for the current scene.
-     */
-    // void handleInput();
+    void loadLevel(std::string ID, std::unique_ptr<Level> level);
 
    private:
     /**

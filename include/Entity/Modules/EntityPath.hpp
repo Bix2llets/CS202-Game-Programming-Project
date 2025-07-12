@@ -28,4 +28,6 @@ class EntityPath {
     inline bool isFinished() const {
         return waypoints->size() == 0 || waypointIndex == waypoints->size() - 1;
     }
+
+    sf::Angle angleByVertical();
 };

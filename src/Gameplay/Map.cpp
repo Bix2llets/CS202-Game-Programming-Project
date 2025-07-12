@@ -22,7 +22,7 @@ void Map::draw(sf::RenderTarget& target,  sf::RenderStates state) const {
                 // Perpendicular vector for thickness
                 sf::Vector2f perp(-dir.y, dir.x);
 
-                float thickness = 30.f;  // Set your desired thickness here
+                float thickness = 45.f;  // Set your desired thickness here
 
                 // Offset points
                 sf::Vector2f offset = (perp * (thickness / 2.f));

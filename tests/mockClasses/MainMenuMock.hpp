@@ -7,7 +7,7 @@ class MainMenuMock : public MainMenu {
     MainMenuMock(sf::RenderWindow &window, std::string &name,
                  SceneManager &parentManager, InputManager &inputManager,
                  ResourceManager &resManager)
-        : MainMenu(window, name, parentManager, inputManager, resManager) {}
+        : MainMenu(window, parentManager, inputManager, resManager) {}
     // Simulate a button click for testing
     void simulateTestButtonClick() { testBtn.click(); }
 };

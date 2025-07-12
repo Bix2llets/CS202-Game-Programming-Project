@@ -15,7 +15,9 @@
         "width": 32,
         "height": 32,
         "animationInterval": 0.25,
-        "type": "circular"
+        "type": "circular",
+        "centerX": 16,
+        "centerY": 16
     },
     "type": "land",
     "spawnEffect": {

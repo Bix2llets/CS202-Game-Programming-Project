@@ -19,9 +19,9 @@ class BlankScene : public Scene {
      * @param inputManager Reference to the InputManager singleton.
      * @param resManager Reference to the ResourceManager singleton.
      */
-    BlankScene(sf::RenderWindow &window, const std::string &name, SceneManager &parentManager, 
-               InputManager &inputManager, ResourceManager &resManager)
-        : Scene{window, name, parentManager, inputManager, resManager} {}
+    BlankScene(sf::RenderWindow &window, SceneManager &parentManager, InputManager &inputManager, 
+               ResourceManager &resManager)
+        : Scene{window, parentManager, inputManager, resManager} {}
     /**
      * @brief Draws the scene (no-op for blank scene).
      * @param target The render target to draw to.

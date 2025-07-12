@@ -24,7 +24,6 @@ class ResourceManager;
 class Scene : public sf::Drawable, public Mediator {
    protected:
     sf::RenderWindow& window;  ///< Reference to the main window.
-    std::string name;          ///< Name of the scene.
     InputManager& inputManager;
     SceneManager& sceneManager;
     ResourceManager& resourceManager;
@@ -33,24 +32,16 @@ class Scene : public sf::Drawable, public Mediator {
     /**
      * @brief Constructs a Scene with the given window and name.
      * @param window Reference to the SFML render window.
-     * @param name Name of the scene.
      * @param parentManager Reference to the parent SceneManager.
      * @param inputManager Reference to the InputManager singleton.
      * @param resourceManager Reference to the ResourceManager singleton.
      */
-    Scene(sf::RenderWindow& window, const std::string& name,
-          SceneManager& parentManager, InputManager& inputManager,
+    Scene(sf::RenderWindow& window, SceneManager& parentManager, InputManager& inputManager,
           ResourceManager& resourceManager)
         : window{window},
-          name{name},
           sceneManager{parentManager},
           inputManager{inputManager},
           resourceManager{resourceManager} {};
-    /**
-     * @brief Gets the name of the scene.
-     * @return Reference to the scene name string.
-     */
-    const std::string& getName() const { return name; }
     /**
      * @brief Draws the scene (pure virtual).
      * @param target The render target to draw to.

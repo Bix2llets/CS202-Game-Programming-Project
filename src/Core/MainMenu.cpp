@@ -5,10 +5,9 @@
 #include "Core/SceneManager.hpp"
 #include "Utility/logger.hpp"
 
-MainMenu::MainMenu(sf::RenderWindow &window, const std::string &name,
-                   SceneManager &parentManager, InputManager &inputManager,
-                   ResourceManager &resManager)
-    : Scene(window, name, parentManager, inputManager, resManager),
+MainMenu::MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
+                   InputManager &inputManager, ResourceManager &resManager)
+    : Scene(window, parentManager, inputManager, resManager),
       testBtn{"Testing", {{100.f, 100.f}, {100.f, 50.f}}, *this} {
     Logger::debug("Main menu created");
     settingBtn = std::make_unique<Button>(
@@ -40,12 +39,12 @@ void MainMenu::registerComponents() {
     testBtn.subscribeMouse(Mouse::Left, UserEvent::Press,
                            inputManager.getMouseState());
     settingBtn->subscribeMouse(Mouse::Left, UserEvent::Press,
-                              inputManager.getMouseState());
+                               inputManager.getMouseState());
 };
 
 void MainMenu::unRegisterComponents() {
     testBtn.unSubscribeMouse(Mouse::Left, UserEvent::Press,
                              inputManager.getMouseState());
     settingBtn->unSubscribeMouse(Mouse::Left, UserEvent::Press,
-                                inputManager.getMouseState());
+                                 inputManager.getMouseState());
 };

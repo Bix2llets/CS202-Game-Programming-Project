@@ -1,18 +1,20 @@
 #include "Scene/Level.hpp"
 
 #include <array>
+#include <format>
 #include <fstream>
 #include <iostream>
 #include <json.hpp>
-#include <format>
 
 #include "Base/Constants.hpp"
 #include "Utility/logger.hpp"
-Level::Level(sf::RenderWindow &window, const std::string &name,
-             SceneManager &sceneManager, InputManager &inputManager,
-             ResourceManager &resourceManager)
-    : Scene(window, name, sceneManager, inputManager, resourceManager),
-      currentWave{0}, entityManager(window) {}
+Level::Level(sf::RenderWindow &window, SceneManager &sceneManager,
+             InputManager &inputManager, ResourceManager &resourceManager,
+             JSONLoader &loader)
+    : Scene(window, sceneManager, inputManager, resourceManager),
+      currentWave{0},
+      entityManager(window),
+      loader{loader} {}
 
 void Level::update() {
     entityManager.update();
@@ -29,7 +31,9 @@ void Level::update() {
                 group.internalDelayTimer -= GameConstants::TICK_INTERVAL;
                 while (group.internalDelayTimer <= 0 && group.quantity) {
                     // ! Placeholder. Put enemy factory here
-                    Logger::info(std::format("Spawning {}", group.enemyType));
+                    entityManager.addEnemy(
+                        factory->createEnemy(group.id, 0, group.laneID));
+                    Logger::info(std::format("Spawning {}", group.id));
                     group.internalDelayTimer += group.internalDelay;
                     group.quantity--;
                 }
@@ -41,6 +45,7 @@ void Level::update() {
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     target.draw(map, state);
+    entityManager.render(state);
 }
 void Level::loadFromJson(const std::string &pathToFile) {
     nlohmann::json jsonFile = nlohmann::json::parse(std::ifstream(pathToFile));
@@ -50,6 +55,9 @@ void Level::loadFromJson(const std::string &pathToFile) {
 void Level::loadFromJson(const nlohmann::json &jsonFile) {
     loadWaypoints(jsonFile);
     loadWaves(jsonFile);
+
+    factory =
+        std::make_unique<EnemyFactory>(map, *this, loader, resourceManager);
 }
 
 void Level::loadWaypoints(const nlohmann::json &jsonFile) {
@@ -80,17 +88,18 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
     for (auto waveIt = waveConfiguration.begin();
          waveIt != waveConfiguration.end(); ++waveIt) {
         std::vector<EnemyGroupInfo> enemyGroups;
-        auto waveComposition = (*waveIt)["waveComposition"];
-        for (auto groupIt = waveComposition.begin();
-             groupIt != waveComposition.end(); ++groupIt) {
+        for (auto groupIt = waveIt->begin(); groupIt != waveIt->end();
+             ++groupIt) {
             EnemyGroupInfo groupInfo;
-            groupInfo.enemyType = (*groupIt)["enemyType"];
+            groupInfo.id = (*groupIt)["id"];
             groupInfo.quantity = (*groupIt)["quantity"];
             groupInfo.spawnDelay = (*groupIt)["spawnDelay"];
             groupInfo.internalDelay = (*groupIt)["internalDelay"];
+            groupInfo.laneID = (*groupIt)["lane"];
 
             groupInfo.spawnDelayTimer = groupInfo.spawnDelay;
             groupInfo.internalDelayTimer = groupInfo.internalDelay;
+
             enemyGroups.push_back(groupInfo);
         }
         waveInfo.push_back(enemyGroups);

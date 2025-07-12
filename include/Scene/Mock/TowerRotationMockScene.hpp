@@ -46,7 +46,7 @@ public:
      * @param inputManager Reference to the input manager.
      * @param resourceManager Reference to the resource manager.
      */
-    TowerRotationMockScene(sf::RenderWindow& window, const std::string& name,
+    TowerRotationMockScene(sf::RenderWindow& window,
                           SceneManager& parentManager, InputManager& inputManager, 
                           ResourceManager& resourceManager);
     

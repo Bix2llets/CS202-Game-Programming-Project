@@ -3,64 +3,57 @@
  * @file Level.hpp
  * @brief Declares the Level scene class for gameplay levels.
  *
- * The Level class implements a gameplay scene, managing the map, entities, wave progression,
- * and integration with the scene management system. It provides methods for loading level data
- * from JSON, updating game logic, and rendering the level.
+ * The Level class implements a gameplay scene, managing the map, entities, wave
+ * progression, and integration with the scene management system. It provides
+ * methods for loading level data from JSON, updating game logic, and rendering
+ * the level.
  */
 
 #include <json.hpp>
+
+#include "Core/JSONLoader.hpp"
+#include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
 #include "Gameplay/Map.hpp"
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
-
 class SceneManager;
 class InputManager;
 class ResourceManager;
 
 /**
  * @class Level
- * @brief Scene representing a gameplay level, with map, entities, and wave logic.
+ * @brief Scene representing a gameplay level, with map, entities, and wave
+ * logic.
  *
- * The Level scene manages the game map, all entities (enemies, towers, projectiles),
- * and wave progression. It supports loading from JSON, updating game logic, and rendering.
+ * The Level scene manages the game map, all entities (enemies, towers,
+ * projectiles), and wave progression. It supports loading from JSON, updating
+ * game logic, and rendering.
  */
 class Level : public Scene {
-private:
-    std::string levelID; ///< Unique identifier for the level
-    /**
-     * @brief Loads waypoints from the provided JSON file.
-     * @param jsonFile The JSON object containing waypoint data.
-     */
-    void loadWaypoints(const nlohmann::json &jsonFile);
-    /**
-     * @brief Loads wave information from the provided JSON file.
-     * @param jsonFile The JSON object containing wave data.
-     */
-    void loadWaves(const nlohmann::json &jsonFile);
-    /**
-     * @brief Loads the level ID from the provided JSON file.
-     * @param jsonfile The JSON object containing the level ID.
-     */
+   private:
+    std::string levelID;  ///< Unique identifier for the level
     void loadLevelID(const nlohmann::json &jsonfile);
-    EntityManager entityManager; ///< Manages all entities in the level
-    Map map; ///< The game map for this level
-    std::vector<std::vector<EnemyGroupInfo>> waveInfo; ///< Information for each wave
-    int currentWave; ///< Index of the current wave
+    EntityManager entityManager;  ///< Manages all entities in the level
+    std::unique_ptr<EnemyFactory> factory;
+    JSONLoader &loader;
+    Map map;  ///< The game map for this level
+    std::vector<std::vector<EnemyGroupInfo>>
+        waveInfo;     ///< Information for each wave
+    int currentWave;  ///< Index of the current wave
 
-public:
+   public:
     /**
      * @brief Constructs the Level scene.
      * @param window Reference to the SFML render window.
-     * @param name Name of the scene.
      * @param parentManager Reference to the parent SceneManager.
-     * @param inputManager Reference to the InputManager.
      * @param resourceManager Reference to the ResourceManager.
+     * @param JSONLoader Reference to the JSON loader.
      */
-    Level(sf::RenderWindow &window, const std::string &name,
-          SceneManager &parentManager, InputManager &inputManager,
-          ResourceManager &resourceManager);
+    Level(sf::RenderWindow &window, SceneManager &parentManager,
+          InputManager &inputManager, ResourceManager &resourceManager,
+          JSONLoader &loader);
 
     /**
      * @brief Updates the level logic (entities, waves, etc).
@@ -119,7 +112,21 @@ public:
      * @brief Checks if the level is finished (last wave completed).
      * @return True if the level is finished, false otherwise.
      */
-    inline bool isFinished() {
-        return currentWave == waveInfo.size() - 1;
-    }
+    inline bool isFinished() { return currentWave == waveInfo.size() - 1; }
+
+   private:
+    /**
+     * @brief Loads waypoints from the provided JSON file.
+     * @param jsonFile The JSON object containing waypoint data.
+     */
+    void loadWaypoints(const nlohmann::json &jsonFile);
+    /**
+     * @brief Loads wave information from the provided JSON file.
+     * @param jsonFile The JSON object containing wave data.
+     */
+    void loadWaves(const nlohmann::json &jsonFile);
+    /**
+     * @brief Loads the level ID from the provided JSON file.
+     * @param jsonfile The JSON object containing the level ID.
+     */
 };

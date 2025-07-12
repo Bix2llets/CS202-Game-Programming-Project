@@ -20,13 +20,17 @@
  *      Timer tracking the elapsed time for the group's spawn delay.
  * @var float internalDelayTimer
  *      Timer tracking the elapsed time for the internal delay between enemy spawns.
+ * @var int laneID
+ *      The ID of the lane that the group spawns at.
  */
 struct EnemyGroupInfo {
-    std::string enemyType;
+    std::string id;
     int quantity;
     float spawnDelay;
     float internalDelay;
 
     float spawnDelayTimer;
     float internalDelayTimer;
+
+    int laneID;
 };

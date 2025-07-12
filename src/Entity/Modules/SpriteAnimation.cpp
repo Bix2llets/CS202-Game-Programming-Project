@@ -1,6 +1,6 @@
 #include "Entity/Modules/SpriteAnimation.hpp"
 
-SpriteAnimation::SpriteAnimation() 
+SpriteAnimation::SpriteAnimation()
     : type(AnimationType::Linear), currentFrame(0) {
     // Default constructor - initialize members
 }
@@ -17,8 +17,12 @@ void SpriteAnimation::loadJson(ResourceManager& resManager,
     for (int j = 0; j < numberOfFrame.y; j++)
         for (int i = 0; i < numberOfFrame.x; i++)
             sprites.push_back(sf::Sprite(
-                *texture, sf::IntRect{{i * width, j * height}, {width, height}}));
+                *texture,
+                sf::IntRect{{i * width, j * height}, {width, height}}));
+    sf::Vector2f origin = sf::Vector2f{jsonFile["centerX"].get<float>(),
+                                       jsonFile["centerY"].get<float>()};
 
+    for (sf::Sprite& sprite : sprites) sprite.setOrigin(origin);
     std::string animationType = jsonFile["type"];
     if (animationType == "circular") type = AnimationType::Circular;
     if (animationType == "linear") type = AnimationType::Linear;

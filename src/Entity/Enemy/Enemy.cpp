@@ -20,21 +20,26 @@ Enemy::Enemy(const Enemy &other)
 }
 
 void Enemy::update() {
-    if (currentState) {
-        currentState->update(this);
-    }
+    // if (currentState) {
+    //     currentState->update(this);
+    // }
+    move();
     animation.update();
     healTimer.update();
 
-    position = path.getPosition();
     sprite = changeSpriteContent(sprite, animation.getCurrentSprite());
+    sprite.setRotation(path.angleByVertical());
     while (healTimer.isAvailable()) {
         healTimer.use();
         health.heal(healAmount);
     }
 }
 
-void Enemy::move() { path.update(); }
+void Enemy::move() {
+    path.update();
+    position = path.getPosition();
+    sprite.setPosition(position);
+}
 
 void Enemy::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     Entity::draw(target, state);
@@ -74,13 +79,9 @@ Enemy::Enemy(Scene &scene) : Entity(scene) {}
 
 sf::Sprite Enemy::changeSpriteContent(sf::Sprite current, sf::Sprite target) {
     auto rotation = current.getRotation();
-    auto origin = current.getOrigin();
-    auto scale = current.getScale();
-    auto positon = current.getPosition();
+    auto position = current.getPosition();
     current = target;
     current.setRotation(rotation);
-    current.setOrigin(origin);
-    current.setScale(scale);
     current.setPosition(position);
     return current;
 }
