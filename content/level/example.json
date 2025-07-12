@@ -64,6 +64,13 @@
                 "spawnDelay": 2,
                 "internalDelay": 5,
                 "lane": 1
+            },
+            {
+                "id": "basic",
+                "quantity": 10,
+                "spawnDelay": 1,
+                "internalDelay": 1,
+                "lane": 1
             }
         ]
     ]

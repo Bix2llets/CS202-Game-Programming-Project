@@ -85,6 +85,7 @@ void EntityPath::setWaypoints(const std::vector<Waypoint>* newWaypoints) {
 }
 
 sf::Angle EntityPath::angleByVertical() {
+    if (waypointIndex == waypoints->size() - 1) return sf::Angle(sf::radians(0));
     sf::Vector2f displacement = ((*waypoints)[waypointIndex + 1].position -
                                  (*waypoints)[waypointIndex].position)
                                     .normalized();

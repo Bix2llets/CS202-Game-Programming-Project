@@ -73,7 +73,9 @@ void Enemy::onDeath() {
 void Enemy::setPosition(const sf::Vector2f &position) {}
 void Enemy::setRotation(const sf::Angle &angle) {}
 void Enemy::onHeal(int healAmount) { health.heal(healAmount); }
-bool Enemy::isAlive() { return health.getHealth() > 0; }
+bool Enemy::isAlive() { return health.getHealth() > 0
+    && !path.isFinished(); 
+}
 
 Enemy::Enemy(Scene &scene) : Entity(scene) {}
 

@@ -7,7 +7,7 @@
         "healAmount": 1,
         "healInterval": 0.5,
         "resistance": 20,
-        "speed": 20,
+        "speed": 100,
         "reward": 9
     },
     "sprite": {
