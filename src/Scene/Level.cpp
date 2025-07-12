@@ -8,6 +8,7 @@
 
 #include "Base/Constants.hpp"
 #include "Utility/logger.hpp"
+#include "Gameplay/Difficulty.hpp"
 Level::Level(sf::RenderWindow &window, SceneManager &sceneManager,
              InputManager &inputManager, ResourceManager &resourceManager,
              JSONLoader &loader)
@@ -58,6 +59,14 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
 
     factory =
         std::make_unique<EnemyFactory>(map, *this, loader, resourceManager);
+
+    std::string difficulty = jsonFile["difficulty"].get<std::string>();
+    if (difficulty == "easy") 
+        factory->setDifficulty(Difficulty::Easy);
+    if (difficulty == "medium") 
+        factory->setDifficulty(Difficulty::Medium);
+    if (difficulty == "hard") 
+        factory->setDifficulty(Difficulty::Hard);
 }
 
 void Level::loadWaypoints(const nlohmann::json &jsonFile) {

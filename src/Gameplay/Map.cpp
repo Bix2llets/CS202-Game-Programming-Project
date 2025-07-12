@@ -26,11 +26,27 @@ void Map::draw(sf::RenderTarget& target,  sf::RenderStates state) const {
 
                 // Offset points
                 sf::Vector2f offset = (perp * (thickness / 2.f));
-     
-                pathway[i * 4].position = path[i].position + offset;
-                pathway[i * 4 + 1].position = path[i].position - offset;
-                pathway[i * 4 + 2].position = path[i + 1].position + offset;
-                pathway[i * 4 + 3].position = path[i + 1].position - offset;
+                if (i == 0) {
+                    pathway[i * 4].position = path[i].position + offset - (dir * thickness) / 2.f;
+                    pathway[i * 4 + 1].position = path[i].position - offset - (dir * thickness) / 2.f;
+
+                }
+                else {
+
+                    pathway[i * 4].position = path[i].position + offset;
+                    pathway[i * 4 + 1].position = path[i].position - offset;
+                }
+
+                if (i == path.size() - 2) {
+
+                    pathway[i * 4 + 2].position = path[i + 1].position + offset + (dir * thickness) / 2.f;
+                    pathway[i * 4 + 3].position = path[i + 1].position - offset + (dir * thickness) / 2.f;
+                }
+                else {
+                    pathway[i * 4 + 2].position = path[i + 1].position + offset;
+                    pathway[i * 4 + 3].position = path[i + 1].position - offset;
+
+                }
             } else {
                 // For the last point, repeat the previous offset
                 // pathway[i * 2].position = (path[i].position - path[i - 1].position) + pathway[(i - 1) * 2].position;
