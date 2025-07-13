@@ -1,7 +1,7 @@
 #include "GUIComponents/ButtonBuilder.hpp"
 
 ButtonBuilder::ButtonBuilder(Mediator& mediator,
-                             ResourceManager& ResourceManager,
+                             ResourceManager& resManager,
                              JSONLoader& loader)
     : mediator{mediator}, resManager{resManager}, loader{loader} {}
 
@@ -32,6 +32,7 @@ ButtonBuilder& ButtonBuilder::reset() {
     position = {0.f, 0.f};
     size = {0.f, 0.f};
     notificationMessage = "";
+    return *this;
 }
 
 ButtonBuilder& ButtonBuilder::loadJson(std::string id) {

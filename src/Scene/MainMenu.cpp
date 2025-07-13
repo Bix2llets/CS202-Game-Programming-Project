@@ -3,16 +3,24 @@
 #include "Core/InputManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/SceneManager.hpp"
+#include "GUIComponents/ButtonBuilder.hpp"
 #include "Utility/logger.hpp"
 
 MainMenu::MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
-                   InputManager &inputManager, ResourceManager &resManager, JSONLoader &loader)
+                   InputManager &inputManager, ResourceManager &resManager,
+                   JSONLoader &loader)
     : Scene(window, parentManager, inputManager, resManager, loader),
       testBtn{"Testing", {{100.f, 100.f}, {100.f, 50.f}}, *this} {
+    ButtonBuilder builder(*this, resourceManager, loader);
+    settingBtn = builder.reset()
+                     .setPosition({300.f, 100.f})
+                     .setSize({50.f, 50.f})
+                     .setText("To setting")
+                     .loadJson("basicButton")
+                     .setNotificationMessage("Setting")
+                     .build();
     Logger::debug("Main menu created");
-    settingBtn = std::make_unique<Button>(
-        "To setting", sf::FloatRect{{300.f, 100.f}, {50.f, 50.f}}, *this);
-    settingBtn->setNotificationMessage("Setting");
+
     testBtn.setNotificationMessage("Gameplay");
     subscribe("Setting", [this](std::any, std::any) {
         sceneManager.changeScene("Setting");

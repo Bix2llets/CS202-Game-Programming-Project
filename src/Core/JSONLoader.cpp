@@ -63,10 +63,15 @@ void JSONLoader::loadAll() {
     const std::vector<std::string> roots = {"content", "mod"};
     const std::vector<std::pair<
         std::string, std::unordered_map<std::string, nlohmann::json>*>>
-        types = {{"enemy", &enemies},          {"level", &levels},
-                 {"projectile", &projectiles}, {"tower", &towers},
-                 {"texture", &textures},       {"font", &fonts},
-                 {"sound", &sounds},           {"music", &musics}};
+        types = {{"enemy", &enemies},
+                 {"level", &levels},
+                 {"projectile", &projectiles},
+                 {"tower", &towers},
+                 {"texture", &textures},
+                 {"font", &fonts},
+                 {"sound", &sounds},
+                 {"music", &musics},
+                 {"style", &styles}};
     for (const auto& root : roots) {
         for (const auto& [type, mapPtr] : types) {
             std::string dir = root + "/" + type;

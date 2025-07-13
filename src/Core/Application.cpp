@@ -48,6 +48,7 @@ Application::Application()
     sceneManager.changeScene("Tower Test");  // Start with the tower test scene
     sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
     sceneManager.changeScene("Main menu");
+    sceneManager.changeScene("Setting");
 }
 
 Application::~Application() {
