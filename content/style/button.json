@@ -1,0 +1,34 @@
+[
+    {
+        "id": "basicButton",
+        "style": {
+            "normal": {
+                "background": "#2D3748",
+                "border": "#4A5568",
+                "text": "#FFFFFF"
+            },
+            "hover": {
+                "background": "#4A5568",
+                "border": "#718096",
+                "text": "#F7FAFC"
+            },
+            "click": {
+                "background": "#1A202C",
+                "border": "#2D3748",
+                "text": "#E2E8F0"
+            }
+        },
+        "borderRadius": 4,
+        "borderWidth": 2,
+        "font": "LeagueSpartan",
+        "fontSize": 24,
+        "padding": [
+            12,
+            24
+        ],
+        "center": {
+            "x": "centering",
+            "y": "centering"
+        }
+    }
+]

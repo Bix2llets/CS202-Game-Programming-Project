@@ -110,6 +110,13 @@ class JSONLoader {
      * returns a null reference.
      */
     const nlohmann::json& getSound(const std::string& id) const;
+    /**
+     * @brief Retrieve a JSON object by ID for the style type.
+     * @param id The unique ID of the sound object.
+     * @return Reference to the JSON object if found, otherwise throws or
+     * returns a null reference.
+     */
+    const nlohmann::json& getStyle(const std::string& id) const;
 
     /**
      * @brief Retrieve all loaded enemy objects.
@@ -161,6 +168,11 @@ class JSONLoader {
      * @return Const reference to the map of sound ID to JSON object.
      */
     const std::unordered_map<std::string, nlohmann::json>& getAllSounds() const;
+    /**
+     * @brief Retrieve all loaded style objects.
+     * @return Const reference to the map of style ID to JSON object.
+     */
+    const std::unordered_map<std::string, nlohmann::json>& getAllStyles() const;
 
    private:
     /**
@@ -190,4 +202,6 @@ class JSONLoader {
         sounds;  ///< Sound objects by ID
     std::unordered_map<std::string, nlohmann::json>
         musics;  ///< Music objects by ID
+    std::unordered_map<std::string, nlohmann::json>
+        styles;  ///< Style objects by ID
 };

@@ -6,15 +6,15 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <memory>
 #include <string>
 
 #include "Core/InputManager.hpp"
+#include "Core/JSONLoader.hpp"
 #include "Core/ResourceManager.hpp"
 #include "GUIComponents/button.hpp"
 #include "GUIComponents/mediator.hpp"
 #include "Scene/Scene.hpp"
-
-#include <memory>
 
 /**
  * @class MainMenu
@@ -26,6 +26,7 @@ class MainMenu : public Scene {
     Button testBtn;  ///< Test button for the main menu
     std::unique_ptr<Button> settingBtn;
     void testSceneSwitching();
+
    public:
     /**
      * @brief Constructs the MainMenu scene.
@@ -34,8 +35,9 @@ class MainMenu : public Scene {
      * @param inputManager Reference to the InputManager singleton.
      * @param resManager Reference to the ResourceManager singleton.
      */
-    MainMenu(sf::RenderWindow &window, SceneManager& parentManager,
-             InputManager &inputManager, ResourceManager &resManager);
+    MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
+             InputManager &inputManager, ResourceManager &resManager,
+             JSONLoader &loader);
 
     /**
      * @brief Updates the main menu scene (handles logic, input, etc).

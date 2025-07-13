@@ -10,9 +10,11 @@
 #include "Core/SceneManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/button.hpp"
+#include "GUIComponents/ButtonBuilder.hpp"
 Setting::Setting(sf::RenderWindow &window, SceneManager &parentManager,
-                 InputManager &inputManager, ResourceManager &resManager)
-    : Scene(window, parentManager, inputManager, resManager) {
+                 InputManager &inputManager, ResourceManager &resManager,
+                JSONLoader &loader)
+    : Scene(window, parentManager, inputManager, resManager, loader) {
     createButtons();
     setupButtonMessages();
     setupHandlers();
@@ -42,7 +44,8 @@ void Setting::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void Setting::createButtons() {
-    sf::Vector2f buttonSize = {120, 50};
+    const sf::Vector2f buttonSize = {120, 50};
+    ButtonBuilder builder(*this, resourceManager, loader);
     musicVolumeDecrement = std::make_unique<Button>(
         "musicDec", sf::FloatRect({220.0, 20.0}, buttonSize), *this);
     musicVolumeIncrement = std::make_unique<Button>(

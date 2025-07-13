@@ -18,8 +18,9 @@ TEST(nameTest, 1) {
     sf::RenderWindow window;
     SceneManager sceneManager(window);
     InputManager inputManager(window);
+    JSONLoader loader;
     ResourceManager resManager;
-    sceneManager.registerScene<BlankScene>("Scene1", inputManager, resManager);
+    sceneManager.registerScene<BlankScene>("Scene1", inputManager, resManager, loader);
     sceneManager.changeScene("Scene1");
     auto currScene = sceneManager.getCurrentScene();
     EXPECT_NE(currScene, nullptr);
@@ -31,8 +32,9 @@ TEST(nameTest, 2) {
     SceneManager sceneManager(window);
     InputManager inputManager(window);
     ResourceManager resManager;
-    sceneManager.registerScene<BlankScene>("Scene1", inputManager, resManager);
-    sceneManager.registerScene<BlankScene>("Scene2", inputManager, resManager);
+    JSONLoader loader;
+    sceneManager.registerScene<BlankScene>("Scene1", inputManager, resManager, loader);
+    sceneManager.registerScene<BlankScene>("Scene2", inputManager, resManager, loader);
     sceneManager.changeScene("Scene1");
     sceneManager.changeScene("Scene2");
     auto currScene = sceneManager.getCurrentScene();

@@ -6,19 +6,19 @@
 #include "Utility/logger.hpp"
 
 MainMenu::MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
-                   InputManager &inputManager, ResourceManager &resManager)
-    : Scene(window, parentManager, inputManager, resManager),
+                   InputManager &inputManager, ResourceManager &resManager, JSONLoader &loader)
+    : Scene(window, parentManager, inputManager, resManager, loader),
       testBtn{"Testing", {{100.f, 100.f}, {100.f, 50.f}}, *this} {
     Logger::debug("Main menu created");
     settingBtn = std::make_unique<Button>(
         "To setting", sf::FloatRect{{300.f, 100.f}, {50.f, 50.f}}, *this);
     settingBtn->setNotificationMessage("Setting");
-    testBtn.setNotificationMessage("exampleLevel");
+    testBtn.setNotificationMessage("Gameplay");
     subscribe("Setting", [this](std::any, std::any) {
         sceneManager.changeScene("Setting");
     });
-    subscribe("exampleLevel", [this](std::any, std::any) {
-        sceneManager.changeScene("exampleLevel");
+    subscribe("Gameplay", [this](std::any, std::any) {
+        sceneManager.changeScene("Gameplay");
     });
     testBtn.setOnClick(
         [this](Button *a) { Logger::debug("Clicked test button 1"); });

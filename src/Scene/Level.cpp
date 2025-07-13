@@ -12,10 +12,9 @@
 Level::Level(sf::RenderWindow &window, SceneManager &sceneManager,
              InputManager &inputManager, ResourceManager &resourceManager,
              JSONLoader &loader)
-    : Scene(window, sceneManager, inputManager, resourceManager),
+    : Scene(window, sceneManager, inputManager, resourceManager, loader),
       currentWave{0},
-      entityManager(window),
-      loader{loader} {}
+      entityManager(window) {}
 
 void Level::update() {
     entityManager.update();

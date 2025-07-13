@@ -48,7 +48,7 @@ public:
      */
     TowerRotationMockScene(sf::RenderWindow& window,
                           SceneManager& parentManager, InputManager& inputManager, 
-                          ResourceManager& resourceManager);
+                          ResourceManager& resourceManager, JSONLoader &loader);
     
     /**
      * @brief Destructor.

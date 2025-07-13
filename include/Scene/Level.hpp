@@ -37,7 +37,6 @@ class Level : public Scene {
     void loadLevelID(const nlohmann::json &jsonfile);
     EntityManager entityManager;  ///< Manages all entities in the level
     std::unique_ptr<EnemyFactory> factory;
-    JSONLoader &loader;
     Map map;  ///< The game map for this level
     std::vector<std::vector<EnemyGroupInfo>>
         waveInfo;     ///< Information for each wave

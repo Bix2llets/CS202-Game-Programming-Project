@@ -7,7 +7,7 @@
 class Setting : public Scene {
    public:
     Setting(sf::RenderWindow &window, SceneManager &parentManager,
-            InputManager &inputManager, ResourceManager &resManager);
+            InputManager &inputManager, ResourceManager &resManager, JSONLoader &loader);
 
     void registerComponents() override;
     void unRegisterComponents() override;

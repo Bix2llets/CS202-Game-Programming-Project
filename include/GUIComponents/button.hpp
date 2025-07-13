@@ -6,6 +6,7 @@
 
 #include "Core/MouseObserver.hpp"
 #include "GUIComponents/mediator.hpp"
+#include "GUIComponents/Style.hpp"
 
 /**
  * @class Button
@@ -17,6 +18,7 @@
  * can be drawn using SFML.
  */
 class Button : public sf::Drawable, public MouseObserver {
+    friend class ButtonBuilder;
    public:
     /**
      * @brief Constructs a Button with a label, position, and mediator
@@ -76,8 +78,11 @@ class Button : public sf::Drawable, public MouseObserver {
                               const sf::Vector2f& windowPosition);
 
    private:
+   // * Graphic part
     std::unique_ptr<sf::Text> label;
     sf::FloatRect geometricInfo;
+    Style style;
+    // * Communication part
     Mediator& mediator;
     std::function<void(Button*)> onClick;
     std::string onClickMessage;

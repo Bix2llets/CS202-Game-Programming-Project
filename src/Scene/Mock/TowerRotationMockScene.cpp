@@ -7,8 +7,8 @@
 
 TowerRotationMockScene::TowerRotationMockScene(sf::RenderWindow& window,
                                               SceneManager& parentManager, InputManager& inputManager, 
-                                              ResourceManager& resourceManager)
-    : Scene(window, parentManager, inputManager, resourceManager),
+                                              ResourceManager& resourceManager, JSONLoader &loader)
+    : Scene(window, parentManager, inputManager, resourceManager, loader),
       rotationSpeed(1.0f), // 1 radian per second (slow rotation)
       font(nullptr) {
     initialize();

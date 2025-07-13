@@ -35,11 +35,11 @@ class SceneManager {
      */
     template <typename SceneType>
     void registerScene(const std::string &sceneName, InputManager &inputManager,
-                       ResourceManager &resManager) {
+                       ResourceManager &resManager, JSONLoader &jsonLoader) {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
                 sceneStorage[sceneName] = std::make_unique<SceneType>(
-                    window, *this, inputManager, resManager);
+                    window, *this, inputManager, resManager, jsonLoader);
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");

@@ -40,11 +40,11 @@ Application::Application()
         levelFactory.loadConfig(levelFile);
     Logger::success("Resource loading");
     sceneManager.registerScene<MainMenu>("Main menu", inputManager,
-                                         resourceManager);
+                                         resourceManager, loader);
     sceneManager.registerScene<Setting>("Setting", inputManager,
-                                        resourceManager);
+                                        resourceManager, loader);
     sceneManager.registerScene<TowerRotationMockScene>(
-        "Tower Test", inputManager, resourceManager);
+        "Tower Test", inputManager, resourceManager, loader);
     sceneManager.changeScene("Tower Test");  // Start with the tower test scene
     sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
     sceneManager.changeScene("Main menu");

@@ -10,14 +10,15 @@ TEST(sceneSwitching, actualSwitching) {
     InputManager inputManager(window);
     SceneManager sceneManager(window);
     ResourceManager resourceManager;
+    JSONLoader loader;
     resourceManager.loadFont(
         "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
         "LeagueSpartan");
 
     MainMenuMock mainMenu(window, sceneManager, inputManager,
-                          resourceManager);
+                          resourceManager, loader);
     sceneManager.registerScene<BlankScene>("Gameplay", inputManager,
-                                           resourceManager);
+                                           resourceManager, loader);
     mainMenu.simulateTestButtonClick();
 }
 TEST(sceneSwitching, nullSwitching) {
@@ -25,12 +26,13 @@ TEST(sceneSwitching, nullSwitching) {
     InputManager inputManager(window);
     SceneManager sceneManager(window);
     ResourceManager resourceManager;
+    JSONLoader loader;
     resourceManager.loadFont(
         "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
         "LeagueSpartan");
 
     MainMenuMock mainMenu(window, sceneManager, inputManager,
-                          resourceManager);
+                          resourceManager, loader);
     // sceneManager.registerScene<BlankScene>("Gameplay", inputManager,
     // resourceManager);
     mainMenu.simulateTestButtonClick();

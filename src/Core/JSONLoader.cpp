@@ -58,6 +58,7 @@ void JSONLoader::loadAll() {
     fonts.clear();
     sounds.clear();
     musics.clear();
+    styles.clear();
 
     const std::vector<std::string> roots = {"content", "mod"};
     const std::vector<std::pair<
@@ -72,6 +73,19 @@ void JSONLoader::loadAll() {
             loadFromDirectory(dir, *mapPtr);
         }
     }
+}
+// Retrieve a style JSON object by ID
+const nlohmann::json& JSONLoader::getStyle(const std::string& id) const {
+    auto it = styles.find(id);
+    if (it == styles.end())
+        throw std::out_of_range("Style ID not found: " + id);
+    return it->second;
+}
+
+// Retrieve all loaded style objects
+const std::unordered_map<std::string, nlohmann::json>&
+JSONLoader::getAllStyles() const {
+    return styles;
 }
 
 // * Individual getters
