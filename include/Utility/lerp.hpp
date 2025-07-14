@@ -15,4 +15,6 @@ class ColorMixer {
    public:
     static sf::Color perceptualLerp(const sf::Color &start,
                                     const sf::Color &end, float t);
+
+    static sf::Color linearLerp(const sf::Color &start, const sf::Color &end, float t);
 };

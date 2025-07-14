@@ -9,11 +9,11 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/SceneManager.hpp"
 #include "Core/UserEvent.hpp"
-#include "GUIComponents/button.hpp"
 #include "GUIComponents/ButtonBuilder.hpp"
+#include "GUIComponents/button.hpp"
 Setting::Setting(sf::RenderWindow &window, SceneManager &parentManager,
                  InputManager &inputManager, ResourceManager &resManager,
-                JSONLoader &loader)
+                 JSONLoader &loader)
     : Scene(window, parentManager, inputManager, resManager, loader) {
     createButtons();
     setupButtonMessages();
@@ -24,17 +24,17 @@ Setting::Setting(sf::RenderWindow &window, SceneManager &parentManager,
 
 void Setting::registerComponents() {
     for (auto &button : alwaysShownElements)
-        button->subscribeMouse(Mouse::Left, UserEvent::Press,
-                               inputManager.getMouseState());
+        button->subscribeMouseAll(inputManager.getMouseState());
 }
 
 void Setting::unRegisterComponents() {
     for (auto &button : alwaysShownElements)
-        button->unSubscribeMouse(Mouse::Left, UserEvent::Press,
-                                 inputManager.getMouseState());
+        button->unSubscribeMouseAll(inputManager.getMouseState());
 }
 
-void Setting::update() {}
+void Setting::update() {
+    for (auto &button: alwaysShownElements) button->update();
+}
 
 void Setting::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     sf::View previousView = target.getView();
@@ -46,35 +46,79 @@ void Setting::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 void Setting::createButtons() {
     const sf::Vector2f buttonSize = {120, 50};
     ButtonBuilder builder(*this, resourceManager, loader);
-    musicVolumeDecrement = std::make_unique<Button>(
-        "musicDec", sf::FloatRect({220.0, 20.0}, buttonSize), *this);
-    musicVolumeIncrement = std::make_unique<Button>(
-        "musicInc", sf::FloatRect({370.0, 20.0}, buttonSize), *this);
-    soundVolumeDecrement = std::make_unique<Button>(
-        "volumeDec", sf::FloatRect({220.0, 220.0}, buttonSize), *this);
-    soundVolumeIncrement = std::make_unique<Button>(
-        "volumeInc", sf::FloatRect({370.0, 220.0}, buttonSize), *this);
+    musicVolumeDecrement = builder.reset()
+                               .setPosition({220.f, 20.f})
+                               .setSize(buttonSize)
+                               .setNotificationMessage("Music Decrease")
+                               .setText("MusicDec")
+                               .loadJson("basicButton")
+                               .build();
 
-    resolution1 = std::make_unique<Button>(
-        "Res1", sf::FloatRect{{200, 400}, buttonSize}, *this);
-    resolution2 = std::make_unique<Button>(
-        "Res1", sf::FloatRect{{350, 400}, buttonSize}, *this);
-    resolution3 = std::make_unique<Button>(
-        "Res1", sf::FloatRect{{500, 400}, buttonSize}, *this);
+    musicVolumeIncrement = builder.reset()
+                               .setPosition({370.f, 20.f})
+                               .setSize(buttonSize)
+                               .setNotificationMessage("Music Increase")
+                               .setText("MusicInc")
+                               .loadJson("basicButton")
+                               .build();
+    soundVolumeDecrement = builder.reset()
+                               .setPosition({220.f, 220.f})
+                               .setSize(buttonSize)
+                               .setNotificationMessage("Sound Decrease")
+                               .setText("SoundDec")
+                               .loadJson("basicButton")
+                               .build();
 
-    backButton = std::make_unique<Button>(
-        "Main menu", sf::FloatRect{{50, 50}, buttonSize}, *this);
+    soundVolumeIncrement = builder.reset()
+                               .setPosition({370.f, 220.f})
+                               .setSize(buttonSize)
+                               .setNotificationMessage("Sound Increase")
+                               .setText("SoundInc")
+                               .loadJson("basicButton")
+                               .build();
+
+    resolution1 = builder.reset()
+                      .setPosition({200.f, 400.f})
+                      .setSize(buttonSize)
+                      .setNotificationMessage("Resolution1")
+                      .setText("Res1")
+                      .loadJson("lerpTesting")
+                      .build();
+
+    resolution2 = builder.reset()
+                      .setPosition({350.f, 400.f})
+                      .setSize(buttonSize)
+                      .setNotificationMessage("Resolution2")
+                      .setText("Res2")
+                      .loadJson("basicButton")
+                    .build();
+
+    resolution3 = builder.reset()
+                      .setPosition({500.f, 400.f})
+                      .setSize(buttonSize)
+                      .setNotificationMessage("Resolution3")
+                      .setText("Res3")
+                      .loadJson("basicButton")
+                      .build();
+
+    backButton = builder.reset()
+                     .setPosition({50.f, 50.f})
+                     .setSize(buttonSize)
+                     .setNotificationMessage("Main menu")
+                     .setText("Main menu")
+                     .loadJson("basicButton")
+                     .build();
 }
 
 void Setting::setupButtonMessages() {
-    musicVolumeDecrement->setNotificationMessage("Music Decrease");
-    musicVolumeIncrement->setNotificationMessage("Music Increase");
-    soundVolumeDecrement->setNotificationMessage("Sound Decrease");
-    soundVolumeIncrement->setNotificationMessage("Sound Increase");
-    resolution1->setNotificationMessage("Resolution1");
-    resolution2->setNotificationMessage("Resolution2");
-    resolution3->setNotificationMessage("Resolution3");
-    backButton->setNotificationMessage("Main menu");
+    // musicVolumeDecrement->setNotificationMessage("Music Decrease");
+    // musicVolumeIncrement->setNotificationMessage("Music Increase");
+    // soundVolumeDecrement->setNotificationMessage("Sound Decrease");
+    // soundVolumeIncrement->setNotificationMessage("Sound Increase");
+    // resolution1->setNotificationMessage("Resolution1");
+    // resolution2->setNotificationMessage("Resolution2");
+    // resolution3->setNotificationMessage("Resolution3");
+    // backButton->setNotificationMessage("Main menu");
 }
 
 void Setting::setupHandlers() {

@@ -58,3 +58,13 @@ Timer& Timer::setRemainingTime(float remaining) {
     remainingTime = remaining;
     return *this;
 }
+
+float Timer::getPassedTime() const {
+    if (mode == TimerMode::Continuous)
+        return available * timeInterval + timeInterval - remainingTime;
+    if (mode == TimerMode::Single){
+        if (available) return timeInterval;
+        return timeInterval - remainingTime;
+
+    }
+}

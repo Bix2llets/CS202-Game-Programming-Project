@@ -6,13 +6,14 @@
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
-
 #include "Utility/lerp.hpp"
 Button::Button(const std::string& textLabel, sf::FloatRect geometricInfo,
                Mediator& mediator)
     : geometricInfo(geometricInfo),
       mediator(mediator),
-      onClickMessage("ButtonClicked"), isPressed{false}, isHovered{false} {
+      onClickMessage("ButtonClicked"),
+      isPressed{false},
+      isHovered{false} {
     label = std::make_unique<sf::Text>(*mediator.getFont("LeagueSpartan"),
                                        textLabel, 24);
     label->setOrigin(label->getLocalBounds().position +
@@ -30,11 +31,13 @@ Button::Button(const std::string& textLabel, sf::FloatRect geometricInfo,
 
     reverseHover.setTimeInterval(0.5)
         .setTimerDirection(TimerDirection::Backward)
-        .setTimerMode(TimerMode::Single);
+        .setTimerMode(TimerMode::Single)
+        .setRemainingTime(0);
 
     reversePress.setTimeInterval(0.5)
         .setTimerDirection(TimerDirection::Backward)
-        .setTimerMode(TimerMode::Single);
+        .setTimerMode(TimerMode::Single)
+        .setRemainingTime(0);
 }
 
 void Button::setOnClick(const std::function<void(Button*)>& callback) {
@@ -43,7 +46,6 @@ void Button::setOnClick(const std::function<void(Button*)>& callback) {
 
 void Button::click() {
     mediator.notify(onClickMessage, this);
-    isPressed = true;
     if (onClick) onClick(this);
 }
 
@@ -54,13 +56,38 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     sf::Color fillColor;
     sf::Color textColor;
 
+    fillColor = style.getNormal().background;
+    textColor = style.getNormal().text;
+    if (isHovered) {
+        fillColor =
+            ColorMixer::perceptualLerp(fillColor, style.getHover().background,
+                                       hover.getCompletionPercentage());
+        textColor = ColorMixer::perceptualLerp(textColor, style.getHover().text,
+                                               hover.getCompletionPercentage());
+    } else {
+        fillColor =
+            ColorMixer::perceptualLerp(style.getHover().background, fillColor,
+                                       reverseHover.getCompletionPercentage());
+        textColor =
+            ColorMixer::perceptualLerp(style.getHover().text, fillColor,
+                                       reverseHover.getCompletionPercentage());
+    }
+
     if (isPressed) {
-        fillColor = ColorMixer::perceptualLerp(style.getNormal().background, style.getClick().background, press.getCompletionPercentage());
+        fillColor =
+            ColorMixer::perceptualLerp(fillColor, style.getClick().background,
+                                       press.getCompletionPercentage());
+        textColor = ColorMixer::perceptualLerp(textColor, style.getClick().text,
+                                               press.getCompletionPercentage());
+    } else {
+        fillColor =
+            ColorMixer::perceptualLerp(style.getClick().background, fillColor,
+                                       reversePress.getCompletionPercentage());
+        textColor =
+            ColorMixer::perceptualLerp(style.getClick().text, textColor,
+                                       reversePress.getCompletionPercentage());
     }
-    else if (isHovered) {
-        fillColor = ColorMixer::perceptualLerp(style.getNormal().background, style.getHover().background, hover.getCompletionPercentage());
-    }
-    else fillColor = style.getNormal().background;
+
     rect.setFillColor(fillColor);
 
     target.draw(rect, states);
@@ -87,21 +114,40 @@ void Button::onMouseEvent(Mouse button, UserEvent event,
     if (button == Mouse::Left && event == UserEvent::Press)
         if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition))) {
             click();
+            if (isPressed == true) return;
+            isPressed = true;
+            press.reset();
+            press.setRemainingTime(reversePress.getPassedTime());
+            reversePress.reset();
+
             return;
         }
 
-    if (button == Mouse::None && event == UserEvent::Move) {
+    if (button == Mouse::Left && event == UserEvent::Release) {
+        if (!isPressed) return;
+        isPressed = false;
+        reversePress.reset();
+        reversePress.setRemainingTime(press.getPassedTime());
+        press.reset();
+    }
+    if (event == UserEvent::Move) {
         if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition))) {
+            if (isHovered == true) return;
             isHovered = true;
+            hover.reset();
+            hover.setRemainingTime(reverseHover.getPassedTime());
+            reverseHover.reset();
         } else {
+            if (!(isHovered)) return;
             isHovered = false;
-            isPressed = false;
-
-            reverseHover.setRemainingTime(hover.getRemainingTime());
-            reversePress.setRemainingTime(press.getRemainingTime());
 
             reverseHover.reset();
-            reversePress.reset();
+            Logger::debug(std::format("{} {}", hover.getPassedTime(),
+                                      press.getPassedTime()));
+
+            reverseHover.setRemainingTime(hover.getPassedTime());
+
+            hover.reset();
         }
     }
 }
@@ -113,10 +159,16 @@ void Button::setNotificationMessage(const std::string& str) {
 void Button::subscribeMouseAll(MouseState& mouseState) {
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
+    subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
+    subscribeMouse(Mouse::Right, UserEvent::Move, mouseState);
+    subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
 }
 void Button::unSubscribeMouseAll(MouseState& mouseState) {
     unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
+    unSubscribeMouse(Mouse::Right, UserEvent::Move, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
 }
 
 void Button::update() {

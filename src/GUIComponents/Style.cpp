@@ -8,11 +8,12 @@ void Style::loadJson(const nlohmann::json &file,
     nlohmann::json hoverColor = style["hover"];
     nlohmann::json clickColor = style["click"];
     auto hexConverter = [](std::string hexCode) {
-        if (hexCode.size() == 7 && hexCode[0] == '#') {
+        if (hexCode.size() == 9 && hexCode[0] == '#') {
             unsigned int colorValue =
                 std::stoul(hexCode.substr(1), nullptr, 16);
             return sf::Color(colorValue);
         }
+        return sf::Color::Transparent;
     };
 
     normal.background =

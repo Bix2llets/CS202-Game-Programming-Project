@@ -1,14 +1,14 @@
 #include "Utility/lerp.hpp"
-
+#include "Utility/logger.hpp"
 ColorMixer::Oklab ColorMixer::rgbToOklab(sf::Color color) {
     // sRGB to linear
     auto toLinear = [](float c) {
         return c <= 0.04045f ? c / 12.92f
                              : std::pow((c + 0.055f) / 1.055f, 2.4f);
     };
-    int r = toLinear(static_cast<float>(color.r) / 255);
-    int g = toLinear(static_cast<float>(color.g) / 255);
-    int b = toLinear(static_cast<float>(color.b) / 255);
+    float r = toLinear(static_cast<float>(color.r) / 255);
+    float g = toLinear(static_cast<float>(color.g) / 255);
+    float b = toLinear(static_cast<float>(color.b) / 255);
 
     // Linear RGB to LMS
     float l = 0.4122214708f * r + 0.5363325363f * g + 0.0514459929f * b;
@@ -61,11 +61,22 @@ sf::Color ColorMixer::perceptualLerp(const sf::Color &start,
     Oklab labB = rgbToOklab(end);
 
     Oklab labResult;
-    labResult.L = labA.L + (labB.L - labA.L) * t;
-    labResult.a = labA.a + (labB.a - labA.a) * t;
-    labResult.b = labA.b + (labB.b - labA.b) * t;
+    labResult.L = labA.L * (1.0f - t) + labB.L * t;
+    labResult.a = labA.a * (1.0f - t) + labB.a * t;
+    labResult.b = labA.b * (1.0f - t) + labB.b * t;
 
     sf::Color result = oklabToRgb(labResult);
-    result.a = start.a + (end.a - start.a) * t;
+    result.a = static_cast<uint8_t>(std::clamp(start.a * (1.0f - t) + end.a * t, 0.0f, 255.0f));
+    return result;
+}
+
+sf::Color ColorMixer::linearLerp(const sf::Color &start, const sf::Color &end, float t) {
+    sf::Color result;
+    result.r = static_cast<float>(start.r) * (1.0f - t) + static_cast<float>(end.r);
+    result.g = static_cast<float>(start.g) * (1.0f - t) + static_cast<float>(end.g);
+    result.b = static_cast<float>(start.b) * (1.0f - t) + static_cast<float>(end.b);
+    result.a = static_cast<float>(start.a) * (1.0f - t) + static_cast<float>(end.a);
+
+
     return result;
 }

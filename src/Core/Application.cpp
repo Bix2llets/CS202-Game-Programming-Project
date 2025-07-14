@@ -86,7 +86,7 @@ void Application::run() {
             sceneManager.update();
             timeElapsed -= GameConstants::TICK_INTERVAL;
         }
-        window.clear(sf::Color::Green);
+        window.clear(sf::Color::Black);
         sceneManager.render();
         window.display();
     }

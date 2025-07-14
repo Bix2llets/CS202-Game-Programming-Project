@@ -84,10 +84,9 @@ class Timer {
     Timer& setTimerDirection(TimerDirection direction);
 
     inline float getCompletionPercentage() const {
-        return direction == TimerDirection::Backward
-                   ? 1 - remainingTime / timeInterval
-                   : remainingTime / timeInterval;
+        return 1 - remainingTime / timeInterval;
     }
 
     inline float getRemainingTime() const { return remainingTime; }
+    float getPassedTime() const;
 };

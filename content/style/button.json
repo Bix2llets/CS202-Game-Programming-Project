@@ -3,19 +3,51 @@
         "id": "basicButton",
         "style": {
             "normal": {
-                "background": "#2D3748",
-                "border": "#4A5568",
-                "text": "#FFFFFF"
+                "background": "#2D3748FF",
+                "border": "#4A5568FF",
+                "text": "#FFFFFFFF"
             },
             "hover": {
-                "background": "#4A5568",
-                "border": "#718096",
-                "text": "#F7FAFC"
+                "background": "#4A5568FF",
+                "border": "#718096FF",
+                "text": "#F7FAFCFF"
             },
             "click": {
-                "background": "#1A202C",
-                "border": "#2D3748",
-                "text": "#E2E8F0"
+                "background": "#1A202CFF",
+                "border": "#2D3748FF",
+                "text": "#E2E8F0FF"
+            }
+        },
+        "borderRadius": 4,
+        "borderWidth": 2,
+        "font": "LeagueSpartan",
+        "fontSize": 24,
+        "padding": [
+            12,
+            24
+        ],
+        "center": {
+            "x": "centering",
+            "y": "centering"
+        }
+    },
+    {
+        "id": "lerpTesting",
+        "style": {
+            "normal": {
+                "background": "#FFFF00FF",
+                "border": "#4A5568FF",
+                "text": "#FFFFFFFF"
+            },
+            "hover": {
+                "background": "#4A5568FF",
+                "border": "#718096FF",
+                "text": "#F7FAFCFF"
+            },
+            "click": {
+                "background": "#1A202CFF",
+                "border": "#2D3748FF",
+                "text": "#E2E8F0FF"
             }
         },
         "borderRadius": 4,
