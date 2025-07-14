@@ -72,10 +72,10 @@ sf::Color ColorMixer::perceptualLerp(const sf::Color &start,
 
 sf::Color ColorMixer::linearLerp(const sf::Color &start, const sf::Color &end, float t) {
     sf::Color result;
-    result.r = static_cast<float>(start.r) * (1.0f - t) + static_cast<float>(end.r);
-    result.g = static_cast<float>(start.g) * (1.0f - t) + static_cast<float>(end.g);
-    result.b = static_cast<float>(start.b) * (1.0f - t) + static_cast<float>(end.b);
-    result.a = static_cast<float>(start.a) * (1.0f - t) + static_cast<float>(end.a);
+    result.r = static_cast<float>(start.r) * (1.0f - t) + static_cast<float>(end.r) * t;
+    result.g = static_cast<float>(start.g) * (1.0f - t) + static_cast<float>(end.g) * t;
+    result.b = static_cast<float>(start.b) * (1.0f - t) + static_cast<float>(end.b) * t;
+    result.a = static_cast<float>(start.a) * (1.0f - t) + static_cast<float>(end.a) * t;
 
 
     return result;

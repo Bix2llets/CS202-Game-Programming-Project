@@ -35,17 +35,17 @@
         "id": "lerpTesting",
         "style": {
             "normal": {
-                "background": "#FFFF00FF",
+                "background": "#FF0000FF",
                 "border": "#4A5568FF",
                 "text": "#FFFFFFFF"
             },
             "hover": {
-                "background": "#4A5568FF",
+                "background": "#00FF00FF",
                 "border": "#718096FF",
                 "text": "#F7FAFCFF"
             },
             "click": {
-                "background": "#1A202CFF",
+                "background": "#0000FFFF",
                 "border": "#2D3748FF",
                 "text": "#E2E8F0FF"
             }
