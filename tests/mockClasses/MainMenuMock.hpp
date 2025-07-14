@@ -9,5 +9,5 @@ class MainMenuMock : public MainMenu {
                  ResourceManager &resManager, JSONLoader &loader)
         : MainMenu(window, parentManager, inputManager, resManager, loader) {}
     // Simulate a button click for testing
-    void simulateTestButtonClick() { testBtn.click(); }
+    void simulateTestButtonClick() { testBtn->click(); }
 };

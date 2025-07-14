@@ -32,6 +32,7 @@ ButtonBuilder& ButtonBuilder::reset() {
     position = {0.f, 0.f};
     size = {0.f, 0.f};
     notificationMessage = "";
+    callback = nullptr;
     return *this;
 }
 
@@ -46,6 +47,12 @@ std::unique_ptr<Button> ButtonBuilder::build() {
 
     result->setNotificationMessage(notificationMessage);
     result->style.loadJson(styleConfig, resManager);
+    result->setOnClick(callback);
 
     return std::move(result);
+}
+
+ButtonBuilder& ButtonBuilder::setCallback(std::function<void(Button*)> call) {
+    callback = call;
+    return *this;
 }

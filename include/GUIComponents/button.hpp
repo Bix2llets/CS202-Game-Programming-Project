@@ -7,6 +7,7 @@
 #include "Core/MouseObserver.hpp"
 #include "GUIComponents/mediator.hpp"
 #include "GUIComponents/Style.hpp"
+#include "Entity/Modules/Timer.hpp"
 
 /**
  * @class Button
@@ -76,12 +77,24 @@ class Button : public sf::Drawable, public MouseObserver {
     virtual void onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition);
+        
+    void subscribeMouseAll(MouseState &mouseState);
+    void unSubscribeMouseAll(MouseState &mouseState);
+    void update();
 
    private:
    // * Graphic part
     std::unique_ptr<sf::Text> label;
     sf::FloatRect geometricInfo;
     Style style;
+
+    Timer hover;
+    Timer press;
+    Timer reverseHover;
+    Timer reversePress;
+
+    bool isPressed;
+    bool isHovered;
     // * Communication part
     Mediator& mediator;
     std::function<void(Button*)> onClick;

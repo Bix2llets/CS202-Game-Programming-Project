@@ -9,31 +9,40 @@
 MainMenu::MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
                    InputManager &inputManager, ResourceManager &resManager,
                    JSONLoader &loader)
-    : Scene(window, parentManager, inputManager, resManager, loader),
-      testBtn{"Testing", {{100.f, 100.f}, {100.f, 50.f}}, *this} {
+    : Scene(window, parentManager, inputManager, resManager, loader) {
     ButtonBuilder builder(*this, resourceManager, loader);
+    testBtn = builder.reset()
+                  .setPosition({120.f, 100.f})
+                  .setSize({120.f, 50.f})
+                  .setText("Gameplay")
+                  .loadJson("basicButton")
+                  .setNotificationMessage("Gameplay")
+                  .setCallback([this](Button *button) {
+                      Logger::debug("Turning to gameplay");
+                  })
+                  .build();
     settingBtn = builder.reset()
                      .setPosition({300.f, 100.f})
                      .setSize({50.f, 50.f})
                      .setText("To setting")
                      .loadJson("basicButton")
                      .setNotificationMessage("Setting")
+                     .setCallback([this](Button *button) {
+                         Logger::debug("Setting button pressed");
+                     })
                      .build();
     Logger::debug("Main menu created");
 
-    testBtn.setNotificationMessage("Gameplay");
     subscribe("Setting", [this](std::any, std::any) {
         sceneManager.changeScene("Setting");
     });
     subscribe("Gameplay", [this](std::any, std::any) {
         sceneManager.changeScene("Gameplay");
     });
-    testBtn.setOnClick(
-        [this](Button *a) { Logger::debug("Clicked test button 1"); });
 }
 
 void MainMenu::draw(sf::RenderTarget &target, sf::RenderStates state) const {
-    target.draw(testBtn, state);
+    target.draw(*testBtn, state);
     target.draw(*settingBtn, state);
 }
 
@@ -45,15 +54,11 @@ void MainMenu::testSceneSwitching() {
 }
 
 void MainMenu::registerComponents() {
-    testBtn.subscribeMouse(Mouse::Left, UserEvent::Press,
-                           inputManager.getMouseState());
-    settingBtn->subscribeMouse(Mouse::Left, UserEvent::Press,
-                               inputManager.getMouseState());
+    testBtn->subscribeMouseAll(inputManager.getMouseState());
+    settingBtn->subscribeMouseAll(inputManager.getMouseState());
 };
 
 void MainMenu::unRegisterComponents() {
-    testBtn.unSubscribeMouse(Mouse::Left, UserEvent::Press,
-                             inputManager.getMouseState());
-    settingBtn->unSubscribeMouse(Mouse::Left, UserEvent::Press,
-                                 inputManager.getMouseState());
+    testBtn->unSubscribeMouseAll(inputManager.getMouseState());
+    settingBtn->unSubscribeMouseAll(inputManager.getMouseState());
 };

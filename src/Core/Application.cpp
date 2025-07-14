@@ -48,7 +48,7 @@ Application::Application()
     sceneManager.changeScene("Tower Test");  // Start with the tower test scene
     sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
     sceneManager.changeScene("Main menu");
-    sceneManager.changeScene("Setting");
+    // sceneManager.changeScene("Setting");
 }
 
 Application::~Application() {
@@ -86,7 +86,7 @@ void Application::run() {
             sceneManager.update();
             timeElapsed -= GameConstants::TICK_INTERVAL;
         }
-        window.clear(sf::Color::Black);
+        window.clear(sf::Color::Green);
         sceneManager.render();
         window.display();
     }

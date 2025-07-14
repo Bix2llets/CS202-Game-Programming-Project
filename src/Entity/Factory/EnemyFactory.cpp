@@ -52,7 +52,10 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
     result->path.setSpeed(enemyFile["stats"]["speed"]);
     result->health.setMaxHealth(enemyFile["stats"]["maxHealth"]);
     result->health.setHealth(result->health.getMaxHealth());
-    result->healTimer = Timer(enemyFile["stats"]["healInterval"], TimerMode::Continuous);
+    result->healTimer.setTimeInterval(enemyFile["stats"]["healInterval"])
+        .setTimerMode(TimerMode::Continuous)
+        .setTimerDirection(TimerDirection::Backward)
+        .setRemainingTime(enemyFile["stats"]["healInterval"]);
     result->healAmount = enemyFile["stats"]["healAmount"];
     result->enemyType =
         (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);

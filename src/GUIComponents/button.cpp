@@ -1,17 +1,41 @@
 #include "GUIComponents/button.hpp"
 
-#include "Core/ResourceManager.hpp"
-
 #include <SFML/Graphics.hpp>
+
 #include "Base/Constants.hpp"
+#include "Core/MouseState.hpp"
+#include "Core/ResourceManager.hpp"
+#include "Core/UserEvent.hpp"
+
+#include "Utility/lerp.hpp"
 Button::Button(const std::string& textLabel, sf::FloatRect geometricInfo,
                Mediator& mediator)
-    : geometricInfo(geometricInfo), mediator(mediator),
-    onClickMessage("ButtonClicked") {
-        label = std::make_unique<sf::Text>(*mediator.getFont("LeagueSpartan"), textLabel, 24);
-        label->setOrigin(label->getLocalBounds().position + label->getLocalBounds().size / 2.f);
-        label->setPosition(geometricInfo.position + geometricInfo.size / 2.f);
-    }
+    : geometricInfo(geometricInfo),
+      mediator(mediator),
+      onClickMessage("ButtonClicked"), isPressed{false}, isHovered{false} {
+    label = std::make_unique<sf::Text>(*mediator.getFont("LeagueSpartan"),
+                                       textLabel, 24);
+    label->setOrigin(label->getLocalBounds().position +
+                     label->getLocalBounds().size / 2.f);
+    label->setPosition(geometricInfo.position + geometricInfo.size / 2.f);
+
+    hover.setTimeInterval(0.5)
+        .setTimerDirection(TimerDirection::Forward)
+        .setTimerMode(TimerMode::Single)
+        .setRemainingTime(0.5);
+    press.setTimeInterval(0.5)
+        .setTimerDirection(TimerDirection::Forward)
+        .setTimerMode(TimerMode::Single)
+        .setRemainingTime(0.5);
+
+    reverseHover.setTimeInterval(0.5)
+        .setTimerDirection(TimerDirection::Backward)
+        .setTimerMode(TimerMode::Single);
+
+    reversePress.setTimeInterval(0.5)
+        .setTimerDirection(TimerDirection::Backward)
+        .setTimerMode(TimerMode::Single);
+}
 
 void Button::setOnClick(const std::function<void(Button*)>& callback) {
     onClick = callback;
@@ -19,6 +43,7 @@ void Button::setOnClick(const std::function<void(Button*)>& callback) {
 
 void Button::click() {
     mediator.notify(onClickMessage, this);
+    isPressed = true;
     if (onClick) onClick(this);
 }
 
@@ -26,14 +51,25 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     sf::RectangleShape rect;
     rect.setPosition(geometricInfo.position);
     rect.setSize(geometricInfo.size);
-    rect.setFillColor(sf::Color::Blue);
+    sf::Color fillColor;
+    sf::Color textColor;
+
+    if (isPressed) {
+        fillColor = ColorMixer::perceptualLerp(style.getNormal().background, style.getClick().background, press.getCompletionPercentage());
+    }
+    else if (isHovered) {
+        fillColor = ColorMixer::perceptualLerp(style.getNormal().background, style.getHover().background, hover.getCompletionPercentage());
+    }
+    else fillColor = style.getNormal().background;
+    rect.setFillColor(fillColor);
 
     target.draw(rect, states);
-    // ? Uncomment these lines to see the bounding box for the text of button 
+    // ? Uncomment these lines to see the bounding box for the text of button
     // sf::RectangleShape textBound;
     // textBound.setSize(label->getLocalBounds().size);
     // textBound.setPosition(label->getPosition());
-    // textBound.setOrigin(textBound.getLocalBounds().position + textBound.getLocalBounds().size / 2.f);
+    // textBound.setOrigin(textBound.getLocalBounds().position +
+    // textBound.getLocalBounds().size / 2.f);
     // textBound.setFillColor(sf::Color::Black);
     // textBound.setOutlineColor(sf::Color::Green);
     // textBound.setOutlineThickness(1.f);
@@ -48,10 +84,50 @@ sf::Vector2f Button::getPosition() const { return geometricInfo.position; }
 void Button::onMouseEvent(Mouse button, UserEvent event,
                           const sf::Vector2f& worldPosition,
                           const sf::Vector2f& windowPosition) {
-    if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition)))
-        click();
+    if (button == Mouse::Left && event == UserEvent::Press)
+        if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition))) {
+            click();
+            return;
+        }
+
+    if (button == Mouse::None && event == UserEvent::Move) {
+        if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition))) {
+            isHovered = true;
+        } else {
+            isHovered = false;
+            isPressed = false;
+
+            reverseHover.setRemainingTime(hover.getRemainingTime());
+            reversePress.setRemainingTime(press.getRemainingTime());
+
+            reverseHover.reset();
+            reversePress.reset();
+        }
+    }
 }
 
-void Button::setNotificationMessage(const std::string &str) {
+void Button::setNotificationMessage(const std::string& str) {
     onClickMessage = str;
+}
+
+void Button::subscribeMouseAll(MouseState& mouseState) {
+    subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
+    subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
+}
+void Button::unSubscribeMouseAll(MouseState& mouseState) {
+    unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
+    unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
+}
+
+void Button::update() {
+    if (isPressed) {
+        press.update();
+    } else {
+        reversePress.update();
+    }
+    if (isHovered) {
+        hover.update();
+    } else {
+        reverseHover.update();
+    }
 }

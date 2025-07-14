@@ -20,6 +20,8 @@ class ButtonBuilder {
     ResourceManager &resManager;
     JSONLoader &loader;
 
+    std::function<void(Button*)> callback;
+
    public:
     ButtonBuilder(Mediator& mediator, ResourceManager& resManager,
                   JSONLoader& loader);
@@ -35,6 +37,8 @@ class ButtonBuilder {
     ButtonBuilder& reset();
 
     ButtonBuilder& loadJson(std::string id);
+
+    ButtonBuilder& setCallback(std::function<void(Button*)> call);
 
     std::unique_ptr<Button> build() ;
 };

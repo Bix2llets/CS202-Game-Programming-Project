@@ -37,9 +37,11 @@ struct Style {
     inline const ColorSet& getClick() const { return click; }
     inline const sf::Font* getFont() const { return font; }
     inline const std::array<int, 2>& getPadding() const { return padding; }
-    inline int getBorderWidth() const { return borderWidth; }
-    inline int getBorderRadius() const { return borderRadius; }
-
+    inline const int getBorderWidth() const { return borderWidth; }
+    inline const int getBorderRadius() const { return borderRadius; }
+    inline const ColorSet getNormalSet() const {return normal;}
+    inline const ColorSet getHoverSet() const {return hover;}
+    inline const ColorSet getClickSet() const {return click;}
     Style() = default;
     void loadJson(const nlohmann::json &file, const ResourceManager &manager);
 };

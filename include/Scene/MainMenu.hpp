@@ -23,7 +23,7 @@
 class SceneManager;
 class MainMenu : public Scene {
    protected:
-    Button testBtn;  ///< Test button for the main menu
+   std::unique_ptr<Button> testBtn;
     std::unique_ptr<Button> settingBtn;
     void testSceneSwitching();
 

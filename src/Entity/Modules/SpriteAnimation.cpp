@@ -26,10 +26,11 @@ void SpriteAnimation::loadJson(ResourceManager& resManager,
     std::string animationType = jsonFile["type"];
     if (animationType == "circular") type = AnimationType::Circular;
     if (animationType == "linear") type = AnimationType::Linear;
-
-    animationTimer = std::make_unique<Timer>(jsonFile["animationInterval"],
-                                             jsonFile["animationInterval"],
-                                             TimerMode::Continuous);
+    animationTimer = std::make_unique<Timer>();
+    animationTimer->setTimeInterval(jsonFile["animationInterval"])
+        .setTimerMode(TimerMode::Continuous)
+        .setTimerDirection(TimerDirection::Backward)
+        .setRemainingTime(jsonFile["animationInterval"]);
 }
 
 void SpriteAnimation::update() {
