@@ -5,9 +5,9 @@
 #include <string>
 
 #include "Core/MouseObserver.hpp"
-#include "GUIComponents/mediator.hpp"
-#include "GUIComponents/Style.hpp"
 #include "Entity/Modules/Timer.hpp"
+#include "GUIComponents/Style.hpp"
+#include "GUIComponents/mediator.hpp"
 
 /**
  * @class Button
@@ -20,7 +20,8 @@
  */
 class Button : public sf::Drawable, public MouseObserver {
     friend class ButtonBuilder;
-   public:
+
+   private:
     /**
      * @brief Constructs a Button with a label, position, and mediator
      * reference.
@@ -28,8 +29,9 @@ class Button : public sf::Drawable, public MouseObserver {
      * @param position The position of the button in the window.
      * @param mediator Reference to the mediator for event notification.
      */
-    Button(const std::string& label, sf::FloatRect geometricInfo, Mediator& mediator);
+    Button(sf::FloatRect geometricInfo, Mediator& mediator);
 
+   public:
     /**
      * @brief Sets a callback to be called when the button is clicked.
      * @param callback The function to call on click.
@@ -37,10 +39,11 @@ class Button : public sf::Drawable, public MouseObserver {
     void setOnClick(const std::function<void(Button*)>& callback);
 
     /**
-     * @brief Sets the string to be notification message when notifying the mediator
+     * @brief Sets the string to be notification message when notifying the
+     * mediator
      * @param str the string to be used as message.
      */
-    void setNotificationMessage(const std::string &str);
+    void setNotificationMessage(const std::string& str);
 
     /**
      * @brief Simulates a button click: notifies the mediator and calls the
@@ -77,14 +80,18 @@ class Button : public sf::Drawable, public MouseObserver {
     virtual void onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition);
-        
-    void subscribeMouseAll(MouseState &mouseState);
-    void unSubscribeMouseAll(MouseState &mouseState);
+
+    void subscribeMouseAll(MouseState& mouseState);
+    void unSubscribeMouseAll(MouseState& mouseState);
     void update();
 
+    void setDisplayText(std::string text);
+
    private:
-   // * Graphic part
+    // * Graphic part
     std::unique_ptr<sf::Text> label;
+    std::unique_ptr<sf::Sprite> backgroundSprite;
+
     sf::FloatRect geometricInfo;
     Style style;
 

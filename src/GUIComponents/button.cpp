@@ -7,19 +7,12 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "Utility/lerp.hpp"
-Button::Button(const std::string& textLabel, sf::FloatRect geometricInfo,
-               Mediator& mediator)
+Button::Button(sf::FloatRect geometricInfo, Mediator& mediator)
     : geometricInfo(geometricInfo),
       mediator(mediator),
       onClickMessage("ButtonClicked"),
       isPressed{false},
       isHovered{false} {
-    label = std::make_unique<sf::Text>(*mediator.getFont("LeagueSpartan"),
-                                       textLabel, 24);
-    label->setOrigin(label->getLocalBounds().position +
-                     label->getLocalBounds().size / 2.f);
-    label->setPosition(geometricInfo.position + geometricInfo.size / 2.f);
-
     hover.setTimeInterval(0.5)
         .setTimerDirection(TimerDirection::Forward)
         .setTimerMode(TimerMode::Single)
@@ -95,8 +88,7 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     // sf::RectangleShape textBound;
     // textBound.setSize(label->getLocalBounds().size);
     // textBound.setPosition(label->getPosition());
-    // textBound.setOrigin(textBound.getLocalBounds().position +
-    // textBound.getLocalBounds().size / 2.f);
+    // textBound.setOrigin(textBound.getLocalBounds().position + textBound.getLocalBounds().size / 2.f);
     // textBound.setFillColor(sf::Color::Black);
     // textBound.setOutlineColor(sf::Color::Green);
     // textBound.setOutlineThickness(1.f);
@@ -182,4 +174,11 @@ void Button::update() {
     } else {
         reverseHover.update();
     }
+}
+
+void Button::setDisplayText(std::string text) {
+    label->setString(text);
+    label->setOrigin(label->getLocalBounds().position +
+                     label->getLocalBounds().size / 2.f);
+    label->setPosition(geometricInfo.position + geometricInfo.size / 2.f);
 }

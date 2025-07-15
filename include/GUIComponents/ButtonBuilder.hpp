@@ -22,6 +22,8 @@ class ButtonBuilder {
 
     std::function<void(Button*)> callback;
 
+    const std::string fontName = "LeagueSpartan";
+
    public:
     ButtonBuilder(Mediator& mediator, ResourceManager& resManager,
                   JSONLoader& loader);

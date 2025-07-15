@@ -1,7 +1,8 @@
 #include "GUIComponents/ButtonBuilder.hpp"
 
-ButtonBuilder::ButtonBuilder(Mediator& mediator,
-                             ResourceManager& resManager,
+#include "Core/ResourceManager.hpp"
+#include "Utility/logger.hpp"
+ButtonBuilder::ButtonBuilder(Mediator& mediator, ResourceManager& resManager,
                              JSONLoader& loader)
     : mediator{mediator}, resManager{resManager}, loader{loader} {}
 
@@ -42,13 +43,23 @@ ButtonBuilder& ButtonBuilder::loadJson(std::string id) {
 }
 
 std::unique_ptr<Button> ButtonBuilder::build() {
-    std::unique_ptr<Button> result =
-        std::make_unique<Button>(text, sf::FloatRect{position, size}, mediator);
+    std::unique_ptr<Button> result(
+        new Button(sf::FloatRect{position, size}, mediator));
 
     result->setNotificationMessage(notificationMessage);
     result->style.loadJson(styleConfig, resManager);
     result->setOnClick(callback);
+    std::unique_ptr<sf::Text> label =
+        std::make_unique<sf::Text>(*resManager.getFont(fontName), text, 24);
+    Logger::debug(std::format("{} {} {} {}", label->getLocalBounds().position.x,
+                              label->getLocalBounds().position.y,
+                              label->getLocalBounds().size.x,
+                              label->getLocalBounds().size.y));
+    label->setOrigin(label->getLocalBounds().position +
+                     label->getLocalBounds().size / 2.f);
+    label->setPosition(position + size / 2.f);
 
+    result->label = std::move(label);
     return std::move(result);
 }
 

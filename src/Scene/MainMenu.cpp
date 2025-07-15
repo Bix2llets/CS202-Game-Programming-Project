@@ -46,7 +46,10 @@ void MainMenu::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     target.draw(*settingBtn, state);
 }
 
-void MainMenu::update() {}
+void MainMenu::update() {
+    testBtn->update();
+    settingBtn->update();
+}
 
 void MainMenu::testSceneSwitching() {
     Logger::debug("Scene switch initiated");
