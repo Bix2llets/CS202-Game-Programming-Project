@@ -5,6 +5,7 @@
 bool Timer::isAvailable() { return available > 0; }
 
 Timer& Timer::update() {
+    if (!running) return *this;
     if (mode == TimerMode::Single) {
         if (available) return *this;
         remainingTime -= GameConstants::TICK_INTERVAL;
@@ -67,4 +68,14 @@ float Timer::getPassedTime() const {
         return timeInterval - remainingTime;
 
     }
+}
+
+Timer& Timer::pause() {
+    running = false;
+    return *this;
+}
+
+Timer& Timer::resume() {
+    running = true;
+    return *this;
 }

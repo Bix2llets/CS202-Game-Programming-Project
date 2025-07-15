@@ -1,13 +1,15 @@
 
 /**
  * @file SpriteAnimation.hpp
- * @brief Defines the SpriteAnimation class for handling sprite-based animations.
+ * @brief Defines the SpriteAnimation class for handling sprite-based
+ * animations.
  */
 #pragma once
 
 #include <SFML/Graphics.hpp>
 #include <json.hpp>
 #include <memory>
+
 #include "Core/ResourceManager.hpp"
 #include "Entity/Modules/Timer.hpp"
 
@@ -16,24 +18,27 @@
  * @brief Types of animation supported by SpriteAnimation.
  */
 enum class AnimationType {
-    Linear,    ///< Linear animation (frame by frame)
-    Circular   ///< Circular animation (looping)
+    Linear,   ///< Linear animation (frame by frame)
+    Circular  ///< Circular animation (looping)
 };
-
 
 /**
  * @class SpriteAnimation
  * @brief Handles sprite-based animations using a sequence of frames.
  *
- * Supports linear and circular animation types, frame management, and timer-based updates.
+ * Supports linear and circular animation types, frame management, and
+ * timer-based updates.
  */
 class SpriteAnimation {
+    friend class SpriteAnimationBuilder;
+
    private:
-    AnimationType type;                ///< Animation type (linear or circular)
-    sf::Vector2i spriteSize;           ///< Size of each sprite frame
-    int currentFrame;                  ///< Current frame index
-    std::vector<sf::Sprite> sprites;   ///< List of sprite frames
-    std::unique_ptr<Timer> animationTimer; ///< Timer for animation frame updates
+    AnimationType type;               ///< Animation type (linear or circular)
+    sf::Vector2i spriteSize;          ///< Size of each sprite frame
+    int currentFrame;                 ///< Current frame index
+    std::vector<sf::Sprite> sprites;  ///< List of sprite frames
+    std::unique_ptr<Timer>
+        animationTimer;  ///< Timer for animation frame updates
 
    public:
     /**
@@ -46,7 +51,7 @@ class SpriteAnimation {
      * @param resManager Reference to the resource manager for loading textures.
      * @param jsonFile JSON object containing animation data.
      */
-    void loadJson(ResourceManager &resManager, const nlohmann::json& jsonFile);
+    void loadJson(ResourceManager& resManager, const nlohmann::json& jsonFile);
 
     /**
      * @brief Updates the animation timer and frame.
@@ -63,4 +68,14 @@ class SpriteAnimation {
      * @brief Restarts the animation from the first frame.
      */
     void restart();
+
+    /**
+     * @brief Continue playing the animation from the current frame
+     */
+    void resume();
+
+    /**
+     * @brief Stop playing the animation aT the current frame
+     */
+    void pause();
 };

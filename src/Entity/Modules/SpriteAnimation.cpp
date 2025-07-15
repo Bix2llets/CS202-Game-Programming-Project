@@ -10,15 +10,19 @@ void SpriteAnimation::loadJson(ResourceManager& resManager,
     const sf::Texture* texture = resManager.getTexture(jsonFile["textureID"]);
     int width = static_cast<int>(jsonFile["width"]);
     int height = static_cast<int>(jsonFile["height"]);
+
+    nlohmann::json viewport = jsonFile["viewport"];
+
     sf::Vector2i numberOfFrame = {
-        static_cast<int>(texture->getSize().x / width),
-        static_cast<int>(texture->getSize().y / height)};
+        static_cast<int>(viewport["width"].get<int>() / width),
+        static_cast<int>(viewport["height"].get<int>() / height)};
 
     for (int j = 0; j < numberOfFrame.y; j++)
         for (int i = 0; i < numberOfFrame.x; i++)
             sprites.push_back(sf::Sprite(
-                *texture,
-                sf::IntRect{{i * width, j * height}, {width, height}}));
+                *texture, sf::IntRect{{viewport["x"].get<int>() + i * width,
+                                       viewport["y"].get<int>() + j * height},
+                                      {width, height}}));
     sf::Vector2f origin = sf::Vector2f{jsonFile["centerX"].get<float>(),
                                        jsonFile["centerY"].get<float>()};
 
@@ -51,3 +55,7 @@ void SpriteAnimation::restart() {
     animationTimer->reset();
     currentFrame = 0;
 }
+
+void SpriteAnimation::resume() { animationTimer->resume(); }
+
+void SpriteAnimation::pause() { animationTimer->pause(); }

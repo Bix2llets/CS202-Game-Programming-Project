@@ -38,6 +38,7 @@ class Timer {
     TimerDirection
         direction;  ///< The direction of the timer (forward or backward)
     int available;  ///< Number of available uses (for continuous mode)
+    bool running; ///< Identicate whether the timer is running
 
    public:
     Timer()
@@ -45,7 +46,8 @@ class Timer {
           remainingTime{1},
           mode{TimerMode::Single},
           available{0},
-          direction{TimerDirection::Backward} {};
+          direction{TimerDirection::Backward},
+          running{true} {};
 
     /**
      * @brief Checks if the timer is available (ready to trigger).
@@ -89,4 +91,7 @@ class Timer {
 
     inline float getRemainingTime() const { return remainingTime; }
     float getPassedTime() const;
+
+    Timer& pause();
+    Timer& resume();
 };
