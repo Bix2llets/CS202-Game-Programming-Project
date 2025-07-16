@@ -70,6 +70,7 @@ class Scene : public sf::Drawable, public Mediator {
      */
     virtual void unRegisterComponents() = 0;
 
+    [[deprecated("Prefer builder/factory for fonts loading")]]
     /**
      * @brief Get font for rendering use (should be reasonable as mediator
      * stores UI component, which need font to display text)

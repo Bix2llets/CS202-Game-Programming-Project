@@ -128,14 +128,15 @@ void MouseState::processMouseMovement(const std::optional<sf::Event>& event) {
     Mouse mouseButton;
     // * Mouse movement when left mouse button is holding
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-    mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Left);
+        mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Left);
     else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
-    mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Right);
+        mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Right);
     else
-    mouseButton = Mouse::None;
-    
-    std::list<MouseObserver*> observerList = subscriberList[mouseButton][UserEvent::Move];
-    for (MouseObserver* observer: observerList) 
-        observer->onMouseEvent(mouseButton, UserEvent::Move, worldPosition, windowPosition);
-    
+        mouseButton = Mouse::None;
+
+    std::list<MouseObserver*> observerList =
+        subscriberList[mouseButton][UserEvent::Move];
+    for (MouseObserver* observer : observerList)
+        observer->onMouseEvent(mouseButton, UserEvent::Move, worldPosition,
+                               windowPosition);
 }

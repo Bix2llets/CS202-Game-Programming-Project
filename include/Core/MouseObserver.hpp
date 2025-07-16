@@ -42,7 +42,7 @@ class MouseObserver {
      * @param event The mouse event type to observe (press, release, etc.).
      * @param mouseState The MouseState to subscribe to.
      */
-    virtual void subscribeMouse(Mouse button, UserEvent event,
+    inline void subscribeMouse(Mouse button, UserEvent event,
                            MouseState& mouseState);
     /**
      * @brief Unsubscribe this observer from a mouse button event in the given
@@ -51,7 +51,7 @@ class MouseObserver {
      * @param event The mouse event type to stop observing.
      * @param mouseState The MouseState to unsubscribe from.
      */
-    virtual void unSubscribeMouse(Mouse button, UserEvent event,
+    inline void unSubscribeMouse(Mouse button, UserEvent event,
                              MouseState& mouseState);
     /**
      * @brief Virtual destructor for safe polymorphic destruction.
