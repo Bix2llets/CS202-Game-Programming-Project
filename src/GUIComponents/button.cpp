@@ -80,7 +80,6 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
             ColorMixer::perceptualLerp(style.getClick().text, textColor,
                                        reversePress.getCompletionPercentage());
     }
-
     rect.setFillColor(fillColor);
 
     target.draw(rect, states);
@@ -105,12 +104,14 @@ void Button::onMouseEvent(Mouse button, UserEvent event,
                           const sf::Vector2f& windowPosition) {
     if (button == Mouse::Left && event == UserEvent::Press)
         if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition))) {
+            if (isPressed == false){
+                
+                isPressed = true;
+                press.reset();
+                press.setRemainingTime(reversePress.getPassedTime());
+                reversePress.reset();
+            }
             click();
-            if (isPressed == true) return;
-            isPressed = true;
-            press.reset();
-            press.setRemainingTime(reversePress.getPassedTime());
-            reversePress.reset();
 
             return;
         }
@@ -188,6 +189,8 @@ void Button::resetAnimation() {
     press.setRemainingTime(press.getInterval());
     reverseHover.setRemainingTime(0);
     reversePress.setRemainingTime(0);
+    isPressed = false;
+    isHovered = false;
 
 
 }

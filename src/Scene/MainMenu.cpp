@@ -64,4 +64,6 @@ void MainMenu::onLoad() {
 void MainMenu::onUnload() {
     testBtn->unSubscribeMouseAll(inputManager.getMouseState());
     settingBtn->unSubscribeMouseAll(inputManager.getMouseState());
+    testBtn->resetAnimation();
+    settingBtn->resetAnimation();
 };

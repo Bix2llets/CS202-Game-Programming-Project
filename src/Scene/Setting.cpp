@@ -28,8 +28,11 @@ void Setting::onLoad() {
 }
 
 void Setting::onUnload() {
-    for (auto &button : alwaysShownElements)
+    for (auto &button : alwaysShownElements) {
+
         button->unSubscribeMouseAll(inputManager.getMouseState());
+        button->resetAnimation();
+    }
 }
 
 void Setting::update() {
