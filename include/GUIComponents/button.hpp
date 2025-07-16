@@ -86,6 +86,7 @@ class Button : public sf::Drawable, public MouseObserver {
     void update();
 
     void setDisplayText(std::string text);
+    virtual void resetAnimation();
 
    private:
     // * Graphic part

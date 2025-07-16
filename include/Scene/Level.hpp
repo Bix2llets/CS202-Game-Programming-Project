@@ -87,12 +87,12 @@ class Level : public Scene {
     /**
      * @brief Registers UI components and event handlers for the level.
      */
-    void registerComponents() override;
+    void onLoad() override;
 
     /**
      * @brief Unregisters UI components and event handlers for the level.
      */
-    void unRegisterComponents() override;
+    void onUnload() override;
 
     /**
      * @brief Checks if the current wave is finished.

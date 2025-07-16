@@ -64,11 +64,11 @@ class Scene : public sf::Drawable, public Mediator {
     /**
      * @brief Register all GUI components to the inputManager.
      */
-    virtual void registerComponents() = 0;
+    virtual void onLoad() = 0;
     /**
      * @brief un-register all GUI components to the inputManager.
      */
-    virtual void unRegisterComponents() = 0;
+    virtual void onUnload() = 0;
 
     [[deprecated("Prefer builder/factory for fonts loading")]]
     /**

@@ -75,12 +75,12 @@ public:
     /**
      * @brief Register components to input manager.
      */
-    void registerComponents() override;
+    void onLoad() override;
     
     /**
      * @brief Unregister components from input manager.
      */
-    void unRegisterComponents() override;
+    void onUnload() override;
 
 private:
     /**

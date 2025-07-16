@@ -9,8 +9,8 @@ class Setting : public Scene {
     Setting(sf::RenderWindow &window, SceneManager &parentManager,
             InputManager &inputManager, ResourceManager &resManager, JSONLoader &loader);
 
-    void registerComponents() override;
-    void unRegisterComponents() override;
+    void onLoad() override;
+    void onUnload() override;
 
     void update() override;
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;

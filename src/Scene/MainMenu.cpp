@@ -56,12 +56,12 @@ void MainMenu::testSceneSwitching() {
     sceneManager.changeScene("Gameplay");
 }
 
-void MainMenu::registerComponents() {
+void MainMenu::onLoad() {
     testBtn->subscribeMouseAll(inputManager.getMouseState());
     settingBtn->subscribeMouseAll(inputManager.getMouseState());
 };
 
-void MainMenu::unRegisterComponents() {
+void MainMenu::onUnload() {
     testBtn->unSubscribeMouseAll(inputManager.getMouseState());
     settingBtn->unSubscribeMouseAll(inputManager.getMouseState());
 };

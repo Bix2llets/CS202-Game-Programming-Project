@@ -51,6 +51,6 @@ class MainMenu : public Scene {
      */
     void draw(sf::RenderTarget &target, sf::RenderStates state) const;
 
-    void registerComponents() override;
-    void unRegisterComponents() override;
+    void onLoad() override;
+    void onUnload() override;
 };

@@ -148,10 +148,10 @@ void TowerRotationMockScene::draw(sf::RenderTarget& target, sf::RenderStates sta
     }
 }
 
-void TowerRotationMockScene::registerComponents() {
+void TowerRotationMockScene::onLoad() {
     // No interactive components in this mock scene
 }
 
-void TowerRotationMockScene::unRegisterComponents() {
+void TowerRotationMockScene::onUnload() {
     // No interactive components to unregister
 }

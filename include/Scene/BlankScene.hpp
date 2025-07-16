@@ -37,10 +37,10 @@ class BlankScene : public Scene {
      */
     ~BlankScene() = default;
 
-    void registerComponents() override {
+    void onLoad() override {
         // No components to register in a blank scene
     };
-    void unRegisterComponents() override {
+    void onUnload() override {
         // No components to unregister in a blank scene
     };
 };

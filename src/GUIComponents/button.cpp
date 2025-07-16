@@ -182,3 +182,12 @@ void Button::setDisplayText(std::string text) {
                      label->getLocalBounds().size / 2.f);
     label->setPosition(geometricInfo.position + geometricInfo.size / 2.f);
 }
+
+void Button::resetAnimation() {
+    hover.setRemainingTime(hover.getInterval());
+    press.setRemainingTime(press.getInterval());
+    reverseHover.setRemainingTime(0);
+    reversePress.setRemainingTime(0);
+
+
+}

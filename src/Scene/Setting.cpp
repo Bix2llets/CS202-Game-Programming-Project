@@ -22,12 +22,12 @@ Setting::Setting(sf::RenderWindow &window, SceneManager &parentManager,
     setupComponentVector();
 }
 
-void Setting::registerComponents() {
+void Setting::onLoad() {
     for (auto &button : alwaysShownElements)
         button->subscribeMouseAll(inputManager.getMouseState());
 }
 
-void Setting::unRegisterComponents() {
+void Setting::onUnload() {
     for (auto &button : alwaysShownElements)
         button->unSubscribeMouseAll(inputManager.getMouseState());
 }

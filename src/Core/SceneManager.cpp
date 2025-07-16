@@ -6,9 +6,9 @@ void SceneManager::changeScene(const std::string &sceneName) {
         Logger::error("Switching to non-existent scene");
         return;
     }
-    if (currentScene) currentScene->unRegisterComponents();
+    if (currentScene) currentScene->onUnload();
     currentScene = sceneStorage[sceneName].get();
-    if (currentScene) currentScene->registerComponents();
+    if (currentScene) currentScene->onLoad();
 }
 
 void SceneManager::render() {

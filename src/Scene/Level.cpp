@@ -114,12 +114,12 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
     }
 }
 
-void Level::registerComponents() {
+void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
 }
 
-void Level::unRegisterComponents() {
+void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
 }
 
