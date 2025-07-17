@@ -10,7 +10,7 @@
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-
+#include "GUIComponents/cursor.hpp"
 Application::Application()
     : window(sf::VideoMode({GameConstants::DEFAULT_WINDOW_WIDTH,
                             GameConstants::DEFAULT_WINDOW_HEIGHT}),
@@ -25,8 +25,13 @@ Application::Application()
     else
         Logger::error("Window not intitialized");
     window.setFramerateLimit(60);
+    window.setMouseCursorVisible(false);
+    window.setPosition({0, 0});
     loader.loadAll();
 
+    Cursor::getInstance()->subscribeMouse(Mouse::Left, UserEvent::Move, inputManager.getMouseState());
+    Cursor::getInstance()->subscribeMouse(Mouse::Right, UserEvent::Move, inputManager.getMouseState());
+    Cursor::getInstance()->subscribeMouse(Mouse::None, UserEvent::Move, inputManager.getMouseState());
     // * Loading the necessary sounds
     for (auto [id, soundFile] : loader.getAllSounds())
         resourceManager.loadSound(soundFile);
@@ -88,6 +93,7 @@ void Application::run() {
         }
         window.clear(sf::Color::Black);
         sceneManager.render();
+        window.draw(*Cursor::getInstance());
         window.display();
     }
 }
