@@ -59,7 +59,7 @@ Application::Application() : isRunning{true} {
         "Tower Test");  // Start with the tower test scene
 
     SceneManager::getInstance().loadLevel(
-        "Gameplay", levelFactory.getLevel("exampleLevel"));
+        "Gameplay", levelFactory.getLevel("example_level"));
 
     SceneManager::getInstance().changeScene("Main menu");
     // sceneManager.changeScene("Setting");
@@ -76,7 +76,7 @@ void Application::run() {
     float fpsTime = 0.f;
     float timeElapsed = 0.f;
     int frameCount = 0;
-    sf::Text fpsDisplay(*ResourceManager::getInstance().getFont("LeagueSpartan"));
+    sf::Text fpsDisplay(*ResourceManager::getInstance().getFont("league_spartan"));
     fpsDisplay.setOrigin({0.f, 0.f});
     fpsDisplay.setPosition({0.f, 0.f});
     fpsDisplay.setFillColor(sf::Color::White);

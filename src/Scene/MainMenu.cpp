@@ -13,7 +13,7 @@ MainMenu::MainMenu()
                   .setPosition({120.f, 100.f})
                   .setSize({120.f, 50.f})
                   .setText("Gameplay")
-                  .loadJson("basicButton")
+                  .loadJson("basic_button")
                   .setNotificationMessage("Gameplay")
                   .setCallback([this](Button *button) {
                       Logger::debug("Turning to gameplay");
@@ -23,7 +23,7 @@ MainMenu::MainMenu()
                      .setPosition({300.f, 100.f})
                      .setSize({50.f, 50.f})
                      .setText("To setting")
-                     .loadJson("basicButton")
+                     .loadJson("basic_button")
                      .setNotificationMessage("Setting")
                      .setCallback([this](Button *button) {
                          Logger::debug("Setting button pressed");

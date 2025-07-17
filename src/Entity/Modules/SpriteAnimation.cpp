@@ -6,7 +6,7 @@ SpriteAnimation::SpriteAnimation()
 }
 
 void SpriteAnimation::loadJson(const nlohmann::json& jsonFile) {
-    const sf::Texture* texture = ResourceManager::getInstance().getTexture(jsonFile["textureID"]);
+    const sf::Texture* texture = ResourceManager::getInstance().getTexture(jsonFile["texture_id"]);
     int width = static_cast<int>(jsonFile["width"]);
     int height = static_cast<int>(jsonFile["height"]);
 
@@ -22,18 +22,18 @@ void SpriteAnimation::loadJson(const nlohmann::json& jsonFile) {
                 *texture, sf::IntRect{{viewport["x"].get<int>() + i * width,
                                        viewport["y"].get<int>() + j * height},
                                       {width, height}}));
-    sf::Vector2f origin = sf::Vector2f{jsonFile["centerX"].get<float>(),
-                                       jsonFile["centerY"].get<float>()};
+    sf::Vector2f origin = sf::Vector2f{jsonFile["center_x"].get<float>(),
+                                       jsonFile["center_y"].get<float>()};
 
     for (sf::Sprite& sprite : sprites) sprite.setOrigin(origin);
     std::string animationType = jsonFile["type"];
     if (animationType == "circular") type = AnimationType::Circular;
     if (animationType == "linear") type = AnimationType::Linear;
     animationTimer = std::make_unique<Timer>();
-    animationTimer->setTimeInterval(jsonFile["animationInterval"])
+    animationTimer->setTimeInterval(jsonFile["animation_interval"])
         .setTimerMode(TimerMode::Continuous)
         .setTimerDirection(TimerDirection::Backward)
-        .setRemainingTime(jsonFile["animationInterval"]);
+        .setRemainingTime(jsonFile["animation_interval"]);
 }
 
 void SpriteAnimation::update() {

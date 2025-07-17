@@ -50,13 +50,13 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
     result->path.setWaypoints(map.getWaypoints(laneID));
     result->path.setDistanceFromStart(distance);
     result->path.setSpeed(enemyFile["stats"]["speed"]);
-    result->health.setMaxHealth(enemyFile["stats"]["maxHealth"]);
+    result->health.setMaxHealth(enemyFile["stats"]["max_health"]);
     result->health.setHealth(result->health.getMaxHealth());
-    result->healTimer.setTimeInterval(enemyFile["stats"]["healInterval"])
+    result->healTimer.setTimeInterval(enemyFile["stats"]["heal_interval"])
         .setTimerMode(TimerMode::Continuous)
         .setTimerDirection(TimerDirection::Backward)
-        .setRemainingTime(enemyFile["stats"]["healInterval"]);
-    result->healAmount = enemyFile["stats"]["healAmount"];
+        .setRemainingTime(enemyFile["stats"]["heal_interval"]);
+    result->healAmount = enemyFile["stats"]["heal_amount"];
     result->enemyType =
         (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);
 

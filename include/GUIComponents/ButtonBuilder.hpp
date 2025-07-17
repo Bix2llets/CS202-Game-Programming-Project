@@ -20,7 +20,7 @@ class ButtonBuilder {
 
     std::function<void(Button*)> callback;
 
-    const std::string fontName = "LeagueSpartan";
+    std::string fontName;
 
    public:
     ButtonBuilder(Mediator& mediator);

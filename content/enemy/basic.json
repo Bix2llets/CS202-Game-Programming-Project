@@ -1,23 +1,23 @@
 {
-    "id": "basic",
+    "id": "basic_enemy",
     "name": "Basic enemy",
     "description": "The basic enemy, jack of all trades with low stats",
     "stats": {
-        "maxHealth": 100,
-        "healAmount": 1,
-        "healInterval": 0.5,
+        "max_health": 100,
+        "heal_amount": 1,
+        "heal_interval": 0.5,
         "resistance": 20,
         "speed": 100,
         "reward": 9
     },
     "sprite": {
-        "textureID": "basicEnemy",
+        "texture_id": "basic_enemy",
         "width": 32,
         "height": 32,
-        "animationInterval": 0.25,
+        "animation_interval": 0.25,
         "type": "circular",
-        "centerX": 16,
-        "centerY": 16,
+        "center_x": 16,
+        "center_y": 16,
         "viewport" :
         {
             "x": 0,
@@ -27,11 +27,11 @@
         }
     },
     "type": "land",
-    "spawnEffect": {
+    "spawn_effect": {
         "audio": [],
         "visual": []
     },
-    "deathEffect": {
+    "death_effect": {
         "audio": [],
         "visual": []
     }

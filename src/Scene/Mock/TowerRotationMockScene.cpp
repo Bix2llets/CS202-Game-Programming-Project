@@ -75,7 +75,7 @@ void TowerRotationMockScene::createTestTower() {
 void TowerRotationMockScene::setupInfoText() {
     // Get font from resource manager
     font = const_cast<sf::Font*>(
-        ResourceManager::getInstance().getFont("LeagueSpartan"));
+        ResourceManager::getInstance().getFont("league_spartan"));
 
     if (font) {
         infoText = std::make_unique<sf::Text>(*font);

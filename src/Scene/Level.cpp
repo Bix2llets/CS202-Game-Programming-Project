@@ -93,8 +93,8 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
             EnemyGroupInfo groupInfo;
             groupInfo.id = (*groupIt)["id"];
             groupInfo.quantity = (*groupIt)["quantity"];
-            groupInfo.spawnDelay = (*groupIt)["spawnDelay"];
-            groupInfo.internalDelay = (*groupIt)["internalDelay"];
+            groupInfo.spawnDelay = (*groupIt)["spawn_delay"];
+            groupInfo.internalDelay = (*groupIt)["internal_delay"];
             groupInfo.laneID = (*groupIt)["lane"];
 
             groupInfo.spawnDelayTimer = groupInfo.spawnDelay;

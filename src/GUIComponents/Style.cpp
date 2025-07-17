@@ -30,8 +30,8 @@ void Style::loadJson(const nlohmann::json &file) {
     click.border = hexConverter(clickColor["border"].get<std::string>());
     click.text = hexConverter(clickColor["text"].get<std::string>());
 
-    borderRadius = file["borderRadius"].get<int>();
-    borderWidth = file["borderWidth"].get<int>();
+    borderRadius = file["border_radius"].get<int>();
+    borderWidth = file["border_width"].get<int>();
 
     font = ResourceManager::getInstance().getFont(file["font"].get<std::string>());
     padding = file["padding"].get<std::array<int, 2>>();

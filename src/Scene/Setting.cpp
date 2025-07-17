@@ -52,7 +52,7 @@ void Setting::createButtons() {
                                .setSize(buttonSize)
                                .setNotificationMessage("Music Decrease")
                                .setText("MusicDec")
-                               .loadJson("basicButton")
+                               .loadJson("basic_button")
                                .build();
 
     musicVolumeIncrement = builder.reset()
@@ -60,14 +60,14 @@ void Setting::createButtons() {
                                .setSize(buttonSize)
                                .setNotificationMessage("Music Increase")
                                .setText("MusicInc")
-                               .loadJson("basicButton")
+                               .loadJson("basic_button")
                                .build();
     soundVolumeDecrement = builder.reset()
                                .setPosition({220.f, 220.f})
                                .setSize(buttonSize)
                                .setNotificationMessage("Sound Decrease")
                                .setText("SoundDec")
-                               .loadJson("basicButton")
+                               .loadJson("basic_button")
                                .build();
 
     soundVolumeIncrement = builder.reset()
@@ -75,7 +75,7 @@ void Setting::createButtons() {
                                .setSize(buttonSize)
                                .setNotificationMessage("Sound Increase")
                                .setText("SoundInc")
-                               .loadJson("basicButton")
+                               .loadJson("basic_button")
                                .build();
 
     resolution1 = builder.reset()
@@ -83,7 +83,7 @@ void Setting::createButtons() {
                       .setSize(buttonSize)
                       .setNotificationMessage("Resolution1")
                       .setText("Res1")
-                      .loadJson("lerpTesting")
+                      .loadJson("lerp_testing")
                       .build();
 
     resolution2 = builder.reset()
@@ -91,7 +91,7 @@ void Setting::createButtons() {
                       .setSize(buttonSize)
                       .setNotificationMessage("Resolution2")
                       .setText("Res2")
-                      .loadJson("basicButton")
+                      .loadJson("basic_button")
                       .build();
 
     resolution3 = builder.reset()
@@ -99,7 +99,7 @@ void Setting::createButtons() {
                       .setSize(buttonSize)
                       .setNotificationMessage("Resolution3")
                       .setText("Res3")
-                      .loadJson("basicButton")
+                      .loadJson("basic_button")
                       .build();
 
     backButton = builder.reset()
@@ -107,7 +107,7 @@ void Setting::createButtons() {
                      .setSize(buttonSize)
                      .setNotificationMessage("Main menu")
                      .setText("Main menu")
-                     .loadJson("basicButton")
+                     .loadJson("basic_button")
                      .build();
 }
 

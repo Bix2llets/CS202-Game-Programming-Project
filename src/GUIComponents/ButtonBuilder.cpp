@@ -48,6 +48,7 @@ std::unique_ptr<Button> ButtonBuilder::build() {
     result->setNotificationMessage(notificationMessage);
     result->style.loadJson(styleConfig);
     result->setOnClick(callback);
+    fontName = styleConfig["font"];
     std::unique_ptr<sf::Text> label =
         std::make_unique<sf::Text>(*ResourceManager::getInstance().getFont(fontName), text, 24);
     Logger::debug(std::format("{} {} {} {}", label->getLocalBounds().position.x,

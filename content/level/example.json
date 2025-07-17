@@ -1,5 +1,5 @@
 {
-    "id": "exampleLevel",
+    "id": "example_level",
     "name": "The example Level",
     "description": "A template made for creation of the default level",
     "difficulty": "medium",
@@ -52,24 +52,24 @@
     "wave": [
         [
             {
-                "id": "basic",
+                "id": "basic_enemy",
                 "quantity": 2,
-                "spawnDelay": 0,
-                "internalDelay": 1,
+                "spawn_delay": 0,
+                "internal_delay": 1,
                 "lane": 0
             },
             {
-                "id": "basic",
+                "id": "basic_enemy",
                 "quantity": 5,
-                "spawnDelay": 2,
-                "internalDelay": 5,
+                "spawn_delay": 2,
+                "internal_delay": 5,
                 "lane": 1
             },
             {
-                "id": "basic",
+                "id": "basic_enemy",
                 "quantity": 10,
-                "spawnDelay": 1,
-                "internalDelay": 1,
+                "spawn_delay": 1,
+                "internal_delay": 1,
                 "lane": 1
             }
         ]

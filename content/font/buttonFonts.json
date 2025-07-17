@@ -1,6 +1,6 @@
 [
     {
-        "id": "LeagueSpartan",
-        "path": "assets/fonts/League_Spartan/static/LeagueSpartan-Light.ttf"
+        "id": "league_spartan",
+        "path": "assets/fonts/League_Spartan/static/LeagueSpartan-Regular.ttf"
     }
 ]
