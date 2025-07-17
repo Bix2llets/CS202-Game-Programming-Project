@@ -16,7 +16,6 @@ Application::Application()
       testTrigger(resourceManager),
       isRunning{true},
       sceneManager{*Window::getInstance()},
-      inputManager{*Window::getInstance()},
       levelFactory{*Window::getInstance(), sceneManager, inputManager, resourceManager, loader} {
     if (Window::getInstance()->isOpen())
         Logger::success("Window initialization success");

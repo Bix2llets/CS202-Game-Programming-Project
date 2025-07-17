@@ -51,14 +51,13 @@ enum class Key {
 class KeyboardState {
 
     private: 
-    sf::RenderWindow &window; ///< Reference to the SFML window for event context.
     std::map<Key, std::map<UserEvent, std::list<KeyboardObserver*>>> subscriberList;    ///< Subscription map.
     public:
     /**
      * @brief Construct a KeyboardState for a given window.
      * @param window Reference to the SFML RenderWindow.
      */
-    KeyboardState(sf::RenderWindow &window);
+    KeyboardState();
 
     /**
      * @brief Add an observer for a specific key and user event.

@@ -16,13 +16,9 @@
 class InputManager {
     MouseState mouseState;  ///< Manages mouse button subscriptions and events.
     KeyboardState keyboardState;
-    sf::RenderWindow& window;  ///< Reference to the main window.
    public:
-    /**
-     * @brief Constructs an InputManager for the given window.
-     * @param window Reference to the SFML render window.
-     */
-    InputManager(sf::RenderWindow& window);
+    InputManager();
+    
     /**
      * @brief Handles an input event.
      * @param event Optional SFML event to handle.

@@ -7,7 +7,7 @@
 #include "Scene/BlankScene.hpp"
 TEST(sceneSwitching, actualSwitching) {
     sf::RenderWindow window;
-    InputManager inputManager(window);
+    InputManager inputManager();
     SceneManager sceneManager(window);
     ResourceManager resourceManager;
     JSONLoader loader;
@@ -15,7 +15,7 @@ TEST(sceneSwitching, actualSwitching) {
         "assets/fonts/League_Spartan/static/LeagueSpartan-Medium.ttf",
         "LeagueSpartan");
 
-    MainMenuMock mainMenu(window, sceneManager, inputManager,
+    MainMenuMock mainMenu(sceneManager, inputManager,
                           resourceManager, loader);
     sceneManager.registerScene<BlankScene>("Gameplay", inputManager,
                                            resourceManager, loader);
@@ -23,7 +23,7 @@ TEST(sceneSwitching, actualSwitching) {
 }
 TEST(sceneSwitching, nullSwitching) {
     sf::RenderWindow window;
-    InputManager inputManager(window);
+    InputManager inputManager();
     SceneManager sceneManager(window);
     ResourceManager resourceManager;
     JSONLoader loader;
