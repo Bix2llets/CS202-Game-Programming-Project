@@ -26,7 +26,7 @@ std::unique_ptr<Level> LevelFactory::getLevel(const std::string &ID) {
     if (levelConfiguration.find(ID) == levelConfiguration.end()) 
         return nullptr;
     std::unique_ptr<Level> result;
-    result = std::make_unique<Level>(sceneManager, inputManager, resourceManager);
+    result = std::make_unique<Level>(sceneManager, resourceManager);
     result->loadFromJson(levelConfiguration.at(ID));
     return std::move(result);
 }

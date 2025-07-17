@@ -5,7 +5,6 @@
 #pragma once
 #include <map>
 
-#include "Core/InputManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Scene/Level.hpp"
 #include "Scene/Scene.hpp"
@@ -17,7 +16,7 @@
  */
 class SceneManager {
    private:
-    Scene *currentScene;       ///< Pointer to the current active scene.
+    Scene *currentScene;  ///< Pointer to the current active scene.
     std::unordered_map<std::string, std::unique_ptr<Scene>>
         sceneStorage;  ///< Storage for all registered scenes.
    public:
@@ -25,20 +24,19 @@ class SceneManager {
      * @brief Constructs a SceneManager for the given window.
      * @param window Reference to the SFML render window.
      */
-    SceneManager()
-        : currentScene{nullptr} {};
+    SceneManager() : currentScene{nullptr} {};
     /**
      * @brief Registers a new scene type with a given name.
      * @tparam SceneType The type of the scene to register.
      * @param sceneName The name to register the scene under.
      */
     template <typename SceneType>
-    void registerScene(const std::string &sceneName, InputManager &inputManager,
+    void registerScene(const std::string &sceneName,
                        ResourceManager &resManager) {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
-                sceneStorage[sceneName] = std::make_unique<SceneType>(
-                    *this, inputManager, resManager);
+                sceneStorage[sceneName] =
+                    std::make_unique<SceneType>(*this, resManager);
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");

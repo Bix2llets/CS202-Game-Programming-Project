@@ -11,11 +11,11 @@
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "GUIComponents/button.hpp"
+#include "Core/InputManager.hpp"
 
 #include "Core/Window.hpp"
-Setting::Setting(SceneManager &parentManager,
-                 InputManager &inputManager, ResourceManager &resManager)
-    : Scene(parentManager, inputManager, resManager) {
+Setting::Setting(SceneManager &parentManager, ResourceManager &resManager)
+    : Scene(parentManager, resManager) {
     createButtons();
     setupButtonMessages();
     setupHandlers();
@@ -25,13 +25,13 @@ Setting::Setting(SceneManager &parentManager,
 
 void Setting::onLoad() {
     for (auto &button : alwaysShownElements)
-        button->subscribeMouseAll(inputManager.getMouseState());
+        button->subscribeMouseAll(InputManager::getInstance().getMouseState());
 }
 
 void Setting::onUnload() {
     for (auto &button : alwaysShownElements) {
 
-        button->unSubscribeMouseAll(inputManager.getMouseState());
+        button->unSubscribeMouseAll(InputManager::getInstance().getMouseState());
         button->resetAnimation();
     }
 }

@@ -6,9 +6,8 @@
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "Utility/logger.hpp"
 
-MainMenu::MainMenu(SceneManager &parentManager,
-                   InputManager &inputManager, ResourceManager &resManager)
-    : Scene(parentManager, inputManager, resManager) {
+MainMenu::MainMenu(SceneManager &parentManager, ResourceManager &resManager)
+    : Scene(parentManager, resManager) {
     ButtonBuilder builder(*this, resourceManager);
     testBtn = builder.reset()
                   .setPosition({120.f, 100.f})
@@ -56,13 +55,14 @@ void MainMenu::testSceneSwitching() {
 }
 
 void MainMenu::onLoad() {
-    testBtn->subscribeMouseAll(inputManager.getMouseState());
-    settingBtn->subscribeMouseAll(inputManager.getMouseState());
+    testBtn->subscribeMouseAll(InputManager::getInstance().getMouseState());
+    settingBtn->subscribeMouseAll(InputManager::getInstance().getMouseState());
 };
 
 void MainMenu::onUnload() {
-    testBtn->unSubscribeMouseAll(inputManager.getMouseState());
-    settingBtn->unSubscribeMouseAll(inputManager.getMouseState());
+    testBtn->unSubscribeMouseAll(InputManager::getInstance().getMouseState());
+    settingBtn->unSubscribeMouseAll(
+        InputManager::getInstance().getMouseState());
     testBtn->resetAnimation();
     settingBtn->resetAnimation();
 };

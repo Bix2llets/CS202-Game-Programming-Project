@@ -15,12 +15,11 @@ class BlankScene : public Scene {
      * @brief Constructs a BlankScene with the given window and name.
      * @param name Name of the scene.
      * @param parentManager Reference to the parent SceneManager.
-     * @param inputManager Reference to the InputManager singleton.
      * @param resManager Reference to the ResourceManager singleton.
      */
-    BlankScene(SceneManager &parentManager, InputManager &inputManager, 
+    BlankScene(SceneManager &parentManager,  
                ResourceManager &resManager)
-        : Scene{parentManager, inputManager, resManager} {}
+        : Scene{parentManager, resManager} {}
     /**
      * @brief Draws the scene (no-op for blank scene).
      * @param target The render target to draw to.

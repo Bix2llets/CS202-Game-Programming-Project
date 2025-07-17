@@ -42,11 +42,10 @@ public:
      * @brief Construct a new TowerRotationMockScene.
      * @param name Name of the scene.
      * @param parentManager Reference to the scene manager.
-     * @param inputManager Reference to the input manager.
      * @param resourceManager Reference to the resource manager.
      */
     TowerRotationMockScene(
-                          SceneManager& parentManager, InputManager& inputManager, 
+                          SceneManager& parentManager, 
                           ResourceManager& resourceManager);
     
     /**

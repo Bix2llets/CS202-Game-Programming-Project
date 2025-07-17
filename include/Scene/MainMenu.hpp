@@ -9,7 +9,6 @@
 #include <memory>
 #include <string>
 
-#include "Core/InputManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "GUIComponents/button.hpp"
 #include "GUIComponents/mediator.hpp"
@@ -31,11 +30,10 @@ class MainMenu : public Scene {
      * @brief Constructs the MainMenu scene.
      * @param window Reference to the SFML render window.
      * @param parentManager Reference to the parent SceneManager.
-     * @param inputManager Reference to the InputManager singleton.
      * @param resManager Reference to the ResourceManager singleton.
      */
     MainMenu(SceneManager &parentManager,
-             InputManager &inputManager, ResourceManager &resManager);
+             ResourceManager &resManager);
 
     /**
      * @brief Updates the main menu scene (handles logic, input, etc).

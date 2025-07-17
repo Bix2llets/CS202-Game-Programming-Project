@@ -10,7 +10,6 @@
 
 #include "GUIComponents/Mediator.hpp"
 class SceneManager;
-class InputManager;
 class ResourceManager;
 /**
  * @class Scene
@@ -21,7 +20,6 @@ class ResourceManager;
  */
 class Scene : public sf::Drawable, public Mediator {
    protected:
-    InputManager& inputManager;
     SceneManager& sceneManager;
     ResourceManager& resourceManager;
 
@@ -30,13 +28,10 @@ class Scene : public sf::Drawable, public Mediator {
      * @brief Constructs a Scene with the given window and name.
      * @param window Reference to the SFML render window.
      * @param parentManager Reference to the parent SceneManager.
-     * @param inputManager Reference to the InputManager .
      * @param resourceManager Reference to the ResourceManager .
      */
-    Scene(SceneManager& parentManager,
-          InputManager& inputManager, ResourceManager& resourceManager)
+    Scene(SceneManager& parentManager, ResourceManager& resourceManager)
         :           sceneManager{parentManager},
-          inputManager{inputManager},
           resourceManager{resourceManager} {};
     /**
      * @brief Draws the scene (pure virtual).

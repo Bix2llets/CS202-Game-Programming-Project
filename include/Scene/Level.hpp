@@ -18,7 +18,6 @@
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
 class SceneManager;
-class InputManager;
 class ResourceManager;
 
 /**
@@ -48,8 +47,7 @@ class Level : public Scene {
      * @param parentManager Reference to the parent SceneManager.
      * @param resourceManager Reference to the ResourceManager.
      */
-    Level(SceneManager &parentManager,
-          InputManager &inputManager, ResourceManager &resourceManager);
+    Level(SceneManager &parentManager, ResourceManager &resourceManager);
 
     /**
      * @brief Updates the level logic (entities, waves, etc).

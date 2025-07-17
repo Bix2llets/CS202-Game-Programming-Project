@@ -11,9 +11,8 @@
 #include "Gameplay/Difficulty.hpp"
 
 
-Level::Level(SceneManager &sceneManager,
-             InputManager &inputManager, ResourceManager &resourceManager)
-    : Scene(sceneManager, inputManager, resourceManager),
+Level::Level(SceneManager &sceneManager, ResourceManager &resourceManager)
+    : Scene(sceneManager, resourceManager),
       currentWave{0},
       entityManager() {}
 

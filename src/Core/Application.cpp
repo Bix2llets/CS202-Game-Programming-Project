@@ -2,6 +2,7 @@
 
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
+#include "Core/JSONLoader.hpp"
 #include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/Window.hpp"
@@ -12,12 +13,11 @@
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-#include "Core/JSONLoader.hpp"
 Application::Application()
     : testTrigger(resourceManager),
       isRunning{true},
       sceneManager{},
-      levelFactory{sceneManager, InputManager::getInstance(), resourceManager} {
+      levelFactory{sceneManager, resourceManager} {
     if (Window::getInstance().isOpen())
         Logger::success("Window initialization success");
     else
@@ -27,12 +27,15 @@ Application::Application()
     Window::getInstance().setPosition({0, 0});
     JSONLoader::getInstance().loadAll();
 
-    Cursor::getInstance().subscribeMouse(Mouse::Left, UserEvent::Move,
-                                          InputManager::getInstance().getMouseState());
-    Cursor::getInstance().subscribeMouse(Mouse::Right, UserEvent::Move,
-                                          InputManager::getInstance().getMouseState());
-    Cursor::getInstance().subscribeMouse(Mouse::None, UserEvent::Move,
-                                          InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Left, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Right, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::None, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
     // * Loading the necessary sounds
     for (auto [id, soundFile] : JSONLoader::getInstance().getAllSounds())
         resourceManager.loadSound(soundFile);
@@ -45,12 +48,10 @@ Application::Application()
     for (auto [id, levelFile] : JSONLoader::getInstance().getAllLevels())
         levelFactory.loadConfig(levelFile);
     Logger::success("Resource loading");
-    sceneManager.registerScene<MainMenu>("Main menu", InputManager::getInstance(),
-                                         resourceManager);
-    sceneManager.registerScene<Setting>("Setting", InputManager::getInstance(),
-                                        resourceManager);
-    sceneManager.registerScene<TowerRotationMockScene>(
-        "Tower Test", InputManager::getInstance(), resourceManager);
+    sceneManager.registerScene<MainMenu>("Main menu", resourceManager);
+    sceneManager.registerScene<Setting>("Setting", resourceManager);
+    sceneManager.registerScene<TowerRotationMockScene>("Tower Test",
+                                                       resourceManager);
     sceneManager.changeScene("Tower Test");  // Start with the tower test scene
     sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
     sceneManager.changeScene("Main menu");
