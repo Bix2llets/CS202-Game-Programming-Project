@@ -11,10 +11,11 @@
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "GUIComponents/button.hpp"
-Setting::Setting(sf::RenderWindow &window, SceneManager &parentManager,
-                 InputManager &inputManager, ResourceManager &resManager,
-                 JSONLoader &loader)
-    : Scene(window, parentManager, inputManager, resManager, loader) {
+
+#include "Core/Window.hpp"
+Setting::Setting(SceneManager &parentManager,
+                 InputManager &inputManager, ResourceManager &resManager)
+    : Scene(parentManager, inputManager, resManager) {
     createButtons();
     setupButtonMessages();
     setupHandlers();
@@ -48,7 +49,7 @@ void Setting::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 
 void Setting::createButtons() {
     const sf::Vector2f buttonSize = {120, 50};
-    ButtonBuilder builder(*this, resourceManager, loader);
+    ButtonBuilder builder(*this, resourceManager);
     musicVolumeDecrement = builder.reset()
                                .setPosition({220.f, 20.f})
                                .setSize(buttonSize)
@@ -148,19 +149,19 @@ void Setting::setupHandlers() {
 
     subscribe("Resolution1", [this](std::any, std::any) {
         using namespace GameConstants;
-        window.setSize({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT});
+        Window::getInstance().setSize({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT});
         Logger::info(std::format("Changed window size to {}x{}",
                                  DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT));
     });
     subscribe("Resolution2", [this](std::any, std::any) {
         using namespace GameConstants;
-        window.setSize({WINDOW_WIDTH_1, WINDOW_HEIGHT_1});
+        Window::getInstance().setSize({WINDOW_WIDTH_1, WINDOW_HEIGHT_1});
         Logger::info(std::format("Changed window size to {}x{}", WINDOW_WIDTH_1,
                                  WINDOW_HEIGHT_1));
     });
     subscribe("Resolution3", [this](std::any, std::any) {
         using namespace GameConstants;
-        window.setSize({WINDOW_WIDTH_2, WINDOW_HEIGHT_2});
+        Window::getInstance().setSize({WINDOW_WIDTH_2, WINDOW_HEIGHT_2});
         Logger::info(std::format("Changed window size to {}x{}", WINDOW_WIDTH_2,
                                  WINDOW_HEIGHT_2));
     });

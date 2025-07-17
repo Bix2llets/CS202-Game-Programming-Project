@@ -34,7 +34,7 @@ class Cursor : public sf::Drawable, public MouseObserver {
     
     public:
     ~Cursor() = default;
-    static Cursor* getInstance();
+    static Cursor& getInstance();
 
     void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
     void removeTower();

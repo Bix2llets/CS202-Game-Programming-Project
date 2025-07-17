@@ -18,7 +18,6 @@
 class SceneManager {
    private:
     Scene *currentScene;       ///< Pointer to the current active scene.
-    sf::RenderWindow &window;  ///< Reference to the main window.
     std::unordered_map<std::string, std::unique_ptr<Scene>>
         sceneStorage;  ///< Storage for all registered scenes.
    public:
@@ -26,8 +25,8 @@ class SceneManager {
      * @brief Constructs a SceneManager for the given window.
      * @param window Reference to the SFML render window.
      */
-    SceneManager(sf::RenderWindow &window)
-        : currentScene{nullptr}, window{window} {};
+    SceneManager()
+        : currentScene{nullptr} {};
     /**
      * @brief Registers a new scene type with a given name.
      * @tparam SceneType The type of the scene to register.
@@ -35,11 +34,11 @@ class SceneManager {
      */
     template <typename SceneType>
     void registerScene(const std::string &sceneName, InputManager &inputManager,
-                       ResourceManager &resManager, JSONLoader &jsonLoader) {
+                       ResourceManager &resManager) {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
                 sceneStorage[sceneName] = std::make_unique<SceneType>(
-                    window, *this, inputManager, resManager, jsonLoader);
+                    *this, inputManager, resManager);
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");

@@ -9,7 +9,6 @@
 #include <string>
 
 #include "GUIComponents/Mediator.hpp"
-#include "Core/JSONLoader.hpp"
 class SceneManager;
 class InputManager;
 class ResourceManager;
@@ -22,11 +21,9 @@ class ResourceManager;
  */
 class Scene : public sf::Drawable, public Mediator {
    protected:
-    sf::RenderWindow& window;  ///< Reference to the main window.
     InputManager& inputManager;
     SceneManager& sceneManager;
     ResourceManager& resourceManager;
-    JSONLoader& loader;
 
    public:
     /**
@@ -35,16 +32,12 @@ class Scene : public sf::Drawable, public Mediator {
      * @param parentManager Reference to the parent SceneManager.
      * @param inputManager Reference to the InputManager .
      * @param resourceManager Reference to the ResourceManager .
-     * @param loader Reference to the JSONLoader .
      */
-    Scene(sf::RenderWindow& window, SceneManager& parentManager,
-          InputManager& inputManager, ResourceManager& resourceManager,
-          JSONLoader& loader)
-        : window{window},
-          sceneManager{parentManager},
+    Scene(SceneManager& parentManager,
+          InputManager& inputManager, ResourceManager& resourceManager)
+        :           sceneManager{parentManager},
           inputManager{inputManager},
-          resourceManager{resourceManager},
-          loader{loader} {};
+          resourceManager{resourceManager} {};
     /**
      * @brief Draws the scene (pure virtual).
      * @param target The render target to draw to.

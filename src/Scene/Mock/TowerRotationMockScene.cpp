@@ -4,11 +4,12 @@
 #include "Gameplay/Currency.hpp"
 #include <cmath>
 #include <iostream>
+#include "Core/Window.hpp"
 
-TowerRotationMockScene::TowerRotationMockScene(sf::RenderWindow& window,
+TowerRotationMockScene::TowerRotationMockScene(
                                               SceneManager& parentManager, InputManager& inputManager, 
-                                              ResourceManager& resourceManager, JSONLoader &loader)
-    : Scene(window, parentManager, inputManager, resourceManager, loader),
+                                              ResourceManager& resourceManager)
+    : Scene(parentManager, inputManager, resourceManager),
       rotationSpeed(1.0f), // 1 radian per second (slow rotation)
       font(nullptr) {
     initialize();
@@ -21,7 +22,7 @@ void TowerRotationMockScene::initialize() {
 
 void TowerRotationMockScene::createTestTower() {
     // Get window center position dynamically
-    sf::Vector2u windowSize = window.getSize();
+    sf::Vector2u windowSize = Window::getInstance().getSize();
     sf::Vector2f centerPos(windowSize.x / 2.0f, windowSize.y / 2.0f);
 
     std::cout << "Tower will be positioned at: " << centerPos.x << ", " << centerPos.y << std::endl;

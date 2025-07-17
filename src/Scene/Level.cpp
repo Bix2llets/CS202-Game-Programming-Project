@@ -9,12 +9,13 @@
 #include "Base/Constants.hpp"
 #include "Utility/logger.hpp"
 #include "Gameplay/Difficulty.hpp"
-Level::Level(sf::RenderWindow &window, SceneManager &sceneManager,
-             InputManager &inputManager, ResourceManager &resourceManager,
-             JSONLoader &loader)
-    : Scene(window, sceneManager, inputManager, resourceManager, loader),
+
+
+Level::Level(SceneManager &sceneManager,
+             InputManager &inputManager, ResourceManager &resourceManager)
+    : Scene(sceneManager, inputManager, resourceManager),
       currentWave{0},
-      entityManager(window) {}
+      entityManager() {}
 
 void Level::update() {
     entityManager.update();
@@ -57,7 +58,7 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     loadWaves(jsonFile);
 
     factory =
-        std::make_unique<EnemyFactory>(map, *this, loader, resourceManager);
+        std::make_unique<EnemyFactory>(map, *this, resourceManager);
 
     std::string difficulty = jsonFile["difficulty"].get<std::string>();
     if (difficulty == "easy") 

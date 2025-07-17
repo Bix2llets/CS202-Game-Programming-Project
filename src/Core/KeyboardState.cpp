@@ -46,13 +46,13 @@ void KeyboardState::clearSubscriber() {
 }
 
 void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
-    auto window = Window::getInstance();
+    sf::RenderWindow& window = Window::getInstance();
     auto keyPress = event->getIf<sf::Event::KeyPressed>();
     auto keyRelease = event->getIf<sf::Event::KeyReleased>();
     sf::Vector2f windowPosition =
-        static_cast<sf::Vector2f>(sf::Mouse::getPosition(*window));
+        static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
     sf::Vector2f worldPosititon =
-        window->mapPixelToCoords(sf::Mouse::getPosition(*window));
+        window.mapPixelToCoords(sf::Mouse::getPosition(window));
     windowPosition = scalePosition(windowPosition);
     worldPosititon = scalePosition(worldPosititon);
     if (keyPress) {
@@ -79,10 +79,10 @@ void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
 
 KeyboardState::KeyboardState() {}
 sf::Vector2f KeyboardState::scalePosition(sf::Vector2f input) {
-    auto window = Window::getInstance();
+    sf::RenderWindow& window = Window::getInstance();
     input.x =
-        input.x / window->getSize().x * GameConstants::DEFAULT_WINDOW_WIDTH;
+        input.x / window.getSize().x * GameConstants::DEFAULT_WINDOW_WIDTH;
     input.y =
-        input.y / window->getSize().y * GameConstants::DEFAULT_WINDOW_HEIGHT;
+        input.y / window.getSize().y * GameConstants::DEFAULT_WINDOW_HEIGHT;
     return input;
 }

@@ -17,12 +17,11 @@
 
 class Window {
     private:
-    static std::unique_ptr<sf::RenderWindow> instance;
 
     Window(); 
     Window(const Window&) = delete; 
     Window& operator=(const Window&) = delete; 
 
     public:
-    static sf::RenderWindow* getInstance();
+    static sf::RenderWindow& getInstance();
 };

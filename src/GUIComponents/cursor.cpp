@@ -9,9 +9,9 @@
 std::unique_ptr<Cursor> Cursor::instance = nullptr;
 Cursor::Cursor() : position(0.f, 0.f) {}
 
-Cursor* Cursor::getInstance() {
-    if (instance == nullptr) instance = std::unique_ptr<Cursor>(new Cursor);
-    return instance.get();
+Cursor& Cursor::getInstance() {
+    static Cursor instance;
+    return instance;
 }
 
 void Cursor::setPosition(const sf::Vector2f& pos) {

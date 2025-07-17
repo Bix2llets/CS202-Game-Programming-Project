@@ -15,14 +15,13 @@
  */
 class EntityManager {
    private:
-    sf::RenderWindow &window;
     std::vector<std::unique_ptr<Entity>> entities;
     std::vector<std::unique_ptr<Tower>> towers;
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Projectile>> projectiles;
 
    public:
-    EntityManager(sf::RenderWindow &window) : window{window} {}
+    EntityManager() {}
     /**
      * @brief Update all entities
      *

@@ -23,7 +23,6 @@
 #include <string>
 #include <unordered_map>
 
-#include "Core/JSONLoader.hpp"
 #include "Scene/Level.hpp"
 class SceneManager;
 class InputManager;
@@ -41,11 +40,9 @@ class LevelFactory {
      */
     std::unordered_map<std::string, nlohmann::json> levelConfiguration;
 
-    sf::RenderWindow &window;
     SceneManager &sceneManager;
     InputManager &inputManager;
     ResourceManager &resourceManager;
-    JSONLoader &loader;
 
    public:
     /**
@@ -56,14 +53,12 @@ class LevelFactory {
      * @param resourceManager Reference to the resource manager.
      * @param loader Reference to the JSON loader.
      */
-    LevelFactory(sf::RenderWindow &window, SceneManager &sceneManager,
-                 InputManager &inputManager, ResourceManager &resourceManager,
-                 JSONLoader &loader)
-        : window{window},
+    LevelFactory(SceneManager &sceneManager,
+                 InputManager &inputManager, ResourceManager &resourceManager)
+        : 
           sceneManager{sceneManager},
           inputManager{inputManager},
-          resourceManager{resourceManager},
-          loader{loader} {}
+          resourceManager{resourceManager} {}
 
     /**
      * @brief Loads a single scene configuration from a JSON object.

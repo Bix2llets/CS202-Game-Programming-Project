@@ -11,7 +11,6 @@
 
 #include <json.hpp>
 
-#include "Core/JSONLoader.hpp"
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
 #include "Gameplay/Map.hpp"
@@ -48,11 +47,9 @@ class Level : public Scene {
      * @param window Reference to the SFML render window.
      * @param parentManager Reference to the parent SceneManager.
      * @param resourceManager Reference to the ResourceManager.
-     * @param JSONLoader Reference to the JSON loader.
      */
-    Level(sf::RenderWindow &window, SceneManager &parentManager,
-          InputManager &inputManager, ResourceManager &resourceManager,
-          JSONLoader &loader);
+    Level(SceneManager &parentManager,
+          InputManager &inputManager, ResourceManager &resourceManager);
 
     /**
      * @brief Updates the level logic (entities, waves, etc).

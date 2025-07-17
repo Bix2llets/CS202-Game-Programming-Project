@@ -8,9 +8,10 @@
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Map.hpp"
 #include "Scene/Scene.hpp"
-EnemyFactory::EnemyFactory(Map &map, Scene &scene, JSONLoader &loader,
+#include "Core/JSONLoader.hpp"
+EnemyFactory::EnemyFactory(Map &map, Scene &scene,
                            ResourceManager &resManager)
-    : map(map), scene(scene), loader{loader}, resManager{resManager} {}
+    : map(map), scene(scene), resManager{resManager} {}
 void EnemyFactory::setDifficulty(Difficulty difficulty)
 
 {
@@ -41,7 +42,7 @@ void EnemyFactory::setDifficulty(Difficulty difficulty)
 
 std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
                                                  float distance, int laneID) {
-    nlohmann::json enemyFile = (loader.getEnemy(id));
+    nlohmann::json enemyFile = (JSONLoader::getInstance().getEnemy(id));
     if (!enemyFile.contains("sprite") || !enemyFile.contains("stats") ||
         !enemyFile.contains("type"))
         throw std::runtime_error("Missing required enemy fields in JSON");

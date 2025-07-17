@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "Core/InputManager.hpp"
-#include "Core/JSONLoader.hpp"
 #include "Core/LevelFactory.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/SceneManager.hpp"
@@ -22,7 +21,6 @@ class Application {
         resourceManager;        ///< Manages resources (textures, sounds, etc.).
     InputManager inputManager;  ///< Handles input events.
     SoundClickTrigger testTrigger;  ///< Test trigger for sound on click.
-    JSONLoader loader;
     LevelFactory levelFactory;
     bool isRunning;  ///< Indicates if the application is running.
    public:

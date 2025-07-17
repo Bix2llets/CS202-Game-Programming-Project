@@ -1,52 +1,56 @@
 #include "Core/Application.hpp"
-#include "Core/Window.hpp"
+
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
 #include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
+#include "Core/Window.hpp"
+#include "GUIComponents/cursor.hpp"
 #include "Scene/BlankScene.hpp"
 #include "Scene/MainMenu.hpp"
 #include "Scene/Mock/TowerRotationMockScene.hpp"
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-#include "GUIComponents/cursor.hpp"
+#include "Core/JSONLoader.hpp"
 Application::Application()
-    : 
-      testTrigger(resourceManager),
+    : testTrigger(resourceManager),
       isRunning{true},
-      sceneManager{*Window::getInstance()},
-      levelFactory{*Window::getInstance(), sceneManager, inputManager, resourceManager, loader} {
-    if (Window::getInstance()->isOpen())
+      sceneManager{},
+      levelFactory{sceneManager, inputManager, resourceManager} {
+    if (Window::getInstance().isOpen())
         Logger::success("Window initialization success");
     else
         Logger::error("Window not intitialized");
-    Window::getInstance()->setFramerateLimit(60);
-    Window::getInstance()->setMouseCursorVisible(false);
-    Window::getInstance()->setPosition({0, 0});
-    loader.loadAll();
+    Window::getInstance().setFramerateLimit(60);
+    Window::getInstance().setMouseCursorVisible(false);
+    Window::getInstance().setPosition({0, 0});
+    JSONLoader::getInstance().loadAll();
 
-    Cursor::getInstance()->subscribeMouse(Mouse::Left, UserEvent::Move, inputManager.getMouseState());
-    Cursor::getInstance()->subscribeMouse(Mouse::Right, UserEvent::Move, inputManager.getMouseState());
-    Cursor::getInstance()->subscribeMouse(Mouse::None, UserEvent::Move, inputManager.getMouseState());
+    Cursor::getInstance().subscribeMouse(Mouse::Left, UserEvent::Move,
+                                          inputManager.getMouseState());
+    Cursor::getInstance().subscribeMouse(Mouse::Right, UserEvent::Move,
+                                          inputManager.getMouseState());
+    Cursor::getInstance().subscribeMouse(Mouse::None, UserEvent::Move,
+                                          inputManager.getMouseState());
     // * Loading the necessary sounds
-    for (auto [id, soundFile] : loader.getAllSounds())
+    for (auto [id, soundFile] : JSONLoader::getInstance().getAllSounds())
         resourceManager.loadSound(soundFile);
-    for (auto [id, textureFile] : loader.getAllTextures())
+    for (auto [id, textureFile] : JSONLoader::getInstance().getAllTextures())
         resourceManager.loadTexture(textureFile);
-    for (auto [id, musicFile] : loader.getAllMusics())
+    for (auto [id, musicFile] : JSONLoader::getInstance().getAllMusics())
         resourceManager.loadMusic(musicFile);
-    for (auto [id, fontFile] : loader.getAllFonts())
+    for (auto [id, fontFile] : JSONLoader::getInstance().getAllFonts())
         resourceManager.loadFont(fontFile);
-    for (auto [id, levelFile]: loader.getAllLevels()) 
+    for (auto [id, levelFile] : JSONLoader::getInstance().getAllLevels())
         levelFactory.loadConfig(levelFile);
     Logger::success("Resource loading");
     sceneManager.registerScene<MainMenu>("Main menu", inputManager,
-                                         resourceManager, loader);
+                                         resourceManager);
     sceneManager.registerScene<Setting>("Setting", inputManager,
-                                        resourceManager, loader);
+                                        resourceManager);
     sceneManager.registerScene<TowerRotationMockScene>(
-        "Tower Test", inputManager, resourceManager, loader);
+        "Tower Test", inputManager, resourceManager);
     sceneManager.changeScene("Tower Test");  // Start with the tower test scene
     sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
     sceneManager.changeScene("Main menu");
@@ -54,7 +58,7 @@ Application::Application()
 }
 
 Application::~Application() {
-    if (Window::getInstance()->isOpen()) Window::getInstance()->close();
+    if (Window::getInstance().isOpen()) Window::getInstance().close();
     Logger::success("Application exit success");
 }
 
@@ -62,9 +66,9 @@ void Application::run() {
     sf::Clock clock;
     float timeElapsed = 0.f;
     while (isRunning) {
-        while (auto event = Window::getInstance()->pollEvent()) {
+        while (auto event = Window::getInstance().pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
-                Window::getInstance()->close();
+                Window::getInstance().close();
                 isRunning = false;
             }
 
@@ -88,9 +92,9 @@ void Application::run() {
             sceneManager.update();
             timeElapsed -= GameConstants::TICK_INTERVAL;
         }
-        Window::getInstance()->clear(sf::Color::Black);
+        Window::getInstance().clear(sf::Color::Black);
         sceneManager.render();
-        Window::getInstance()->draw(*Cursor::getInstance());
-        Window::getInstance()->display();
+        Window::getInstance().draw(Cursor::getInstance());
+        Window::getInstance().display();
     }
 }

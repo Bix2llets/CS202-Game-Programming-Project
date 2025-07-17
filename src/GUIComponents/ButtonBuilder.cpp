@@ -2,9 +2,8 @@
 
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
-ButtonBuilder::ButtonBuilder(Mediator& mediator, ResourceManager& resManager,
-                             JSONLoader& loader)
-    : mediator{mediator}, resManager{resManager}, loader{loader} {}
+ButtonBuilder::ButtonBuilder(Mediator& mediator, ResourceManager& resManager)
+    : mediator{mediator}, resManager{resManager} {}
 
 ButtonBuilder& ButtonBuilder::setText(const std::string& text) {
     this->text = text;
@@ -38,7 +37,7 @@ ButtonBuilder& ButtonBuilder::reset() {
 }
 
 ButtonBuilder& ButtonBuilder::loadJson(std::string id) {
-    styleConfig = loader.getStyle(id);
+    styleConfig = JSONLoader::getInstance().getStyle(id);
     return *this;
 }
 

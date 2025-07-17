@@ -6,11 +6,10 @@
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "Utility/logger.hpp"
 
-MainMenu::MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
-                   InputManager &inputManager, ResourceManager &resManager,
-                   JSONLoader &loader)
-    : Scene(window, parentManager, inputManager, resManager, loader) {
-    ButtonBuilder builder(*this, resourceManager, loader);
+MainMenu::MainMenu(SceneManager &parentManager,
+                   InputManager &inputManager, ResourceManager &resManager)
+    : Scene(parentManager, inputManager, resManager) {
+    ButtonBuilder builder(*this, resourceManager);
     testBtn = builder.reset()
                   .setPosition({120.f, 100.f})
                   .setSize({120.f, 50.f})

@@ -6,8 +6,8 @@
 #include "Scene/Scene.hpp"
 class Setting : public Scene {
    public:
-    Setting(sf::RenderWindow &window, SceneManager &parentManager,
-            InputManager &inputManager, ResourceManager &resManager, JSONLoader &loader);
+    Setting(SceneManager &parentManager,
+            InputManager &inputManager, ResourceManager &resManager);
 
     void onLoad() override;
     void onUnload() override;

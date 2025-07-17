@@ -40,15 +40,14 @@ private:
 public:
     /**
      * @brief Construct a new TowerRotationMockScene.
-     * @param window Reference to the render window.
      * @param name Name of the scene.
      * @param parentManager Reference to the scene manager.
      * @param inputManager Reference to the input manager.
      * @param resourceManager Reference to the resource manager.
      */
-    TowerRotationMockScene(sf::RenderWindow& window,
+    TowerRotationMockScene(
                           SceneManager& parentManager, InputManager& inputManager, 
-                          ResourceManager& resourceManager, JSONLoader &loader);
+                          ResourceManager& resourceManager);
     
     /**
      * @brief Destructor.

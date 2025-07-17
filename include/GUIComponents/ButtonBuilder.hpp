@@ -18,15 +18,13 @@ class ButtonBuilder {
 
     Mediator& mediator;
     ResourceManager &resManager;
-    JSONLoader &loader;
 
     std::function<void(Button*)> callback;
 
     const std::string fontName = "LeagueSpartan";
 
    public:
-    ButtonBuilder(Mediator& mediator, ResourceManager& resManager,
-                  JSONLoader& loader);
+    ButtonBuilder(Mediator& mediator, ResourceManager& resManager);
 
     ButtonBuilder& setText(const std::string& text);
 

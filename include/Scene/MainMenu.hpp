@@ -10,7 +10,6 @@
 #include <string>
 
 #include "Core/InputManager.hpp"
-#include "Core/JSONLoader.hpp"
 #include "Core/ResourceManager.hpp"
 #include "GUIComponents/button.hpp"
 #include "GUIComponents/mediator.hpp"
@@ -35,9 +34,8 @@ class MainMenu : public Scene {
      * @param inputManager Reference to the InputManager singleton.
      * @param resManager Reference to the ResourceManager singleton.
      */
-    MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
-             InputManager &inputManager, ResourceManager &resManager,
-             JSONLoader &loader);
+    MainMenu(SceneManager &parentManager,
+             InputManager &inputManager, ResourceManager &resManager);
 
     /**
      * @brief Updates the main menu scene (handles logic, input, etc).
