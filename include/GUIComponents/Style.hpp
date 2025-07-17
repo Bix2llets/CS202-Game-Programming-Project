@@ -11,7 +11,6 @@
 #include <string>
 #include <json.hpp>
 
-class ResourceManager;
 struct ColorSet {
     sf::Color background;
     sf::Color text;
@@ -43,5 +42,5 @@ struct Style {
     inline const ColorSet getHoverSet() const {return hover;}
     inline const ColorSet getClickSet() const {return click;}
     Style() = default;
-    void loadJson(const nlohmann::json &file, const ResourceManager &manager);
+    void loadJson(const nlohmann::json &file);
 };

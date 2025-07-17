@@ -40,12 +40,6 @@ public:
      */
     void notify(const std::string& event, std::any sender = {}, std::any data = {}); 
 
-    /**
-     * @brief Get font for rendering use (should be reasonable as mediator stores UI component, which need font to display text)
-     * @param fontName the name of the font
-     */
-
-     virtual const sf::Font* const getFont(std::string fontName) = 0;
 private:
     std::unordered_map<std::string, std::vector<Handler>> handlers;
 };

@@ -18,7 +18,6 @@
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Tower/TowerBuilder.hpp"
 #include "Core/InputManager.hpp"
-#include "Core/ResourceManager.hpp"
 
 /**
  * @class TowerRotationMockScene
@@ -42,11 +41,9 @@ public:
      * @brief Construct a new TowerRotationMockScene.
      * @param name Name of the scene.
      * @param parentManager Reference to the scene manager.
-     * @param resourceManager Reference to the resource manager.
      */
     TowerRotationMockScene(
-                          SceneManager& parentManager, 
-                          ResourceManager& resourceManager);
+                          SceneManager& parentManager);
     
     /**
      * @brief Destructor.

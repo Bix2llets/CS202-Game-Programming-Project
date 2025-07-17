@@ -1,5 +1,6 @@
 #include "Entity/Tower/TowerBuilder.hpp"
 #include "Scene/Scene.hpp"
+#include "Core/ResourceManager.hpp"
 #include <stdexcept>
 #include <iostream>
 
@@ -177,9 +178,9 @@ void TowerBuilder::loadTextures(Tower& tower) const {
         try {
             // Load texture into ResourceManager through Scene
             std::string baseTextureId = "tower_base_" + id;
-            scene->loadTexture(baseTexturePath, baseTextureId);
+            ResourceManager::getInstance().loadTexture(baseTexturePath, baseTextureId);
             
-            const sf::Texture* baseTexture = scene->getTexture(baseTextureId);
+            const sf::Texture* baseTexture = ResourceManager::getInstance().getTexture(baseTextureId);
             if (baseTexture) {
                 tower.loadBaseSpriteTexture(*baseTexture);
                 std::cout << "TowerBuilder: Successfully loaded base texture" << std::endl;
@@ -197,9 +198,9 @@ void TowerBuilder::loadTextures(Tower& tower) const {
         try {
             // Load texture into ResourceManager through Scene
             std::string turretTextureId = "tower_turret_" + id;
-            scene->loadTexture(turretTexturePath, turretTextureId);
+            ResourceManager::getInstance().loadTexture(turretTexturePath, turretTextureId);
             
-            const sf::Texture* turretTexture = scene->getTexture(turretTextureId);
+            const sf::Texture* turretTexture = ResourceManager::getInstance().getTexture(turretTextureId);
             if (turretTexture) {
                 tower.loadTurretSpriteTexture(*turretTexture);
                 std::cout << "TowerBuilder: Successfully loaded turret texture" << std::endl;

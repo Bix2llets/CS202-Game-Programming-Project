@@ -1,13 +1,12 @@
 #include "Entity/Modules/SpriteAnimation.hpp"
-
+#include "Core/ResourceManager.hpp"
 SpriteAnimation::SpriteAnimation()
     : type(AnimationType::Linear), currentFrame(0) {
     // Default constructor - initialize members
 }
 
-void SpriteAnimation::loadJson(ResourceManager& resManager,
-                               const nlohmann::json& jsonFile) {
-    const sf::Texture* texture = resManager.getTexture(jsonFile["textureID"]);
+void SpriteAnimation::loadJson(const nlohmann::json& jsonFile) {
+    const sf::Texture* texture = ResourceManager::getInstance().getTexture(jsonFile["textureID"]);
     int width = static_cast<int>(jsonFile["width"]);
     int height = static_cast<int>(jsonFile["height"]);
 

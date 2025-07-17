@@ -8,83 +8,16 @@
 #include <memory>
 #include <string>
 /**
- * @file ResourceManager.hpp
- * @brief Declares the ResourceManager class for managing game resources.
- */
-
-/**
  * @class ResourceManager
  * @brief Centralized manager for loading, storing, and accessing game resources
  * such as textures, sounds, fonts, and music.
- *
- * This class provides a unified interface for resource management in SFML-based
- * games. It handles loading resources from files (using JSON metadata), stores
- * them in memory, and provides access to them via string IDs. It also manages
- * playback of sounds and music, including volume control and cleanup of
- * finished sounds.
- *
- * Usage:
- *   - Load resources at game initialization using the provided load methods.
- *   - Retrieve resources by ID for rendering or playback.
- *   - Control sound/music playback and volume globally.
- *
- * Design notes:
- *   - All resources are stored in maps keyed by string IDs for fast lookup and
- * modular asset management.
- *   - Sound and music playback is managed to avoid resource leaks and allow for
- * global volume control.
- *   - Copy operations are deleted to ensure singleton-like usage and prevent
- * accidental duplication of resource handles.
- *
- * Thread safety: This class is not thread-safe. All resource operations should
- * be performed on the main thread.
- */
-/**
- * @class ResourceManager
- * @brief Centralized manager for loading, storing, and accessing game resources
- * such as textures, sounds, fonts, and music.
- *
- * This class provides robust resource management for SFML-based games,
- * supporting modular asset loading from JSON files and runtime control of
- * sound/music playback and volume. All resources are loaded and accessed via
- * string IDs, enabling flexible asset referencing and hot-reloading for mod
- * support. The ResourceManager ensures proper cleanup of all loaded resources
- * and currently playing sounds on destruction.
- *
- * Usage:
- *   - Call loadTexture(), loadSound(), loadFont(), and (optionally) loadMusic()
- * to load assets from JSON definitions.
- *   - Use getTexture(), getFont(), playSound(), playMusic(), etc. to access and
- * control resources at runtime.
- *   - Volume controls are provided for both sound effects and music.
- *
- * Thread Safety: Not thread-safe. All resource operations should be performed
- * on the main thread.
- *
- * All resource IDs must be unique within their type. Resources are
- * automatically freed on destruction.
  */
 
 class ResourceManager {
    private:
-    /**
-     * @brief Map of loaded textures, keyed by unique string ID.
-     */
     std::map<std::string, std::unique_ptr<sf::Texture>> textures;
-
-    /**
-     * @brief Map of loaded sound buffers, keyed by unique string ID.
-     */
     std::map<std::string, std::unique_ptr<sf::SoundBuffer>> soundBuffers;
-
-    /**
-     * @brief Map of loaded fonts, keyed by unique string ID.
-     */
     std::map<std::string, std::unique_ptr<sf::Font>> fonts;
-
-    /**
-     * @brief Map of loaded music tracks, keyed by unique string ID.
-     */
     std::map<std::string, std::unique_ptr<sf::Music>> musics;
 
     /**
@@ -93,26 +26,8 @@ class ResourceManager {
      * Used to manage lifetime and cleanup of sound effects.
      */
     std::list<std::unique_ptr<sf::Sound>> playingSounds;
-
-    /**
-     * @brief Current sound effects volume (0-100).
-     */
     int soundVolume;
-
-    /**
-     * @brief Current music volume (0-100).
-     */
     int musicVolume;
-
-    /**
-     * @brief Deleted copy constructor to prevent copying.
-     */
-    ResourceManager(const ResourceManager &rhs) = delete;
-
-    /**
-     * @brief Deleted copy assignment operator to prevent copying.
-     */
-    ResourceManager operator=(const ResourceManager &rhs) = delete;
 
     /**
      * @brief Removes finished sounds from the playingSounds list.
@@ -121,42 +36,44 @@ class ResourceManager {
      * instances.
      */
     void freeSound();
-
+    ResourceManager(const ResourceManager &rhs) = delete;
+    ResourceManager operator=(const ResourceManager &rhs) = delete;
+    ResourceManager() = default;
    public:
     /**
-     * @brief Default constructor.
-     */
-    ResourceManager() = default;
-
-    /**
-     * @brief Move constructor.
-     */
-    ResourceManager(ResourceManager &&rhs) noexcept = default;
-
-    /**
      * @brief Loads a sound buffer from file and stores it with the given ID.
-     * @param file JSON object containing sound metadata (must include path and ID fields).
-     * @throws std::runtime_error if the file cannot be loaded or ID is missing/duplicate.
+     * @param file JSON object containing sound metadata (must include path and
+     * ID fields).
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
      * @note Call this before attempting to play a sound with playSound().
      */
     void loadSound(const nlohmann::json &file);
 
     /**
-     * @brief Loads a sound buffer from a file path and stores it with the given ID.
+     * @brief Loads a sound buffer from a file path and stores it with the given
+     * ID.
      * @param path Path to the sound file.
      * @param ID Unique key to identify the loaded sound buffer.
-     * @throws std::runtime_error if the file cannot be loaded or ID is missing/duplicate.
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
      * @note Use this for programmatic asset loading outside of JSON.
-     * @deprecated This method will be removed in the near future. Use JSON-based loading instead.
+     * @deprecated This method will be removed in the near future. Use
+     * JSON-based loading instead.
      */
-    [[deprecated("Will be removed in near future, prefer centralized loading on initialization")]]
+    [[deprecated(
+        "Will be removed in near future, prefer centralized loading on "
+        "initialization")]]
     void loadSound(const std::string &path, const std::string &ID);
 
     /**
      * @brief Loads a texture from file and stores it with the given ID.
-     * @param file JSON object containing texture metadata (must include path and ID fields).
-     * @throws std::runtime_error if the file cannot be loaded or ID is missing/duplicate.
-     * @note Call this before attempting to retrieve a texture with getTexture().
+     * @param file JSON object containing texture metadata (must include path
+     * and ID fields).
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
+     * @note Call this before attempting to retrieve a texture with
+     * getTexture().
      */
     void loadTexture(const nlohmann::json &file);
 
@@ -164,49 +81,66 @@ class ResourceManager {
      * @brief Loads a texture from a file path and stores it with the given ID.
      * @param path Path to the texture file.
      * @param ID Unique key to identify the loaded texture.
-     * @throws std::runtime_error if the file cannot be loaded or ID is missing/duplicate.
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
      * @note Use this for programmatic asset loading outside of JSON.
-     * @deprecated This method will be removed in the near future. Use JSON-based loading instead.
+     * @deprecated This method will be removed in the near future. Use
+     * JSON-based loading instead.
      */
-    [[deprecated("Will be removed in near future, prefer centralized loading on initialization")]]
+    [[deprecated(
+        "Will be removed in near future, prefer centralized loading on "
+        "initialization")]]
     void loadTexture(const std::string &path, const std::string &ID);
-    
+
     /**
      * @brief Loads a font from file and stores it with the given ID.
-     * @param file JSON object containing font metadata (must include path and ID fields).
-     * @throws std::runtime_error if the file cannot be loaded or ID is missing/duplicate.
+     * @param file JSON object containing font metadata (must include path and
+     * ID fields).
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
      * @note Call this before attempting to retrieve a font with getFont().
      */
     void loadFont(const nlohmann::json &file);
-    
+
     /**
      * @brief Loads a font from a file path and stores it with the given ID.
      * @param path Path to the font file.
      * @param ID Unique key to identify the loaded font.
-     * @throws std::runtime_error if the file cannot be loaded or ID is missing/duplicate.
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
      * @note Use this for programmatic asset loading outside of JSON.
-     * @deprecated This method will be removed in the near future. Use JSON-based loading instead.
+     * @deprecated This method will be removed in the near future. Use
+     * JSON-based loading instead.
      */
-    [[deprecated("Will be removed in near future, prefer centralized loading on initialization")]]
+    [[deprecated(
+        "Will be removed in near future, prefer centralized loading on "
+        "initialization")]]
     void loadFont(const std::string &path, const std::string &ID);
-    
+
     /**
      * @brief Loads a music track from file and stores it with the given ID.
-     * @param file JSON object containing music metadata (must include path and ID fields).
-     * @throws std::runtime_error if the file cannot be loaded or ID is missing/duplicate.
+     * @param file JSON object containing music metadata (must include path and
+     * ID fields).
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
      * @note Call this before attempting to play music with playMusic().
      */
     void loadMusic(const nlohmann::json &file);
 
     /**
-     * @brief Loads a music track from a file path and stores it with the given ID.
+     * @brief Loads a music track from a file path and stores it with the given
+     * ID.
      * @param path Path to the music file.
      * @param ID Unique key to identify the loaded music track.
-     * @throws std::runtime_error if the file cannot be loaded or ID is missing/duplicate.
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
      * @note Use this for programmatic asset loading outside of JSON.
-     * @deprecated This method will be removed in the near future. Use JSON-based loading instead.
+     * @deprecated This method will be removed in the near future. Use
+     * JSON-based loading instead.
      */
-    [[deprecated("Will be removed in near future, prefer centralized loading on initialization")]]
+    [[deprecated(
+        "Will be removed in near future, prefer centralized loading on "
+        "initialization")]]
     void loadMusic(const std::string &path, const std::string &ID);
     /**
      * @brief Destructor. Frees all loaded fonts, sound buffers, textures, and
@@ -295,6 +229,11 @@ class ResourceManager {
      */
     void stopMusic(std::string id);
 
+
+    static ResourceManager& getInstance() {
+        static ResourceManager result;
+        return result;
+    }
    private:
     void validateJson(const nlohmann::json &file);
 };

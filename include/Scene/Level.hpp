@@ -45,9 +45,8 @@ class Level : public Scene {
      * @brief Constructs the Level scene.
      * @param window Reference to the SFML render window.
      * @param parentManager Reference to the parent SceneManager.
-     * @param resourceManager Reference to the ResourceManager.
      */
-    Level(SceneManager &parentManager, ResourceManager &resourceManager);
+    Level(SceneManager &parentManager);
 
     /**
      * @brief Updates the level logic (entities, waves, etc).

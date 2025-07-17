@@ -30,10 +30,8 @@ class MainMenu : public Scene {
      * @brief Constructs the MainMenu scene.
      * @param window Reference to the SFML render window.
      * @param parentManager Reference to the parent SceneManager.
-     * @param resManager Reference to the ResourceManager singleton.
      */
-    MainMenu(SceneManager &parentManager,
-             ResourceManager &resManager);
+    MainMenu(SceneManager &parentManager);
 
     /**
      * @brief Updates the main menu scene (handles logic, input, etc).

@@ -14,10 +14,7 @@
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
 Application::Application()
-    : testTrigger(resourceManager),
-      isRunning{true},
-      sceneManager{},
-      levelFactory{sceneManager, resourceManager} {
+    : isRunning{true}, sceneManager{}, levelFactory{sceneManager} {
     if (Window::getInstance().isOpen())
         Logger::success("Window initialization success");
     else
@@ -38,20 +35,19 @@ Application::Application()
         InputManager::getInstance().getMouseState());
     // * Loading the necessary sounds
     for (auto [id, soundFile] : JSONLoader::getInstance().getAllSounds())
-        resourceManager.loadSound(soundFile);
+        ResourceManager::getInstance().loadSound(soundFile);
     for (auto [id, textureFile] : JSONLoader::getInstance().getAllTextures())
-        resourceManager.loadTexture(textureFile);
+        ResourceManager::getInstance().loadTexture(textureFile);
     for (auto [id, musicFile] : JSONLoader::getInstance().getAllMusics())
-        resourceManager.loadMusic(musicFile);
+        ResourceManager::getInstance().loadMusic(musicFile);
     for (auto [id, fontFile] : JSONLoader::getInstance().getAllFonts())
-        resourceManager.loadFont(fontFile);
+        ResourceManager::getInstance().loadFont(fontFile);
     for (auto [id, levelFile] : JSONLoader::getInstance().getAllLevels())
         levelFactory.loadConfig(levelFile);
     Logger::success("Resource loading");
-    sceneManager.registerScene<MainMenu>("Main menu", resourceManager);
-    sceneManager.registerScene<Setting>("Setting", resourceManager);
-    sceneManager.registerScene<TowerRotationMockScene>("Tower Test",
-                                                       resourceManager);
+    sceneManager.registerScene<MainMenu>("Main menu");
+    sceneManager.registerScene<Setting>("Setting");
+    sceneManager.registerScene<TowerRotationMockScene>("Tower Test");
     sceneManager.changeScene("Tower Test");  // Start with the tower test scene
     sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
     sceneManager.changeScene("Main menu");

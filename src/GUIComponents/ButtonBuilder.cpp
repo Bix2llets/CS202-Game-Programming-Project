@@ -2,8 +2,8 @@
 
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
-ButtonBuilder::ButtonBuilder(Mediator& mediator, ResourceManager& resManager)
-    : mediator{mediator}, resManager{resManager} {}
+ButtonBuilder::ButtonBuilder(Mediator& mediator)
+    : mediator{mediator} {}
 
 ButtonBuilder& ButtonBuilder::setText(const std::string& text) {
     this->text = text;
@@ -46,10 +46,10 @@ std::unique_ptr<Button> ButtonBuilder::build() {
         new Button(sf::FloatRect{position, size}, mediator));
 
     result->setNotificationMessage(notificationMessage);
-    result->style.loadJson(styleConfig, resManager);
+    result->style.loadJson(styleConfig);
     result->setOnClick(callback);
     std::unique_ptr<sf::Text> label =
-        std::make_unique<sf::Text>(*resManager.getFont(fontName), text, 24);
+        std::make_unique<sf::Text>(*ResourceManager::getInstance().getFont(fontName), text, 24);
     Logger::debug(std::format("{} {} {} {}", label->getLocalBounds().position.x,
                               label->getLocalBounds().position.y,
                               label->getLocalBounds().size.x,

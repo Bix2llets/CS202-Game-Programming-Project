@@ -9,9 +9,8 @@
 #include "Gameplay/Map.hpp"
 #include "Scene/Scene.hpp"
 #include "Core/JSONLoader.hpp"
-EnemyFactory::EnemyFactory(Map &map, Scene &scene,
-                           ResourceManager &resManager)
-    : map(map), scene(scene), resManager{resManager} {}
+EnemyFactory::EnemyFactory(Map &map, Scene &scene)
+    : map(map), scene(scene) {}
 void EnemyFactory::setDifficulty(Difficulty difficulty)
 
 {
@@ -47,7 +46,7 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
         !enemyFile.contains("type"))
         throw std::runtime_error("Missing required enemy fields in JSON");
     std::unique_ptr<Enemy> result(new Enemy(scene));
-    result->animation.loadJson(resManager, enemyFile["sprite"]);
+    result->animation.loadJson(enemyFile["sprite"]);
     result->path.setWaypoints(map.getWaypoints(laneID));
     result->path.setDistanceFromStart(distance);
     result->path.setSpeed(enemyFile["stats"]["speed"]);

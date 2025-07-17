@@ -6,7 +6,7 @@
 #include "Scene/Scene.hpp"
 class Setting : public Scene {
    public:
-    Setting(SceneManager &parentManager, ResourceManager &resManager);
+    Setting(SceneManager &parentManager);
 
     void onLoad() override;
     void onUnload() override;

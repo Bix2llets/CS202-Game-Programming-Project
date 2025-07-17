@@ -17,14 +17,13 @@ class ButtonBuilder {
     std::string notificationMessage;
 
     Mediator& mediator;
-    ResourceManager &resManager;
 
     std::function<void(Button*)> callback;
 
     const std::string fontName = "LeagueSpartan";
 
    public:
-    ButtonBuilder(Mediator& mediator, ResourceManager& resManager);
+    ButtonBuilder(Mediator& mediator);
 
     ButtonBuilder& setText(const std::string& text);
 

@@ -7,20 +7,17 @@
 
 #include "Core/KeyboardObserver.hpp"
 #include "Core/MouseObserver.hpp"
-#include "Core/ResourceManager.hpp"
 /**
  * @class SoundClickTrigger
  * @brief Test class that plays a sound when mouse events occur.
  */
 class SoundClickTrigger : public MouseObserver, public KeyboardObserver {
    private:
-    ResourceManager &resManager;  ///< Reference to the resource manager.
     /**
      * @brief Constructs a SoundClickTrigger with the given resource manager.
-     * @param resManager Reference to the ResourceManager.
      */
    public:
-    SoundClickTrigger(ResourceManager &resManager);
+    SoundClickTrigger();
     /**
      * @brief Called on left mouse press.
      * @param worldPosition Mouse position in world coordinates.

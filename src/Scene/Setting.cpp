@@ -9,13 +9,11 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/SceneManager.hpp"
 #include "Core/UserEvent.hpp"
+#include "Core/Window.hpp"
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "GUIComponents/button.hpp"
-#include "Core/InputManager.hpp"
-
-#include "Core/Window.hpp"
-Setting::Setting(SceneManager &parentManager, ResourceManager &resManager)
-    : Scene(parentManager, resManager) {
+Setting::Setting(SceneManager &parentManager)
+    : Scene(parentManager) {
     createButtons();
     setupButtonMessages();
     setupHandlers();
@@ -30,14 +28,14 @@ void Setting::onLoad() {
 
 void Setting::onUnload() {
     for (auto &button : alwaysShownElements) {
-
-        button->unSubscribeMouseAll(InputManager::getInstance().getMouseState());
+        button->unSubscribeMouseAll(
+            InputManager::getInstance().getMouseState());
         button->resetAnimation();
     }
 }
 
 void Setting::update() {
-    for (auto &button: alwaysShownElements) button->update();
+    for (auto &button : alwaysShownElements) button->update();
 }
 
 void Setting::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -49,7 +47,7 @@ void Setting::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 
 void Setting::createButtons() {
     const sf::Vector2f buttonSize = {120, 50};
-    ButtonBuilder builder(*this, resourceManager);
+    ButtonBuilder builder(*this);
     musicVolumeDecrement = builder.reset()
                                .setPosition({220.f, 20.f})
                                .setSize(buttonSize)
@@ -95,7 +93,7 @@ void Setting::createButtons() {
                       .setNotificationMessage("Resolution2")
                       .setText("Res2")
                       .loadJson("basicButton")
-                    .build();
+                      .build();
 
     resolution3 = builder.reset()
                       .setPosition({500.f, 400.f})
@@ -127,29 +125,30 @@ void Setting::setupButtonMessages() {
 
 void Setting::setupHandlers() {
     subscribe("Music Decrease", [this](std::any sender, std::any data) {
-        int musicVolume = this->resourceManager.getMusicVolume();
-        resourceManager.setMusicVolume(musicVolume + 10);
+        int musicVolume = ResourceManager::getInstance().getMusicVolume();
+        ResourceManager::getInstance().setMusicVolume(musicVolume + 10);
         Logger::debug("Music Volume Decrease Triggered");
     });
     subscribe("Music Increase", [this](std::any sender, std::any data) {
-        int musicVolume = this->resourceManager.getMusicVolume();
-        resourceManager.setMusicVolume(musicVolume - 10);
+        int musicVolume = ResourceManager::getInstance().getMusicVolume();
+        ResourceManager::getInstance().setMusicVolume(musicVolume - 10);
         Logger::debug("Music Volume Increase Triggered");
     });
     subscribe("Sound Decrease", [this](std::any sender, std::any data) {
-        int soundVolume = this->resourceManager.getSoundVolume();
-        resourceManager.setSoundVolume(soundVolume - 10);
+        int soundVolume = ResourceManager::getInstance().getSoundVolume();
+        ResourceManager::getInstance().setSoundVolume(soundVolume - 10);
         Logger::debug("Sound Volume Decrease Triggered");
     });
     subscribe("Sound Increase", [this](std::any sender, std::any data) {
-        int soundVolume = this->resourceManager.getSoundVolume();
-        resourceManager.setSoundVolume(soundVolume - 10);
+        int soundVolume = ResourceManager::getInstance().getSoundVolume();
+        ResourceManager::getInstance().setSoundVolume(soundVolume - 10);
         Logger::debug("Sound Volume Increase Triggered");
     });
 
     subscribe("Resolution1", [this](std::any, std::any) {
         using namespace GameConstants;
-        Window::getInstance().setSize({DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT});
+        Window::getInstance().setSize(
+            {DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT});
         Logger::info(std::format("Changed window size to {}x{}",
                                  DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT));
     });

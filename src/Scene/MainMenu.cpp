@@ -6,9 +6,9 @@
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "Utility/logger.hpp"
 
-MainMenu::MainMenu(SceneManager &parentManager, ResourceManager &resManager)
-    : Scene(parentManager, resManager) {
-    ButtonBuilder builder(*this, resourceManager);
+MainMenu::MainMenu(SceneManager &parentManager)
+    : Scene(parentManager) {
+    ButtonBuilder builder(*this);
     testBtn = builder.reset()
                   .setPosition({120.f, 100.f})
                   .setSize({120.f, 50.f})

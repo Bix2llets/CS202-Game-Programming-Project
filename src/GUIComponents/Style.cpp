@@ -1,8 +1,7 @@
 #include "GUIComponents/Style.hpp"
 
 #include "Core/ResourceManager.hpp"
-void Style::loadJson(const nlohmann::json &file,
-                     const ResourceManager &manager) {
+void Style::loadJson(const nlohmann::json &file) {
     nlohmann::json style = file["style"];
     nlohmann::json normalColor = style["normal"];
     nlohmann::json hoverColor = style["hover"];
@@ -34,7 +33,7 @@ void Style::loadJson(const nlohmann::json &file,
     borderRadius = file["borderRadius"].get<int>();
     borderWidth = file["borderWidth"].get<int>();
 
-    font = manager.getFont(file["font"].get<std::string>());
+    font = ResourceManager::getInstance().getFont(file["font"].get<std::string>());
     padding = file["padding"].get<std::array<int, 2>>();
 
     id = file["id"].get<std::string>();

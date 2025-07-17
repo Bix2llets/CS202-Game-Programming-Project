@@ -7,14 +7,11 @@
 #include <json.hpp>
 
 #include "Base/Constants.hpp"
-#include "Utility/logger.hpp"
 #include "Gameplay/Difficulty.hpp"
+#include "Utility/logger.hpp"
 
-
-Level::Level(SceneManager &sceneManager, ResourceManager &resourceManager)
-    : Scene(sceneManager, resourceManager),
-      currentWave{0},
-      entityManager() {}
+Level::Level(SceneManager &sceneManager)
+    : Scene(sceneManager), currentWave{0} {}
 
 void Level::update() {
     entityManager.update();
@@ -56,16 +53,12 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     loadWaypoints(jsonFile);
     loadWaves(jsonFile);
 
-    factory =
-        std::make_unique<EnemyFactory>(map, *this, resourceManager);
+    factory = std::make_unique<EnemyFactory>(map, *this);
 
     std::string difficulty = jsonFile["difficulty"].get<std::string>();
-    if (difficulty == "easy") 
-        factory->setDifficulty(Difficulty::Easy);
-    if (difficulty == "medium") 
-        factory->setDifficulty(Difficulty::Medium);
-    if (difficulty == "hard") 
-        factory->setDifficulty(Difficulty::Hard);
+    if (difficulty == "easy") factory->setDifficulty(Difficulty::Easy);
+    if (difficulty == "medium") factory->setDifficulty(Difficulty::Medium);
+    if (difficulty == "hard") factory->setDifficulty(Difficulty::Hard);
 }
 
 void Level::loadWaypoints(const nlohmann::json &jsonFile) {
