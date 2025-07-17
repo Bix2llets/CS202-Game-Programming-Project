@@ -9,7 +9,6 @@
 #include <string>
 
 #include "GUIComponents/Mediator.hpp"
-class SceneManager;
 /**
  * @class Scene
  * @brief Abstract base class for all game scenes.
@@ -19,15 +18,9 @@ class SceneManager;
  */
 class Scene : public sf::Drawable, public Mediator {
    protected:
-    SceneManager& sceneManager;
 
    public:
-    /**
-     * @brief Constructs a Scene with the given window and name.
-     * @param window Reference to the SFML render window.
-     * @param parentManager Reference to the parent SceneManager.
-     */
-    Scene(SceneManager& parentManager) : sceneManager{parentManager} {};
+    Scene() = default;
     /**
      * @brief Draws the scene (pure virtual).
      * @param target The render target to draw to.

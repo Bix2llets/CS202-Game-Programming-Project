@@ -42,8 +42,7 @@ public:
      * @param name Name of the scene.
      * @param parentManager Reference to the scene manager.
      */
-    TowerRotationMockScene(
-                          SceneManager& parentManager);
+    TowerRotationMockScene();
     
     /**
      * @brief Destructor.

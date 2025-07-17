@@ -10,8 +10,7 @@
 #include "Gameplay/Difficulty.hpp"
 #include "Utility/logger.hpp"
 
-Level::Level(SceneManager &sceneManager)
-    : Scene(sceneManager), currentWave{0} {}
+Level::Level() : currentWave{0} {}
 
 void Level::update() {
     entityManager.update();

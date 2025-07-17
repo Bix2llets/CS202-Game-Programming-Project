@@ -17,8 +17,6 @@
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
-class SceneManager;
-class ResourceManager;
 
 /**
  * @class Level
@@ -41,12 +39,7 @@ class Level : public Scene {
     int currentWave;  ///< Index of the current wave
 
    public:
-    /**
-     * @brief Constructs the Level scene.
-     * @param window Reference to the SFML render window.
-     * @param parentManager Reference to the parent SceneManager.
-     */
-    Level(SceneManager &parentManager);
+    Level();
 
     /**
      * @brief Updates the level logic (entities, waves, etc).

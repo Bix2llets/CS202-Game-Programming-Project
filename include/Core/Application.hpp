@@ -6,7 +6,6 @@
 #include <SFML/Graphics.hpp>
 
 #include "Core/LevelFactory.hpp"
-#include "Core/SceneManager.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 /**
  * @class Application
@@ -14,7 +13,6 @@
  */
 class Application {
    private:
-    SceneManager sceneManager;  ///< Manages game scenes.
     SoundClickTrigger testTrigger;  ///< Test trigger for sound on click.
     LevelFactory levelFactory;
     bool isRunning;  ///< Indicates if the application is running.

@@ -18,7 +18,6 @@
  * @class MainMenu
  * @brief Scene representing the main menu, with UI buttons and event handling.
  */
-class SceneManager;
 class MainMenu : public Scene {
    protected:
    std::unique_ptr<Button> testBtn;
@@ -26,12 +25,7 @@ class MainMenu : public Scene {
     void testSceneSwitching();
 
    public:
-    /**
-     * @brief Constructs the MainMenu scene.
-     * @param window Reference to the SFML render window.
-     * @param parentManager Reference to the parent SceneManager.
-     */
-    MainMenu(SceneManager &parentManager);
+    MainMenu();
 
     /**
      * @brief Updates the main menu scene (handles logic, input, etc).

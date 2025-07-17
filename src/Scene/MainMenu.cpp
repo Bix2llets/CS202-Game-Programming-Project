@@ -6,8 +6,8 @@
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "Utility/logger.hpp"
 
-MainMenu::MainMenu(SceneManager &parentManager)
-    : Scene(parentManager) {
+MainMenu::MainMenu()
+    : Scene() {
     ButtonBuilder builder(*this);
     testBtn = builder.reset()
                   .setPosition({120.f, 100.f})
@@ -32,10 +32,10 @@ MainMenu::MainMenu(SceneManager &parentManager)
     Logger::debug("Main menu created");
 
     subscribe("Setting", [this](std::any, std::any) {
-        sceneManager.changeScene("Setting");
+        SceneManager::getInstance().changeScene("Setting");
     });
     subscribe("Gameplay", [this](std::any, std::any) {
-        sceneManager.changeScene("Gameplay");
+        SceneManager::getInstance().changeScene("Gameplay");
     });
 }
 
@@ -51,7 +51,7 @@ void MainMenu::update() {
 
 void MainMenu::testSceneSwitching() {
     Logger::debug("Scene switch initiated");
-    sceneManager.changeScene("Gameplay");
+    SceneManager::getInstance().changeScene("Gameplay");
 }
 
 void MainMenu::onLoad() {

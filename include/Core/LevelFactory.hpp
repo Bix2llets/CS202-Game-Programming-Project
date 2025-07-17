@@ -24,7 +24,6 @@
 #include <unordered_map>
 
 #include "Scene/Level.hpp"
-class SceneManager;
 
 /**
  * @class LevelFactory
@@ -38,18 +37,8 @@ class LevelFactory {
      */
     std::unordered_map<std::string, nlohmann::json> levelConfiguration;
 
-    SceneManager &sceneManager;
-
    public:
-    /**
-     * @brief Constructs a LevelFactory with references to core game systems.
-     * @param window Reference to the main render window.
-     * @param sceneManager Reference to the scene manager.
-     * @param inputManager Reference to the input manager.
-     * @param resourceManager Reference to the resource manager.
-     * @param loader Reference to the JSON loader.
-     */
-    LevelFactory(SceneManager &sceneManager) : sceneManager{sceneManager} {}
+    LevelFactory() = default;
 
     /**
      * @brief Loads a single scene configuration from a JSON object.

@@ -12,8 +12,7 @@
 #include "Core/Window.hpp"
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "GUIComponents/button.hpp"
-Setting::Setting(SceneManager &parentManager)
-    : Scene(parentManager) {
+Setting::Setting() {
     createButtons();
     setupButtonMessages();
     setupHandlers();
@@ -166,7 +165,7 @@ void Setting::setupHandlers() {
     });
     subscribe("Main menu", [this](std::any, std::any) {
         using namespace GameConstants;
-        sceneManager.changeScene("Main menu");
+        SceneManager::getInstance().changeScene("Main menu");
     });
 }
 

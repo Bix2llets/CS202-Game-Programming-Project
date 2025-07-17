@@ -3,15 +3,14 @@
 #include <cmath>
 #include <iostream>
 
+#include "Core/ResourceManager.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
 #include "Entity/Tower/TowerStat.hpp"
 #include "Gameplay/Currency.hpp"
-#include "Core/ResourceManager.hpp"
 
-TowerRotationMockScene::TowerRotationMockScene(SceneManager& parentManager)
-    : Scene(parentManager),
-      rotationSpeed(1.0f),  // 1 radian per second (slow rotation)
+TowerRotationMockScene::TowerRotationMockScene()
+    : rotationSpeed(1.0f),  // 1 radian per second (slow rotation)
       font(nullptr) {
     initialize();
 }
@@ -75,7 +74,8 @@ void TowerRotationMockScene::createTestTower() {
 
 void TowerRotationMockScene::setupInfoText() {
     // Get font from resource manager
-    font = const_cast<sf::Font*>(ResourceManager::getInstance().getFont("LeagueSpartan"));
+    font = const_cast<sf::Font*>(
+        ResourceManager::getInstance().getFont("LeagueSpartan"));
 
     if (font) {
         infoText = std::make_unique<sf::Text>(*font);

@@ -5,6 +5,7 @@
 #include "Core/JSONLoader.hpp"
 #include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
+#include "Core/SceneManager.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Scene/BlankScene.hpp"
@@ -13,8 +14,7 @@
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-Application::Application()
-    : isRunning{true}, sceneManager{}, levelFactory{sceneManager} {
+Application::Application() : isRunning{true} {
     if (Window::getInstance().isOpen())
         Logger::success("Window initialization success");
     else
@@ -45,12 +45,15 @@ Application::Application()
     for (auto [id, levelFile] : JSONLoader::getInstance().getAllLevels())
         levelFactory.loadConfig(levelFile);
     Logger::success("Resource loading");
-    sceneManager.registerScene<MainMenu>("Main menu");
-    sceneManager.registerScene<Setting>("Setting");
-    sceneManager.registerScene<TowerRotationMockScene>("Tower Test");
-    sceneManager.changeScene("Tower Test");  // Start with the tower test scene
-    sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
-    sceneManager.changeScene("Main menu");
+    SceneManager::getInstance().registerScene<MainMenu>("Main menu");
+    SceneManager::getInstance().registerScene<Setting>("Setting");
+    SceneManager::getInstance().registerScene<TowerRotationMockScene>(
+        "Tower Test");
+    SceneManager::getInstance().changeScene(
+        "Tower Test");  // Start with the tower test scene
+    SceneManager::getInstance().loadLevel(
+        "Gameplay", levelFactory.getLevel("exampleLevel"));
+    SceneManager::getInstance().changeScene("Main menu");
     // sceneManager.changeScene("Setting");
 }
 
@@ -73,24 +76,24 @@ void Application::run() {
             if (event->is<sf::Event::KeyPressed>()) {
                 auto keyPress = event->getIf<sf::Event::KeyPressed>();
                 if (keyPress && keyPress->code == sf::Keyboard::Key::F1) {
-                    sceneManager.changeScene("Main menu");
+                    SceneManager::getInstance().changeScene("Main menu");
                 } else if (keyPress &&
                            keyPress->code == sf::Keyboard::Key::F2) {
-                    sceneManager.changeScene("Tower Test");
+                    SceneManager::getInstance().changeScene("Tower Test");
                 }
             }
 
             InputManager::getInstance().handleEvent(event);
-            // sceneManager.handleEvent(event);
+            // SceneManager::getInstance().handleEvent(event);
         }
-        // sceneManager.handleInput();
+        // SceneManager::getInstance().handleInput();
         timeElapsed += clock.restart().asSeconds();
         while (timeElapsed > GameConstants::TICK_INTERVAL) {
-            sceneManager.update();
+            SceneManager::getInstance().update();
             timeElapsed -= GameConstants::TICK_INTERVAL;
         }
         Window::getInstance().clear(sf::Color::Black);
-        sceneManager.render();
+        SceneManager::getInstance().render();
         Window::getInstance().draw(Cursor::getInstance());
         Window::getInstance().display();
     }
