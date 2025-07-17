@@ -6,3 +6,8 @@ void InputManager::handleEvent(std::optional<sf::Event> &event) {
 }
 
 InputManager::InputManager() {} 
+
+InputManager& InputManager::getInstance() {
+    static InputManager instance;
+    return instance;
+}

@@ -17,7 +17,7 @@ Application::Application()
     : testTrigger(resourceManager),
       isRunning{true},
       sceneManager{},
-      levelFactory{sceneManager, inputManager, resourceManager} {
+      levelFactory{sceneManager, InputManager::getInstance(), resourceManager} {
     if (Window::getInstance().isOpen())
         Logger::success("Window initialization success");
     else
@@ -28,11 +28,11 @@ Application::Application()
     JSONLoader::getInstance().loadAll();
 
     Cursor::getInstance().subscribeMouse(Mouse::Left, UserEvent::Move,
-                                          inputManager.getMouseState());
+                                          InputManager::getInstance().getMouseState());
     Cursor::getInstance().subscribeMouse(Mouse::Right, UserEvent::Move,
-                                          inputManager.getMouseState());
+                                          InputManager::getInstance().getMouseState());
     Cursor::getInstance().subscribeMouse(Mouse::None, UserEvent::Move,
-                                          inputManager.getMouseState());
+                                          InputManager::getInstance().getMouseState());
     // * Loading the necessary sounds
     for (auto [id, soundFile] : JSONLoader::getInstance().getAllSounds())
         resourceManager.loadSound(soundFile);
@@ -45,12 +45,12 @@ Application::Application()
     for (auto [id, levelFile] : JSONLoader::getInstance().getAllLevels())
         levelFactory.loadConfig(levelFile);
     Logger::success("Resource loading");
-    sceneManager.registerScene<MainMenu>("Main menu", inputManager,
+    sceneManager.registerScene<MainMenu>("Main menu", InputManager::getInstance(),
                                          resourceManager);
-    sceneManager.registerScene<Setting>("Setting", inputManager,
+    sceneManager.registerScene<Setting>("Setting", InputManager::getInstance(),
                                         resourceManager);
     sceneManager.registerScene<TowerRotationMockScene>(
-        "Tower Test", inputManager, resourceManager);
+        "Tower Test", InputManager::getInstance(), resourceManager);
     sceneManager.changeScene("Tower Test");  // Start with the tower test scene
     sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
     sceneManager.changeScene("Main menu");
@@ -83,7 +83,7 @@ void Application::run() {
                 }
             }
 
-            inputManager.handleEvent(event);
+            InputManager::getInstance().handleEvent(event);
             // sceneManager.handleEvent(event);
         }
         // sceneManager.handleInput();
