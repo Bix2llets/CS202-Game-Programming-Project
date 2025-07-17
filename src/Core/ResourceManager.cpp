@@ -160,7 +160,7 @@ void ResourceManager::playSound(const std::string &ID) {
 const sf::Texture *const ResourceManager::getTexture(
     const std::string &ID) const {
     if (textures.find(ID) == textures.end()) {
-        Logger::error("Font ID not found: " + ID);
+        Logger::error("Texture ID not found: " + ID);
         return nullptr;
     }
     return textures.at(ID).get();

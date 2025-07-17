@@ -40,8 +40,8 @@ private:
     sf::Angle angle;
     
     // Asset paths for texture loading
-    std::string baseTexturePath;
-    std::string turretTexturePath;
+    std::string baseTextureId;
+    std::string turretTextureId;
     
     // Texture dimensions
     float textureWidth;

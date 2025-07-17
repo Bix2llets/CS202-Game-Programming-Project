@@ -1,15 +1,21 @@
 #include "Entity/Tower/TowerBuilder.hpp"
-#include "Scene/Scene.hpp"
-#include "Core/ResourceManager.hpp"
-#include <stdexcept>
-#include <iostream>
 
-TowerBuilder::TowerBuilder() 
-    : scene(nullptr), buildable(true), cost(0, 0), 
-      position(0, 0), angle(sf::radians(0.f)), 
-      textureWidth(32.0f), textureHeight(32.0f),
-      timerInterval(1.0f), isBuilt(false) {
-}
+#include <iostream>
+#include <stdexcept>
+
+#include "Core/ResourceManager.hpp"
+#include "Scene/Scene.hpp"
+
+TowerBuilder::TowerBuilder()
+    : scene(nullptr),
+      buildable(true),
+      cost(0, 0),
+      position(0, 0),
+      angle(sf::radians(0.f)),
+      textureWidth(32.0f),
+      textureHeight(32.0f),
+      timerInterval(1.0f),
+      isBuilt(false) {}
 
 TowerBuilder& TowerBuilder::reset() {
     id.clear();
@@ -20,8 +26,8 @@ TowerBuilder& TowerBuilder::reset() {
     cost = Currency(0, 0);
     position = sf::Vector2f(0, 0);
     angle = sf::radians(0.f);
-    baseTexturePath.clear();
-    turretTexturePath.clear();
+    baseTextureId.clear();
+    turretTextureId.clear();
     textureWidth = 32.0f;
     textureHeight = 32.0f;
     stats.reset();
@@ -72,12 +78,13 @@ TowerBuilder& TowerBuilder::setAngle(const sf::Angle& angle) {
 }
 
 TowerBuilder& TowerBuilder::setBaseTexturePath(const std::string& texturePath) {
-    this->baseTexturePath = texturePath;
+    this->baseTextureId = texturePath;
     return *this;
 }
 
-TowerBuilder& TowerBuilder::setTurretTexturePath(const std::string& texturePath) {
-    this->turretTexturePath = texturePath;
+TowerBuilder& TowerBuilder::setTurretTexturePath(
+    const std::string& texturePath) {
+    this->turretTextureId = texturePath;
     return *this;
 }
 
@@ -86,7 +93,8 @@ TowerBuilder& TowerBuilder::setStats(std::unique_ptr<TowerStat> stats) {
     return *this;
 }
 
-TowerBuilder& TowerBuilder::addBehavior(std::unique_ptr<TowerBehavior> behavior) {
+TowerBuilder& TowerBuilder::addBehavior(
+    std::unique_ptr<TowerBehavior> behavior) {
     if (behavior) {
         behaviors.push_back(std::move(behavior));
     }
@@ -116,40 +124,41 @@ TowerBuilder& TowerBuilder::setTextureDimensions(float width, float height) {
 
 std::unique_ptr<Tower> TowerBuilder::build() {
     if (isBuilt) {
-        throw std::invalid_argument("TowerBuilder: Cannot build multiple times. Call reset() first.");
+        throw std::invalid_argument(
+            "TowerBuilder: Cannot build multiple times. Call reset() first.");
     }
-    
+
     validate();
-    
+
     // Create the tower with required parameters
     auto tower = std::make_unique<Tower>(*scene, id, position, angle);
-    
+
     // Configure the tower with optional parameters
     tower->setName(name);
     tower->setDescription(description);
     tower->setBuildable(buildable);
     tower->setCost(cost);
-    
+
     // Set timer interval
     tower->setTimerInterval(timerInterval);
-    
+
     // Set texture dimensions
     tower->setTextureDimensions(textureWidth, textureHeight);
-    
+
     // Set statistics if provided
     if (stats) {
         tower->setStats(std::move(stats));
     }
-    
+
     // Add behaviors
     for (auto& behavior : behaviors) {
         tower->addBehavior(std::move(behavior));
     }
-    behaviors.clear(); // Clear since we moved them
-    
+    behaviors.clear();  // Clear since we moved them
+
     // Load textures
     loadTextures(*tower);
-    
+
     isBuilt = true;
     return tower;
 }
@@ -158,11 +167,12 @@ void TowerBuilder::validate() const {
     if (id.empty()) {
         throw std::invalid_argument("TowerBuilder: Tower ID is required.");
     }
-    
+
     if (scene == nullptr) {
-        throw std::invalid_argument("TowerBuilder: Scene reference is required.");
+        throw std::invalid_argument(
+            "TowerBuilder: Scene reference is required.");
     }
-    
+
     // Additional validation could be added here
     if (cost.getScraps() < 0 || cost.getPetroleum() < 0) {
         throw std::invalid_argument("TowerBuilder: Cost cannot be negative.");
@@ -171,44 +181,53 @@ void TowerBuilder::validate() const {
 
 void TowerBuilder::loadTextures(Tower& tower) const {
     // Load textures using the new Scene texture methods
-    
-    if (!baseTexturePath.empty()) {
-        std::cout << "TowerBuilder: Loading base texture from: " << baseTexturePath << std::endl;
-        
+
+    if (!baseTextureId.empty()) {
+        std::cout << "TowerBuilder: Loading base texture from: "
+                  << baseTextureId << std::endl;
+
         try {
-            // Load texture into ResourceManager through Scene
-            std::string baseTextureId = "tower_base_" + id;
-            ResourceManager::getInstance().loadTexture(baseTexturePath, baseTextureId);
-            
-            const sf::Texture* baseTexture = ResourceManager::getInstance().getTexture(baseTextureId);
+            const sf::Texture* baseTexture =
+                ResourceManager::getInstance().getTexture(baseTextureId);
             if (baseTexture) {
                 tower.loadBaseSpriteTexture(*baseTexture);
-                std::cout << "TowerBuilder: Successfully loaded base texture" << std::endl;
+                std::cout << "TowerBuilder: Successfully loaded base texture"
+                          << std::endl;
             } else {
-                std::cout << "TowerBuilder: Failed to get base texture from ResourceManager" << std::endl;
+                std::cout << "TowerBuilder: Failed to get base texture from "
+                             "ResourceManager"
+                          << std::endl;
             }
         } catch (const std::exception& e) {
-            std::cout << "TowerBuilder: Error loading base texture: " << e.what() << std::endl;
+            std::cout << "TowerBuilder: Error loading base texture: "
+                      << e.what() << std::endl;
         }
     }
-    
-    if (!turretTexturePath.empty()) {
-        std::cout << "TowerBuilder: Loading turret texture from: " << turretTexturePath << std::endl;
-        
+
+    if (!turretTextureId.empty()) {
+        std::cout << "TowerBuilder: Loading turret texture from: "
+                  << turretTextureId << std::endl;
+
         try {
             // Load texture into ResourceManager through Scene
-            std::string turretTextureId = "tower_turret_" + id;
-            ResourceManager::getInstance().loadTexture(turretTexturePath, turretTextureId);
-            
-            const sf::Texture* turretTexture = ResourceManager::getInstance().getTexture(turretTextureId);
+
+            // ResourceManager::getInstance().loadTexture(turretTextureId,
+            // turretTextureId);
+
+            const sf::Texture* turretTexture =
+                ResourceManager::getInstance().getTexture(turretTextureId);
             if (turretTexture) {
                 tower.loadTurretSpriteTexture(*turretTexture);
-                std::cout << "TowerBuilder: Successfully loaded turret texture" << std::endl;
+                std::cout << "TowerBuilder: Successfully loaded turret texture"
+                          << std::endl;
             } else {
-                std::cout << "TowerBuilder: Failed to get turret texture from ResourceManager" << std::endl;
+                std::cout << "TowerBuilder: Failed to get turret texture from "
+                             "ResourceManager"
+                          << std::endl;
             }
         } catch (const std::exception& e) {
-            std::cout << "TowerBuilder: Error loading turret texture: " << e.what() << std::endl;
+            std::cout << "TowerBuilder: Error loading turret texture: "
+                      << e.what() << std::endl;
         }
     }
 }

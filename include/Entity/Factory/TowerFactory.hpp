@@ -79,15 +79,15 @@ private:
     /**
      * @brief Parse texture paths and dimensions from JSON.
      * @param textureJson JSON object containing texture data.
-     * @param baseTexturePath Output parameter for base texture path.
-     * @param turretTexturePath Output parameter for turret texture path.
+     * @param baseTextureId Output parameter for base texture path.
+     * @param turretTextureId Output parameter for turret texture path.
      * @param width Output parameter for texture width.
      * @param height Output parameter for texture height.
      */
     static void parseTextures(
         const nlohmann::json& textureJson,
-        std::string& baseTexturePath,
-        std::string& turretTexturePath,
+        std::string& baseTextureId,
+        std::string& turretTextureId,
         float& width,
         float& height
     );

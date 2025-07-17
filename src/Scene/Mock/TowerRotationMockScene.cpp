@@ -30,9 +30,9 @@ void TowerRotationMockScene::createTestTower() {
 
     try {
         // Test TowerFactory: Create tower from JSON configuration
-        std::string configPath = "content/tower/rifle.json";
+        std::string configFile = "rifle";
         testTower =
-            TowerFactory::createFromConfigFile(configPath, *this, centerPos);
+            TowerFactory::createFromConfigFile(configFile, *this, centerPos);
 
         std::cout << "Successfully created tower from JSON: "
                   << testTower->getName() << std::endl;

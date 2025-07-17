@@ -6,22 +6,12 @@
 
 #include "Entity/Tower/TowerStat.hpp"
 #include "Scene/Scene.hpp"
+#include "Core/JSONLoader.hpp"
 
 std::unique_ptr<Tower> TowerFactory::createFromConfigFile(
-    const std::string& configPath, Scene& scene, const sf::Vector2f& position) {
-    std::ifstream file(configPath);
-    if (!file.is_open()) {
-        throw std::runtime_error("TowerFactory: Could not open config file: " +
-                                 configPath);
-    }
+    const std::string& jsonID, Scene& scene, const sf::Vector2f& position) {
 
-    nlohmann::json config;
-    try {
-        file >> config;
-    } catch (const nlohmann::json::exception& e) {
-        throw std::runtime_error("TowerFactory: JSON parsing error in " +
-                                 configPath + ": " + e.what());
-    }
+    nlohmann::json config = JSONLoader::getInstance().getTower(jsonID);
 
     return createFromJson(config, scene, position);
 }
@@ -69,18 +59,18 @@ TowerBuilder TowerFactory::builderFromJson(const nlohmann::json& config) {
 
     // Parse and set texture paths and dimensions
     if (config.contains("texture")) {
-        std::string baseTexturePath, turretTexturePath;
+        std::string baseTextureId, turretTextureId;
         float textureWidth, textureHeight;
-        parseTextures(config["texture"], baseTexturePath, turretTexturePath,
+        parseTextures(config["texture"], baseTextureId, turretTextureId,
                       textureWidth, textureHeight);
 
         // Set texture paths
-        if (!baseTexturePath.empty()) {
-            builder.setBaseTexturePath(baseTexturePath);
+        if (!baseTextureId.empty()) {
+            builder.setBaseTexturePath(baseTextureId);
         }
 
-        if (!turretTexturePath.empty()) {
-            builder.setTurretTexturePath(turretTexturePath);
+        if (!turretTextureId.empty()) {
+            builder.setTurretTexturePath(turretTextureId);
         }
 
         // Set texture dimensions
@@ -135,16 +125,16 @@ std::unique_ptr<TowerStat> TowerFactory::parseStats(
 }
 
 void TowerFactory::parseTextures(const nlohmann::json& textureJson,
-                                 std::string& baseTexturePath,
-                                 std::string& turretTexturePath, float& width,
+                                 std::string& baseTextureId,
+                                 std::string& turretTextureId, float& width,
                                  float& height) {
     // Parse texture paths
     if (textureJson.contains("base")) {
-        baseTexturePath = textureJson["base"].get<std::string>();
+        baseTextureId = textureJson["base"].get<std::string>();
     }
 
     if (textureJson.contains("turret")) {
-        turretTexturePath = textureJson["turret"].get<std::string>();
+        turretTextureId = textureJson["turret"].get<std::string>();
     }
 
     // Parse texture dimensions with defaults
@@ -161,13 +151,13 @@ void TowerFactory::parseTextures(const nlohmann::json& textureJson,
     }
 
     // Log texture information for debugging
-    if (!baseTexturePath.empty()) {
-        std::cout << "TowerFactory: Base texture path: " << baseTexturePath
+    if (!baseTextureId.empty()) {
+        std::cout << "TowerFactory: Base texture path: " << baseTextureId
                   << std::endl;
     }
 
-    if (!turretTexturePath.empty()) {
-        std::cout << "TowerFactory: Turret texture path: " << turretTexturePath
+    if (!turretTextureId.empty()) {
+        std::cout << "TowerFactory: Turret texture path: " << turretTextureId
                   << std::endl;
     }
 
