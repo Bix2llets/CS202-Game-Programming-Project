@@ -1,5 +1,5 @@
 #include "Core/Application.hpp"
-
+#include "Core/Window.hpp"
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
 #include "Core/KeyboardState.hpp"
@@ -12,21 +12,19 @@
 #include "Utility/logger.hpp"
 #include "GUIComponents/cursor.hpp"
 Application::Application()
-    : window(sf::VideoMode({GameConstants::DEFAULT_WINDOW_WIDTH,
-                            GameConstants::DEFAULT_WINDOW_HEIGHT}),
-             "Rampart remains", sf::Style::Close | sf::Style::Titlebar),
+    : 
       testTrigger(resourceManager),
       isRunning{true},
-      sceneManager{window},
-      inputManager{window},
-      levelFactory{window, sceneManager, inputManager, resourceManager, loader} {
-    if (window.isOpen())
+      sceneManager{*Window::getInstance()},
+      inputManager{*Window::getInstance()},
+      levelFactory{*Window::getInstance(), sceneManager, inputManager, resourceManager, loader} {
+    if (Window::getInstance()->isOpen())
         Logger::success("Window initialization success");
     else
         Logger::error("Window not intitialized");
-    window.setFramerateLimit(60);
-    window.setMouseCursorVisible(false);
-    window.setPosition({0, 0});
+    Window::getInstance()->setFramerateLimit(60);
+    Window::getInstance()->setMouseCursorVisible(false);
+    Window::getInstance()->setPosition({0, 0});
     loader.loadAll();
 
     Cursor::getInstance()->subscribeMouse(Mouse::Left, UserEvent::Move, inputManager.getMouseState());
@@ -57,7 +55,7 @@ Application::Application()
 }
 
 Application::~Application() {
-    if (window.isOpen()) window.close();
+    if (Window::getInstance()->isOpen()) Window::getInstance()->close();
     Logger::success("Application exit success");
 }
 
@@ -65,9 +63,9 @@ void Application::run() {
     sf::Clock clock;
     float timeElapsed = 0.f;
     while (isRunning) {
-        while (auto event = window.pollEvent()) {
+        while (auto event = Window::getInstance()->pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
-                window.close();
+                Window::getInstance()->close();
                 isRunning = false;
             }
 
@@ -91,9 +89,9 @@ void Application::run() {
             sceneManager.update();
             timeElapsed -= GameConstants::TICK_INTERVAL;
         }
-        window.clear(sf::Color::Black);
+        Window::getInstance()->clear(sf::Color::Black);
         sceneManager.render();
-        window.draw(*Cursor::getInstance());
-        window.display();
+        Window::getInstance()->draw(*Cursor::getInstance());
+        Window::getInstance()->display();
     }
 }

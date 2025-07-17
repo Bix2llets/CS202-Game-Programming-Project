@@ -17,7 +17,6 @@
  */
 class Application {
    private:
-    sf::RenderWindow window;    ///< The main game window.
     SceneManager sceneManager;  ///< Manages game scenes.
     ResourceManager
         resourceManager;        ///< Manages resources (textures, sounds, etc.).
