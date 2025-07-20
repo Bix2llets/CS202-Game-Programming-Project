@@ -1,6 +1,6 @@
 [
     {
         "id": "basic_enemy",
-        "path": "assets/texture/enemy/basic.png"
+        "path": "assets/texture/enemy/coin-Sheet.png"
     }
 ]
