@@ -52,10 +52,11 @@ void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         static_cast<sf::Vector2u>(
             displayingEnemy->sprite.getLocalBounds().size) +
         sf::Vector2u{40, 40});
-    sf::CircleShape innerRing(20.f);
-    sf::CircleShape outerRing(25.f);
+    sf::CircleShape innerRing(20.f, 6);
+    sf::CircleShape outerRing(25.f, 6);
     ringTexture.clear(sf::Color::Transparent);
-
+    innerRing.setRotation(displayingEnemy->sprite.getRotation());
+    outerRing.setRotation(displayingEnemy->sprite.getRotation());
     // Draw outer ring
     outerRing.setFillColor(sf::Color(116, 122, 118, 255));
     outerRing.setOutlineThickness(0.f);
