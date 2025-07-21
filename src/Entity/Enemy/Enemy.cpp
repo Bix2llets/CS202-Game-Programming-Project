@@ -7,6 +7,8 @@
 #include "Entity/Enemy/EnemyState.hpp"
 #include "Entity/Enemy/MovingState.hpp"
 
+#include "GUIComponents/EnemyPanel.hpp"
+
 // Deep-copying copy constructor
 Enemy::Enemy(const Enemy &other)
     : Entity(other),
@@ -68,6 +70,7 @@ void Enemy::onHit(int damage) {
 void Enemy::onDeath() {
     // Additional death handling could go here
     // e.g., play death sound, spawn particles, award points
+    EnemyPanel::getInstance().clearEnemyIfReferencing(*this);
 }
 
 void Enemy::setPosition(const sf::Vector2f &position) {}
@@ -86,4 +89,8 @@ sf::Sprite Enemy::changeSpriteContent(sf::Sprite current, sf::Sprite target) {
     current.setRotation(rotation);
     current.setPosition(position);
     return current;
+}
+
+Enemy::~Enemy() {
+    onDeath();
 }

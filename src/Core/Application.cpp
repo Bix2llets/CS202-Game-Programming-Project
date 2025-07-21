@@ -14,6 +14,7 @@
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
+#include "GUIComponents/EnemyPanel.hpp"
 Application::Application() : isRunning{true} {
     if (Window::getInstance().isOpen())
         Logger::success("Window initialization success");
@@ -120,6 +121,7 @@ void Application::run() {
         SceneManager::getInstance().render();
         Window::getInstance().draw(fpsDisplay);
         Window::getInstance().draw(Cursor::getInstance());
+        Window::getInstance().draw(EnemyPanel::getInstance());
         Window::getInstance().display();
     }
 }

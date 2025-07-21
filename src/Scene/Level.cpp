@@ -9,6 +9,10 @@
 #include "Base/Constants.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Utility/logger.hpp"
+#include "Core/InputManager.hpp"
+#include "Core/MouseState.hpp"
+#include "Core/UserEvent.hpp"
+#include "GUIComponents/EnemyPanel.hpp"
 
 Level::Level() : currentWave{0} {}
 
@@ -109,10 +113,13 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
+    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press, InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
+    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press, InputManager::getInstance().getMouseState());
+    EnemyPanel::getInstance().clearEnemy();
 }
 
 bool Level::isWaveFinished() {

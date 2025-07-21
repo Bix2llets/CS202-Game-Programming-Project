@@ -1,6 +1,5 @@
 #include "Entity/Entity.hpp"
 
-
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(sprite);
 }
@@ -15,8 +14,11 @@ void Entity::setRotation(const sf::Angle& rot) {
 }
 
 void Entity::loadSpriteTexture(const sf::Texture& texture) {
-        sprite = sf::Sprite(texture);
-        sprite.setRotation(rotation);
-        sprite.setPosition(position);
-    
+    sprite = sf::Sprite(texture);
+    sprite.setRotation(rotation);
+    sprite.setPosition(position);
+}
+
+bool Entity::contains(sf::Vector2f position) {
+    return sprite.getGlobalBounds().contains(position);
 }

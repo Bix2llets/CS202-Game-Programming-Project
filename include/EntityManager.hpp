@@ -5,15 +5,15 @@
 #include <memory>
 #include <vector>
 
+#include "Core/MouseObserver.hpp"
 #include "EntitySystem.hpp"
-
 /**
  * @brief Manager class for handling collections of entities
  *
  * This class provides centralized management for all game entities,
  * including update loops, rendering, and cleanup operations.
  */
-class EntityManager {
+class EntityManager : public MouseObserver {
    private:
     std::vector<std::unique_ptr<Entity>> entities;
     std::vector<std::unique_ptr<Tower>> towers;
@@ -87,4 +87,8 @@ class EntityManager {
      * @return size_t Total number of entities
      */
     size_t getTotalEntityCount() const;
+
+    void onMouseEvent(Mouse button, UserEvent event,
+                      const sf::Vector2f &worldPosition,
+                      const sf::Vector2f &windowPosition) override;
 };

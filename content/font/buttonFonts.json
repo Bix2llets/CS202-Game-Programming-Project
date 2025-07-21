@@ -2,5 +2,9 @@
     {
         "id": "league_spartan",
         "path": "assets/fonts/League_Spartan/static/LeagueSpartan-Regular.ttf"
+    },
+    {
+        "id": "pixel",
+        "path": "assets/fonts/PixelGame.otf"
     }
 ]

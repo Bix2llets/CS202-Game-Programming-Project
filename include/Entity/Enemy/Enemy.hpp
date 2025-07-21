@@ -42,6 +42,7 @@ enum class EnemyType { Ground, Aerial };
  */
 class Enemy : public Entity, public Damageable {
     friend class EnemyFactory;
+    friend class EnemyPanel;
 
    private:
     EntityPath path;
@@ -74,7 +75,7 @@ class Enemy : public Entity, public Damageable {
     /**
      * @brief Destructor.
      */
-    ~Enemy() override = default;
+    ~Enemy() override;
 
     /**
      * @brief Update the enemy's state and behavior.

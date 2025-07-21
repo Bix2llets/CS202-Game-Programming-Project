@@ -83,4 +83,6 @@ public:
      * @param texture The texture to use for the sprite.
      */
     void loadSpriteTexture(const sf::Texture& texture);
+
+    bool contains(sf::Vector2f position);
 };
