@@ -14,6 +14,8 @@
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Tower/TowerStat.hpp"
 #include "Entity/Tower/Behaviors/TowerBehavior.hpp"
+#include "Entity/Tower/Upgrades/UpgradeManager.hpp"
+#include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Gameplay/Currency.hpp"
 
 class Scene;
@@ -50,6 +52,10 @@ private:
     // Complex components
     std::unique_ptr<TowerStat> stats;
     std::vector<std::unique_ptr<TowerBehavior>> behaviors;
+    
+    // Upgrade system
+    std::map<int, std::unique_ptr<UpgradeType>> upgradeTypes;
+    int maxTotalUpgrades;
     
     // Timer configuration
     float timerInterval;
@@ -176,11 +182,41 @@ public:
     TowerBuilder& addBehavior(std::unique_ptr<TowerBehavior> behavior);
     
     /**
-     * @brief Set the timer interval for the tower's cooldown.
-     * @param interval Cooldown interval in seconds.
+     * @brief Set the timer interval for the tower's timer.
+     * @param interval Timer interval in seconds.
      * @return TowerBuilder& Reference to this builder for chaining.
      */
     TowerBuilder& setTimerInterval(float interval);
+    
+    /**
+     * @brief Set the maximum total upgrades allowed for this tower.
+     * @param maxUpgrades Maximum number of upgrades across all types.
+     * @return TowerBuilder& Reference to this builder for chaining.
+     */
+    TowerBuilder& setMaxTotalUpgrades(int maxUpgrades);
+    
+    /**
+     * @brief Add an upgrade type to the tower.
+     * @param typeId Unique identifier for the upgrade type (1, 2, 3, etc.).
+     * @param upgradeType Unique pointer to the upgrade type.
+     * @return TowerBuilder& Reference to this builder for chaining.
+     */
+    TowerBuilder& addUpgradeType(int typeId, std::unique_ptr<UpgradeType> upgradeType);
+    
+    /**
+     * @brief Create and add a simple upgrade type with basic configuration.
+     * @param typeId Unique identifier for the upgrade type.
+     * @param displayName Display name for the upgrade.
+     * @param description Description of the upgrade.
+     * @param maxLevel Maximum level for this upgrade type.
+     * @param iconPath Path to the upgrade icon.
+     * @param evolveTo Tower type to evolve to at max level.
+     * @return TowerBuilder& Reference to this builder for chaining.
+     */
+    TowerBuilder& addSimpleUpgradeType(int typeId, const std::string& displayName, 
+                                      const std::string& description, int maxLevel,
+                                      const std::string& iconPath = "", 
+                                      const std::string& evolveTo = "");
     
     /**
      * @brief Build and return the configured Tower.

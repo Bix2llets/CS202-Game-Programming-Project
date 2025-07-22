@@ -81,9 +81,9 @@ void TowerRotationMockScene::setupInfoText() {
         info += "ID: " + testTower->getId() + "\n";
         info += "Position: (" + std::to_string(static_cast<int>(testTower->getPosition().x)) + 
                ", " + std::to_string(static_cast<int>(testTower->getPosition().y)) + ")\n";
-        info += "Damage: " + std::to_string(static_cast<int>(testTower->getStat("damage"))) + "\n";
-        info += "Range: " + std::to_string(static_cast<int>(testTower->getStat("range"))) + "\n";
-        info += "Fire Rate: " + std::to_string(testTower->getStat("fire_rate")) + "\n";
+        info += "Damage: " + std::to_string(static_cast<int>(testTower->getStat(TowerStat::DAMAGE))) + "\n";
+        info += "Range: " + std::to_string(static_cast<int>(testTower->getStat(TowerStat::RANGE))) + "\n";
+        info += "Fire Rate: " + std::to_string(testTower->getStat(TowerStat::FIRE_RATE)) + "\n";
         info += "Cost: " + std::to_string(testTower->getCost().getScraps()) + " scraps\n";
         info += "\nTurret rotates slowly to test dual-sprite system";
         

@@ -14,10 +14,12 @@
 #include <memory>
 #include <string>
 
-#include "Entity/Cooldown.hpp"
+#include "Entity/Modules/Timer.hpp"
 #include "Entity/Entity.hpp"
 #include "Entity/Tower/TowerStat.hpp"
 #include "Entity/Tower/Behaviors/TowerBehavior.hpp"
+#include "Entity/Tower/Upgrades/UpgradeManager.hpp"
+#include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Base/Constants.hpp"
 
@@ -35,9 +37,15 @@ class Scene;
 class Tower : public Entity {
 private:
     // std::map<RoundEvent, std::function<void()>> roundEvents; ///< Event handlers for round events
-    Cooldown timer;  ///< Cooldown timer for tower actions
+    Timer timer;  ///< Timer for tower actions
     std::unique_ptr<TowerStat> stats;  ///< Pointer to tower statistics/attributes
-    std::vector<std::unique_ptr<TowerBehavior>> behaviors; ///< List of behaviors associated with the tower
+    std::vector<std::unique_ptr<TowerBehavior>> behaviors; ///< Fixed size array for behaviors: [0]=Combat, [1]=Resource, [2]=Glowing
+    std::unique_ptr<UpgradeManager> upgradeManager; ///< Manager for tower upgrades
+    
+    // Behavior flags
+    bool combatBehavior;   ///< True if tower has combat behavior (slot 0)
+    bool resourceBehavior; ///< True if tower has resource behavior (slot 1)
+    bool glowingBehavior;  ///< True if tower has glowing behavior (slot 2)
     
     // Tower identity and properties
     std::string id;          ///< Unique identifier for the tower type
@@ -65,7 +73,10 @@ public:
     Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos = sf::Vector2f(0, 0),
           const sf::Angle& angle = sf::radians(0.f))
         : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0), 
-          base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f) {
+          base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f),
+          combatBehavior(false), resourceBehavior(false), glowingBehavior(false) {
+        behaviors.resize(3); // Fixed size: [0]=Combat, [1]=Resource, [2]=Glowing
+        upgradeManager = std::make_unique<UpgradeManager>(this);
         setPosition(pos);
         setRotation(angle);
     }
@@ -141,10 +152,79 @@ public:
 
     /**
      * @brief Add a new behavior to the tower.
-     * This allows the tower to have multiple behaviors.
-     * @param behavior 
+     * Behaviors are placed in fixed slots: [0]=Combat, [1]=Resource, [2]=Glowing.
+     * @param behavior Unique pointer to the behavior to add.
      */
     void addBehavior(std::unique_ptr<TowerBehavior> behavior);
+
+    /**
+     * @brief Remove a behavior from the tower by type.
+     * @param type The type of behavior to remove.
+     */
+    void removeBehavior(BehaviorType type);
+
+    // Upgrade System Methods
+
+    /**
+     * @brief Set the maximum total upgrades allowed for this tower.
+     * @param maxUpgrades Maximum total upgrade levels across all types.
+     */
+    void setMaxTotalUpgrades(int maxUpgrades);
+
+    /**
+     * @brief Add an upgrade type to this tower.
+     * @param typeId Unique identifier for the upgrade type.
+     * @param upgradeType Upgrade type to add.
+     */
+    void addUpgradeType(int typeId, std::unique_ptr<UpgradeType> upgradeType);
+
+    /**
+     * @brief Attempt to upgrade a specific upgrade type.
+     * @param upgradeTypeId The upgrade type ID to upgrade.
+     * @param playerCurrency Reference to player's currency (will be modified if upgrade succeeds).
+     * @return Result of the upgrade attempt.
+     */
+    UpgradeResult attemptUpgrade(int upgradeTypeId, Currency& playerCurrency);
+
+    /**
+     * @brief Check if an upgrade type can be upgraded.
+     * @param upgradeTypeId The upgrade type ID.
+     * @param playerCurrency Player's current currency.
+     * @return True if the upgrade is possible.
+     */
+    bool canUpgrade(int upgradeTypeId, const Currency& playerCurrency) const;
+
+    /**
+     * @brief Get the cost for the next level of an upgrade type.
+     * @param upgradeTypeId The upgrade type ID.
+     * @return Pointer to upgrade details for next level, or nullptr if not possible.
+     */
+    const UpgradeDetails* getNextUpgradeCost(int upgradeTypeId) const;
+
+    /**
+     * @brief Get the current level of a specific upgrade type.
+     * @param upgradeTypeId The upgrade type ID.
+     * @return Current level (0 if not found or no upgrades).
+     */
+    int getUpgradeLevel(int upgradeTypeId) const;
+
+    /**
+     * @brief Get available evolution options for this tower.
+     * @return Vector of tower types that this tower can evolve to.
+     */
+    std::vector<std::string> getAvailableEvolutions() const;
+
+    /**
+     * @brief Get the upgrade manager (const).
+     * @return Pointer to the upgrade manager.
+     */
+    const UpgradeManager* getUpgradeManager() const { return upgradeManager.get(); }
+
+    /**
+     * @brief Get the upgrade manager (non-const).
+     * @return Pointer to the upgrade manager.
+     */
+    UpgradeManager* getUpgradeManager() { return upgradeManager.get(); }
 
     // Getters
 
@@ -179,16 +259,16 @@ public:
     const Currency& getCost() const { return cost; }
 
     /**
-     * @brief Get the tower's cooldown timer.
-     * @return Reference to the cooldown timer.
+     * @brief Get the tower's timer.
+     * @return Reference to the timer.
      */
-    const Cooldown& getTimer() const { return timer; }
+    const Timer& getTimer() const { return timer; }
 
     /**
-     * @brief Get the tower's cooldown timer (non-const).
-     * @return Reference to the cooldown timer.
+     * @brief Get the tower's timer (non-const).
+     * @return Reference to the timer.
      */
-    Cooldown& getTimer() { return timer; }
+    Timer& getTimer() { return timer; }
 
     /**
      * @brief Get the tower's statistics.
@@ -203,12 +283,38 @@ public:
     TowerStat* getStats();
     
     /**
-     * @brief Get a specific statistic value (with bonus) by name.
+     * @brief Get a specific statistic value (with upgrade bonuses) by name.
      * @param statName Name of the statistic to retrieve.
      * @param defaultValue Default value to return if the statistic is not found.
-     * @return The value of the specified statistic, or defaultValue if not found.
+     * @return The value of the specified statistic including upgrade bonuses, or defaultValue if not found.
      */
     float getStat(const std::string& statName, float defaultValue = 0.0f) const;
+    
+    /**
+     * @brief Get base statistic value (without upgrade bonuses) by name.
+     * @param statName Name of the statistic to retrieve.
+     * @param defaultValue Default value to return if the statistic is not found.
+     * @return The base value of the specified statistic, or defaultValue if not found.
+     */
+    float getBaseStat(const std::string& statName, float defaultValue = 0.0f) const;
+    
+    /**
+     * @brief Check if tower has combat behavior.
+     * @return True if tower has combat behavior in slot 0.
+     */
+    bool CombatBehavior() const { return combatBehavior; }
+    
+    /**
+     * @brief Check if tower has resource behavior.
+     * @return True if tower has resource behavior in slot 1.
+     */
+    bool ResourceBehavior() const { return resourceBehavior; }
+    
+    /**
+     * @brief Check if tower has glowing behavior.
+     * @return True if tower has glowing behavior in slot 2.
+     */
+    bool GlowingBehavior() const { return glowingBehavior; }
     
     /**
      * @brief Get the desired texture width.

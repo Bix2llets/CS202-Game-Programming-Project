@@ -23,11 +23,10 @@
     "max_total_upgrades": 5,
     "upgrade_types": 3,
     "1": {
-      "name": "Speed",
       "display_name": "Rapid Fire",
       "description": "Increases fire rate by {bonus_fire_rate}.",
       "max_level": 3,
-      "upgrade_cost": {
+      "upgrade_details": {
         "1": {
           "scrap": 50,
           "petroleum": 0,
@@ -54,11 +53,10 @@
       "evolve_to": "machinegun"
     },
     "2": {
-      "name": "Range",
       "display_name": "Extended Range",
       "description": "Extends tower range by {bonus_range}.",
       "max_level": 3,
-      "upgrade_cost": {
+      "upgrade_details": {
         "1": {
           "scrap": 50,
           "petroleum": 0,
@@ -85,11 +83,10 @@
       "evolve_to": "sniper"
     },
     "3": {
-      "name": "Power",
       "display_name": "High-Caliber Rounds",
       "description": "Increases damage by {bonus_damage}.",
       "max_level": 3,
-      "upgrade_cost": {
+      "upgrade_details": {
         "1": {
           "scrap": 50,
           "petroleum": 0,

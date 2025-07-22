@@ -17,9 +17,9 @@ enum class BehaviorType {
 
 class TowerBehavior {
 protected:
-    const Tower* base;
+    Tower* base;
 public:
-    explicit TowerBehavior(const Tower* tower) : base(tower) {}
+    explicit TowerBehavior(Tower* tower) : base(tower) {}
     virtual ~TowerBehavior() = default;
     virtual BehaviorType getType() const = 0;
 };
@@ -31,7 +31,7 @@ private:
     TargetSelector* targetSelector; ///< Selector for targets to attack
     FireMode* fireMode; ///< Mode of firing at targets  
 public:
-    CombatBehavior(const Tower* tower, TargetSelector* selector, FireMode* mode)
+    CombatBehavior(Tower* tower, TargetSelector* selector, FireMode* mode)
         : TowerBehavior(tower), targetSelector(selector), fireMode(mode) {}
 
     ~CombatBehavior() override {
@@ -55,7 +55,7 @@ class ResourceBehavior : public TowerBehavior {
 private:
     Currency resourceAmount; ///< Amount of resources to generate
 public:
-    explicit ResourceBehavior(const Tower* tower, const Currency& amount)
+    explicit ResourceBehavior(Tower* tower, const Currency& amount)
         : TowerBehavior(tower), resourceAmount(amount) {}
 
     ~ResourceBehavior() override = default;
@@ -69,7 +69,7 @@ public:
 
 class GlowingBehavior : public TowerBehavior {
 public:
-    explicit GlowingBehavior(const Tower* tower) : TowerBehavior(tower) {}
+    explicit GlowingBehavior(Tower* tower) : TowerBehavior(tower) {}
     
     ~GlowingBehavior() override = default;
     

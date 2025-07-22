@@ -4,16 +4,56 @@
 #include <iostream> // Include for debug output
 
 void Tower::addBehavior(std::unique_ptr<TowerBehavior> behavior) {
-    for (auto& ex : behaviors) {
-        if (ex->getType() == behavior->getType()) {
-            // If a behavior of the same type already exists, remove it
-            behaviors.erase(
-                std::remove(behaviors.begin(), behaviors.end(), ex),
-                behaviors.end());
-            break;  // Only remove one instance
-        }  
+    if (!behavior) return; // Safety check for null behavior
+    
+    BehaviorType type = behavior->getType();
+    int slot = -1;
+    
+    // Determine which slot to use based on behavior type
+    switch (type) {
+        case BehaviorType::Combat:
+            slot = 0;
+            combatBehavior = true;
+            break;
+        case BehaviorType::Resource:
+            slot = 1;
+            resourceBehavior = true;
+            break;
+        case BehaviorType::Glowing:
+            slot = 2;
+            glowingBehavior = true;
+            break;
     }
-    behaviors.push_back(std::move(behavior));
+    
+    // Replace the behavior in the appropriate slot
+    if (slot >= 0 && slot < 3) {
+        behaviors[slot] = std::move(behavior);
+    }
+}
+
+void Tower::removeBehavior(BehaviorType type) {
+    int slot = -1;
+    
+    // Determine which slot to clear based on behavior type
+    switch (type) {
+        case BehaviorType::Combat:
+            slot = 0;
+            combatBehavior = false;
+            break;
+        case BehaviorType::Resource:
+            slot = 1;
+            resourceBehavior = false;
+            break;
+        case BehaviorType::Glowing:
+            slot = 2;
+            glowingBehavior = false;
+            break;
+    }
+    
+    // Clear the behavior in the appropriate slot
+    if (slot >= 0 && slot < 3) {
+        behaviors[slot].reset(); // Release the unique_ptr
+    }
 }
 
 const TowerStat* Tower::getStats() const {
@@ -25,11 +65,54 @@ TowerStat* Tower::getStats() {
 }
 
 float Tower::getStat(const std::string& statName, float defaultValue) const {
-    return stats->getStatWithBonus(statName, defaultValue);
+    // Get base stat with any multipliers
+    float baseStat = stats ? stats->getStatWithBonus(statName, defaultValue) : defaultValue;
+    
+    // Add upgrade bonuses
+    float upgradeBonus = upgradeManager ? upgradeManager->getTotalStatBonus(statName) : 0.0f;
+    
+    return baseStat + upgradeBonus;
+}
+
+float Tower::getBaseStat(const std::string& statName, float defaultValue) const {
+    return stats ? stats->getStatWithBonus(statName, defaultValue) : defaultValue;
+}
+
+// Upgrade System Methods
+UpgradeResult Tower::attemptUpgrade(int upgradeTypeId, Currency& playerCurrency) {
+    return upgradeManager ? upgradeManager->attemptUpgrade(upgradeTypeId, playerCurrency) : UpgradeResult::InvalidUpgradeType;
+}
+
+bool Tower::canUpgrade(int upgradeTypeId, const Currency& playerCurrency) const {
+    return upgradeManager ? upgradeManager->canUpgrade(upgradeTypeId, playerCurrency) : false;
+}
+
+const UpgradeDetails* Tower::getNextUpgradeCost(int upgradeTypeId) const {
+    return upgradeManager ? upgradeManager->getNextUpgradeCost(upgradeTypeId) : nullptr;
+}
+
+int Tower::getUpgradeLevel(int upgradeTypeId) const {
+    return upgradeManager ? upgradeManager->getCurrentLevel(upgradeTypeId) : 0;
+}
+
+std::vector<std::string> Tower::getAvailableEvolutions() const {
+    return upgradeManager ? upgradeManager->getAvailableEvolutions() : std::vector<std::string>{};
+}
+
+void Tower::setMaxTotalUpgrades(int maxUpgrades) {
+    if (upgradeManager) {
+        upgradeManager->setMaxTotalUpgrades(maxUpgrades);
+    }
+}
+
+void Tower::addUpgradeType(int typeId, std::unique_ptr<UpgradeType> upgradeType) {
+    if (upgradeManager && upgradeType) {
+        upgradeManager->addUpgradeType(typeId, std::move(upgradeType));
+    }
 }
 
 void Tower::setTimerInterval(float interval) {
-    timer.setInterval(interval);
+    timer.setTimeInterval(interval);
 }
 
 void Tower::setStats(std::unique_ptr<TowerStat> newStats) {

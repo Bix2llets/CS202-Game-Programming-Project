@@ -14,6 +14,9 @@
 
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Tower/TowerBuilder.hpp"
+#include "Entity/Tower/Upgrades/UpgradeType.hpp"
+#include "Entity/Tower/Upgrades/UpgradeDetails.hpp"
+#include "Entity/Tower/Behaviors/TowerBehavior.hpp"
 
 class Scene;
 
@@ -91,6 +94,42 @@ private:
         float& width,
         float& height
     );
+    
+    /**
+     * @brief Parse upgrade system configuration from JSON.
+     * @param upgradesJson JSON object containing upgrades data.
+     * @param builder TowerBuilder to configure with upgrades.
+     */
+    static void parseUpgrades(const nlohmann::json& upgradesJson, TowerBuilder& builder);
+    
+    /**
+     * @brief Parse a single upgrade type from JSON.
+     * @param typeId The upgrade type ID.
+     * @param upgradeJson JSON object for this upgrade type.
+     * @return std::unique_ptr<UpgradeType> Configured upgrade type.
+     */
+    static std::unique_ptr<UpgradeType> parseUpgradeType(int typeId, const nlohmann::json& upgradeJson);
+    
+    /**
+     * @brief Parse upgrade details for a specific level.
+     * @param detailsJson JSON object containing upgrade details.
+     * @return UpgradeDetails Parsed upgrade details.
+     */
+    static UpgradeDetails parseUpgradeDetails(const nlohmann::json& detailsJson);
+    
+    /**
+     * @brief Parse behaviors from JSON and add them to the builder.
+     * @param behaviorsJson JSON object containing behaviors data.
+     * @param builder TowerBuilder to configure with behaviors.
+     */
+    static void parseBehaviors(const nlohmann::json& behaviorsJson, TowerBuilder& builder);
+    
+    /**
+     * @brief Parse combat behavior from JSON.
+     * @param combatJson JSON object containing combat behavior data.
+     * @return std::unique_ptr<CombatBehavior> Configured combat behavior.
+     */
+    static std::unique_ptr<CombatBehavior> parseCombatBehavior(const nlohmann::json& combatJson);
     
     /**
      * @brief Validate required fields in JSON configuration.
