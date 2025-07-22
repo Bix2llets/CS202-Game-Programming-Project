@@ -47,7 +47,6 @@ void EnemyPanel::update() {
 
 void EnemyPanel::setEnemy(const Enemy& enemy) {
     displayingEnemy = &enemy;
-    enemySprite = &enemy.sprite;
     previousHealth = enemy.getHealth();
     previousSpeed = enemy.getSpeed();
     std::string content =
@@ -63,11 +62,14 @@ void EnemyPanel::setEnemy(const Enemy& enemy) {
 
 void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     if (displayingEnemy == nullptr) return;
+    sf::Sprite enemySprite = displayingEnemy->sprite;
+    enemySprite.setPosition(popupCoordinate);
+    enemySprite.setRotation(sf::degrees(-90.f));
     target.draw(health);
     target.draw(healthIcon);
     target.draw(speed);
     target.draw(speedIcon);
-
+    target.draw(enemySprite);
     auto drawOriginMarker = [&target, &state](sf::Transformable object) {
         sf::CircleShape positionMarker(2.f);
         positionMarker.setOrigin({2.f, 2.f});
@@ -118,7 +120,6 @@ void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 
 void EnemyPanel::clearEnemy() {
     displayingEnemy = nullptr;
-    enemySprite = nullptr;
     health.setString("");
     previousHealth = 0.0f;
 }

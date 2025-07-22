@@ -37,7 +37,6 @@ class EnemyPanel : public sf::Drawable {
    private:
     sf::Text health;
     sf::Text speed;
-    const sf::Sprite* enemySprite;
     sf::Sprite healthIcon;
     sf::Sprite speedIcon;
 
