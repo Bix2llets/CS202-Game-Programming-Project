@@ -120,8 +120,8 @@ void Application::run() {
         Window::getInstance().clear(sf::Color::Black);
         SceneManager::getInstance().render();
         Window::getInstance().draw(fpsDisplay);
-        Window::getInstance().draw(Cursor::getInstance());
         Window::getInstance().draw(EnemyPanel::getInstance());
+        Window::getInstance().draw(Cursor::getInstance());
         Window::getInstance().display();
     }
 }

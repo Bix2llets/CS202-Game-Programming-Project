@@ -14,8 +14,13 @@ EnemyPanel& EnemyPanel::getInstance() {
 
 EnemyPanel::EnemyPanel()
     : displayingEnemy{nullptr},
-      health{*ResourceManager::getInstance().getFont("pixel")} {
+      health{*ResourceManager::getInstance().getFont("pixel")},
+      healthIcon(*ResourceManager::getInstance().getTexture("heart")) {
     health.setPosition({100, 800});
+    health.setOrigin({0, health.getLocalBounds().size.y / 2});
+    healthIcon.setPosition(health.getPosition() - sf::Vector2f{20.f, 0.f});
+    healthIcon.setOrigin(healthIcon.getLocalBounds().size / 2.f);
+    healthIcon.setScale({0.25f, 0.25f});
 }
 
 void EnemyPanel::update() {
@@ -41,12 +46,13 @@ void EnemyPanel::setEnemy(const Enemy& enemy) {
                     displayingEnemy->health.getMaxHealth());
 
     health.setString(content);
-    health.setOrigin({0, health.getLocalBounds().size.y / 2});
+    health.setOrigin({0, health.getLocalBounds().position.y + health.getLocalBounds().size.y / 2});
 }
 
 void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     if (displayingEnemy == nullptr) return;
     target.draw(health);
+    target.draw(healthIcon);
 
     sf::RenderTexture ringTexture(
         static_cast<sf::Vector2u>(
@@ -61,20 +67,22 @@ void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     outerRing.setFillColor(sf::Color(116, 122, 118, 255));
     outerRing.setOutlineThickness(0.f);
     outerRing.setOrigin({outerRing.getRadius(), outerRing.getRadius()});
-    outerRing.setPosition(static_cast<sf::Vector2f>(ringTexture.getSize()) / 2.f);
+    outerRing.setPosition(static_cast<sf::Vector2f>(ringTexture.getSize()) /
+                          2.f);
     ringTexture.draw(outerRing, sf::RenderStates(sf::BlendNone));
 
     // Draw inner ring
     innerRing.setFillColor(sf::Color::Transparent);
     innerRing.setOutlineThickness(0.f);
     innerRing.setOrigin({innerRing.getRadius(), innerRing.getRadius()});
-    innerRing.setPosition(static_cast<sf::Vector2f>(ringTexture.getSize()) / 2.f);
+    innerRing.setPosition(static_cast<sf::Vector2f>(ringTexture.getSize()) /
+                          2.f);
     ringTexture.draw(innerRing, sf::RenderStates(sf::BlendNone));
 
     ringTexture.display();
     sf::Sprite ringSprite(ringTexture.getTexture());
-    Logger::debug(std::format("{} {}", ringSprite.getPosition().x,
-                              ringSprite.getPosition().y));
+    // Logger::debug(std::format("{} {}", ringSprite.getPosition().x,
+    //                           ringSprite.getPosition().y));
 
     ringSprite.setOrigin(ringSprite.getLocalBounds().size / 2.f);
     ringSprite.setPosition(displayingEnemy->position);

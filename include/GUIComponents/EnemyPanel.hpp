@@ -36,6 +36,7 @@ class EnemyPanel : public sf::Drawable {
    private:
     sf::Text health;
     const sf::Sprite* enemySprite;
+    sf::Sprite healthIcon;
 
     float previousHealth;
 
