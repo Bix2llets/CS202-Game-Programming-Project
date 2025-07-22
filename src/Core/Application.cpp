@@ -109,8 +109,9 @@ void Application::run() {
         fpsTime += clock.getElapsedTime().asSeconds();
         clock.restart();
         while (timeElapsed > GameConstants::TICK_INTERVAL) {
-            SceneManager::getInstance().update();
             timeElapsed -= GameConstants::TICK_INTERVAL;
+            SceneManager::getInstance().update();
+            EnemyPanel::getInstance().update();
         }
         if (fpsTime > 1.f) {
             fpsTime -= 1.f;

@@ -19,6 +19,7 @@ class EnemyPanel : public sf::Drawable {
     EnemyPanel(const EnemyPanel&& other) = delete;
     EnemyPanel& operator=(const EnemyPanel& rhs) = delete;
     EnemyPanel& operator=(EnemyPanel&& rhs) = delete;
+    constexpr static sf::Vector2f popupCoordinate = {100.f, 800.f};
 
    public:
     static EnemyPanel& getInstance();
@@ -35,11 +36,19 @@ class EnemyPanel : public sf::Drawable {
     // * Render info
    private:
     sf::Text health;
+    sf::Text speed;
     const sf::Sprite* enemySprite;
     sf::Sprite healthIcon;
+    sf::Sprite speedIcon;
+
 
     float previousHealth;
+    float previousSpeed;
 
+    void calibratePosition();
+    void fixOrigin(sf::Sprite &target);
+    void fixOrigin(sf::Text &target);
+    void fixOrigin(sf::Shape &target);
    public:
     void update();
     void draw(sf::RenderTarget& target, sf::RenderStates state) const override;

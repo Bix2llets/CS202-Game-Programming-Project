@@ -15,44 +15,70 @@ EnemyPanel& EnemyPanel::getInstance() {
 EnemyPanel::EnemyPanel()
     : displayingEnemy{nullptr},
       health{*ResourceManager::getInstance().getFont("pixel")},
-      healthIcon(*ResourceManager::getInstance().getTexture("heart")) {
-    health.setPosition({100, 800});
-    health.setOrigin({0, health.getLocalBounds().size.y / 2});
-    healthIcon.setPosition(health.getPosition() - sf::Vector2f{20.f, 0.f});
-    healthIcon.setOrigin(healthIcon.getLocalBounds().size / 2.f);
-    healthIcon.setScale({0.25f, 0.25f});
+      speed(*ResourceManager::getInstance().getFont("pixel")),
+      healthIcon(*ResourceManager::getInstance().getTexture("heart")),
+      speedIcon(*ResourceManager::getInstance().getTexture("movement_speed")) {
+    calibratePosition();
 }
 
 void EnemyPanel::update() {
     if (displayingEnemy == nullptr) return;
     float enemyHealth = displayingEnemy->health.getHealth();
+    bool isChanged = false;
     if (enemyHealth != previousHealth) {
         // * Update the text only when health changes
+        previousHealth = enemyHealth;
+        isChanged = true;
         std::string content =
             std::format("{} / {}", displayingEnemy->health.getHealth(),
                         displayingEnemy->health.getMaxHealth());
 
         health.setString(content);
-        previousHealth = enemyHealth;
     }
+    float currentSpeed = displayingEnemy->getSpeed();
+    Logger::debug(std::format("{:.2f}", currentSpeed));
+    if (currentSpeed != previousSpeed) {
+        previousSpeed = currentSpeed;
+        isChanged = true;
+        speed.setString(std::format("{:.2f}", currentSpeed));
+    }
+    if (isChanged) calibratePosition();
 }
 
 void EnemyPanel::setEnemy(const Enemy& enemy) {
     displayingEnemy = &enemy;
     enemySprite = &enemy.sprite;
     previousHealth = enemy.getHealth();
+    previousSpeed = enemy.getSpeed();
     std::string content =
         std::format("{} / {}", displayingEnemy->health.getHealth(),
                     displayingEnemy->health.getMaxHealth());
 
     health.setString(content);
-    health.setOrigin({0, health.getLocalBounds().position.y + health.getLocalBounds().size.y / 2});
+
+    speed.setString(std::format("{:.2f}", displayingEnemy->getSpeed()));
+
+    calibratePosition();
 }
 
 void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     if (displayingEnemy == nullptr) return;
     target.draw(health);
     target.draw(healthIcon);
+    target.draw(speed);
+    target.draw(speedIcon);
+
+    auto drawOriginMarker = [&target, &state](sf::Transformable object) {
+        sf::CircleShape positionMarker(2.f);
+        positionMarker.setOrigin({2.f, 2.f});
+        positionMarker.setPosition(object.getPosition());
+        positionMarker.setFillColor(sf::Color::White);
+        target.draw(positionMarker);
+    };
+    // drawOriginMarker(health);
+    // drawOriginMarker(healthIcon);
+    // drawOriginMarker(speed);
+    // drawOriginMarker(speedIcon);
 
     sf::RenderTexture ringTexture(
         static_cast<sf::Vector2u>(
@@ -101,4 +127,37 @@ void EnemyPanel::clearEnemyIfReferencing(const Enemy& enemy) {
     if (displayingEnemy == &enemy) {
         clearEnemy();
     }
+}
+
+void EnemyPanel::calibratePosition() {
+    fixOrigin(healthIcon);
+    healthIcon.setPosition(popupCoordinate + sf::Vector2f{20.f, 0.f});
+    healthIcon.setScale({0.25f, 0.25f});
+
+    fixOrigin(health);
+    health.setPosition(healthIcon.getPosition() + sf::Vector2f{9.f, 0.f} +
+                       sf::Vector2f{healthIcon.getGlobalBounds().size.x, 0});
+
+    fixOrigin(speedIcon);
+    speedIcon.setPosition(health.getPosition() + sf::Vector2f{25.f, 0.f} +
+                          sf::Vector2f{health.getGlobalBounds().size.x, 0});
+    speedIcon.setScale({0.25f, 0.25f});
+
+    fixOrigin(speed);
+    speed.setPosition(speedIcon.getPosition() +
+                      sf::Vector2f{speedIcon.getGlobalBounds().size.x, 0} +
+                      sf::Vector2f{10.f, 0.f});
+}
+
+void EnemyPanel::fixOrigin(sf::Sprite& target) {
+    target.setOrigin({0, target.getLocalBounds().position.y +
+                             target.getLocalBounds().size.y / 2.f});
+}
+void EnemyPanel::fixOrigin(sf::Shape& target) {
+    target.setOrigin({0, target.getLocalBounds().position.y +
+                             target.getLocalBounds().size.y / 2.f});
+}
+void EnemyPanel::fixOrigin(sf::Text& target) {
+    target.setOrigin({0, target.getLocalBounds().position.y +
+                             target.getLocalBounds().size.y / 2.f});
 }
