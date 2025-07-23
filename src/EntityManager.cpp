@@ -4,6 +4,7 @@
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
+#include "Core/KeyboardState.hpp"
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
@@ -146,3 +147,28 @@ void EntityManager::onMouseEvent(Mouse button, UserEvent event,
     else
         EnemyPanel::getInstance().clearEnemy();
 }
+
+void EntityManager::onKeyEvent(Key key, UserEvent event,
+                               const sf::Vector2f& worldPosition,
+                               const sf::Vector2f& windowPosition) {
+    if (key == Key::D && event == UserEvent::Press) {
+        Enemy* foundEnemy = nullptr;
+        for (auto& enemy : enemies) {
+            if (enemy->contains(worldPosition)) {
+                foundEnemy = enemy.get();
+                break;
+            }
+        }
+        if (foundEnemy) foundEnemy->onHit(50);
+    }
+    if (key == Key::F && event == UserEvent::Press) {
+        Enemy* foundEnemy = nullptr;
+        for (auto& enemy : enemies) {
+            if (enemy->contains(worldPosition)) {
+                foundEnemy = enemy.get();
+                break;
+            }
+        }
+        if (foundEnemy) foundEnemy->onHeal(50);
+    }
+};

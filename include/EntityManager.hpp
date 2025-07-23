@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "Core/MouseObserver.hpp"
+#include "Core/KeyboardObserver.hpp"
 #include "EntitySystem.hpp"
 /**
  * @brief Manager class for handling collections of entities
@@ -13,7 +14,7 @@
  * This class provides centralized management for all game entities,
  * including update loops, rendering, and cleanup operations.
  */
-class EntityManager : public MouseObserver{
+class EntityManager : public MouseObserver, public KeyboardObserver {
    private:
     std::vector<std::unique_ptr<Entity>> entities;
     std::vector<std::unique_ptr<Tower>> towers;
@@ -92,4 +93,6 @@ class EntityManager : public MouseObserver{
                       const sf::Vector2f &worldPosition,
                       const sf::Vector2f &windowPosition) override;
 
+    void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
+                    const sf::Vector2f &windowPosition) override;
 };

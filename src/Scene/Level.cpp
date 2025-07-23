@@ -16,6 +16,8 @@
 
 Level::Level() : currentWave{0}, isRunning{true} {
     subscribeKeyboard(Key::Space, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(Key::D, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(Key::F, UserEvent::Press, InputManager::getInstance().getKeyboardState());
 }
 
 void Level::update() {

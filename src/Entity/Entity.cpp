@@ -22,11 +22,11 @@ void Entity::loadSpriteTexture(const sf::Texture& texture) {
 }
 
 bool Entity::contains(sf::Vector2f position) {
-    Logger::debug(std::format("Cursor position: ({}, {})",
-                              position.x, position.y));
+    // Logger::debug(std::format("Cursor position: ({}, {})",
+    //                           position.x, position.y));
     auto bounds = WindowScale::screenScale(sprite.getGlobalBounds());
-    Logger::debug(std::format(
-        "Sprite global bounds: left={}, top={}, width={}, height={}",
-        bounds.position.x, bounds.position.y, bounds.size.x, bounds.size.y));
+    // Logger::debug(std::format(
+    //     "Sprite global bounds: left={}, top={}, width={}, height={}",
+    //     bounds.position.x, bounds.position.y, bounds.size.x, bounds.size.y));
     return bounds.contains(position);
 }
