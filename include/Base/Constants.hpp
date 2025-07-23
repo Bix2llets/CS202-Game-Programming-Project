@@ -25,4 +25,8 @@ namespace GameConstants {
     constexpr int TARGET_FPS = 60;
 
     const sf::Texture BLANK_TEXTURE;
+
+    constexpr int RENDER_TEXTURE_HEIGHT = 1280;
+    constexpr int RENDER_TEXTURE_WIDTH = 1280;
+
 }

@@ -60,4 +60,9 @@ class Map : public sf::Drawable {
      * @param pathID The ID of the path (starting from 0)
      */
     void loadWaypoints(const std::vector<Waypoint>& path, int pathID);
+
+
+    private:
+    sf::RenderTexture getPathTexture() const;
+    sf::RenderTexture getMaskTexture() const;
 };

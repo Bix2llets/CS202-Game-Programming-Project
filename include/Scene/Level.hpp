@@ -119,6 +119,8 @@ class Level : public Scene, public KeyboardObserver {
      * @brief Loads the level ID from the provided JSON file.
      * @param jsonfile The JSON object containing the level ID.
      */
+
+     void drawBackground(sf::RenderTarget &target, sf::RenderStates state) const;
     public:
     void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
 };

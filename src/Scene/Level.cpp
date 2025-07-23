@@ -7,17 +7,23 @@
 #include <json.hpp>
 
 #include "Base/Constants.hpp"
-#include "Gameplay/Difficulty.hpp"
-#include "Utility/logger.hpp"
 #include "Core/InputManager.hpp"
 #include "Core/MouseState.hpp"
+#include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
+#include "Gameplay/Difficulty.hpp"
+#include "Utility/logger.hpp"
 
 Level::Level() : currentWave{0}, isRunning{true} {
-    subscribeKeyboard(Key::Space, UserEvent::Press, InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(Key::D, UserEvent::Press, InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(Key::F, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+    subscribeKeyboard(Key::Space, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(
+        Key::D, UserEvent::Press,
+        InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(
+        Key::F, UserEvent::Press,
+        InputManager::getInstance().getKeyboardState());
 }
 
 void Level::update() {
@@ -49,6 +55,7 @@ void Level::update() {
 }
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
+    drawBackground(target, state);
     target.draw(map, state);
     entityManager.render(state);
 }
@@ -118,12 +125,14 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
-    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press, InputManager::getInstance().getMouseState());
+    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
+                                 InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
-    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press, InputManager::getInstance().getMouseState());
+    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
+                                   InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
 }
 
@@ -141,4 +150,17 @@ void Level::onKeyEvent(Key key, UserEvent event,
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
     }
+}
+
+void Level::drawBackground(sf::RenderTarget &target,
+                           sf::RenderStates state) const {
+    const sf::Texture &backgroundTex =
+        *ResourceManager::getInstance().getTexture("grass");
+
+    for (int i = 0; i < GameConstants::DEFAULT_WINDOW_WIDTH; i += backgroundTex.getSize().x)
+        for (int j = 0; j < GameConstants::DEFAULT_WINDOW_HEIGHT; j += backgroundTex.getSize().y) {
+            sf::Sprite background(backgroundTex);
+            background.setPosition({i, j});
+            target.draw(background);
+        }
 }
