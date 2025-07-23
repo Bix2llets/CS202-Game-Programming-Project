@@ -62,5 +62,7 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
 
     result->reward =
         static_cast<float>(enemyFile["stats"]["reward"]) * rewardMultiplier;
+
+    result->name = enemyFile["name"];
     return std::move(result);
 }
