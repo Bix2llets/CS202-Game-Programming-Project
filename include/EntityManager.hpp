@@ -13,7 +13,7 @@
  * This class provides centralized management for all game entities,
  * including update loops, rendering, and cleanup operations.
  */
-class EntityManager : public MouseObserver {
+class EntityManager : public MouseObserver{
    private:
     std::vector<std::unique_ptr<Entity>> entities;
     std::vector<std::unique_ptr<Tower>> towers;
@@ -91,4 +91,5 @@ class EntityManager : public MouseObserver {
     void onMouseEvent(Mouse button, UserEvent event,
                       const sf::Vector2f &worldPosition,
                       const sf::Vector2f &windowPosition) override;
+
 };

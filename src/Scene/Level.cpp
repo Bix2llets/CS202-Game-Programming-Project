@@ -14,9 +14,12 @@
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 
-Level::Level() : currentWave{0} {}
+Level::Level() : currentWave{0}, isRunning{true} {
+    subscribeKeyboard(Key::Space, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+}
 
 void Level::update() {
+    if (!isRunning) return;
     entityManager.update();
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
@@ -128,4 +131,12 @@ bool Level::isWaveFinished() {
         if (group.quantity != 0) return false;
     }
     return true;
+}
+
+void Level::onKeyEvent(Key key, UserEvent event,
+                       const sf::Vector2f &worldPosition,
+                       const sf::Vector2f &windowPosition) {
+    if (key == Key::Space && event == UserEvent::Press) {
+        isRunning = !isRunning;
+    }
 }

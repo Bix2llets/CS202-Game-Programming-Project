@@ -1,5 +1,7 @@
 #include "Entity/Entity.hpp"
 
+#include "Utility/logger.hpp"
+#include "Utility/WindowScale.hpp"
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(sprite);
 }
@@ -20,5 +22,11 @@ void Entity::loadSpriteTexture(const sf::Texture& texture) {
 }
 
 bool Entity::contains(sf::Vector2f position) {
-    return sprite.getGlobalBounds().contains(position);
+    Logger::debug(std::format("Cursor position: ({}, {})",
+                              position.x, position.y));
+    auto bounds = WindowScale::screenScale(sprite.getGlobalBounds());
+    Logger::debug(std::format(
+        "Sprite global bounds: left={}, top={}, width={}, height={}",
+        bounds.position.x, bounds.position.y, bounds.size.x, bounds.size.y));
+    return bounds.contains(position);
 }

@@ -18,6 +18,8 @@
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
 
+#include "Core/KeyboardObserver.hpp"
+
 /**
  * @class Level
  * @brief Scene representing a gameplay level, with map, entities, and wave
@@ -27,7 +29,7 @@
  * projectiles), and wave progression. It supports loading from JSON, updating
  * game logic, and rendering.
  */
-class Level : public Scene {
+class Level : public Scene, public KeyboardObserver {
    private:
     std::string levelID;  ///< Unique identifier for the level
     void loadLevelID(const nlohmann::json &jsonfile);
@@ -37,6 +39,8 @@ class Level : public Scene {
     std::vector<std::vector<EnemyGroupInfo>>
         waveInfo;     ///< Information for each wave
     int currentWave;  ///< Index of the current wave
+
+    bool isRunning;
 
    public:
     Level();
@@ -115,4 +119,6 @@ class Level : public Scene {
      * @brief Loads the level ID from the provided JSON file.
      * @param jsonfile The JSON object containing the level ID.
      */
+    public:
+    void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
 };

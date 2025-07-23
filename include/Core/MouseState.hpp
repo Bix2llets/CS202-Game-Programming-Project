@@ -84,7 +84,6 @@ class MouseState {
     void clearSubscriber(Mouse button, UserEvent event);
 
    private:
-    sf::Vector2f scalePosition(sf::Vector2f input);
 
     void processMousePress(const std::optional<sf::Event> &event);
     void processMouseRelease(const std::optional<sf::Event> &event);

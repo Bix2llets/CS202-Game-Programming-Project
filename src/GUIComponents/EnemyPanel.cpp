@@ -54,7 +54,26 @@ EnemyPanel::EnemyPanel()
     fixOrigin(statBackdrop);
     fixOrigin(healthIcon);
     fixOrigin(speedIcon);
-    calibrate();
+    name.setPosition(popupPosition + sf::Vector2f(60.f, 0.f));
+
+    healthIcon.setPosition(popupPosition + sf::Vector2f{200.f, 0.f} +
+                           sf::Vector2f{name.getLocalBounds().position.x +
+                                            name.getLocalBounds().size.x,
+                                        0} +
+                           sf::Vector2f{25.f, 0.f});
+
+    // fixOrigin(health);
+    health.setPosition(healthIcon.getPosition() + sf::Vector2f{9.f, 0.f} +
+                       sf::Vector2f{healthIcon.getGlobalBounds().size.x, 0});
+
+    // fixOrigin(speedIcon);
+    speedIcon.setPosition(popupPosition + sf::Vector2f{360.f, 0.f} + sf::Vector2f{25.f, 0.f} +
+                          sf::Vector2f{health.getGlobalBounds().size.x, 0});
+
+    // fixOrigin(speed);
+    speed.setPosition(speedIcon.getPosition() +
+                      sf::Vector2f{speedIcon.getGlobalBounds().size.x, 0} +
+                      sf::Vector2f{10.f, 0.f});
 }
 
 void EnemyPanel::update() {
@@ -185,26 +204,26 @@ void EnemyPanel::clearEnemyIfReferencing(const Enemy& enemy) {
 
 void EnemyPanel::calibrate() {
     // fixOrigin(healthIcon);
-    name.setPosition(popupPosition + sf::Vector2f(60.f, 0.f));
+    // name.setPosition(popupPosition + sf::Vector2f(60.f, 0.f));
 
-    healthIcon.setPosition(name.getPosition() +
-                           sf::Vector2f{name.getLocalBounds().position.x +
-                                            name.getLocalBounds().size.x,
-                                        0} +
-                           sf::Vector2f{25.f, 0.f});
+    // healthIcon.setPosition(name.getPosition() +
+    //                        sf::Vector2f{name.getLocalBounds().position.x +
+    //                                         name.getLocalBounds().size.x,
+    //                                     0} +
+    //                        sf::Vector2f{25.f, 0.f});
 
-    // fixOrigin(health);
-    health.setPosition(healthIcon.getPosition() + sf::Vector2f{9.f, 0.f} +
-                       sf::Vector2f{healthIcon.getGlobalBounds().size.x, 0});
+    // // fixOrigin(health);
+    // health.setPosition(healthIcon.getPosition() + sf::Vector2f{9.f, 0.f} +
+    //                    sf::Vector2f{healthIcon.getGlobalBounds().size.x, 0});
 
-    // fixOrigin(speedIcon);
-    speedIcon.setPosition(health.getPosition() + sf::Vector2f{25.f, 0.f} +
-                          sf::Vector2f{health.getGlobalBounds().size.x, 0});
+    // // fixOrigin(speedIcon);
+    // speedIcon.setPosition(health.getPosition() + sf::Vector2f{25.f, 0.f} +
+    //                       sf::Vector2f{health.getGlobalBounds().size.x, 0});
 
-    // fixOrigin(speed);
-    speed.setPosition(speedIcon.getPosition() +
-                      sf::Vector2f{speedIcon.getGlobalBounds().size.x, 0} +
-                      sf::Vector2f{10.f, 0.f});
+    // // fixOrigin(speed);
+    // speed.setPosition(speedIcon.getPosition() +
+    //                   sf::Vector2f{speedIcon.getGlobalBounds().size.x, 0} +
+    //                   sf::Vector2f{10.f, 0.f});
 
     // fixOrigin(statBackdrop);
 }

@@ -19,7 +19,7 @@ class EnemyPanel : public sf::Drawable {
     EnemyPanel(const EnemyPanel&& other) = delete;
     EnemyPanel& operator=(const EnemyPanel& rhs) = delete;
     EnemyPanel& operator=(EnemyPanel&& rhs) = delete;
-    constexpr static sf::Vector2f popupPosition = {100.f, 800.f};
+    constexpr static sf::Vector2f popupPosition = {200.f, 800.f};
 
    public:
     static EnemyPanel& getInstance();

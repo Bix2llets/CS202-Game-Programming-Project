@@ -93,6 +93,4 @@ class KeyboardState {
      */
     void handleEvent(std::optional<sf::Event> &event);
 
-private:
-    sf::Vector2f scalePosition(sf::Vector2f input);
 };

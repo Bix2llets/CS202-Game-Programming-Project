@@ -9,6 +9,7 @@
 #include "Core/MouseObserver.hpp"
 #include "Utility/SignalMap.hpp"
 #include "Utility/logger.hpp"
+#include "Utility/WindowScale.hpp"
 
 #include "Core/Window.hpp"
 void MouseState::addSubscriber(Mouse button, UserEvent event,
@@ -59,14 +60,6 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
 
 MouseState::MouseState() {}
 
-sf::Vector2f MouseState::scalePosition(sf::Vector2f input) {
-    sf::RenderWindow& window = Window::getInstance();
-    input.x =
-    input.x / window.getSize().x * GameConstants::DEFAULT_WINDOW_WIDTH;
-    input.y =
-    input.y / window.getSize().y * GameConstants::DEFAULT_WINDOW_HEIGHT;
-    return input;
-}
 
 void MouseState::processMousePress(const std::optional<sf::Event>& event) {
     sf::RenderWindow& window = Window::getInstance();
@@ -76,8 +69,8 @@ void MouseState::processMousePress(const std::optional<sf::Event>& event) {
             static_cast<sf::Vector2f>(mouseClickEvent->position);
         sf::Vector2f worldPosition =
             window.mapPixelToCoords(mouseClickEvent->position);
-        windowPosition = scalePosition(windowPosition);
-        worldPosition = scalePosition(worldPosition);
+        windowPosition = WindowScale::screenScale(windowPosition);
+        worldPosition = WindowScale::screenScale(worldPosition);
         Logger::info(std::format("{} {} {} {}", windowPosition.x,
                                  windowPosition.y, worldPosition.x,
                                  worldPosition.y));
@@ -102,8 +95,8 @@ void MouseState::processMouseRelease(const std::optional<sf::Event>& event) {
             static_cast<sf::Vector2f>(mouseReleaseEvent->position);
         sf::Vector2f worldPosition =
             Window::getInstance().mapPixelToCoords(mouseReleaseEvent->position);
-        windowPosition = scalePosition(windowPosition);
-        worldPosition = scalePosition(worldPosition);
+        windowPosition = WindowScale::screenScale(windowPosition);
+        worldPosition = WindowScale::screenScale(worldPosition);
         Logger::info(std::format("{} {} {} {}", windowPosition.x,
                                  windowPosition.y, worldPosition.x,
                                  worldPosition.y));
@@ -126,8 +119,8 @@ void MouseState::processMouseMovement(const std::optional<sf::Event>& event) {
         static_cast<sf::Vector2f>(mouseMovement->position);
     sf::Vector2f worldPosition =
         Window::getInstance().mapPixelToCoords(mouseMovement->position);
-    windowPosition = scalePosition(windowPosition);
-    worldPosition = scalePosition(worldPosition);
+    windowPosition = WindowScale::screenScale(windowPosition);
+    worldPosition =  WindowScale::screenScale(worldPosition);
 
     Mouse mouseButton;
     // * Mouse movement when left mouse button is holding
