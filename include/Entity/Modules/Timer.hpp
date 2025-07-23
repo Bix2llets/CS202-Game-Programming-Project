@@ -94,4 +94,6 @@ class Timer {
 
     Timer& pause();
     Timer& resume();
+
+    inline float getInterval() const {return timeInterval;}
 };

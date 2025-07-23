@@ -1,11 +1,15 @@
 #include "EntityManager.hpp"
 
+#include "Core/MouseState.hpp"
+#include "Core/UserEvent.hpp"
+#include "Core/Window.hpp"
+#include "GUIComponents/EnemyPanel.hpp"
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
         if (tower) {
             tower->update();
-            
+
             // Make towers attack enemies
             auto enemyPtrs = getEnemies();
             // tower->attack(enemyPtrs);
@@ -34,53 +38,47 @@ void EntityManager::render(sf::RenderStates state) const {
     // Render towers
     for (const auto& tower : towers) {
         if (tower) {
-            window.draw(*tower, state);
+            Window::getInstance().draw(*tower, state);
         }
     }
 
     // Render enemies
     for (const auto& enemy : enemies) {
         if (enemy && enemy->isAlive()) {
-            window.draw(*enemy, state);
+            Window::getInstance().draw(*enemy, state);
         }
     }
 
     // Render projectiles
     for (const auto& projectile : projectiles) {
         if (projectile && projectile->isAlive()) {
-            window.draw(*projectile, state);
+            Window::getInstance().draw(*projectile, state);
         }
     }
 }
 
 void EntityManager::cleanup() {
     // Remove dead towers
-    towers.erase(
-        std::remove_if(towers.begin(), towers.end(),
-            [](const std::unique_ptr<Tower>& tower) {
-                return !tower;
-            }),
-        towers.end()
-    );
+    towers.erase(std::remove_if(towers.begin(), towers.end(),
+                                [](const std::unique_ptr<Tower>& tower) {
+                                    return !tower;
+                                }),
+                 towers.end());
 
     // Remove dead enemies
-    enemies.erase(
-        std::remove_if(enemies.begin(), enemies.end(),
-            [](const std::unique_ptr<Enemy>& enemy) {
-                return !enemy || !enemy->isAlive();
-            }),
-        enemies.end()
-    );
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
+                                 [](const std::unique_ptr<Enemy>& enemy) {
+                                     return !enemy || !enemy->isAlive();
+                                 }),
+                  enemies.end());
 
     // Remove dead projectiles
     projectiles.erase(
         std::remove_if(projectiles.begin(), projectiles.end(),
-            [](const std::unique_ptr<Projectile>& projectile) {
-                return !projectile || !projectile->isAlive();
-            }),
-        projectiles.end()
-    );
-
+                       [](const std::unique_ptr<Projectile>& projectile) {
+                           return !projectile || !projectile->isAlive();
+                       }),
+        projectiles.end());
 }
 
 void EntityManager::addTower(std::unique_ptr<Tower> tower) {
@@ -129,4 +127,22 @@ void EntityManager::clear() {
 
 size_t EntityManager::getTotalEntityCount() const {
     return towers.size() + enemies.size() + projectiles.size();
+}
+
+void EntityManager::onMouseEvent(Mouse button, UserEvent event,
+                                 const sf::Vector2f& worldPosition,
+                                 const sf::Vector2f& windowPosition) {
+    if (!(button == Mouse::Left && event == UserEvent::Press)) return;
+
+    Enemy* foundEnemy = nullptr;
+    for (auto& enemy : enemies) {
+        if (enemy->contains(worldPosition)) {
+            foundEnemy = enemy.get();
+            break;
+        }
+    }
+    if (foundEnemy)
+        EnemyPanel::getInstance().setEnemy(*foundEnemy);
+    else
+        EnemyPanel::getInstance().clearEnemy();
 }

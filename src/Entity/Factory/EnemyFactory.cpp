@@ -8,9 +8,9 @@
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Map.hpp"
 #include "Scene/Scene.hpp"
-EnemyFactory::EnemyFactory(Map &map, Scene &scene, JSONLoader &loader,
-                           ResourceManager &resManager)
-    : map(map), scene(scene), loader{loader}, resManager{resManager} {}
+#include "Core/JSONLoader.hpp"
+EnemyFactory::EnemyFactory(Map &map, Scene &scene)
+    : map(map), scene(scene) {}
 void EnemyFactory::setDifficulty(Difficulty difficulty)
 
 {
@@ -41,26 +41,28 @@ void EnemyFactory::setDifficulty(Difficulty difficulty)
 
 std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
                                                  float distance, int laneID) {
-    nlohmann::json enemyFile = (loader.getEnemy(id));
+    nlohmann::json enemyFile = (JSONLoader::getInstance().getEnemy(id));
     if (!enemyFile.contains("sprite") || !enemyFile.contains("stats") ||
         !enemyFile.contains("type"))
         throw std::runtime_error("Missing required enemy fields in JSON");
     std::unique_ptr<Enemy> result(new Enemy(scene));
-    result->animation.loadJson(resManager, enemyFile["sprite"]);
+    result->animation.loadJson(enemyFile["sprite"]);
     result->path.setWaypoints(map.getWaypoints(laneID));
     result->path.setDistanceFromStart(distance);
     result->path.setSpeed(enemyFile["stats"]["speed"]);
-    result->health.setMaxHealth(enemyFile["stats"]["maxHealth"]);
+    result->health.setMaxHealth(enemyFile["stats"]["max_health"]);
     result->health.setHealth(result->health.getMaxHealth());
-    result->healTimer.setTimeInterval(enemyFile["stats"]["healInterval"])
+    result->healTimer.setTimeInterval(enemyFile["stats"]["heal_interval"])
         .setTimerMode(TimerMode::Continuous)
         .setTimerDirection(TimerDirection::Backward)
-        .setRemainingTime(enemyFile["stats"]["healInterval"]);
-    result->healAmount = enemyFile["stats"]["healAmount"];
+        .setRemainingTime(enemyFile["stats"]["heal_interval"]);
+    result->healAmount = enemyFile["stats"]["heal_amount"];
     result->enemyType =
         (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);
 
     result->reward =
         static_cast<float>(enemyFile["stats"]["reward"]) * rewardMultiplier;
+
+    result->name = enemyFile["name"];
     return std::move(result);
 }

@@ -16,16 +16,11 @@
 class InputManager {
     MouseState mouseState;  ///< Manages mouse button subscriptions and events.
     KeyboardState keyboardState;
-    sf::RenderWindow& window;  ///< Reference to the main window.
    public:
-    /**
-     * @brief Constructs an InputManager for the given window.
-     * @param window Reference to the SFML render window.
-     */
-    InputManager(sf::RenderWindow& window);
-    /**
-     * @brief Handles an input event.
-     * @param event Optional SFML event to handle.
+   
+   /**
+    * @brief Handles an input event.
+    * @param event Optional SFML event to handle.
      */
     void handleEvent(std::optional<sf::Event>& event);
     /**
@@ -34,4 +29,11 @@ class InputManager {
      */
     inline MouseState& getMouseState() { return mouseState; };
     inline KeyboardState& getKeyboardState() { return keyboardState; }
+    private:
+    InputManager();
+    InputManager(const InputManager&) = delete;
+    InputManager& operator=(const InputManager&) = delete;
+
+    public:
+    static InputManager& getInstance();
 };

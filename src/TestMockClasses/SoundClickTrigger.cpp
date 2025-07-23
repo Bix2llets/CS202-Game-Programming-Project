@@ -9,8 +9,8 @@ void SoundClickTrigger::onLeftMousePress(const sf::Vector2f &worldPosition,
     Logger::info("Left press");
 }
 
-SoundClickTrigger::SoundClickTrigger(ResourceManager &resManager)
-    : resManager{resManager} {}
+SoundClickTrigger::SoundClickTrigger() {}
+
 
 void SoundClickTrigger::onLeftMouseRelease(const sf::Vector2f &worldPosition,
                                            const sf::Vector2f &windowPosition) {

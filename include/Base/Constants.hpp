@@ -15,8 +15,8 @@ namespace GameConstants {
     constexpr int WINDOW_WIDTH_1 = 1024;
     constexpr int WINDOW_HEIGHT_1 = 768;
     
-    constexpr int WINDOW_WIDTH_2 = 1440;
-    constexpr int WINDOW_HEIGHT_2 = 1080;
+    constexpr int WINDOW_WIDTH_2 = 1280;
+    constexpr int WINDOW_HEIGHT_2 = 960;
     
     constexpr const char* WINDOW_TITLE = "Rampart Remains";
 

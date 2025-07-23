@@ -1,0 +1,10 @@
+[
+    {
+        "id": "rifle_base",
+        "path": "assets/texture/towers/rifle_base.png"
+    },
+    {
+        "id": "rifle_turret",
+        "path": "assets/texture/towers/rifle_turret.png"
+    }
+]

@@ -1,20 +1,21 @@
 #include "Core/SceneManager.hpp"
 #include "Utility/logger.hpp"
+#include "Core/Window.hpp"
 
 void SceneManager::changeScene(const std::string &sceneName) {
     if (sceneStorage.find(sceneName) == sceneStorage.end()) {
         Logger::error("Switching to non-existent scene");
         return;
     }
-    if (currentScene) currentScene->unRegisterComponents();
+    if (currentScene) currentScene->onUnload();
     currentScene = sceneStorage[sceneName].get();
-    if (currentScene) currentScene->registerComponents();
+    if (currentScene) currentScene->onLoad();
 }
 
 void SceneManager::render() {
     try {
         checkNullptr();
-        window.draw(*currentScene);
+        Window::getInstance().draw(*currentScene);
     } catch (GameException exception) {
         Logger::critical("Drawing a non-existent scene");
     }

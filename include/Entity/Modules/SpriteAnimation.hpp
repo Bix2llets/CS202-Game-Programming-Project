@@ -10,7 +10,6 @@
 #include <json.hpp>
 #include <memory>
 
-#include "Core/ResourceManager.hpp"
 #include "Entity/Modules/Timer.hpp"
 
 /**
@@ -51,7 +50,7 @@ class SpriteAnimation {
      * @param resManager Reference to the resource manager for loading textures.
      * @param jsonFile JSON object containing animation data.
      */
-    void loadJson(ResourceManager& resManager, const nlohmann::json& jsonFile);
+    void loadJson(const nlohmann::json& jsonFile);
 
     /**
      * @brief Updates the animation timer and frame.

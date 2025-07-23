@@ -17,7 +17,7 @@ TEST(nullptrTest, null) {
 TEST(nameTest, 1) {
     sf::RenderWindow window;
     SceneManager sceneManager(window);
-    InputManager inputManager(window);
+    InputManager inputManager();
     JSONLoader loader;
     ResourceManager resManager;
     sceneManager.registerScene<BlankScene>("Scene1", inputManager, resManager, loader);
@@ -30,7 +30,7 @@ TEST(nameTest, 1) {
 TEST(nameTest, 2) {
     sf::RenderWindow window;
     SceneManager sceneManager(window);
-    InputManager inputManager(window);
+    InputManager inputManager();
     ResourceManager resManager;
     JSONLoader loader;
     sceneManager.registerScene<BlankScene>("Scene1", inputManager, resManager, loader);

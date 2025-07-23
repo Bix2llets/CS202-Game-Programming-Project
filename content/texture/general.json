@@ -1,0 +1,10 @@
+[
+    {
+        "id": "heart",
+        "path": "assets/texture/heart.png"
+    },
+    {
+        "id": "movement_speed",
+        "path": "assets/texture/movement.png"
+    }
+]

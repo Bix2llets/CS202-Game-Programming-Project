@@ -5,5 +5,9 @@ void InputManager::handleEvent(std::optional<sf::Event> &event) {
     keyboardState.handleEvent(event);
 }
 
-InputManager::InputManager(sf::RenderWindow &window)
-    : window{window}, mouseState{window}, keyboardState{window} {} 
+InputManager::InputManager() {} 
+
+InputManager& InputManager::getInstance() {
+    static InputManager instance;
+    return instance;
+}

@@ -5,11 +5,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-#include "Core/InputManager.hpp"
-#include "Core/JSONLoader.hpp"
 #include "Core/LevelFactory.hpp"
-#include "Core/ResourceManager.hpp"
-#include "Core/SceneManager.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 /**
  * @class Application
@@ -17,13 +13,7 @@
  */
 class Application {
    private:
-    sf::RenderWindow window;    ///< The main game window.
-    SceneManager sceneManager;  ///< Manages game scenes.
-    ResourceManager
-        resourceManager;        ///< Manages resources (textures, sounds, etc.).
-    InputManager inputManager;  ///< Handles input events.
     SoundClickTrigger testTrigger;  ///< Test trigger for sound on click.
-    JSONLoader loader;
     LevelFactory levelFactory;
     bool isRunning;  ///< Indicates if the application is running.
    public:

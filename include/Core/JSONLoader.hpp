@@ -204,4 +204,15 @@ class JSONLoader {
         musics;  ///< Music objects by ID
     std::unordered_map<std::string, nlohmann::json>
         styles;  ///< Style objects by ID
+
+   private:
+    JSONLoader() = default;
+    JSONLoader(const JSONLoader&) = delete;
+    JSONLoader& operator=(const JSONLoader&) = delete;
+
+   public:
+    static JSONLoader& getInstance() {
+        static JSONLoader instance;
+        return instance;
+    }
 };

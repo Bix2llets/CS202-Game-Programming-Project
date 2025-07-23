@@ -11,16 +11,14 @@
 
 #include <json.hpp>
 
-#include "Core/JSONLoader.hpp"
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
 #include "Gameplay/Map.hpp"
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
-class SceneManager;
-class InputManager;
-class ResourceManager;
+
+#include "Core/KeyboardObserver.hpp"
 
 /**
  * @class Level
@@ -31,7 +29,7 @@ class ResourceManager;
  * projectiles), and wave progression. It supports loading from JSON, updating
  * game logic, and rendering.
  */
-class Level : public Scene {
+class Level : public Scene, public KeyboardObserver {
    private:
     std::string levelID;  ///< Unique identifier for the level
     void loadLevelID(const nlohmann::json &jsonfile);
@@ -42,17 +40,10 @@ class Level : public Scene {
         waveInfo;     ///< Information for each wave
     int currentWave;  ///< Index of the current wave
 
+    bool isRunning;
+
    public:
-    /**
-     * @brief Constructs the Level scene.
-     * @param window Reference to the SFML render window.
-     * @param parentManager Reference to the parent SceneManager.
-     * @param resourceManager Reference to the ResourceManager.
-     * @param JSONLoader Reference to the JSON loader.
-     */
-    Level(sf::RenderWindow &window, SceneManager &parentManager,
-          InputManager &inputManager, ResourceManager &resourceManager,
-          JSONLoader &loader);
+    Level();
 
     /**
      * @brief Updates the level logic (entities, waves, etc).
@@ -87,12 +78,12 @@ class Level : public Scene {
     /**
      * @brief Registers UI components and event handlers for the level.
      */
-    void registerComponents() override;
+    void onLoad() override;
 
     /**
      * @brief Unregisters UI components and event handlers for the level.
      */
-    void unRegisterComponents() override;
+    void onUnload() override;
 
     /**
      * @brief Checks if the current wave is finished.
@@ -128,4 +119,6 @@ class Level : public Scene {
      * @brief Loads the level ID from the provided JSON file.
      * @param jsonfile The JSON object containing the level ID.
      */
+    public:
+    void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
 };

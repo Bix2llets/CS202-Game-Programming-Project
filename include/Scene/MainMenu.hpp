@@ -9,8 +9,6 @@
 #include <memory>
 #include <string>
 
-#include "Core/InputManager.hpp"
-#include "Core/JSONLoader.hpp"
 #include "Core/ResourceManager.hpp"
 #include "GUIComponents/button.hpp"
 #include "GUIComponents/mediator.hpp"
@@ -20,7 +18,6 @@
  * @class MainMenu
  * @brief Scene representing the main menu, with UI buttons and event handling.
  */
-class SceneManager;
 class MainMenu : public Scene {
    protected:
    std::unique_ptr<Button> testBtn;
@@ -28,16 +25,7 @@ class MainMenu : public Scene {
     void testSceneSwitching();
 
    public:
-    /**
-     * @brief Constructs the MainMenu scene.
-     * @param window Reference to the SFML render window.
-     * @param parentManager Reference to the parent SceneManager.
-     * @param inputManager Reference to the InputManager singleton.
-     * @param resManager Reference to the ResourceManager singleton.
-     */
-    MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
-             InputManager &inputManager, ResourceManager &resManager,
-             JSONLoader &loader);
+    MainMenu();
 
     /**
      * @brief Updates the main menu scene (handles logic, input, etc).
@@ -51,6 +39,6 @@ class MainMenu : public Scene {
      */
     void draw(sf::RenderTarget &target, sf::RenderStates state) const;
 
-    void registerComponents() override;
-    void unRegisterComponents() override;
+    void onLoad() override;
+    void onUnload() override;
 };

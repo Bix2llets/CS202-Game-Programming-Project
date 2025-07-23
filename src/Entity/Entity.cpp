@@ -1,6 +1,7 @@
 #include "Entity/Entity.hpp"
 
-
+#include "Utility/logger.hpp"
+#include "Utility/WindowScale.hpp"
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(sprite);
 }
@@ -15,8 +16,17 @@ void Entity::setRotation(const sf::Angle& rot) {
 }
 
 void Entity::loadSpriteTexture(const sf::Texture& texture) {
-        sprite = sf::Sprite(texture);
-        sprite.setRotation(rotation);
-        sprite.setPosition(position);
-    
+    sprite = sf::Sprite(texture);
+    sprite.setRotation(rotation);
+    sprite.setPosition(position);
+}
+
+bool Entity::contains(sf::Vector2f position) {
+    Logger::debug(std::format("Cursor position: ({}, {})",
+                              position.x, position.y));
+    auto bounds = WindowScale::screenScale(sprite.getGlobalBounds());
+    Logger::debug(std::format(
+        "Sprite global bounds: left={}, top={}, width={}, height={}",
+        bounds.position.x, bounds.position.y, bounds.size.x, bounds.size.y));
+    return bounds.contains(position);
 }

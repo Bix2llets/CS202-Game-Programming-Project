@@ -2,67 +2,91 @@
 
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
+#include "Core/JSONLoader.hpp"
 #include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
+#include "Core/SceneManager.hpp"
+#include "Core/Window.hpp"
+#include "GUIComponents/cursor.hpp"
 #include "Scene/BlankScene.hpp"
 #include "Scene/MainMenu.hpp"
 #include "Scene/Mock/TowerRotationMockScene.hpp"
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-
-Application::Application()
-    : window(sf::VideoMode({GameConstants::DEFAULT_WINDOW_WIDTH,
-                            GameConstants::DEFAULT_WINDOW_HEIGHT}),
-             "Rampart remains", sf::Style::Close | sf::Style::Titlebar),
-      testTrigger(resourceManager),
-      isRunning{true},
-      sceneManager{window},
-      inputManager{window},
-      levelFactory{window, sceneManager, inputManager, resourceManager, loader} {
-    if (window.isOpen())
+#include "GUIComponents/EnemyPanel.hpp"
+Application::Application() : isRunning{true} {
+    if (Window::getInstance().isOpen())
         Logger::success("Window initialization success");
     else
         Logger::error("Window not intitialized");
-    window.setFramerateLimit(60);
-    loader.loadAll();
+    Window::getInstance().setFramerateLimit(60);
+    Window::getInstance().setMouseCursorVisible(false);
+    Window::getInstance().setPosition({0, 0});
+    JSONLoader::getInstance().loadAll();
 
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Left, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Right, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::None, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
     // * Loading the necessary sounds
-    for (auto [id, soundFile] : loader.getAllSounds())
-        resourceManager.loadSound(soundFile);
-    for (auto [id, textureFile] : loader.getAllTextures())
-        resourceManager.loadTexture(textureFile);
-    for (auto [id, musicFile] : loader.getAllMusics())
-        resourceManager.loadMusic(musicFile);
-    for (auto [id, fontFile] : loader.getAllFonts())
-        resourceManager.loadFont(fontFile);
-    for (auto [id, levelFile]: loader.getAllLevels()) 
+    for (auto [id, soundFile] : JSONLoader::getInstance().getAllSounds())
+        ResourceManager::getInstance().loadSound(soundFile);
+
+    for (auto [id, textureFile] : JSONLoader::getInstance().getAllTextures())
+        ResourceManager::getInstance().loadTexture(textureFile);
+
+    for (auto [id, musicFile] : JSONLoader::getInstance().getAllMusics())
+        ResourceManager::getInstance().loadMusic(musicFile);
+
+    for (auto [id, fontFile] : JSONLoader::getInstance().getAllFonts())
+        ResourceManager::getInstance().loadFont(fontFile);
+
+    for (auto [id, levelFile] : JSONLoader::getInstance().getAllLevels())
         levelFactory.loadConfig(levelFile);
+
     Logger::success("Resource loading");
-    sceneManager.registerScene<MainMenu>("Main menu", inputManager,
-                                         resourceManager, loader);
-    sceneManager.registerScene<Setting>("Setting", inputManager,
-                                        resourceManager, loader);
-    sceneManager.registerScene<TowerRotationMockScene>(
-        "Tower Test", inputManager, resourceManager, loader);
-    sceneManager.changeScene("Tower Test");  // Start with the tower test scene
-    sceneManager.loadLevel("Gameplay", levelFactory.getLevel("exampleLevel"));
-    sceneManager.changeScene("Main menu");
+    SceneManager::getInstance().registerScene<MainMenu>("Main menu");
+    SceneManager::getInstance().registerScene<Setting>("Setting");
+    SceneManager::getInstance().registerScene<TowerRotationMockScene>(
+        "Tower Test");
+
+    SceneManager::getInstance().changeScene(
+        "Tower Test");  // Start with the tower test scene
+
+    SceneManager::getInstance().loadLevel(
+        "Gameplay", levelFactory.getLevel("example_level"));
+
+    SceneManager::getInstance().changeScene("Main menu");
     // sceneManager.changeScene("Setting");
 }
 
 Application::~Application() {
-    if (window.isOpen()) window.close();
+    if (Window::getInstance().isOpen()) Window::getInstance().close();
     Logger::success("Application exit success");
 }
 
 void Application::run() {
     sf::Clock clock;
+    
+    float fpsTime = 0.f;
     float timeElapsed = 0.f;
+    int frameCount = 0;
+    sf::Text fpsDisplay(*ResourceManager::getInstance().getFont("league_spartan"));
+    fpsDisplay.setOrigin({0.f, 0.f});
+    fpsDisplay.setPosition({0.f, 0.f});
+    fpsDisplay.setFillColor(sf::Color::White);
+    fpsDisplay.setOutlineColor(sf::Color::Black);
     while (isRunning) {
-        while (auto event = window.pollEvent()) {
+        frameCount++;
+        while (auto event = Window::getInstance().pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
-                window.close();
+                Window::getInstance().close();
                 isRunning = false;
             }
 
@@ -70,24 +94,35 @@ void Application::run() {
             if (event->is<sf::Event::KeyPressed>()) {
                 auto keyPress = event->getIf<sf::Event::KeyPressed>();
                 if (keyPress && keyPress->code == sf::Keyboard::Key::F1) {
-                    sceneManager.changeScene("Main menu");
+                    SceneManager::getInstance().changeScene("Main menu");
                 } else if (keyPress &&
                            keyPress->code == sf::Keyboard::Key::F2) {
-                    sceneManager.changeScene("Tower Test");
+                    SceneManager::getInstance().changeScene("Tower Test");
                 }
             }
 
-            inputManager.handleEvent(event);
-            // sceneManager.handleEvent(event);
+            InputManager::getInstance().handleEvent(event);
+            // SceneManager::getInstance().handleEvent(event);
         }
-        // sceneManager.handleInput();
-        timeElapsed += clock.restart().asSeconds();
+        // SceneManager::getInstance().handleInput();
+        timeElapsed += clock.getElapsedTime().asSeconds();
+        fpsTime += clock.getElapsedTime().asSeconds();
+        clock.restart();
         while (timeElapsed > GameConstants::TICK_INTERVAL) {
-            sceneManager.update();
             timeElapsed -= GameConstants::TICK_INTERVAL;
+            SceneManager::getInstance().update();
+            EnemyPanel::getInstance().update();
         }
-        window.clear(sf::Color::Black);
-        sceneManager.render();
-        window.display();
+        if (fpsTime > 1.f) {
+            fpsTime -= 1.f;
+            fpsDisplay.setString(std::to_string(frameCount));
+            frameCount = 0;
+        }
+        Window::getInstance().clear(sf::Color::Black);
+        SceneManager::getInstance().render();
+        Window::getInstance().draw(fpsDisplay);
+        Window::getInstance().draw(EnemyPanel::getInstance());
+        Window::getInstance().draw(Cursor::getInstance());
+        Window::getInstance().display();
     }
 }

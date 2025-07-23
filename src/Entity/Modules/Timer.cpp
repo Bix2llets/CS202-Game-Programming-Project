@@ -66,7 +66,6 @@ float Timer::getPassedTime() const {
     if (mode == TimerMode::Single){
         if (available) return timeInterval;
         return timeInterval - remainingTime;
-
     }
 }
 

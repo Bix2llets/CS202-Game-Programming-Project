@@ -6,16 +6,14 @@
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "Utility/logger.hpp"
 
-MainMenu::MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
-                   InputManager &inputManager, ResourceManager &resManager,
-                   JSONLoader &loader)
-    : Scene(window, parentManager, inputManager, resManager, loader) {
-    ButtonBuilder builder(*this, resourceManager, loader);
+MainMenu::MainMenu()
+    : Scene() {
+    ButtonBuilder builder(*this);
     testBtn = builder.reset()
                   .setPosition({120.f, 100.f})
                   .setSize({120.f, 50.f})
                   .setText("Gameplay")
-                  .loadJson("basicButton")
+                  .loadJson("basic_button")
                   .setNotificationMessage("Gameplay")
                   .setCallback([this](Button *button) {
                       Logger::debug("Turning to gameplay");
@@ -25,7 +23,7 @@ MainMenu::MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
                      .setPosition({300.f, 100.f})
                      .setSize({50.f, 50.f})
                      .setText("To setting")
-                     .loadJson("basicButton")
+                     .loadJson("basic_button")
                      .setNotificationMessage("Setting")
                      .setCallback([this](Button *button) {
                          Logger::debug("Setting button pressed");
@@ -34,10 +32,10 @@ MainMenu::MainMenu(sf::RenderWindow &window, SceneManager &parentManager,
     Logger::debug("Main menu created");
 
     subscribe("Setting", [this](std::any, std::any) {
-        sceneManager.changeScene("Setting");
+        SceneManager::getInstance().changeScene("Setting");
     });
     subscribe("Gameplay", [this](std::any, std::any) {
-        sceneManager.changeScene("Gameplay");
+        SceneManager::getInstance().changeScene("Gameplay");
     });
 }
 
@@ -53,15 +51,18 @@ void MainMenu::update() {
 
 void MainMenu::testSceneSwitching() {
     Logger::debug("Scene switch initiated");
-    sceneManager.changeScene("Gameplay");
+    SceneManager::getInstance().changeScene("Gameplay");
 }
 
-void MainMenu::registerComponents() {
-    testBtn->subscribeMouseAll(inputManager.getMouseState());
-    settingBtn->subscribeMouseAll(inputManager.getMouseState());
+void MainMenu::onLoad() {
+    testBtn->subscribeMouseAll(InputManager::getInstance().getMouseState());
+    settingBtn->subscribeMouseAll(InputManager::getInstance().getMouseState());
 };
 
-void MainMenu::unRegisterComponents() {
-    testBtn->unSubscribeMouseAll(inputManager.getMouseState());
-    settingBtn->unSubscribeMouseAll(inputManager.getMouseState());
+void MainMenu::onUnload() {
+    testBtn->unSubscribeMouseAll(InputManager::getInstance().getMouseState());
+    settingBtn->unSubscribeMouseAll(
+        InputManager::getInstance().getMouseState());
+    testBtn->resetAnimation();
+    settingBtn->resetAnimation();
 };

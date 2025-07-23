@@ -1,6 +1,6 @@
 [
     {
-        "id": "basicButton",
+        "id": "basic_button",
         "style": {
             "normal": {
                 "background": "#2D3748FF",
@@ -18,10 +18,10 @@
                 "text": "#E2E8F0FF"
             }
         },
-        "borderRadius": 4,
-        "borderWidth": 2,
-        "font": "LeagueSpartan",
-        "fontSize": 24,
+        "border_radius": 4,
+        "border_width": 2,
+        "font": "league_spartan",
+        "font_size": 24,
         "padding": [
             12,
             24
@@ -32,7 +32,7 @@
         }
     },
     {
-        "id": "lerpTesting",
+        "id": "lerp_testing",
         "style": {
             "normal": {
                 "background": "#FF0000FF",
@@ -50,10 +50,10 @@
                 "text": "#E2E8F0FF"
             }
         },
-        "borderRadius": 4,
-        "borderWidth": 2,
-        "font": "LeagueSpartan",
-        "fontSize": 24,
+        "border_radius": 4,
+        "border_width": 2,
+        "font": "league_spartan",
+        "font_size": 24,
         "padding": [
             12,
             24

@@ -10,13 +10,10 @@
 #include <json.hpp>
 #include <string>
 
-#include "Core/JSONLoader.hpp"
-
 class Enemy;
 enum class Difficulty;
 class Map;
 class Scene;
-class ResourceManager;
 
 /**
  * @class EnemyFactory
@@ -32,8 +29,6 @@ class EnemyFactory {
         7;         ///< Base reward for defeating a basic enemy
     Map &map;      ///< Reference to the game map for waypoint assignment
     Scene &scene;  ///< Reference to the current scene
-    JSONLoader &loader;
-    ResourceManager &resManager;
     float
         rewardMultiplier;  ///< Multiplier for enemy rewards based on difficulty
     float speedMultiplier;  ///< Multiplier for enemy speed based on difficulty
@@ -47,8 +42,7 @@ class EnemyFactory {
      * @param map Reference to the game map
      * @param scene Reference to the current scene
      */
-    EnemyFactory(Map &map, Scene &scene, JSONLoader &jsonLoader,
-                 ResourceManager &resManager);
+    EnemyFactory(Map &map, Scene &scene);
 
     /**
      * @brief Create a basic enemy with specified position, rotation, and lane

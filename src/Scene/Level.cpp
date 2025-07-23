@@ -7,16 +7,19 @@
 #include <json.hpp>
 
 #include "Base/Constants.hpp"
-#include "Utility/logger.hpp"
 #include "Gameplay/Difficulty.hpp"
-Level::Level(sf::RenderWindow &window, SceneManager &sceneManager,
-             InputManager &inputManager, ResourceManager &resourceManager,
-             JSONLoader &loader)
-    : Scene(window, sceneManager, inputManager, resourceManager, loader),
-      currentWave{0},
-      entityManager(window) {}
+#include "Utility/logger.hpp"
+#include "Core/InputManager.hpp"
+#include "Core/MouseState.hpp"
+#include "Core/UserEvent.hpp"
+#include "GUIComponents/EnemyPanel.hpp"
+
+Level::Level() : currentWave{0}, isRunning{true} {
+    subscribeKeyboard(Key::Space, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+}
 
 void Level::update() {
+    if (!isRunning) return;
     entityManager.update();
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
@@ -56,16 +59,12 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     loadWaypoints(jsonFile);
     loadWaves(jsonFile);
 
-    factory =
-        std::make_unique<EnemyFactory>(map, *this, loader, resourceManager);
+    factory = std::make_unique<EnemyFactory>(map, *this);
 
     std::string difficulty = jsonFile["difficulty"].get<std::string>();
-    if (difficulty == "easy") 
-        factory->setDifficulty(Difficulty::Easy);
-    if (difficulty == "medium") 
-        factory->setDifficulty(Difficulty::Medium);
-    if (difficulty == "hard") 
-        factory->setDifficulty(Difficulty::Hard);
+    if (difficulty == "easy") factory->setDifficulty(Difficulty::Easy);
+    if (difficulty == "medium") factory->setDifficulty(Difficulty::Medium);
+    if (difficulty == "hard") factory->setDifficulty(Difficulty::Hard);
 }
 
 void Level::loadWaypoints(const nlohmann::json &jsonFile) {
@@ -101,8 +100,8 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
             EnemyGroupInfo groupInfo;
             groupInfo.id = (*groupIt)["id"];
             groupInfo.quantity = (*groupIt)["quantity"];
-            groupInfo.spawnDelay = (*groupIt)["spawnDelay"];
-            groupInfo.internalDelay = (*groupIt)["internalDelay"];
+            groupInfo.spawnDelay = (*groupIt)["spawn_delay"];
+            groupInfo.internalDelay = (*groupIt)["internal_delay"];
             groupInfo.laneID = (*groupIt)["lane"];
 
             groupInfo.spawnDelayTimer = groupInfo.spawnDelay;
@@ -114,13 +113,16 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
     }
 }
 
-void Level::registerComponents() {
+void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
+    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press, InputManager::getInstance().getMouseState());
 }
 
-void Level::unRegisterComponents() {
+void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
+    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press, InputManager::getInstance().getMouseState());
+    EnemyPanel::getInstance().clearEnemy();
 }
 
 bool Level::isWaveFinished() {
@@ -129,4 +131,12 @@ bool Level::isWaveFinished() {
         if (group.quantity != 0) return false;
     }
     return true;
+}
+
+void Level::onKeyEvent(Key key, UserEvent event,
+                       const sf::Vector2f &worldPosition,
+                       const sf::Vector2f &windowPosition) {
+    if (key == Key::Space && event == UserEvent::Press) {
+        isRunning = !isRunning;
+    }
 }

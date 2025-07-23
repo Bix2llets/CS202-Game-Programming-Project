@@ -38,7 +38,6 @@ enum class Mouse { Left, Right, None };
  */
 class MouseState {
    private:
-    sf::RenderWindow &window;
     /**
      * @brief Maps each mouse button to a list of pointers to MouseObserver
      * objects that are subscribed to that button's events.
@@ -47,7 +46,7 @@ class MouseState {
         subscriberList;
 
    public:
-    MouseState(sf::RenderWindow &window);
+    MouseState();
     /**
      * @brief Handles an SFML event and notifies relevant observers if it is a
      * mouse button event.
@@ -85,7 +84,6 @@ class MouseState {
     void clearSubscriber(Mouse button, UserEvent event);
 
    private:
-    sf::Vector2f scalePosition(sf::Vector2f input);
 
     void processMousePress(const std::optional<sf::Event> &event);
     void processMouseRelease(const std::optional<sf::Event> &event);

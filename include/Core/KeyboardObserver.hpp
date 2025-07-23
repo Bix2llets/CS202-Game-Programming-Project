@@ -27,7 +27,7 @@ class KeyboardObserver {
      * @param event The user-defined event (e.g., Press, Release).
      * @param state Reference to the KeyboardState managing subscriptions.
      */
-    inline void subscribeKeyboard(Key key, UserEvent event, KeyboardState& state);
+    void subscribeKeyboard(Key key, UserEvent event, KeyboardState& state);
 
     /**
      * @brief Unsubscribe from a specific key and user event combination.
@@ -35,7 +35,7 @@ class KeyboardObserver {
      * @param event The user-defined event.
      * @param state Reference to the KeyboardState managing subscriptions.
      */
-    inline void unSubscribeKeyboard(Key key, UserEvent event, KeyboardState& state);
+    void unSubscribeKeyboard(Key key, UserEvent event, KeyboardState& state);
 
     /**
      * @brief Handle a keyboard event. Should be overridden by derived classes.

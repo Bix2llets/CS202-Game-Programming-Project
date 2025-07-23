@@ -5,7 +5,6 @@
 #pragma once
 #include <map>
 
-#include "Core/InputManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Scene/Level.hpp"
 #include "Scene/Scene.hpp"
@@ -17,29 +16,19 @@
  */
 class SceneManager {
    private:
-    Scene *currentScene;       ///< Pointer to the current active scene.
-    sf::RenderWindow &window;  ///< Reference to the main window.
+    Scene *currentScene;  ///< Pointer to the current active scene.
     std::unordered_map<std::string, std::unique_ptr<Scene>>
         sceneStorage;  ///< Storage for all registered scenes.
-   public:
-    /**
-     * @brief Constructs a SceneManager for the given window.
-     * @param window Reference to the SFML render window.
-     */
-    SceneManager(sf::RenderWindow &window)
-        : currentScene{nullptr}, window{window} {};
-    /**
-     * @brief Registers a new scene type with a given name.
-     * @tparam SceneType The type of the scene to register.
-     * @param sceneName The name to register the scene under.
-     */
+    SceneManager() : currentScene{nullptr} {};
+    SceneManager(const SceneManager &rhs) = delete;
+    SceneManager& operator=(const SceneManager &rhs) = delete;
+    public:
     template <typename SceneType>
-    void registerScene(const std::string &sceneName, InputManager &inputManager,
-                       ResourceManager &resManager, JSONLoader &jsonLoader) {
+    void registerScene(const std::string &sceneName) {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
-                sceneStorage[sceneName] = std::make_unique<SceneType>(
-                    window, *this, inputManager, resManager, jsonLoader);
+                sceneStorage[sceneName] =
+                    std::make_unique<SceneType>();
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");
@@ -59,7 +48,7 @@ class SceneManager {
      * @brief Gets a const reference to the current scene pointer.
      * @return Const reference to the current scene pointer.
      */
-    const Scene *const &getCurrentScene() { return currentScene; };
+    const Scene* getCurrentScene() { return currentScene; };
     /**
      * @brief Renders the current scene.
      */
@@ -75,6 +64,11 @@ class SceneManager {
      */
     void loadLevel(std::string ID, std::unique_ptr<Level> level);
 
+
+    static SceneManager& getInstance() {
+        static SceneManager instance;
+        return instance;
+    }
    private:
     /**
      * @brief Checks if the current scene pointer is null and throws if so.

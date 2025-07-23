@@ -11,17 +11,7 @@
  */
 class BlankScene : public Scene {
    public:
-    /**
-     * @brief Constructs a BlankScene with the given window and name.
-     * @param window Reference to the SFML render window.
-     * @param name Name of the scene.
-     * @param parentManager Reference to the parent SceneManager.
-     * @param inputManager Reference to the InputManager singleton.
-     * @param resManager Reference to the ResourceManager singleton.
-     */
-    BlankScene(sf::RenderWindow &window, SceneManager &parentManager, InputManager &inputManager, 
-               ResourceManager &resManager, JSONLoader &loader)
-        : Scene{window, parentManager, inputManager, resManager, loader} {}
+    BlankScene() {}
     /**
      * @brief Draws the scene (no-op for blank scene).
      * @param target The render target to draw to.
@@ -37,10 +27,10 @@ class BlankScene : public Scene {
      */
     ~BlankScene() = default;
 
-    void registerComponents() override {
+    void onLoad() override {
         // No components to register in a blank scene
     };
-    void unRegisterComponents() override {
+    void onUnload() override {
         // No components to unregister in a blank scene
     };
 };
