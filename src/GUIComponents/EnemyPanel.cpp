@@ -37,8 +37,8 @@ EnemyPanel::EnemyPanel()
     speed.setOutlineColor(sf::Color::White);
     name.setOutlineColor(sf::Color::White);
     health.setOutlineThickness(0.5f);
-    speed.setOutlineThickness( 0.5f);
-    name.setOutlineThickness(  0.5f);
+    speed.setOutlineThickness(0.5f);
+    name.setOutlineThickness(0.5f);
 
     statBackdrop.setSize(sf::Vector2f{500.f, 50.f});
     statBackdrop.setPosition(popupPosition);
@@ -67,7 +67,8 @@ EnemyPanel::EnemyPanel()
                        sf::Vector2f{healthIcon.getGlobalBounds().size.x, 0});
 
     // fixOrigin(speedIcon);
-    speedIcon.setPosition(popupPosition + sf::Vector2f{360.f, 0.f} + sf::Vector2f{25.f, 0.f} +
+    speedIcon.setPosition(popupPosition + sf::Vector2f{360.f, 0.f} +
+                          sf::Vector2f{25.f, 0.f} +
                           sf::Vector2f{health.getGlobalBounds().size.x, 0});
 
     // fixOrigin(speed);
@@ -89,9 +90,9 @@ void EnemyPanel::update() {
                         displayingEnemy->health.getMaxHealth());
 
         health.setString(content);
-        healthBar.setSize({healthBar.getSize().x,
-                           statBackdrop.getSize().y * enemyHealth /
-                               displayingEnemy->health.getMaxHealth()});
+        healthBar.setSize({statBackdrop.getSize().x * enemyHealth /
+                               displayingEnemy->health.getMaxHealth(),
+                           statBackdrop.getSize().y});
     }
     float currentSpeed = displayingEnemy->getSpeed();
     // Logger::debug(std::format("{:.2f}", currentSpeed));
@@ -114,6 +115,9 @@ void EnemyPanel::setEnemy(const Enemy& enemy) {
                     displayingEnemy->health.getMaxHealth());
 
     health.setString(content);
+    healthBar.setSize({statBackdrop.getSize().x * displayingEnemy->health.getHealth() /
+                           displayingEnemy->health.getMaxHealth(),
+                       statBackdrop.getSize().y});
 
     speed.setString(std::format("{:.2f}", displayingEnemy->getSpeed()));
 
