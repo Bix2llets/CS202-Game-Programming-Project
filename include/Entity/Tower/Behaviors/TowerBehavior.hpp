@@ -4,6 +4,7 @@
 #include <Entity/Tower/Behaviors/Combat/FireMode.hpp>
 #include <Gameplay/Currency.hpp>
 #include <vector>
+#include <stdexcept>
 
 // Forward declarations to avoid circular dependencies
 class Tower;
@@ -22,6 +23,33 @@ public:
     explicit TowerBehavior(Tower* tower) : base(tower) {}
     virtual ~TowerBehavior() = default;
     virtual BehaviorType getType() const = 0;
+    
+    /**
+     * @brief Get the tower that owns this behavior.
+     * @return Pointer to the owning tower, or nullptr if not assigned
+     */
+    Tower* getTower() const {
+        return base;
+    }
+    
+    /**
+     * @brief Set the tower reference for this behavior.
+     * This method only works if the current tower reference is null,
+     * ensuring that behaviors can only be linked to exactly one tower.
+     * 
+     * @param tower Pointer to the tower that will own this behavior
+     * @throws std::runtime_error If trying to set tower when behavior already has a base
+     * @throws std::invalid_argument If tower pointer is null
+     */
+    void setTower(Tower* tower) {
+        if (tower == nullptr) {
+            throw std::invalid_argument("Cannot set null tower pointer to behavior");
+        }
+        if (base != nullptr) {
+            throw std::runtime_error("Behavior already has a tower base - cannot reassign to another tower");
+        }
+        base = tower;
+    }
 };
 
 using namespace Combat;

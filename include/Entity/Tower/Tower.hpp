@@ -24,6 +24,7 @@
 #include "Base/Constants.hpp"
 
 class Scene;
+class Enemy;
 // enum class RoundEvent;
 
 /**
@@ -61,6 +62,9 @@ private:
     // Texture dimensions
     float textureWidth;      ///< Desired width for tower textures
     float textureHeight;     ///< Desired height for tower textures
+    
+    // Target tracking
+    Enemy* mainTarget;       ///< Current main target enemy for barrel tracking
 
 public:
     /**
@@ -74,7 +78,7 @@ public:
           const sf::Angle& angle = sf::radians(0.f))
         : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0), 
           base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f),
-          combatBehavior(false), resourceBehavior(false), glowingBehavior(false) {
+          combatBehavior(false), resourceBehavior(false), glowingBehavior(false), mainTarget(nullptr) {
         behaviors.resize(3); // Fixed size: [0]=Combat, [1]=Resource, [2]=Glowing
         upgradeManager = std::make_unique<UpgradeManager>(this);
         setPosition(pos);
@@ -136,6 +140,14 @@ public:
      * @param rot New turret rotation.
      */
     void setTurretRotation(const sf::Angle& rot);
+
+    /**
+     * @brief Point the turret toward a specific position.
+     * Calculates the angle from the tower's position to the target position
+     * and rotates the turret to face that direction.
+     * @param targetPosition The position to point the turret toward.
+     */
+    void pointTurretTowards(const sf::Vector2f& targetPosition);
 
     /**
      * @brief Create and set the base sprite from a texture.
@@ -328,6 +340,18 @@ public:
      */
     float getTextureHeight() const { return textureHeight; }
     
+    /**
+     * @brief Get the current main target enemy.
+     * @return Pointer to the main target enemy, or nullptr if no target is set.
+     */
+    Enemy* getMainTarget() const { return mainTarget; }
+    
+    /**
+     * @brief Check if the tower has a main target.
+     * @return True if the tower has a main target, false otherwise.
+     */
+    bool hasMainTarget() const { return mainTarget != nullptr; }
+    
     // Setters
     /**
      * @brief Set the tower's display name.
@@ -380,6 +404,12 @@ public:
         textureWidth = width; 
         textureHeight = height; 
     }
+
+    /**
+     * @brief Set the main target enemy for the tower.
+     * @param target Pointer to the enemy to target, or nullptr to clear the target.
+     */
+    void setMainTarget(Enemy* target) { mainTarget = target; }
 
     /**
      * @brief Initialize tower statistics.

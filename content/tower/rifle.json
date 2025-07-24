@@ -4,8 +4,7 @@
     "width": 128,
     "height": 128,
     "base": "rifle_base",
-    "turret": "rifle_turret",
-    "turret_shooting": "rifle_turret_shooting"
+    "turret": "rifle_turret"
   },
   "name": "Rifle Tower",
   "description": "A versatile, well-rounded tower with balanced range and damage. Good for early defense.",
@@ -116,6 +115,7 @@
   "behaviors": {
     "combat": {
       "type": "instant",
+      "animation_texture": "rifle_spark",
       "targeting": "nearest",
       "effects": []
     }

@@ -67,6 +67,7 @@ float Timer::getPassedTime() const {
         if (available) return timeInterval;
         return timeInterval - remainingTime;
     }
+    return 0.0f;
 }
 
 Timer& Timer::pause() {

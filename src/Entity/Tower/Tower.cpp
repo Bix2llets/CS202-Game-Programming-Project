@@ -1,10 +1,23 @@
 #include "Entity/Tower/Tower.hpp"
+#include "Entity/Enemy/Enemy.hpp"
+#include "Utility/MathUtils.hpp"
 #include <cmath>
 #include <algorithm>
 #include <iostream> // Include for debug output
+#include <stdexcept> 
 
 void Tower::addBehavior(std::unique_ptr<TowerBehavior> behavior) {
     if (!behavior) return; // Safety check for null behavior
+    
+    // Check if behavior already belongs to another tower
+    Tower* existingTower = behavior->getTower();
+    if (existingTower != nullptr && existingTower != this) {
+        throw std::runtime_error("Cannot add behavior to tower - behavior already belongs to another tower");
+    }
+    
+    // Set the tower reference for behaviors that don't have one yet
+    // This ensures behaviors created before the tower are properly linked
+    behavior->setTower(this);
     
     BehaviorType type = behavior->getType();
     int slot = -1;
@@ -148,6 +161,14 @@ void Tower::setTurretRotation(const sf::Angle& rot) {
     sprite.setRotation(rot);
 }
 
+void Tower::pointTurretTowards(const sf::Vector2f& targetPosition) {
+    // Calculate the angle from tower position to target position
+    sf::Angle targetAngle = MathUtils::calculateAngleTo(getPosition(), targetPosition);
+    
+    // Set the turret rotation to point at the target
+    setTurretRotation(targetAngle);
+}
+
 void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
     base = sf::Sprite(texture);
     
@@ -195,13 +216,11 @@ void Tower::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 }
 
 void Tower::update() {
-    // Reduce cooldown based on elapsed time
-    // Note: In a real implementation, you would pass delta time or use a clock
-    // For now, we'll use a simple approach
+    // If no main target, do nothing
+    if (mainTarget == nullptr) {
+        return;
+    }
     
-    // Update behaviors (if they have specific update logic in derived classes)
-    // For now, behaviors don't have update methods, so we skip this
-    
-    // The timer cooldown would typically be updated with delta time in the main game loop
-    // This is just a placeholder implementation to satisfy the pure virtual requirement
+    // Point the turret toward the main target
+    pointTurretTowards(mainTarget->getPosition());
 }
