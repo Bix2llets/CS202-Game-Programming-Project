@@ -14,7 +14,7 @@
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 
-Level::Level() : currentWave{0}, isRunning{true} {
+Level::Level() : currentWave{0}, isRunning{true}, tracker(*this) {
     subscribeKeyboard(Key::Space, UserEvent::Press, InputManager::getInstance().getKeyboardState());
     entityManager.subscribeKeyboard(Key::D, UserEvent::Press, InputManager::getInstance().getKeyboardState());
     entityManager.subscribeKeyboard(Key::F, UserEvent::Press, InputManager::getInstance().getKeyboardState());

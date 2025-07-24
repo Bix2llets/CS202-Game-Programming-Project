@@ -14,6 +14,7 @@
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
 #include "Gameplay/Map.hpp"
+#include "Gameplay/Tracker.hpp"
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
@@ -41,6 +42,7 @@ class Level : public Scene, public KeyboardObserver {
     int currentWave;  ///< Index of the current wave
 
     bool isRunning;
+    Tracker tracker;  ///< Tracks gameplay statistics for this level
 
    public:
     Level();
@@ -74,6 +76,18 @@ class Level : public Scene, public KeyboardObserver {
      * @return The level's unique ID string.
      */
     inline const std::string getID() const { return "Level" + levelID; }
+
+    /**
+     * @brief Gets the tracker for this level.
+     * @return Reference to the level's tracker.
+     */
+    Tracker& getTracker() { return tracker; }
+
+    /**
+     * @brief Gets the tracker for this level (const version).
+     * @return Const reference to the level's tracker.
+     */
+    const Tracker& getTracker() const { return tracker; }
 
     /**
      * @brief Registers UI components and event handlers for the level.
