@@ -1,4 +1,4 @@
-#include "Gameplay/Map.hpp"
+#include "Gameplay/Path.hpp"
 
 #include <cmath>
 #include <memory>
@@ -10,11 +10,11 @@
 #include "Utility/logger.hpp"
 #include "Base/Constants.hpp"
 
-const std::vector<Waypoint>* Map::getWaypoints(int pathNumber) {
+const std::vector<Waypoint>* Path::getWaypoints(int pathNumber) {
     return &mapWaypoints[pathNumber];
 }
 
-void Map::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+void Path::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     sf::RenderTexture mask = getMaskTexture();
     sf::RenderTexture pathComb = getPathTexture();
     pathComb.display();
@@ -27,7 +27,7 @@ void Map::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(maskedPath, state);
 }
 
-void Map::loadWaypoints(const std::vector<Waypoint>& path, int pathID) {
+void Path::loadWaypoints(const std::vector<Waypoint>& path, int pathID) {
     if (mapWaypoints.size() <
         pathID + 1)  //> Accomodate for the starting  index of 0
         mapWaypoints.resize(pathID + 1);
@@ -35,7 +35,7 @@ void Map::loadWaypoints(const std::vector<Waypoint>& path, int pathID) {
     mapWaypoints[pathID] = path;
 }
 
-sf::RenderTexture Map::getMaskTexture() const {
+sf::RenderTexture Path::getMaskTexture() const {
     // * Base texture of mask
     const sf::Texture& marbleTexture =
         *ResourceManager::getInstance().getTexture("marble");
@@ -75,7 +75,7 @@ sf::RenderTexture Map::getMaskTexture() const {
     return std::move(mask);
 }
 
-sf::RenderTexture Map::getPathTexture() const {
+sf::RenderTexture Path::getPathTexture() const {
     sf::RenderTexture pathComb;
     static const int width =  GameConstants::RENDER_TEXTURE_WIDTH;
     static const int height = GameConstants::RENDER_TEXTURE_HEIGHT;

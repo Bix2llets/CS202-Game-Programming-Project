@@ -6,13 +6,12 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Enemy/MovingState.hpp"
 #include "Gameplay/Difficulty.hpp"
-#include "Gameplay/Map.hpp"
+#include "Gameplay/Path.hpp"
 #include "Scene/Scene.hpp"
 #include "Core/JSONLoader.hpp"
-EnemyFactory::EnemyFactory(Map &map, Scene &scene)
+EnemyFactory::EnemyFactory(Path &map, Scene &scene)
     : map(map), scene(scene) {}
 void EnemyFactory::setDifficulty(Difficulty difficulty)
-
 {
     switch (difficulty) {
         case Difficulty::Easy: {

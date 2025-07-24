@@ -19,7 +19,7 @@
 #include "Entity/Modules/SpriteAnimation.hpp"
 #include "Entity/Modules/Timer.hpp"
 #include "Gameplay/Waypoint.hpp"
-class Map;
+class Path;
 class EnemyFactory;
 class Scene;
 

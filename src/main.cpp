@@ -4,6 +4,7 @@
 #include "Utility/logger.hpp"
 #include "Core/Application.hpp"
 #include "Core/ResourceManager.hpp"
+
 int main() {
     Logger::success("Program start");
     
@@ -12,7 +13,6 @@ int main() {
     
     Application mainLoop;
     mainLoop.run();
-    
     Logger::success("Program exit success");
 }
 

@@ -154,13 +154,34 @@ void Level::onKeyEvent(Key key, UserEvent event,
 
 void Level::drawBackground(sf::RenderTarget &target,
                            sf::RenderStates state) const {
-    const sf::Texture &backgroundTex =
+    const sf::Texture& gressTexture =
         *ResourceManager::getInstance().getTexture("grass");
+    int textureWidth = gressTexture.getSize().x;
+    int textureHeight = gressTexture.getSize().y;
 
-    for (int i = 0; i < GameConstants::DEFAULT_WINDOW_WIDTH; i += backgroundTex.getSize().x)
-        for (int j = 0; j < GameConstants::DEFAULT_WINDOW_HEIGHT; j += backgroundTex.getSize().y) {
-            sf::Sprite background(backgroundTex);
-            background.setPosition({i, j});
-            target.draw(background);
+    static const int width =  GameConstants::DEFAULT_WINDOW_WIDTH;
+    static const int height = GameConstants::DEFAULT_WINDOW_HEIGHT;
+    static const int tileWidth = 32;
+    static const int tileHeight = 32;
+
+    static const int horizontalTiles = textureWidth / tileWidth;
+    static const int verticalTiles = textureHeight / tileHeight;
+
+    auto hashGen = [](int val, int MOD) {
+        return int(1LL * val * 22071997 % 101 % MOD);
+    };
+    for (int i = 0; i < width; i += tileWidth)
+        for (int j = 0; j < height; j += tileHeight) {
+            sf::Vector2i texturePosition = {hashGen(i / 32, horizontalTiles),
+                                            hashGen(j / 32, verticalTiles)};
+            sf::Vector2i textureSize = {tileWidth, tileHeight};
+            sf::Sprite sprite(gressTexture);
+            sprite.setTextureRect({texturePosition * 32, textureSize});
+            sprite.setPosition(static_cast<sf::Vector2f>(sf::Vector2i{i, j}));
+            // Logger::debug(std::format("{} {}",
+            //                           texturePosition.x,
+            //                           texturePosition.y));
+            target.draw(sprite);
+            // target.draw(sprite, state);
         }
 }
