@@ -4,14 +4,14 @@
 
 #include "Core/Window.hpp"
 #include "Gameplay/TerrainGenerator.hpp"
-Terrain::Terrain(int zoomFactor, int octave, float persistance, float lacunarity,
-                 long long seed) {
+Terrain::Terrain(int zoomFactor, int octave, float persistance,
+                 float lacunarity, long long seed) {
     TerrainGenerator generator;
     generator.setResultSize(sf::Vector2i(800, 800));
-    heightMap =
-        generator.getNoiseMap(zoomFactor, octave, persistance, lacunarity, seed);
+    heightMap = generator.getNoiseMap(zoomFactor, octave, persistance,
+                                      lacunarity, seed);
     sf::RenderTexture temp;
-    temp.resize({heightMap.size() * 4, heightMap[0].size() * 4});
+    bool _ = temp.resize({static_cast<unsigned int>(heightMap.size() * 4), static_cast<unsigned int>(heightMap[0].size() * 4)});
     temp.clear(sf::Color::Transparent);
     auto quantitize = [](float val, int quantizationFreq) {
         if (quantizationFreq <= 0) return val;
@@ -23,7 +23,7 @@ Terrain::Terrain(int zoomFactor, int octave, float persistance, float lacunarity
 
             cell.setFillColor(
                 {255, 255, 255,
-                 (unsigned char)(quantitize(heightMap[y][x], 0) * 255)});
+                 (unsigned char)(quantitize(heightMap[y][x], 30) * 255)});
             // cell.setFillColor({255, 255, 255, 255});
             cell.setPosition({(float)x * 4, (float)y * 4});
             cell.setSize({4.f, 4.f});
@@ -31,7 +31,7 @@ Terrain::Terrain(int zoomFactor, int octave, float persistance, float lacunarity
             temp.draw(cell);
         }
     temp.display();
-    
+
     mapTexture = std::move(temp.getTexture());
     map = std::make_unique<sf::Sprite>(mapTexture);
 }
