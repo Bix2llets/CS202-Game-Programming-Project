@@ -20,7 +20,7 @@
 #include "Entity/Modules/Timer.hpp"
 #include "Entity/Modules/Effects/EntityEffect.hpp"
 #include "Gameplay/Waypoint.hpp"
-class Map;
+class Path;
 class EnemyFactory;
 class Scene;
 

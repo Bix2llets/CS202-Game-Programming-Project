@@ -7,6 +7,7 @@
 #include "Core/MouseState.hpp"
 #include "Core/SceneManager.hpp"
 #include "Core/Window.hpp"
+#include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Scene/BlankScene.hpp"
 #include "Scene/MainMenu.hpp"
@@ -14,7 +15,6 @@
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-#include "GUIComponents/EnemyPanel.hpp"
 Application::Application() : isRunning{true} {
     if (Window::getInstance().isOpen())
         Logger::success("Window initialization success");
@@ -73,15 +73,35 @@ Application::~Application() {
 
 void Application::run() {
     sf::Clock clock;
-    
+
     float fpsTime = 0.f;
     float timeElapsed = 0.f;
     int frameCount = 0;
-    sf::Text fpsDisplay(*ResourceManager::getInstance().getFont("league_spartan"));
+    sf::Text fpsDisplay(
+        *ResourceManager::getInstance().getFont("league_spartan"));
     fpsDisplay.setOrigin({0.f, 0.f});
     fpsDisplay.setPosition({0.f, 0.f});
     fpsDisplay.setFillColor(sf::Color::White);
     fpsDisplay.setOutlineColor(sf::Color::Black);
+
+    int gridSize = 150;
+    int octaves = 3;
+    float persistance = -0.6;
+    float lacunarity = 3.5;
+    long long seed = 22071997LL;
+    float depthFactor = 1.f;
+    Terrain terrain(gridSize, octaves, persistance, lacunarity, seed, depthFactor);
+    sf::Text terrainInfo(*ResourceManager::getInstance().getFont("league_spartan"));
+    terrainInfo.setCharacterSize(20);
+    terrainInfo.setPosition({150.f, 0.f});
+    auto updateTerrain = [&terrainInfo, &gridSize, &octaves, &persistance,
+                          &lacunarity, &depthFactor, &seed]() {
+        terrainInfo.setString(std::format(
+            "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth factor {} Seed {}",
+            gridSize, octaves, persistance, lacunarity, depthFactor, seed));
+    };
+    terrainInfo.setFillColor(sf::Color::Red);
+    updateTerrain();
     while (isRunning) {
         frameCount++;
         while (auto event = Window::getInstance().pollEvent()) {
@@ -93,11 +113,71 @@ void Application::run() {
             // Add key to switch between scenes for testing
             if (event->is<sf::Event::KeyPressed>()) {
                 auto keyPress = event->getIf<sf::Event::KeyPressed>();
-                if (keyPress && keyPress->code == sf::Keyboard::Key::F1) {
-                    SceneManager::getInstance().changeScene("Main menu");
-                } else if (keyPress &&
-                           keyPress->code == sf::Keyboard::Key::F2) {
-                    SceneManager::getInstance().changeScene("Tower Test");
+                if (keyPress) {
+                    if (keyPress->code == sf::Keyboard::Key::F1) {
+                        SceneManager::getInstance().changeScene("Main menu");
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F2) {
+                        SceneManager::getInstance().changeScene("Tower Test");
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F5) {
+                        gridSize += 10;
+                        updateTerrain();
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F6) {
+                        gridSize -= 10;
+                        updateTerrain();
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F7) {
+                        octaves++;
+                        updateTerrain();
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F8) {
+                        octaves--;
+                        updateTerrain();
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F9) {
+                        persistance += 0.1;
+                        updateTerrain();
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F10) {
+                        persistance -= 0.1;
+                        updateTerrain();
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F11) {
+                        lacunarity += 0.1;
+                        updateTerrain();
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F12) {
+                        lacunarity -= 0.1;
+                        updateTerrain();
+                        continue;
+                    }
+
+                    if (keyPress->code == sf::Keyboard::Key::LBracket) {
+                        depthFactor -= 0.1f;
+                        updateTerrain();
+                        continue;;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::RBracket) {
+                        depthFactor += 0.1f;
+                        updateTerrain();
+                        continue;;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::R) {
+                        terrain = std::move(Terrain(
+                            gridSize, octaves, persistance, lacunarity, seed, depthFactor));
+                        continue;
+                    }
                 }
             }
 
@@ -119,8 +199,10 @@ void Application::run() {
             frameCount = 0;
         }
         Window::getInstance().clear(sf::Color::Black);
-        SceneManager::getInstance().render();
+        // SceneManager::getInstance().render();
+        terrain.debugRender();
         Window::getInstance().draw(fpsDisplay);
+        Window::getInstance().draw(terrainInfo);
         Window::getInstance().draw(EnemyPanel::getInstance());
         Window::getInstance().draw(Cursor::getInstance());
         Window::getInstance().display();

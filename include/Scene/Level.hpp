@@ -13,8 +13,8 @@
 
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
-#include "Gameplay/Map.hpp"
 #include "Gameplay/Tracker.hpp"
+#include "Gameplay/Path.hpp"
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
@@ -36,7 +36,7 @@ class Level : public Scene, public KeyboardObserver {
     void loadLevelID(const nlohmann::json &jsonfile);
     EntityManager entityManager;  ///< Manages all entities in the level
     std::unique_ptr<EnemyFactory> factory;
-    Map map;  ///< The game map for this level
+    Path map;  ///< The game map for this level
     std::vector<std::vector<EnemyGroupInfo>>
         waveInfo;     ///< Information for each wave
     int currentWave;  ///< Index of the current wave
@@ -133,6 +133,8 @@ class Level : public Scene, public KeyboardObserver {
      * @brief Loads the level ID from the provided JSON file.
      * @param jsonfile The JSON object containing the level ID.
      */
+
+     void drawBackground(sf::RenderTarget &target, sf::RenderStates state) const;
     public:
     void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
 };

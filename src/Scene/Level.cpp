@@ -7,12 +7,13 @@
 #include <json.hpp>
 
 #include "Base/Constants.hpp"
-#include "Gameplay/Difficulty.hpp"
-#include "Utility/logger.hpp"
 #include "Core/InputManager.hpp"
 #include "Core/MouseState.hpp"
+#include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
+#include "Gameplay/Difficulty.hpp"
+#include "Utility/logger.hpp"
 
 Level::Level() : currentWave{0}, isRunning{true}, tracker(*this) {
     subscribeKeyboard(Key::Space, UserEvent::Press, InputManager::getInstance().getKeyboardState());
@@ -49,6 +50,7 @@ void Level::update() {
 }
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
+    drawBackground(target, state);
     target.draw(map, state);
     entityManager.render(state);
 }
@@ -118,12 +120,14 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
-    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press, InputManager::getInstance().getMouseState());
+    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
+                                 InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
-    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press, InputManager::getInstance().getMouseState());
+    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
+                                   InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
 }
 
@@ -141,4 +145,38 @@ void Level::onKeyEvent(Key key, UserEvent event,
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
     }
+}
+
+void Level::drawBackground(sf::RenderTarget &target,
+                           sf::RenderStates state) const {
+    const sf::Texture& gressTexture =
+        *ResourceManager::getInstance().getTexture("grass");
+    int textureWidth = gressTexture.getSize().x;
+    int textureHeight = gressTexture.getSize().y;
+
+    static const int width =  GameConstants::DEFAULT_WINDOW_WIDTH;
+    static const int height = GameConstants::DEFAULT_WINDOW_HEIGHT;
+    static const int tileWidth = 32;
+    static const int tileHeight = 32;
+
+    static const int horizontalTiles = textureWidth / tileWidth;
+    static const int verticalTiles = textureHeight / tileHeight;
+
+    auto hashGen = [](int val, int MOD) {
+        return int(1LL * val * 22071997 % 101 % MOD);
+    };
+    for (int i = 0; i < width; i += tileWidth)
+        for (int j = 0; j < height; j += tileHeight) {
+            sf::Vector2i texturePosition = {hashGen(i / 32, horizontalTiles),
+                                            hashGen(j / 32, verticalTiles)};
+            sf::Vector2i textureSize = {tileWidth, tileHeight};
+            sf::Sprite sprite(gressTexture);
+            sprite.setTextureRect({texturePosition * 32, textureSize});
+            sprite.setPosition(static_cast<sf::Vector2f>(sf::Vector2i{i, j}));
+            // Logger::debug(std::format("{} {}",
+            //                           texturePosition.x,
+            //                           texturePosition.y));
+            target.draw(sprite);
+            // target.draw(sprite, state);
+        }
 }

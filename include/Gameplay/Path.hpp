@@ -1,9 +1,9 @@
 
 /**
- * @file Map.hpp
- * @brief Declares the Map class for managing paths and waypoints in the game.
+ * @file Path.hpp
+ * @brief Declares the Path class for managing paths and waypoints in the game.
  *
- * The Map class manages collections of waypoints for different paths and
+ * The Path class manages collections of waypoints for different paths and
  * provides drawing and access methods.
  */
 
@@ -16,15 +16,15 @@
 #include "Gameplay/Waypoint.hpp"
 
 /**
- * @class Map
+ * @class Path
  * @brief Manages collections of waypoints for different paths and provides
  * drawing and access methods.
  *
- * The Map class stores multiple paths, each as a vector of Waypoints, and
+ * The Path class stores multiple paths, each as a vector of Waypoints, and
  * allows access to them by path number. It also provides methods to construct a
  * map from a vector of waypoints or from a file, and to draw the map.
  */
-class Map : public sf::Drawable {
+class Path : public sf::Drawable {
     std::vector<std::vector<Waypoint>>
         mapWaypoints;  ///< Paths of waypoints in the map
 
@@ -32,7 +32,7 @@ class Map : public sf::Drawable {
     /**
      * @brief Default constructor
      */
-    Map() = default;
+    Path() = default;
     /**
      * @brief Get the waypoints for a specific path
      * @param pathNumber The index of the path
@@ -60,4 +60,9 @@ class Map : public sf::Drawable {
      * @param pathID The ID of the path (starting from 0)
      */
     void loadWaypoints(const std::vector<Waypoint>& path, int pathID);
+
+
+    private:
+    sf::RenderTexture getPathTexture() const;
+    sf::RenderTexture getMaskTexture() const;
 };

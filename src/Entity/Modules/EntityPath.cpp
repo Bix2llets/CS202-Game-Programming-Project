@@ -5,7 +5,7 @@
 #include <algorithm>
 
 #include "Base/Constants.hpp"
-
+#include "Utility/logger.hpp"
 sf::Vector2f EntityPath::getPosition() const { return position; }
 
 float EntityPath::getDistanceFromStart() const { return distanceFromStart; }
@@ -15,6 +15,7 @@ void EntityPath::setDistanceFromStart(float distance) {
 
     // Find the segment where the distance falls
     float accumulated = 0.f;
+    Logger::debug(std::to_string(waypoints->size()));
     for (size_t i = 0; i < waypoints->size() - 1; ++i) {
         float segmentLength =
             ((*waypoints)[i + 1].position - (*waypoints)[i].position).length();
