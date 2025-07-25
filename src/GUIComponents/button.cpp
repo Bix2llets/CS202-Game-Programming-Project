@@ -14,21 +14,17 @@ Button::Button(sf::FloatRect geometricInfo, Mediator& mediator)
       isPressed{false},
       isHovered{false} {
     hover.setTimeInterval(0.5)
-        .setTimerDirection(TimerDirection::Forward)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0.5);
     press.setTimeInterval(0.5)
-        .setTimerDirection(TimerDirection::Forward)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0.5);
 
     reverseHover.setTimeInterval(0.5)
-        .setTimerDirection(TimerDirection::Backward)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0);
 
     reversePress.setTimeInterval(0.5)
-        .setTimerDirection(TimerDirection::Backward)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0);
 }

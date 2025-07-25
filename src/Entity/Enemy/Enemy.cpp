@@ -6,6 +6,7 @@
 #include "Entity/Enemy/DyingState.hpp"
 #include "Entity/Enemy/EnemyState.hpp"
 #include "Entity/Enemy/MovingState.hpp"
+#include "Entity/Modules/Effects/Effect.hpp"
 
 #include "GUIComponents/EnemyPanel.hpp"
 
@@ -22,6 +23,43 @@ Enemy::Enemy(const Enemy &other)
 }
 
 void Enemy::update() {
+    // Update effects first
+    effects.update();
+    
+    // Handle periodic damage/healing from effects
+    auto tickingEffects = effects.getTickingEffects();
+    for (Effect* effect : tickingEffects) {
+        if (effect->shouldTick()) {
+            switch (effect->getType()) {
+                case EffectType::Burn:
+                    this->onHit(effect->getLevel(), DamageType::Fire);
+                    break;
+                    
+                case EffectType::NapalmBurn:
+                    this->onHit(effect->getLevel(), DamageType::Napalm);
+                    break;
+                    
+                case EffectType::Regeneration:
+                    onHeal(effect->getLevel());
+                    break;
+                    
+                default:
+                    break;
+            }
+            effect->resetTickTimer();
+        }
+    }
+    
+    // Check for death after effect damage
+    if (health.getHealth() <= 0) {
+        changeState(std::make_unique<DyingState>());
+        return;
+    }
+    
+    // Apply speed modifications to path
+    float speedModifier = effects.getSpeedModifier();
+    path.setSpeedMultiplier(speedModifier);
+    
     // if (currentState) {
     //     currentState->update(this);
     // }
@@ -59,8 +97,22 @@ void Enemy::changeState(std::unique_ptr<EnemyState> newState) {
     }
 }
 
-void Enemy::onHit(int damage) {
-    health.setHealth(health.getHealth() - damage);
+void Enemy::onHit(int damage, DamageType damageType) {
+    // Apply damage modifiers from effects
+    float damageModifier = effects.getDamageModifier();
+    
+    // Apply fire resistance for fire damage (but NOT napalm)
+    if (damageType == DamageType::Fire) {
+        float fireResistance = effects.getFireResistance();
+        damageModifier *= (1.0f - fireResistance);
+    }
+
+    // Apply cumulative damage modifier from all effects
+    damageModifier = damageModifier * effects.getDamageModifier(); 
+    
+    int finalDamage = static_cast<int>(damage * damageModifier);
+    health.setHealth(health.getHealth() - finalDamage);
+    
     // If enemy dies, change to dying state
     if (health.getHealth() <= 0) {
         changeState(std::make_unique<DyingState>());
@@ -93,4 +145,9 @@ sf::Sprite Enemy::changeSpriteContent(sf::Sprite current, sf::Sprite target) {
 
 Enemy::~Enemy() {
     onDeath();
+}
+
+void Enemy::applyEffect(EffectType type, EffectID id, int level, float duration) {
+    auto effect = std::make_unique<Effect>(type, id, level, duration);
+    effects.addEffect(std::move(effect));
 }

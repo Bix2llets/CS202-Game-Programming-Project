@@ -18,6 +18,7 @@
 #include "Entity/Modules/EntityPath.hpp"
 #include "Entity/Modules/SpriteAnimation.hpp"
 #include "Entity/Modules/Timer.hpp"
+#include "Entity/Modules/Effects/EntityEffect.hpp"
 #include "Gameplay/Waypoint.hpp"
 class Map;
 class EnemyFactory;
@@ -48,6 +49,7 @@ class Enemy : public Entity, public Damageable {
     EntityPath path;
     SpriteAnimation animation;
     Health health;  ///< Health component
+    EntityEffect effects;  ///< Effect management component
     Timer healTimer;
     float healAmount;
 
@@ -105,8 +107,9 @@ class Enemy : public Entity, public Damageable {
     /**
      * @brief Take damage and handle death.
      * @param damage Amount of damage to take.
+     * @param damageType Type of damage being dealt.
      */
-    void onHit(int damage) override;
+    void onHit(int damage, DamageType damageType = DamageType::Physical) override;
 
     /**
      * @brief Heal the enemy by a specified amount.
@@ -177,6 +180,22 @@ class Enemy : public Entity, public Damageable {
      * @return Current health
      */
     inline int getHealth() const { return health.getHealth(); }
+
+    /**
+     * @brief Apply an effect to this enemy.
+     * If an effect with the same ID already exists, it will be refreshed.
+     * @param type Type of effect to apply.
+     * @param id Unique identifier for the effect source.
+     * @param level Intensity/power of the effect.
+     * @param duration Duration of the effect in seconds.
+     */
+    void applyEffect(EffectType type, EffectID id, int level, float duration);
+
+    /**
+     * @brief Get the effects manager for this enemy.
+     * @return const EntityEffect& Reference to the effects manager.
+     */
+    const EntityEffect& getEffects() const { return effects; }
 
    protected:
     /**

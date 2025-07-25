@@ -38,6 +38,8 @@ float EntityPath::getActualSpeed() const { return speed * multiplier; }
 
 void EntityPath::setSpeed(float s) { speed = s; }
 
+void EntityPath::setSpeedMultiplier(float m) { multiplier = m; }
+
 void EntityPath::update() {
     distanceFromStart += speed * GameConstants::TICK_INTERVAL * multiplier;
 

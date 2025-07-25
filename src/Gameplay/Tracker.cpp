@@ -12,7 +12,7 @@ Tracker::Tracker(Level& levelRef)
     : level(levelRef), 
       totalEnemiesKilled(0),
       totalDamageDealt(0.0f),
-      totalCurrencyGenerated(Currency(0)),
+      totalCurrencyGenerated(Currency(0, 0)),
       totalProjectilesFired(0) {
     initialize();
 }
@@ -50,9 +50,7 @@ void Tracker::recordEnemyDeath(Enemy* enemy, Tower* killerTower) {
 }
 
 void Tracker::recordCurrencyGeneration(const Currency& amount) {
-    if (amount.getValue() > 0.0f) {
-        totalCurrencyGenerated += amount;
-    }
+    totalCurrencyGenerated += amount;
 }
 
 void Tracker::recordProjectileFired(Tower* tower) {
@@ -93,7 +91,7 @@ void Tracker::reset() {
     // Reset counters
     totalEnemiesKilled = 0;
     totalDamageDealt = 0.0f;
-    totalCurrencyGenerated = Currency(0);
+    totalCurrencyGenerated = Currency(0, 0);
     totalProjectilesFired = 0;
 }
 

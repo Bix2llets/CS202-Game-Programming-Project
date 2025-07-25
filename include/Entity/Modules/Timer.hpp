@@ -15,15 +15,6 @@ enum class TimerMode {
 };
 
 /**
- * @enum TimerDirection
- * @brief Specifies the counting direction for the Timer.
- */
-enum class TimerDirection {
-    Forward,  ///< Timer counts up from zero
-    Backward  ///< Timer counts down from interval
-};
-
-/**
  * @class Timer
  * @brief Utility class for managing time intervals and cooldowns.
  *
@@ -35,25 +26,37 @@ class Timer {
     float timeInterval;   ///< The interval between timer triggers
     float remainingTime;  ///< Time left until the timer is available
     TimerMode mode;       ///< The mode of the timer (single or continuous)
-    TimerDirection
-        direction;  ///< The direction of the timer (forward or backward)
-    int available;  ///< Number of available uses (for continuous mode)
-    bool running; ///< Identicate whether the timer is running
+    int available;        ///< Number of available uses (for continuous mode)
+    bool running;         ///< Indicates whether the timer is running
 
    public:
+    /**
+     * @brief Default constructor.
+     */
     Timer()
-        : timeInterval{1},
-          remainingTime{1},
+        : timeInterval{1.0f},
+          remainingTime{1.0f},
           mode{TimerMode::Single},
           available{0},
-          direction{TimerDirection::Backward},
-          running{true} {};
+          running{true} {}
+
+    /**
+     * @brief Construct a timer with specific interval and mode.
+     * @param interval The time interval for the timer.
+     * @param mode The timer mode (Single or Continuous).
+     */
+    Timer(float interval, TimerMode mode = TimerMode::Single)
+        : timeInterval{interval},
+          remainingTime{interval},
+          mode{mode},
+          available{0},
+          running{true} {}
 
     /**
      * @brief Checks if the timer is available (ready to trigger).
      * @return True if available, false otherwise.
      */
-    bool isAvailable();
+    bool isAvailable() const;
 
     /**
      * @brief Resets the timer to its initial state.
@@ -83,7 +86,6 @@ class Timer {
      */
     Timer& setTimerMode(TimerMode mode);
     Timer& setRemainingTime(float remaining);
-    Timer& setTimerDirection(TimerDirection direction);
 
     inline float getCompletionPercentage() const {
         return 1 - remainingTime / timeInterval;
