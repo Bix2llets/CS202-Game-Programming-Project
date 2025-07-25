@@ -3,15 +3,17 @@
 #include <algorithm>
 #include <cmath>
 #include <format>
-#include <thread>
 #include <random>
+#include <thread>
 
 #include "Utility/logger.hpp"
 TerrainGenerator::TerrainGenerator() {};
 
-std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
-    int zoomFactor, int octaves, float persistence, float lacunarity, long long seed) {
-
+std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(int zoomFactor,
+                                                              int octaves,
+                                                              float persistence,
+                                                              float lacunarity,
+                                                              long long seed) {
     if (zoomFactor == 0) zoomFactor = 1;
     createPermutation(seed);
     std::vector<std::vector<float>> result;
@@ -36,7 +38,10 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
     threads.reserve(available);
     int rowsPerThread = resultSize.y / available;
     int leftover = resultSize.y - rowsPerThread * available;
-    Logger::debug("Begin multithreading");
+
+    float minValue = 1.0f;
+    float maxValue = 0.0f;
+    Logger::debug("Begin multithreading generating the map");
     for (int rowIndex = 0; rowIndex < available; rowIndex++) {
         int startY = rowIndex * rowsPerThread;
         int endY = startY + rowsPerThread - 1;
@@ -44,15 +49,15 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
 
         Logger::debug("Add threads");
         threads.emplace_back([this, startY, endY, initialFrequency, persistence,
-                              lacunarity, maxAmplitude, octaves, &result]() {
+                              lacunarity, maxAmplitude, octaves, &result,
+                              &minValue, &maxValue]() {
             for (int y = startY; y <= endY; y++) {
                 for (int x = 0; x < resultSize.x; x++) {
                     float amplitude = 1.0f;
                     float noiseHeight = 0.0f;
                     float currentFrequency = initialFrequency;
                     for (int o = 0; o < octaves; ++o) {
-                        int currentGridSize =
-                            std::max(1, static_cast<int>(1 / currentFrequency));
+                        if (currentFrequency > 1.f) currentFrequency = 1.f;
                         float sampleX = x * currentFrequency;
                         float sampleY = y * currentFrequency;
                         float perlinValue = perlin(sampleX, sampleY);
@@ -70,15 +75,51 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
         });
     }
 
+    for (auto &v: result) {
+        minValue = std::min(minValue, *std::min_element(v.begin(), v.end()));
+        maxValue = std::max(maxValue, *std::max_element(v.begin(), v.end()));
+    }
     for (auto &thread : threads) {
         if (thread.joinable()) thread.join();
     }
+
+    float range = maxValue - minValue;
+    available = std::thread::hardware_concurrency();
+    if (available == 0) available = 1;
+    Logger::debug(std::format("{} {} {}", range, minValue, maxValue));
+
+    Logger::debug("Begin multithreading normalizing the map");
+    std::vector<std::thread> normalizingThreads;
+    for (int rowIndex = 0; rowIndex < available; rowIndex++) {
+        int startY = rowIndex * rowsPerThread;
+        int endY = startY + rowsPerThread - 1;
+        if (rowIndex == available - 1) endY += leftover;
+
+        Logger::debug("Add threads");
+
+        normalizingThreads.emplace_back(
+            [&result, startY, endY, minValue, range]() {
+                for (int y = startY; y <= endY; y++) {
+                    for (int x = 0; x < result[y].size(); x++) {
+                        if ((result[y][x] - minValue) / range < 0)
+                            Logger::debug(
+                                std::format("{} {}", result[y][x],
+                                            (result[y][x] - minValue) / range));
+                        result[y][x] =
+                            std::pow(((result[y][x] - minValue) / range), 1.5);
+                    }
+                }
+            });
+    }
+
+    for (auto &thread : normalizingThreads)
+        if (thread.joinable()) thread.join();
     return result;
 }
 
-// --- Perlin Noise Implementation (Modified to avoid 256-pixel repetition) ---
+// --- Perlin Noise Implementation (Modified to avoid 256-pixel repetition)
+// ---
 float TerrainGenerator::perlin(float x, float y) {
-
     int xGrid = static_cast<int>(std::floor(x));
     int yGrid = static_cast<int>(std::floor(y));
 
@@ -148,9 +189,8 @@ void TerrainGenerator::setResultSize(sf::Vector2i size) { resultSize = size; }
 
 void TerrainGenerator::createPermutation(long long seed) {
     std::vector<int> shuffleArr(256);
-    for (int i = 0; i < shuffleArr.size(); i++)
-        shuffleArr[i] = i;
-    
+    for (int i = 0; i < shuffleArr.size(); i++) shuffleArr[i] = i;
+
     std::mt19937 rd(seed);
     std::shuffle(shuffleArr.begin(), shuffleArr.end(), rd);
 

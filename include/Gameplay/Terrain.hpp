@@ -10,6 +10,7 @@ class Terrain{
     std::vector<std::vector<float>> heightMap;
     sf::Texture mapTexture;
     std::unique_ptr<sf::Sprite> map;
+    static const std::vector<unsigned int> elevationColors; 
 
     Terrain();
     Terrain(int gridSize, int octaves, float persistance, float lacunarity, long long seed);

@@ -99,6 +99,7 @@ void Application::run() {
             "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {}",
             gridSize, octaves, persistance, lacunarity));
     };
+    terrainInfo.setFillColor(sf::Color::Red);
     updateTerrain();
     while (isRunning) {
         frameCount++;
