@@ -9,11 +9,9 @@
 #include "Utility/logger.hpp"
 TerrainGenerator::TerrainGenerator() {};
 
-std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(int zoomFactor,
-                                                              int octaves,
-                                                              float persistence,
-                                                              float lacunarity,
-                                                              long long seed) {
+std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
+    int zoomFactor, int octaves, float persistence, float lacunarity,
+    long long seed, float depthFactor) {
     if (zoomFactor == 0) zoomFactor = 1;
     createPermutation(seed);
     std::vector<std::vector<float>> result;
@@ -75,7 +73,7 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(int zoomFactor,
         });
     }
 
-    for (auto &v: result) {
+    for (auto &v : result) {
         minValue = std::min(minValue, *std::min_element(v.begin(), v.end()));
         maxValue = std::max(maxValue, *std::max_element(v.begin(), v.end()));
     }
@@ -98,7 +96,7 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(int zoomFactor,
         Logger::debug("Add threads");
 
         normalizingThreads.emplace_back(
-            [&result, startY, endY, minValue, range]() {
+            [&result, startY, endY, minValue, range, depthFactor]() {
                 for (int y = startY; y <= endY; y++) {
                     for (int x = 0; x < result[y].size(); x++) {
                         if ((result[y][x] - minValue) / range < 0)
@@ -106,7 +104,7 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(int zoomFactor,
                                 std::format("{} {}", result[y][x],
                                             (result[y][x] - minValue) / range));
                         result[y][x] =
-                            std::pow(((result[y][x] - minValue) / range), 1.5);
+                            std::pow(((result[y][x] - minValue) / range), depthFactor);
                     }
                 }
             });

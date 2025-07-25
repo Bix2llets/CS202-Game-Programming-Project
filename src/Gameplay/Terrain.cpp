@@ -2,35 +2,44 @@
 
 #include <math.h>
 
+#include <fstream>
+
 #include "Core/Window.hpp"
 #include "Gameplay/TerrainGenerator.hpp"
-#include <fstream>
+#include "Utility/logger.hpp"
 Terrain::Terrain(int zoomFactor, int octave, float persistance,
-                 float lacunarity, long long seed) {
+                 float lacunarity, long long seed, float depthFactor) {
     TerrainGenerator generator;
     generator.setResultSize(sf::Vector2i(800, 800));
     heightMap = generator.getNoiseMap(zoomFactor, octave, persistance,
-                                      lacunarity, seed);
+                                      lacunarity, seed, depthFactor);
     sf::RenderTexture temp;
     bool _ = temp.resize({static_cast<unsigned int>(heightMap.size() * 4),
                           static_cast<unsigned int>(heightMap[0].size() * 4)});
     temp.clear(sf::Color::Transparent);
-    auto quantitize = [](float val, int quantizationFreq) {
-        if (quantizationFreq <= 0) return val;
-        return floor(val * quantizationFreq) / quantizationFreq;
+    auto quantitize = [](float val) {
+        // * Quantitize height based on the noise value
+        if (val > 0.89f) return 7;  // * High mountain
+        if (val > 0.77f) return 6;  // * Med mountain
+        if (val > 0.65f) return 5;   // * Low mountain
+        // * Mountain area
+
+        if (val > 0.55f) return 4;  // * Dark plain
+        if (val > 0.40f) return 3;  // * Light plain
+        if (val > 0.25f) return 2;  // * Sand
+        if (val > 0.15f) return 1;  // * Shallow sea
+        // Logger::debug(std::format("{}", val));
+        return 0;  // * Deep sea
     };
 
-    auto getColor = [](float val) {
-        int value = val * 20;
-        return sf::Color(elevationColors[value]);
+    auto getColor = [quantitize](float val) {
+        return sf::Color(elevationColors[quantitize(val)]);
     };
     std::ofstream outFile("heightMap.log");
-    for (int y = 0; y < heightMap.size(); y++)
-    {
-
+    for (int y = 0; y < heightMap.size(); y++) {
         for (int x = 0; x < heightMap[y].size(); x++) {
             sf::RectangleShape cell;
-            outFile << int(20 * heightMap[y][x]) << " ";       
+            outFile << int(20 * heightMap[y][x]) << " ";
             cell.setFillColor({getColor(heightMap[y][x])});
             // cell.setFillColor({255, 255, 255, 255});
             cell.setPosition({(float)x * 4, (float)y * 4});
@@ -61,7 +70,7 @@ void Terrain::debugRender() {
     //     }
 }
 
-Terrain::Terrain() : Terrain(50, 4, 0.5, 20, 0) {}
+Terrain::Terrain() : Terrain(50, 4, 0.5, 20, 0, 1) {}
 
 Terrain::Terrain(Terrain&& other) noexcept
     : mapTexture(std::move(other.mapTexture)),
@@ -82,26 +91,5 @@ Terrain& Terrain::operator=(Terrain&& rhs) noexcept {
 }
 
 const std::vector<unsigned int> Terrain::elevationColors = {
-    0x0A2342FF,
-    0x0A2342FF,
-    0x1A3B66FF,
-    0x1A3B66FF,
-    0x3E7CB1FF,
-    0xF4D35EFF,
-    0x5B8C5AFF,
-    0x5B8C5AFF,
-    0x5B8C5AFF,
-    0x5B8C5AFF,
-    0x5B8C5AFF,
-    0x5B8C5AFF,
-    0x8B4513FF,
-    0x8B4513FF,
-    0x8B4513FF,
-    0x6B6B6BFF,
-    0x6B6B6BFF,
-    0x6B6B6BFF,
-    0xE0E0E0FF,
-    0xE0E0E0FF,
-    0xE0E0E0FF,
-    0xE0E0E0FF
-};
+    0x00478aff, 0x0066CCFF, 0xfce490ff, 0x5C943CFF,
+    0x266400ff, 0x9F8D8DFF, 0x4E4C4FFF, 0xFFFFFFFF};

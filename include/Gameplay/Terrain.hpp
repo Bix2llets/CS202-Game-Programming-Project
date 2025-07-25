@@ -13,7 +13,7 @@ class Terrain{
     static const std::vector<unsigned int> elevationColors; 
 
     Terrain();
-    Terrain(int gridSize, int octaves, float persistance, float lacunarity, long long seed);
+    Terrain(int gridSize, int octaves, float persistance, float lacunarity, long long seed, float depthFactor);
     Terrain(Terrain&& other) noexcept;
     Terrain& operator=(Terrain&& rhs) noexcept;
     void debugRender();

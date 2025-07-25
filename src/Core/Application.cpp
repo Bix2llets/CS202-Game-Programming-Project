@@ -84,20 +84,21 @@ void Application::run() {
     fpsDisplay.setFillColor(sf::Color::White);
     fpsDisplay.setOutlineColor(sf::Color::Black);
 
-    int gridSize = 50;
-    int octaves = 4;
-    float persistance = 0.5;
-    float lacunarity = 2.0;
+    int gridSize = 150;
+    int octaves = 3;
+    float persistance = -0.6;
+    float lacunarity = 3.5;
     long long seed = 22071997LL;
-    Terrain terrain(gridSize, octaves, persistance, lacunarity, seed);
-    sf::Text terrainInfo(*ResourceManager::getInstance().getFont("pixel"));
-
-    terrainInfo.setPosition({200.f, 0.f});
+    float depthFactor = 1.f;
+    Terrain terrain(gridSize, octaves, persistance, lacunarity, seed, depthFactor);
+    sf::Text terrainInfo(*ResourceManager::getInstance().getFont("league_spartan"));
+    terrainInfo.setCharacterSize(20);
+    terrainInfo.setPosition({150.f, 0.f});
     auto updateTerrain = [&terrainInfo, &gridSize, &octaves, &persistance,
-                          &lacunarity]() {
+                          &lacunarity, &depthFactor, &seed]() {
         terrainInfo.setString(std::format(
-            "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {}",
-            gridSize, octaves, persistance, lacunarity));
+            "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth factor {} Seed {}",
+            gridSize, octaves, persistance, lacunarity, depthFactor, seed));
     };
     terrainInfo.setFillColor(sf::Color::Red);
     updateTerrain();
@@ -161,9 +162,20 @@ void Application::run() {
                         updateTerrain();
                         continue;
                     }
+
+                    if (keyPress->code == sf::Keyboard::Key::LBracket) {
+                        depthFactor -= 0.1f;
+                        updateTerrain();
+                        continue;;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::RBracket) {
+                        depthFactor += 0.1f;
+                        updateTerrain();
+                        continue;;
+                    }
                     if (keyPress->code == sf::Keyboard::Key::R) {
                         terrain = std::move(Terrain(
-                            gridSize, octaves, persistance, lacunarity, seed));
+                            gridSize, octaves, persistance, lacunarity, seed, depthFactor));
                         continue;
                     }
                 }
