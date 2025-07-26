@@ -174,8 +174,8 @@ void Application::run() {
                         continue;;
                     }
                     if (keyPress->code == sf::Keyboard::Key::R) {
-                        terrain = std::move(Terrain(
-                            gridSize, octaves, persistance, lacunarity, seed, depthFactor));
+                        // terrain = std::move(Terrain(
+                        //     gridSize, octaves, persistance, lacunarity, seed, depthFactor));
                         continue;
                     }
                 }
@@ -199,8 +199,8 @@ void Application::run() {
             frameCount = 0;
         }
         Window::getInstance().clear(sf::Color::Black);
-        // SceneManager::getInstance().render();
-        terrain.debugRender();
+        SceneManager::getInstance().render();
+        // terrain.debugRender();
         Window::getInstance().draw(fpsDisplay);
         Window::getInstance().draw(terrainInfo);
         Window::getInstance().draw(EnemyPanel::getInstance());

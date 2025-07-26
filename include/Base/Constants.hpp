@@ -29,4 +29,7 @@ namespace GameConstants {
     constexpr int RENDER_TEXTURE_HEIGHT = 1280;
     constexpr int RENDER_TEXTURE_WIDTH = 1280;
 
+    constexpr int CELL_SIZE_WIDTH = 4;
+    constexpr int CELL_SIZE_HEIGHT = 4;
+
 }

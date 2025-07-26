@@ -142,7 +142,7 @@ class Enemy : public Entity, public Damageable {
      * @brief Get the waypoints for this enemy's path.
      * @return Pointer to the vector of waypoints.
      */
-    const std::vector<Waypoint>* getWaypoints() const {
+    const std::vector<sf::Vector2f>* getWaypoints() const {
         return path.getWaypoints();
     }
 
@@ -150,7 +150,7 @@ class Enemy : public Entity, public Damageable {
      * @brief Set the waypoints for this enemy's path.
      * @param newWaypoints Pointer to the new waypoints vector.
      */
-    void setWaypoints(const std::vector<Waypoint>* newWaypoints) {
+    void setWaypoints(const std::vector<sf::Vector2f>* newWaypoints) {
         path.setWaypoints(newWaypoints);
     }
 

@@ -71,9 +71,9 @@ void MouseState::processMousePress(const std::optional<sf::Event>& event) {
             window.mapPixelToCoords(mouseClickEvent->position);
         windowPosition = WindowScale::screenScale(windowPosition);
         worldPosition = WindowScale::screenScale(worldPosition);
-        Logger::info(std::format("{} {} {} {}", windowPosition.x,
-                                 windowPosition.y, worldPosition.x,
-                                 worldPosition.y));
+        // Logger::info(std::format("{} {} {} {}", windowPosition.x,
+        //                          windowPosition.y, worldPosition.x,
+        //                          worldPosition.y));
 
         Mouse pressedButton =
             SignalMap::mapSfmlMouseButton(mouseClickEvent->button);
@@ -97,9 +97,9 @@ void MouseState::processMouseRelease(const std::optional<sf::Event>& event) {
             Window::getInstance().mapPixelToCoords(mouseReleaseEvent->position);
         windowPosition = WindowScale::screenScale(windowPosition);
         worldPosition = WindowScale::screenScale(worldPosition);
-        Logger::info(std::format("{} {} {} {}", windowPosition.x,
-                                 windowPosition.y, worldPosition.x,
-                                 worldPosition.y));
+        // Logger::info(std::format("{} {} {} {}", windowPosition.x,
+        //                          windowPosition.y, worldPosition.x,
+        //                          worldPosition.y));
 
         Mouse pressedButton =
             SignalMap::mapSfmlMouseButton(mouseReleaseEvent->button);
@@ -123,7 +123,7 @@ void MouseState::processMouseMovement(const std::optional<sf::Event>& event) {
     worldPosition =  WindowScale::screenScale(worldPosition);
 
     Mouse mouseButton;
-    // * Mouse movement when left mouse button is holding
+     // * Mouse movement when left mouse button is holding
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Left);
     else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
