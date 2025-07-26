@@ -52,7 +52,7 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
     result->health.setMaxHealth(enemyFile["stats"]["max_health"]);
     result->health.setHealth(result->health.getMaxHealth());
     result->healTimer.setTimeInterval(enemyFile["stats"]["heal_interval"])
-        .setTimerMode(TimerMode::Continuous)
+        .setTimerMode(TimerMode::Single)
         .setTimerDirection(TimerDirection::Backward)
         .setRemainingTime(enemyFile["stats"]["heal_interval"]);
     result->healAmount = enemyFile["stats"]["heal_amount"];
