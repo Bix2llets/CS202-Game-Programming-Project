@@ -31,20 +31,19 @@
  * game logic, and rendering.
  */
 class Level : public Scene, public KeyboardObserver {
-   private:
+private:
     std::string levelID;  ///< Unique identifier for the level
     void loadLevelID(const nlohmann::json &jsonfile);
-    EntityManager entityManager;  ///< Manages all entities in the level
+    std::unique_ptr<EntityManager> entityManager;  ///< Manages all entities in the level
     std::unique_ptr<EnemyFactory> factory;
     Path map;  ///< The game map for this level
-    std::vector<std::vector<EnemyGroupInfo>>
-        waveInfo;     ///< Information for each wave
+    std::vector<std::vector<EnemyGroupInfo>> waveInfo;     ///< Information for each wave
     int currentWave;  ///< Index of the current wave
 
     bool isRunning;
     Tracker tracker;  ///< Tracks gameplay statistics for this level
 
-   public:
+public:
     Level();
 
     /**
@@ -88,6 +87,12 @@ class Level : public Scene, public KeyboardObserver {
      * @return Const reference to the level's tracker.
      */
     const Tracker& getTracker() const { return tracker; }
+
+    /**
+     * @brief Gets the entity manager for this level.
+     * @return Reference to the level's entity manager.
+     */
+    EntityManager* getEntityManager();
 
     /**
      * @brief Registers UI components and event handlers for the level.

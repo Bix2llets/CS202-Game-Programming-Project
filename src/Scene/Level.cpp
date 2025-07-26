@@ -15,15 +15,24 @@
 #include "Gameplay/Difficulty.hpp"
 #include "Utility/logger.hpp"
 
+#include "Entity/Factory/TowerFactory.hpp"
+
 Level::Level() : currentWave{0}, isRunning{true}, tracker(*this) {
     subscribeKeyboard(Key::Space, UserEvent::Press, InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(Key::D, UserEvent::Press, InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(Key::F, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+
+    entityManager = std::make_unique<EntityManager>();
+    entityManager->subscribeKeyboard(Key::D, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+    entityManager->subscribeKeyboard(Key::F, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+
+    sf::Vector2f centerPos(400, 600);
+    std::string configFile = "rifle";
+    std::unique_ptr<Tower> tower = TowerFactory::createFromConfigFile(configFile, *this, centerPos);
+    entityManager->addTower(std::move(tower));
 }
 
 void Level::update() {
     if (!isRunning) return;
-    entityManager.update();
+    entityManager->update();
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
             if (group.quantity == 0) continue;
@@ -37,7 +46,7 @@ void Level::update() {
                 group.internalDelayTimer -= GameConstants::TICK_INTERVAL;
                 while (group.internalDelayTimer <= 0 && group.quantity) {
                     // ! Placeholder. Put enemy factory here
-                    entityManager.addEnemy(
+                    entityManager->addEnemy(
                         factory->createEnemy(group.id, 0, group.laneID));
                     Logger::info(std::format("Spawning {}", group.id));
                     group.internalDelayTimer += group.internalDelay;
@@ -52,7 +61,7 @@ void Level::update() {
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     drawBackground(target, state);
     target.draw(map, state);
-    entityManager.render(state);
+    entityManager->render(state);
 }
 void Level::loadFromJson(const std::string &pathToFile) {
     nlohmann::json jsonFile = nlohmann::json::parse(std::ifstream(pathToFile));
@@ -120,13 +129,13 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
-    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
+    entityManager->subscribeMouse(Mouse::Left, UserEvent::Press,
                                  InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
-    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
+    entityManager->unSubscribeMouse(Mouse::Left, UserEvent::Press,
                                    InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
 }
@@ -179,4 +188,9 @@ void Level::drawBackground(sf::RenderTarget &target,
             target.draw(sprite);
             // target.draw(sprite, state);
         }
+}
+
+// Getter for entityManager
+EntityManager* Level::getEntityManager() {
+    return entityManager.get();
 }

@@ -1,71 +1,59 @@
+#include "Entity/Tower/Behaviors/TowerBehavior.hpp"
+#include "Base/Constants.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Utility/MathUtils.hpp"
 #include <cmath>
 #include <algorithm>
 #include <iostream> // Include for debug output
-#include <stdexcept> 
+#include <stdexcept>
+#include "Scene/Scene.hpp"
+#include "Scene/Level.hpp"
+
+Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const sf::Angle& angle)
+    : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0),
+      base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f),
+      mainTarget(nullptr) {
+    upgradeManager = std::make_unique<UpgradeManager>(this);
+    setPosition(pos);
+    setRotation(angle);
+    levelRef = dynamic_cast<Level*>(&scene);
+    timer.resume();
+}
+
+Tower::~Tower() = default;
 
 void Tower::addBehavior(std::unique_ptr<TowerBehavior> behavior) {
-    if (!behavior) return; // Safety check for null behavior
-    
-    // Check if behavior already belongs to another tower
+    if (!behavior) return;
     Tower* existingTower = behavior->getTower();
     if (existingTower != nullptr && existingTower != this) {
         throw std::runtime_error("Cannot add behavior to tower - behavior already belongs to another tower");
     }
-    
-    // Set the tower reference for behaviors that don't have one yet
-    // This ensures behaviors created before the tower are properly linked
     behavior->setTower(this);
-    
-    BehaviorType type = behavior->getType();
-    int slot = -1;
-    
-    // Determine which slot to use based on behavior type
-    switch (type) {
+    switch (behavior->getType()) {
         case BehaviorType::Combat:
-            slot = 0;
-            combatBehavior = true;
+            combatBehaviorPointer.reset(reinterpret_cast<CombatBehavior*>(behavior.release()));
             break;
         case BehaviorType::Resource:
-            slot = 1;
-            resourceBehavior = true;
+            resourceBehaviorPointer.reset(reinterpret_cast<ResourceBehavior*>(behavior.release()));
             break;
         case BehaviorType::Glowing:
-            slot = 2;
-            glowingBehavior = true;
+            glowingBehaviorPointer.reset(reinterpret_cast<GlowingBehavior*>(behavior.release()));
             break;
-    }
-    
-    // Replace the behavior in the appropriate slot
-    if (slot >= 0 && slot < 3) {
-        behaviors[slot] = std::move(behavior);
     }
 }
 
 void Tower::removeBehavior(BehaviorType type) {
-    int slot = -1;
-    
-    // Determine which slot to clear based on behavior type
     switch (type) {
         case BehaviorType::Combat:
-            slot = 0;
-            combatBehavior = false;
+            combatBehaviorPointer.reset();
             break;
         case BehaviorType::Resource:
-            slot = 1;
-            resourceBehavior = false;
+            resourceBehaviorPointer.reset();
             break;
         case BehaviorType::Glowing:
-            slot = 2;
-            glowingBehavior = false;
+            glowingBehaviorPointer.reset();
             break;
-    }
-    
-    // Clear the behavior in the appropriate slot
-    if (slot >= 0 && slot < 3) {
-        behaviors[slot].reset(); // Release the unique_ptr
     }
 }
 
@@ -166,7 +154,7 @@ void Tower::pointTurretTowards(const sf::Vector2f& targetPosition) {
     sf::Angle targetAngle = MathUtils::calculateAngleTo(getPosition(), targetPosition);
     
     // Set the turret rotation to point at the target
-    setTurretRotation(targetAngle);
+    setTurretRotation(targetAngle + sf::radians(90.f)); // Adjust by 90 degrees if needed
 }
 
 void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
@@ -216,11 +204,27 @@ void Tower::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 }
 
 void Tower::update() {
-    // If no main target, do nothing
-    if (mainTarget == nullptr) {
-        return;
-    }
+    if (!levelRef) return;
     
-    // Point the turret toward the main target
-    pointTurretTowards(mainTarget->getPosition());
+    timer.update();
+
+    // Combat behavior
+    if (combatBehaviorPointer) {
+        if (timer.isAvailable()) {
+            std::vector<Enemy*> targets = levelRef->getEntityManager()->getEnemies();
+            if(targets.empty()) return; // No targets to engage
+
+            combatBehaviorPointer->engage(targets);
+
+            float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
+            float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
+            setTimerInterval(interval);
+
+            timer.reset();
+        }
+
+        if (mainTarget) {
+            pointTurretTowards(mainTarget->getPosition());
+        }
+    }
 }

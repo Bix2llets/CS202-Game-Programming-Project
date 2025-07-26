@@ -1,3 +1,13 @@
+
+class Level;
+class Scene;
+class Enemy;
+class TowerBehavior;
+class CombatBehavior;
+class ResourceBehavior;
+class GlowingBehavior;
+enum class BehaviorType;
+
 /**
  * @file Tower.hpp
  * @brief Declares the Tower base class for all tower entities in the game.
@@ -13,18 +23,13 @@
 #include <map>
 #include <memory>
 #include <string>
-
 #include "Entity/Modules/Timer.hpp"
 #include "Entity/Entity.hpp"
 #include "Entity/Tower/TowerStat.hpp"
-#include "Entity/Tower/Behaviors/TowerBehavior.hpp"
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Base/Constants.hpp"
-
-class Scene;
-class Enemy;
 // enum class RoundEvent;
 
 /**
@@ -37,17 +42,14 @@ class Enemy;
  */
 class Tower : public Entity {
 private:
-    // std::map<RoundEvent, std::function<void()>> roundEvents; ///< Event handlers for round events
     Timer timer;  ///< Timer for tower actions
     std::unique_ptr<TowerStat> stats;  ///< Pointer to tower statistics/attributes
-    std::vector<std::unique_ptr<TowerBehavior>> behaviors; ///< Fixed size array for behaviors: [0]=Combat, [1]=Resource, [2]=Glowing
+    std::unique_ptr<CombatBehavior> combatBehaviorPointer;
+    std::unique_ptr<ResourceBehavior> resourceBehaviorPointer;
+    std::unique_ptr<GlowingBehavior> glowingBehaviorPointer;
     std::unique_ptr<UpgradeManager> upgradeManager; ///< Manager for tower upgrades
-    
-    // Behavior flags
-    bool combatBehavior;   ///< True if tower has combat behavior (slot 0)
-    bool resourceBehavior; ///< True if tower has resource behavior (slot 1)
-    bool glowingBehavior;  ///< True if tower has glowing behavior (slot 2)
-    
+    Level* levelRef = nullptr; ///< Reference to Level if scene is a Level, else nullptr
+
     // Tower identity and properties
     std::string id;          ///< Unique identifier for the tower type
     std::string name;        ///< Display name of the tower
@@ -58,11 +60,11 @@ private:
     // Dual sprite system
     sf::Sprite base;   ///< Base sprite with independent rotation
     sf::Angle baseRotation;          ///< Rotation angle for the base sprite
-    
+
     // Texture dimensions
     float textureWidth;      ///< Desired width for tower textures
     float textureHeight;     ///< Desired height for tower textures
-    
+
     // Target tracking
     Enemy* mainTarget;       ///< Current main target enemy for barrel tracking
 
@@ -75,20 +77,12 @@ public:
      * @param angle Initial rotation angle.
      */
     Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos = sf::Vector2f(0, 0),
-          const sf::Angle& angle = sf::radians(0.f))
-        : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0), 
-          base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f),
-          combatBehavior(false), resourceBehavior(false), glowingBehavior(false), mainTarget(nullptr) {
-        behaviors.resize(3); // Fixed size: [0]=Combat, [1]=Resource, [2]=Glowing
-        upgradeManager = std::make_unique<UpgradeManager>(this);
-        setPosition(pos);
-        setRotation(angle);
-    }
+          const sf::Angle& angle = sf::radians(0.f));
 
     /**
      * @brief Virtual destructor for safe polymorphic destruction.
      */
-    ~Tower() override = default;
+    ~Tower() override;
 
     /**
      * @brief Update the tower's behavior.
@@ -168,12 +162,13 @@ public:
      * @param behavior Unique pointer to the behavior to add.
      */
     void addBehavior(std::unique_ptr<TowerBehavior> behavior);
-
-    /**
-     * @brief Remove a behavior from the tower by type.
-     * @param type The type of behavior to remove.
-     */
     void removeBehavior(BehaviorType type);
+
+    // Direct accessors for new behavior pointers
+    CombatBehavior* getCombatBehavior() const { return combatBehaviorPointer.get(); }
+    ResourceBehavior* getResourceBehavior() const { return resourceBehaviorPointer.get(); }
+    GlowingBehavior* getGlowingBehavior() const { return glowingBehaviorPointer.get(); }
+    Level* getLevelRef() const { return levelRef; }
 
     // Upgrade System Methods
 
@@ -312,21 +307,21 @@ public:
     
     /**
      * @brief Check if tower has combat behavior.
-     * @return True if tower has combat behavior in slot 0.
+     * @return True if tower has combat behavior.
      */
-    bool CombatBehavior() const { return combatBehavior; }
-    
+    bool hasCombatBehavior() const { return combatBehaviorPointer != nullptr; }
+
     /**
      * @brief Check if tower has resource behavior.
-     * @return True if tower has resource behavior in slot 1.
+     * @return True if tower has resource behavior.
      */
-    bool ResourceBehavior() const { return resourceBehavior; }
-    
+    bool hasResourceBehavior() const { return resourceBehaviorPointer != nullptr; }
+
     /**
      * @brief Check if tower has glowing behavior.
-     * @return True if tower has glowing behavior in slot 2.
+     * @return True if tower has glowing behavior.
      */
-    bool GlowingBehavior() const { return glowingBehavior; }
+    bool hasGlowingBehavior() const { return glowingBehaviorPointer != nullptr; }
     
     /**
      * @brief Get the desired texture width.

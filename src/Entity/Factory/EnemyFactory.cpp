@@ -38,8 +38,7 @@ void EnemyFactory::setDifficulty(Difficulty difficulty)
     }
 }
 
-std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
-                                                 float distance, int laneID) {
+std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id, float distance, int laneID) {
     nlohmann::json enemyFile = (JSONLoader::getInstance().getEnemy(id));
     if (!enemyFile.contains("sprite") || !enemyFile.contains("stats") ||
         !enemyFile.contains("type"))

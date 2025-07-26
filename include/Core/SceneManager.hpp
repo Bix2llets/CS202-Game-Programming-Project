@@ -17,8 +17,7 @@
 class SceneManager {
    private:
     Scene *currentScene;  ///< Pointer to the current active scene.
-    std::unordered_map<std::string, std::unique_ptr<Scene>>
-        sceneStorage;  ///< Storage for all registered scenes.
+    std::unordered_map<std::string, std::unique_ptr<Scene>> sceneStorage;  ///< Storage for all registered scenes.
     SceneManager() : currentScene{nullptr} {};
     SceneManager(const SceneManager &rhs) = delete;
     SceneManager& operator=(const SceneManager &rhs) = delete;

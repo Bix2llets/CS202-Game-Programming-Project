@@ -8,9 +8,6 @@
 int main() {
     Logger::success("Program start");
     
-
-
-    
     Application mainLoop;
     mainLoop.run();
     Logger::success("Program exit success");
