@@ -112,7 +112,7 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
 
     for (auto &thread : normalizingThreads)
         if (thread.joinable()) thread.join();
-    return result;
+    return std::move(result);
 }
 
 // --- Perlin Noise Implementation (Modified to avoid 256-pixel repetition)

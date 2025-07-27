@@ -86,14 +86,13 @@ void Level::loadWaypoints(const nlohmann::json &jsonFile) {
     int pathNumber = 0;
     for (auto path = waypointsData.begin(); path != waypointsData.end();
          path++, pathNumber++) {
-        std::vector<Waypoint> waypoints;
+        std::vector<sf::Vector2f> waypoints;
         for (auto pointsIt = (*path).begin(); pointsIt != (*path).end();
              pointsIt++) {
-            std::array<float, 3> waypoint = *pointsIt;
-            waypoints.push_back(
-                Waypoint({waypoint[0], waypoint[1]}, waypoint[2]));
+            std::array<float, 2> waypoint = *pointsIt;
+            waypoints.push_back({waypoint[0], waypoint[1]});
         }
-        map.loadWaypoints(waypoints, pathNumber);
+        map.loadWaypoints(waypoints);
     }
 }
 

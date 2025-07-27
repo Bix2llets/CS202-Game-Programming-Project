@@ -6,33 +6,40 @@
 #include <string>
 #include <vector>
 
+#include "Base/Constants.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
-#include "Base/Constants.hpp"
 
-const std::vector<Waypoint>* Path::getWaypoints(int pathNumber) {
-    return &mapWaypoints[pathNumber];
-}
+const std::vector<sf::Vector2f>* Path::getWaypoints() { return &waypoints; }
 
 void Path::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+
+    target.draw(*pathSprite, state);
+}
+
+void Path::loadWaypoints(const std::vector<sf::Vector2f>& path) {
+    waypoints = path;
     sf::RenderTexture mask = getMaskTexture();
     sf::RenderTexture pathComb = getPathTexture();
     pathComb.display();
-    sf::Sprite path(pathComb.getTexture());
-    sf::RenderStates multiState = state;
-    multiState.blendMode = sf::BlendMultiply;
-    mask.draw(path, multiState);
     mask.display();
-    sf::Sprite maskedPath(mask.getTexture());
-    target.draw(maskedPath, state);
-}
+    sf::Sprite drawnPath(pathComb.getTexture());
+    sf::RenderStates multiState;
+    multiState.blendMode = sf::BlendMultiply;
 
-void Path::loadWaypoints(const std::vector<Waypoint>& path, int pathID) {
-    if (mapWaypoints.size() <
-        pathID + 1)  //> Accomodate for the starting  index of 0
-        mapWaypoints.resize(pathID + 1);
+    sf::RenderTexture finalMask;
+    if (!finalMask.resize(pathComb.getSize())) {
+        Logger::error("Cannot resize finalMask");
+    }
+    finalMask.clear(sf::Color::Transparent);
+    finalMask.draw(drawnPath);
+    finalMask.display();
+    // * Draw final Mask => wrong
+    // * Draw path comb -> nothing
+    // * Draw mask => marble pattern
 
-    mapWaypoints[pathID] = path;
+    pathTexture = std::make_unique<sf::Texture>(finalMask.getTexture());
+    pathSprite = std::make_unique<sf::Sprite>(*pathTexture);
 }
 
 sf::RenderTexture Path::getMaskTexture() const {
@@ -42,9 +49,9 @@ sf::RenderTexture Path::getMaskTexture() const {
     int textureWidth = marbleTexture.getSize().x;
     int textureHeight = marbleTexture.getSize().y;
 
-    static const int width =  GameConstants::RENDER_TEXTURE_WIDTH;
+    static const int width = GameConstants::RENDER_TEXTURE_WIDTH;
     static const int height = GameConstants::RENDER_TEXTURE_HEIGHT;
-    static const int tileWidth = 32;
+    static const int tileWidth =  32;
     static const int tileHeight = 32;
     sf::RenderTexture mask;
     if (!mask.resize({width, height})) {
@@ -77,64 +84,70 @@ sf::RenderTexture Path::getMaskTexture() const {
 
 sf::RenderTexture Path::getPathTexture() const {
     sf::RenderTexture pathComb;
-    static const int width =  GameConstants::RENDER_TEXTURE_WIDTH;
+    static const int width = GameConstants::RENDER_TEXTURE_WIDTH;
     static const int height = GameConstants::RENDER_TEXTURE_HEIGHT;
 
     if (!pathComb.resize({width, height})) {
         Logger::error("Cannot resize pathComb");
     }
     pathComb.clear(sf::Color::Transparent);
-    for (const std::vector<Waypoint> path : mapWaypoints) {
-        sf::VertexArray pathway(sf::PrimitiveType::TriangleStrip,
-                                static_cast<int>(path.size() * 4 - 4));
-        for (int i = 0; i < path.size(); i++) {
-            if (i < path.size() - 1) {
-                // Calculate direction vector
-                sf::Vector2f dir = path[i + 1].position - path[i].position;
-                float length = std::sqrt(dir.x * dir.x + dir.y * dir.y);
-                if (length != 0) dir /= length;
+    if (waypoints.size() <= 0) return pathComb;
+    sf::VertexArray pathway(sf::PrimitiveType::TriangleStrip,
+                            static_cast<int>(waypoints.size() * 4 - 4));
+    for (int i = 0; i < waypoints.size(); i++) {
+        if (i < waypoints.size() - 1) {
+            // Calculate direction vector
+            sf::Vector2f dir =
+                static_cast<sf::Vector2f>(waypoints[i + 1] - waypoints[i]);
+            float length = std::sqrt(dir.x * dir.x + dir.y * dir.y);
+            if (length != 0) dir /= length;
 
-                // Perpendicular vector for thickness
-                sf::Vector2f perp(-dir.y, dir.x);
+            // Perpendicular vector for thickness
+            sf::Vector2f perp(-dir.y, dir.x);
 
-                float thickness = 45.f;  // Set your desired thickness here
+            float thickness = GameConstants::CELL_SIZE_WIDTH * 3;  // Set your desired thickness here
 
-                // Offset points
-                sf::Vector2f offset = (perp * (thickness / 2.f));
-                if (i == 0) {
-                    pathway[i * 4].position =
-                        path[i].position + offset - (dir * thickness) / 2.f;
-                    pathway[i * 4 + 1].position =
-                        path[i].position - offset - (dir * thickness) / 2.f;
+            // Offset points
+            sf::Vector2f offset = (perp * (thickness / 2.f));
+            if (i == 0) {
+                pathway[i * 4].position =
+                    static_cast<sf::Vector2f>(waypoints[i]) + offset -
+                    (dir * thickness) / 2.f;
+                pathway[i * 4 + 1].position =
+                    static_cast<sf::Vector2f>(waypoints[i]) - offset -
+                    (dir * thickness) / 2.f;
 
-                } else {
-                    pathway[i * 4].position = path[i].position + offset;
-                    pathway[i * 4 + 1].position = path[i].position - offset;
-                }
-
-                if (i == path.size() - 2) {
-                    pathway[i * 4 + 2].position =
-                        path[i + 1].position + offset + (dir * thickness) / 2.f;
-                    pathway[i * 4 + 3].position =
-                        path[i + 1].position - offset + (dir * thickness) / 2.f;
-                } else {
-                    pathway[i * 4 + 2].position = path[i + 1].position + offset;
-                    pathway[i * 4 + 3].position = path[i + 1].position - offset;
-                }
             } else {
-                // For the last point, repeat the previous offset
-                // pathway[i * 2].position = (path[i].position - path[i -
-                // 1].position) + pathway[(i - 1) * 2].position; pathway[i *
-                // 2 + 1].position = (path[i].position - path[i -
-                // 1].position) + pathway[(i - 1) * 2 + 1].position;
+                pathway[i * 4].position =
+                    static_cast<sf::Vector2f>(waypoints[i]) + offset;
+                pathway[i * 4 + 1].position =
+                    static_cast<sf::Vector2f>(waypoints[i]) - offset;
             }
-        }
-        for (int i = 0; i < pathway.getVertexCount(); i++)
-            pathway[i].color = sf::Color::White;
 
-        if (path.size() > 1) {
-            pathComb.draw(pathway);
+            if (i == waypoints.size() - 2) {
+                pathway[i * 4 + 2].position =
+                    (static_cast<sf::Vector2f>(waypoints[i + 1]) + offset +
+                     (dir * thickness) / 2.f);
+                pathway[i * 4 + 3].position =
+                    (static_cast<sf::Vector2f>(waypoints[i + 1]) - offset +
+                     (dir * thickness) / 2.f);
+            } else {
+                pathway[i * 4 + 2].position =
+                    static_cast<sf::Vector2f>(waypoints[i + 1]) + offset;
+                pathway[i * 4 + 3].position =
+                    static_cast<sf::Vector2f>(waypoints[i + 1]) - offset;
+            }
+        } else {
+            // For the last point, repeat the previous offset
+            // pathway[i * 2] = (waypoints[i] - waypoints[i -
+            // 1]) + pathway[(i - 1) * 2]; pathway[i *
+            // 2 + 1] = (waypoints[i] - waypoints[i -
+            // 1]) + pathway[(i - 1) * 2 + 1];
         }
     }
+    for (int i = 0; i < pathway.getVertexCount(); i++)
+        pathway[i].color = sf::Color::Blue;
+
+    pathComb.draw(pathway);
     return std::move(pathComb);
 }

@@ -82,24 +82,25 @@ void Application::run() {
     fpsDisplay.setFillColor(sf::Color::White);
     fpsDisplay.setOutlineColor(sf::Color::Black);
 
-    // int gridSize = 150;
-    // int octaves = 3;
-    // float persistance = -0.6;
-    // float lacunarity = 3.5;
-    // long long seed = 22071997LL;
-    // float depthFactor = 1.f;
-    // Terrain terrain(gridSize, octaves, persistance, lacunarity, seed, depthFactor);
-    // sf::Text terrainInfo(*ResourceManager::getInstance().getFont("league_spartan"));
-    // terrainInfo.setCharacterSize(20);
-    // terrainInfo.setPosition({150.f, 0.f});
-    // auto updateTerrain = [&terrainInfo, &gridSize, &octaves, &persistance,
-    //                       &lacunarity, &depthFactor, &seed]() {
-    //     terrainInfo.setString(std::format(
-    //         "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth factor {} Seed {}",
-    //         gridSize, octaves, persistance, lacunarity, depthFactor, seed));
-    // };
-    // terrainInfo.setFillColor(sf::Color::Red);
-    // updateTerrain();
+    int gridSize = 150;
+    int octaves = 3;
+    float persistance = -0.6;
+    float lacunarity = 3.5;
+    long long seed = 22071997LL;
+    float depthFactor = 1.f;
+    Terrain terrain(gridSize, octaves, persistance, lacunarity, seed, depthFactor);
+
+    sf::Text terrainInfo(*ResourceManager::getInstance().getFont("league_spartan"));
+    terrainInfo.setCharacterSize(20);
+    terrainInfo.setPosition({150.f, 0.f});
+    auto updateTerrain = [&terrainInfo, &gridSize, &octaves, &persistance,
+                          &lacunarity, &depthFactor, &seed]() {
+        terrainInfo.setString(std::format(
+            "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth factor {} Seed {}",
+            gridSize, octaves, persistance, lacunarity, depthFactor, seed));
+    };
+    terrainInfo.setFillColor(sf::Color::Red);
+    updateTerrain();
     while (isRunning) {
         frameCount++;
         while (auto event = Window::getInstance().pollEvent()) {
@@ -188,8 +189,8 @@ void Application::run() {
         clock.restart();
         while (timeElapsed > GameConstants::TICK_INTERVAL) {
             timeElapsed -= GameConstants::TICK_INTERVAL;
-            SceneManager::getInstance().update();
-            EnemyPanel::getInstance().update();
+            // SceneManager::getInstance().update();
+            // EnemyPanel::getInstance().update();
         }
         if (fpsTime > 1.f) {
             fpsTime -= 1.f;

@@ -18,20 +18,20 @@ void EntityPath::setDistanceFromStart(float distance) {
     Logger::debug(std::to_string(waypoints->size()));
     for (size_t i = 0; i < waypoints->size() - 1; ++i) {
         float segmentLength =
-            ((*waypoints)[i + 1].position - (*waypoints)[i].position).length();
+            ((*waypoints)[i + 1] - (*waypoints)[i]).length();
         if (accumulated + segmentLength >= distanceFromStart) {
             waypointIndex = i;
             float t = (distanceFromStart - accumulated) / segmentLength;
             position =
-                (*waypoints)[i].position +
-                t * ((*waypoints)[i + 1].position - (*waypoints)[i].position);
+                (*waypoints)[i] +
+                t * ((*waypoints)[i + 1] - (*waypoints)[i]);
             return;
         }
         accumulated += segmentLength;
     }
     // If distance exceeds path, set to last waypoint
     waypointIndex = waypoints->size() - 2;
-    position = (*waypoints)[waypoints->size() - 1].position;
+    position = (*waypoints)[waypoints->size() - 1];
 }
 
 float EntityPath::getOriginalSpeed() const { return speed; }
@@ -48,49 +48,49 @@ void EntityPath::update() {
         speed * GameConstants::TICK_INTERVAL * multiplier;
     while (remainingTravelDistance > 0 &&
            waypointIndex + 1 < waypoints->size()) {
-        sf::Vector2f unitVector = (waypoints->at(waypointIndex + 1).position -
-                                   waypoints->at(waypointIndex).position)
+        sf::Vector2f unitVector = (waypoints->at(waypointIndex + 1) -
+                                   waypoints->at(waypointIndex))
                                       .normalized();
         sf::Vector2f supposedNextPosition =
             position + remainingTravelDistance * unitVector;
 
         sf::Vector2f segmentEndToSupposed =
-            ((*waypoints)[waypointIndex + 1].position - supposedNextPosition);
+            ((*waypoints)[waypointIndex + 1] - supposedNextPosition);
         sf::Vector2f segmentStartToEnd =
-            ((*waypoints)[waypointIndex].position - supposedNextPosition);
+            ((*waypoints)[waypointIndex] - supposedNextPosition);
         if ((segmentEndToSupposed).dot(segmentStartToEnd) >= 0) {
             waypointIndex++;
             remainingTravelDistance -=
-                ((*waypoints)[waypointIndex].position - position).length();
-            position = (*waypoints)[waypointIndex].position;
-            multiplier *= (*waypoints)[waypointIndex].speedMultiplier;
+                ((*waypoints)[waypointIndex] - position).length();
+            position = (*waypoints)[waypointIndex];
+            // multiplier *= (*waypoints)[waypointIndex].speedMultiplier;
         } else {
             position = supposedNextPosition;
             remainingTravelDistance = 0;
         }
     }
     if (waypointIndex == waypoints->size() - 1)
-        position = waypoints->back().position;
+        position = waypoints->back();
 }
 
-const std::vector<Waypoint>* EntityPath::getWaypoints() const {
+const std::vector<sf::Vector2f>* EntityPath::getWaypoints() const {
     return waypoints;
 }
 
-void EntityPath::setWaypoints(const std::vector<Waypoint>* newWaypoints) {
+void EntityPath::setWaypoints(const std::vector<sf::Vector2f>* newWaypoints) {
     waypoints = newWaypoints;
     waypointIndex = 0;
     distanceFromStart = 0.f;
     if (waypoints && !waypoints->empty()) {
-        position = waypoints->front().position;
-        multiplier = waypoints->front().speedMultiplier;
+        position = waypoints->front();
+        // multiplier = waypoints->front().speedMultiplier;
     }
 }
 
 sf::Angle EntityPath::angleByVertical() {
     if (waypointIndex == waypoints->size() - 1) return sf::Angle(sf::radians(0));
-    sf::Vector2f displacement = ((*waypoints)[waypointIndex + 1].position -
-                                 (*waypoints)[waypointIndex].position)
+    sf::Vector2f displacement = ((*waypoints)[waypointIndex + 1] -
+                                 (*waypoints)[waypointIndex])
                                     .normalized();
     sf::Vector2f vertical = sf::Vector2f{0, -1}.normalized();
     return displacement.angle();

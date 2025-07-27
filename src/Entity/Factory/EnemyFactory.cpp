@@ -45,7 +45,7 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id, float di
         throw std::runtime_error("Missing required enemy fields in JSON");
     std::unique_ptr<Enemy> result(new Enemy(scene));
     result->animation.loadJson(enemyFile["sprite"]);
-    result->path.setWaypoints(map.getWaypoints(laneID));
+    result->path.setWaypoints(map.getWaypoints());
     result->path.setDistanceFromStart(distance);
     result->path.setSpeed(enemyFile["stats"]["speed"]);
     result->health.setMaxHealth(enemyFile["stats"]["max_health"]);

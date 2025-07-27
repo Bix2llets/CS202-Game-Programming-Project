@@ -1,4 +1,3 @@
-
 /**
  * @file Path.hpp
  * @brief Declares the Path class for managing paths and waypoints in the game.
@@ -13,20 +12,17 @@
 #include <string>
 #include <vector>
 
-#include "Gameplay/Waypoint.hpp"
-
 /**
  * @class Path
  * @brief Manages collections of waypoints for different paths and provides
  * drawing and access methods.
  *
- * The Path class stores multiple paths, each as a vector of Waypoints, and
+ * The Path class stores multiple paths, each as a vector of sf::Vector2fs, and
  * allows access to them by path number. It also provides methods to construct a
  * map from a vector of waypoints or from a file, and to draw the map.
  */
 class Path : public sf::Drawable {
-    std::vector<std::vector<Waypoint>>
-        mapWaypoints;  ///< Paths of waypoints in the map
+    std::vector<sf::Vector2f> waypoints;  ///< Paths of waypoints in the map
 
    public:
     /**
@@ -38,7 +34,7 @@ class Path : public sf::Drawable {
      * @param pathNumber The index of the path
      * @return Pointer to the vector of waypoints for the path
      */
-    const std::vector<Waypoint>* getWaypoints(int pathNumber);
+    const std::vector<sf::Vector2f>* getWaypoints();
 
     /**
      * @brief Draw the map (all waypoints/paths) to the render target
@@ -52,17 +48,29 @@ class Path : public sf::Drawable {
      * @param waypoints The vector of waypoints of the middle path
      * @param pathID The ID of the path
      */
-    void loadParallelWaypoints(const std::vector<Waypoint>& sampleMiddlePath);
+    void loadWaypoints(const std::vector<sf::Vector2f>& path);
+    
 
-    /** @brief Load a path from a vector of waypoints
-     * @param waypoints the path, represented in a unique_ptr of vector of
-     * Waypoints
-     * @param pathID The ID of the path (starting from 0)
-     */
-    void loadWaypoints(const std::vector<Waypoint>& path, int pathID);
+    // Move constructor
+    Path(Path&& other) noexcept
+        : waypoints(std::move(other.waypoints)),
+          pathSprite(std::move(other.pathSprite)),
+          pathTexture(std::move(other.pathTexture)) {}
+
+    // Move assignment operator
+    Path& operator=(Path&& other) noexcept {
+        if (this != &other) {
+            waypoints = std::move(other.waypoints);
+            pathSprite = std::move(other.pathSprite);
+            pathTexture = std::move(other.pathTexture);
+        }
+        return *this;
+    }
 
 
-    private:
+   private:
     sf::RenderTexture getPathTexture() const;
     sf::RenderTexture getMaskTexture() const;
+    std::unique_ptr<sf::Sprite> pathSprite;
+    std::unique_ptr<sf::Texture> pathTexture;
 };

@@ -18,8 +18,6 @@ Enemy::Enemy(const Enemy &other)
       health(other.health),
       enemyType(other.enemyType),
       reward(other.reward) {
-    // Deep copy of state and health
-    // If Enemy has any additional pointer or resource members, copy them here
 }
 
 void Enemy::update() {
