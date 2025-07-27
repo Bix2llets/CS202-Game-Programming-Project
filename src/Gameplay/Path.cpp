@@ -13,21 +13,33 @@
 const std::vector<sf::Vector2f>* Path::getWaypoints() { return &waypoints; }
 
 void Path::draw(sf::RenderTarget& target, sf::RenderStates state) const {
-    sf::RenderTexture mask = getMaskTexture();
-    sf::RenderTexture pathComb = getPathTexture();
-    pathComb.display();
-    sf::Sprite path(pathComb.getTexture());
-    sf::RenderStates multiState = state;
-    multiState.blendMode = sf::BlendMultiply;
-    mask.draw(path, multiState);
-    mask.display();
-    sf::Sprite maskedPath(mask.getTexture());
-    target.draw(maskedPath, state);
+
+    target.draw(*pathSprite, state);
 }
 
 void Path::loadWaypoints(const std::vector<sf::Vector2f>& path) {
-
     waypoints = path;
+    sf::RenderTexture mask = getMaskTexture();
+    sf::RenderTexture pathComb = getPathTexture();
+    pathComb.display();
+    mask.display();
+    sf::Sprite drawnPath(pathComb.getTexture());
+    sf::RenderStates multiState;
+    multiState.blendMode = sf::BlendMultiply;
+
+    sf::RenderTexture finalMask;
+    if (!finalMask.resize(pathComb.getSize())) {
+        Logger::error("Cannot resize finalMask");
+    }
+    finalMask.clear(sf::Color::Transparent);
+    finalMask.draw(drawnPath);
+    finalMask.display();
+    // * Draw final Mask => wrong
+    // * Draw path comb -> nothing
+    // * Draw mask => marble pattern
+
+    pathTexture = std::make_unique<sf::Texture>(finalMask.getTexture());
+    pathSprite = std::make_unique<sf::Sprite>(*pathTexture);
 }
 
 sf::RenderTexture Path::getMaskTexture() const {
@@ -39,7 +51,7 @@ sf::RenderTexture Path::getMaskTexture() const {
 
     static const int width = GameConstants::RENDER_TEXTURE_WIDTH;
     static const int height = GameConstants::RENDER_TEXTURE_HEIGHT;
-    static const int tileWidth = 32;
+    static const int tileWidth =  32;
     static const int tileHeight = 32;
     sf::RenderTexture mask;
     if (!mask.resize({width, height})) {
@@ -79,6 +91,7 @@ sf::RenderTexture Path::getPathTexture() const {
         Logger::error("Cannot resize pathComb");
     }
     pathComb.clear(sf::Color::Transparent);
+    if (waypoints.size() <= 0) return pathComb;
     sf::VertexArray pathway(sf::PrimitiveType::TriangleStrip,
                             static_cast<int>(waypoints.size() * 4 - 4));
     for (int i = 0; i < waypoints.size(); i++) {
@@ -92,7 +105,7 @@ sf::RenderTexture Path::getPathTexture() const {
             // Perpendicular vector for thickness
             sf::Vector2f perp(-dir.y, dir.x);
 
-            float thickness = 45.f;  // Set your desired thickness here
+            float thickness = GameConstants::CELL_SIZE_WIDTH * 3;  // Set your desired thickness here
 
             // Offset points
             sf::Vector2f offset = (perp * (thickness / 2.f));
@@ -133,7 +146,7 @@ sf::RenderTexture Path::getPathTexture() const {
         }
     }
     for (int i = 0; i < pathway.getVertexCount(); i++)
-        pathway[i].color = sf::Color::White;
+        pathway[i].color = sf::Color::Blue;
 
     pathComb.draw(pathway);
     return std::move(pathComb);

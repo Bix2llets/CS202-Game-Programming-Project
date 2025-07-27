@@ -91,6 +91,7 @@ void Application::run() {
     long long seed = 22071997LL;
     float depthFactor = 1.f;
     Terrain terrain(gridSize, octaves, persistance, lacunarity, seed, depthFactor);
+
     sf::Text terrainInfo(*ResourceManager::getInstance().getFont("league_spartan"));
     terrainInfo.setCharacterSize(20);
     terrainInfo.setPosition({150.f, 0.f});
@@ -174,8 +175,8 @@ void Application::run() {
                         continue;;
                     }
                     if (keyPress->code == sf::Keyboard::Key::R) {
-                        // terrain = std::move(Terrain(
-                        //     gridSize, octaves, persistance, lacunarity, seed, depthFactor));
+                        terrain = std::move(Terrain(
+                            gridSize, octaves, persistance, lacunarity, seed, depthFactor));
                         continue;
                     }
                 }
@@ -190,8 +191,8 @@ void Application::run() {
         clock.restart();
         while (timeElapsed > GameConstants::TICK_INTERVAL) {
             timeElapsed -= GameConstants::TICK_INTERVAL;
-            SceneManager::getInstance().update();
-            EnemyPanel::getInstance().update();
+            // SceneManager::getInstance().update();
+            // EnemyPanel::getInstance().update();
         }
         if (fpsTime > 1.f) {
             fpsTime -= 1.f;
@@ -199,8 +200,8 @@ void Application::run() {
             frameCount = 0;
         }
         Window::getInstance().clear(sf::Color::Black);
-        SceneManager::getInstance().render();
-        // terrain.debugRender();
+        // SceneManager::getInstance().render();
+        terrain.debugRender();
         Window::getInstance().draw(fpsDisplay);
         Window::getInstance().draw(terrainInfo);
         Window::getInstance().draw(EnemyPanel::getInstance());

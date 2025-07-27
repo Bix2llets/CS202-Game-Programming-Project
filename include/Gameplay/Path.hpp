@@ -1,4 +1,3 @@
-
 /**
  * @file Path.hpp
  * @brief Declares the Path class for managing paths and waypoints in the game.
@@ -50,8 +49,28 @@ class Path : public sf::Drawable {
      * @param pathID The ID of the path
      */
     void loadWaypoints(const std::vector<sf::Vector2f>& path);
+    
+
+    // Move constructor
+    Path(Path&& other) noexcept
+        : waypoints(std::move(other.waypoints)),
+          pathSprite(std::move(other.pathSprite)),
+          pathTexture(std::move(other.pathTexture)) {}
+
+    // Move assignment operator
+    Path& operator=(Path&& other) noexcept {
+        if (this != &other) {
+            waypoints = std::move(other.waypoints);
+            pathSprite = std::move(other.pathSprite);
+            pathTexture = std::move(other.pathTexture);
+        }
+        return *this;
+    }
+
 
    private:
     sf::RenderTexture getPathTexture() const;
     sf::RenderTexture getMaskTexture() const;
+    std::unique_ptr<sf::Sprite> pathSprite;
+    std::unique_ptr<sf::Texture> pathTexture;
 };
