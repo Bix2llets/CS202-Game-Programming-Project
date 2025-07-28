@@ -7,9 +7,8 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "Utility/lerp.hpp"
-Button::Button(sf::FloatRect geometricInfo, Mediator& mediator)
-    : geometricInfo(geometricInfo),
-      mediator(mediator),
+Button::Button(Mediator& mediator)
+    : mediator(mediator),
       onClickMessage("ButtonClicked"),
       isPressed{false},
       isHovered{false} {
@@ -43,9 +42,6 @@ void Button::click() {
 }
 
 void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    sf::RectangleShape rect;
-    rect.setPosition(geometricInfo.position);
-    rect.setSize(geometricInfo.size);
     sf::Color fillColor;
     sf::Color textColor;
 
@@ -80,14 +76,26 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
             ColorMixer::perceptualLerp(style.getClick().text, textColor,
                                        reversePress.getCompletionPercentage());
     }
-    rect.setFillColor(fillColor);
-
-    target.draw(rect, states);
+    if (backgroundSprite) {
+        sf::Sprite renderingSprite = *backgroundSprite;
+        renderingSprite.setColor(fillColor);
+        target.draw(renderingSprite, states);
+    }
+    else {
+        sf::RectangleShape rect;
+        rect.setPosition(geometricInfo.position);
+        rect.setSize(geometricInfo.size);
+        rect.setFillColor(fillColor);
+    
+        target.draw(rect, states);
+        
+    }
     // ? Uncomment these lines to see the bounding box for the text of button
     // sf::RectangleShape textBound;
     // textBound.setSize(label->getLocalBounds().size);
     // textBound.setPosition(label->getPosition());
-    // textBound.setOrigin(textBound.getLocalBounds().position + textBound.getLocalBounds().size / 2.f);
+    // textBound.setOrigin(textBound.getLocalBounds().position +
+    // textBound.getLocalBounds().size / 2.f);
     // textBound.setFillColor(sf::Color::Black);
     // textBound.setOutlineColor(sf::Color::Green);
     // textBound.setOutlineThickness(1.f);
@@ -103,9 +111,8 @@ void Button::onMouseEvent(Mouse button, UserEvent event,
                           const sf::Vector2f& worldPosition,
                           const sf::Vector2f& windowPosition) {
     if (button == Mouse::Left && event == UserEvent::Press)
-        if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition))) {
-            if (isPressed == false){
-                
+        if (contains(static_cast<sf::Vector2f>(windowPosition))) {
+            if (isPressed == false) {
                 isPressed = true;
                 press.reset();
                 press.setRemainingTime(reversePress.getPassedTime());
@@ -124,7 +131,7 @@ void Button::onMouseEvent(Mouse button, UserEvent event,
         press.reset();
     }
     if (event == UserEvent::Move) {
-        if (geometricInfo.contains(static_cast<sf::Vector2f>(windowPosition))) {
+        if (contains(static_cast<sf::Vector2f>(windowPosition))) {
             if (isHovered == true) return;
             isHovered = true;
             hover.reset();
@@ -191,8 +198,15 @@ void Button::resetAnimation() {
     reversePress.setRemainingTime(0);
     isPressed = false;
     isHovered = false;
-
-
 }
 
-void Button::onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) {}
+void Button::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                           const sf::Vector2f& windowPosition) {}
+
+
+bool Button::contains(const sf::Vector2f &windowPosition) {
+    if (backgroundSprite) {
+        return backgroundSprite->getGlobalBounds().contains(windowPosition);
+    }
+    return geometricInfo.contains(windowPosition);
+}

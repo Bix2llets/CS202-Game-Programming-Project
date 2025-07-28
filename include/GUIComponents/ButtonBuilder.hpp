@@ -21,6 +21,7 @@ class ButtonBuilder {
     std::function<void(Button*)> callback;
 
     std::string fontName;
+    const sf::Texture* tex;
 
    public:
     ButtonBuilder(Mediator& mediator);
@@ -38,6 +39,8 @@ class ButtonBuilder {
     ButtonBuilder& loadJson(std::string id);
 
     ButtonBuilder& setCallback(std::function<void(Button*)> call);
+
+    ButtonBuilder& setBackground(const sf::Texture* tex);
 
     std::unique_ptr<Button> build() ;
 };

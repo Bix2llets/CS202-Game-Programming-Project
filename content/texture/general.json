@@ -14,5 +14,9 @@
     {
         "id": "marble",
         "path": "assets/texture/marble.png"
+    },
+    {
+        "id": "button_base",
+        "path": "assets/texture/buttonBase.png"
     }
 ]

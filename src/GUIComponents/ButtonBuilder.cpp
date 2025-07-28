@@ -2,8 +2,7 @@
 
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
-ButtonBuilder::ButtonBuilder(Mediator& mediator)
-    : mediator{mediator} {}
+ButtonBuilder::ButtonBuilder(Mediator& mediator) : mediator{mediator} {}
 
 ButtonBuilder& ButtonBuilder::setText(const std::string& text) {
     this->text = text;
@@ -33,6 +32,7 @@ ButtonBuilder& ButtonBuilder::reset() {
     size = {0.f, 0.f};
     notificationMessage = "";
     callback = nullptr;
+    tex = nullptr;
     return *this;
 }
 
@@ -42,15 +42,23 @@ ButtonBuilder& ButtonBuilder::loadJson(std::string id) {
 }
 
 std::unique_ptr<Button> ButtonBuilder::build() {
-    std::unique_ptr<Button> result(
-        new Button(sf::FloatRect{position, size}, mediator));
+    std::unique_ptr<Button> result(new Button(mediator));
 
+    result->geometricInfo = {position, size};
     result->setNotificationMessage(notificationMessage);
     result->style.loadJson(styleConfig);
     result->setOnClick(callback);
     fontName = styleConfig["font"];
-    std::unique_ptr<sf::Text> label =
-        std::make_unique<sf::Text>(*ResourceManager::getInstance().getFont(fontName), text, 24);
+
+    if (tex) {
+        std::unique_ptr<sf::Sprite> sprite = std::make_unique<sf::Sprite>(*tex);
+        // sprite->setOrigin((sprite->getLocalBounds().position + sprite->getLocalBounds().size) / 2.f);
+        sprite->setScale({size.x / sprite->getLocalBounds().size.x, size.y / sprite->getLocalBounds().size.y});
+        sprite->setPosition(position);
+        result->backgroundSprite = std::move(sprite);
+    }
+    std::unique_ptr<sf::Text> label = std::make_unique<sf::Text>(
+        *ResourceManager::getInstance().getFont(fontName), text, 24);
     Logger::debug(std::format("{} {} {} {}", label->getLocalBounds().position.x,
                               label->getLocalBounds().position.y,
                               label->getLocalBounds().size.x,
@@ -65,5 +73,10 @@ std::unique_ptr<Button> ButtonBuilder::build() {
 
 ButtonBuilder& ButtonBuilder::setCallback(std::function<void(Button*)> call) {
     callback = call;
+    return *this;
+}
+
+ButtonBuilder& ButtonBuilder::setBackground(const sf::Texture* tex) {
+    this->tex = tex;
     return *this;
 }

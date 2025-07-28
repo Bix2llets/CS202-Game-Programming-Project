@@ -28,6 +28,7 @@ MainMenu::MainMenu()
                      .setCallback([this](Button *button) {
                          Logger::debug("Setting button pressed");
                      })
+                     .setBackground(ResourceManager::getInstance().getTexture("button_base"))
                      .build();
     Logger::debug("Main menu created");
 

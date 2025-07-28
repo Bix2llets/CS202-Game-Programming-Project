@@ -1,10 +1,10 @@
 #include "EntityManager.hpp"
 
+#include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
-#include "Core/KeyboardState.hpp"
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
@@ -173,4 +173,6 @@ void EntityManager::onKeyEvent(Key key, UserEvent event,
     }
 };
 
-void EntityManager::onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) {}
+void EntityManager::onScrollEvent(float delta,
+                                  const sf::Vector2f& worldPosition,
+                                  const sf::Vector2f& windowPosition) {}
