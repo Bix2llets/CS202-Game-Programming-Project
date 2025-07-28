@@ -22,6 +22,7 @@ class EntityPath {
 
     void setDistanceFromStart(float distance);
     void setSpeed(float speed);
+    void setSpeedMultiplier(float multiplier);
     void setWaypoints(const std::vector<sf::Vector2f>* newWaypoints);
     void update();
 
