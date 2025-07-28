@@ -10,7 +10,7 @@
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
 
-const std::vector<sf::Vector2f>* Path::getWaypoints() { return &waypoints; }
+const std::vector<sf::Vector2f>& Path::getWaypoints() { return waypoints; }
 
 void Path::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(*pathSprite, state);
@@ -48,8 +48,10 @@ sf::RenderTexture Path::getMaskTexture() const {
     int textureWidth = marbleTexture.getSize().x;
     int textureHeight = marbleTexture.getSize().y;
 
-    static const int width = GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE;
-    static const int height = GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE;
+    static const int width =
+        GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE;
+    static const int height =
+        GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE;
     static const int tileWidth = 32;
     static const int tileHeight = 32;
     sf::RenderTexture mask;
@@ -83,8 +85,10 @@ sf::RenderTexture Path::getMaskTexture() const {
 
 sf::RenderTexture Path::getPathTexture() const {
     sf::RenderTexture pathComb;
-    static const int width = GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE;
-    static const int height = GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE;
+    static const int width =
+        GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE;
+    static const int height =
+        GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE;
 
     if (!pathComb.resize({width, height})) {
         Logger::error("Cannot resize pathComb");

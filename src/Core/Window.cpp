@@ -19,6 +19,8 @@ Window::Window()
     isMiddlePressed = false;
     middlePressPosition = {0.f, 0.f};
     previousMiddleMousePosition = {0.f, 0.f};
+
+    adjustUserView();
 }
 Window& Window::getInstance() {
     static Window instance;
@@ -88,4 +90,13 @@ void Window::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
     userView.setSize(userView.getSize() * (1 + delta * ZOOM_FACTOR));
     userView.move((userView.getCenter() - worldPosition) * delta * ZOOM_FACTOR);
     window.setView(userView);
+}
+
+void Window::adjustUserView() {
+    auto winSize = window.getSize();
+    float aspect = static_cast<float>(winSize.x) / winSize.y;
+    float viewHeight = GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE;
+    float viewWidth = viewHeight * aspect;
+    userView.setSize({viewWidth, viewHeight});
+    userView.setCenter({viewWidth / 2.f, viewHeight / 2.f});
 }

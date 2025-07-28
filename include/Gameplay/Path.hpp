@@ -34,7 +34,7 @@ class Path : public sf::Drawable {
      * @param pathNumber The index of the path
      * @return Pointer to the vector of waypoints for the path
      */
-    const std::vector<sf::Vector2f>* getWaypoints();
+    const std::vector<sf::Vector2f>&getWaypoints();
 
     /**
      * @brief Draw the map (all waypoints/paths) to the render target

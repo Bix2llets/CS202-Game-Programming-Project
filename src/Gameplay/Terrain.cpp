@@ -8,12 +8,10 @@
 #include "Gameplay/TerrainGenerator.hpp"
 #include "Utility/logger.hpp"
 #include "Base/Constants.hpp"
-Terrain::Terrain(int zoomFactor, int octave, float persistance,
-                 float lacunarity, long long seed, float depthFactor) {
+Terrain::Terrain(TerrainParameter parameter) {
     TerrainGenerator generator;
     generator.setResultSize(sf::Vector2i(GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT));
-    std::vector<std::vector<float>> perlinResult = generator.getNoiseMap(
-        zoomFactor, octave, persistance, lacunarity, seed, depthFactor);
+    std::vector<std::vector<float>> perlinResult = generator.getNoiseMap(parameter);
 
     // std::vector<std::vector<float>> perlinResult(
     //     100, std::vector<float>(100, 0.55f));
@@ -94,7 +92,7 @@ void Terrain::debugRender() {
     //     }
 }
 
-Terrain::Terrain() : Terrain(50, 4, 0.5, 20, 0, 1) {}
+Terrain::Terrain() : Terrain(TerrainParameter()) {}
 
 Terrain::Terrain(Terrain&& other) noexcept
     : mapTexture(std::move(other.mapTexture)),
@@ -123,4 +121,13 @@ const std::vector<unsigned int> Terrain::elevationColors = {
 Height::Height Terrain::getCellType(sf::Vector2f position) {
     return heightMap[static_cast<int>(position.y) / 4]
                     [static_cast<int>(position.x) / 4];
+}
+
+const std::vector<sf::Vector2f>* Terrain::getPath() {
+    return &path.getWaypoints();
+}
+
+void Terrain::render(sf::RenderStates state) const {
+    Window::getInstance().getRenderWindow().draw(*map, state);
+    Window::getInstance().getRenderWindow().draw(path, state);
 }

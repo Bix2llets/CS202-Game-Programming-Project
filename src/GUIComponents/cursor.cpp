@@ -7,6 +7,8 @@
 #include "Core/UserEvent.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
 #include "Utility/Logger.hpp"
+
+#include "Core/Window.hpp"
 std::unique_ptr<Cursor> Cursor::instance = nullptr;
 Cursor::Cursor() : position(0.f, 0.f) {}
 
@@ -43,6 +45,7 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         {static_cast<float>(radius + 1), static_cast<float>(radius + 1)});
     outerRing.setPosition(position);
     outerRing.setFillColor(sf::Color::Black);
+    Window::getInstance().toggleGUIMode();
     target.draw(outerRing, states);
     target.draw(shape, states);
 

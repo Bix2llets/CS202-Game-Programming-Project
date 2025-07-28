@@ -9,21 +9,20 @@
 #include "Utility/logger.hpp"
 TerrainGenerator::TerrainGenerator() {};
 
-std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
-    int zoomFactor, int octaves, float persistence, float lacunarity,
-    long long seed, float depthFactor) {
-    if (zoomFactor == 0) zoomFactor = 1;
-    createPermutation(seed);
+std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(TerrainParameter parameter) {
+    
+    if (parameter.gridSize == 0) parameter.gridSize = 1;
+    createPermutation(parameter.seed);
     std::vector<std::vector<float>> result;
     result.resize(resultSize.y);
     for (auto &vect : result) vect.resize(resultSize.x);
 
-    float initialFrequency = 1.f / zoomFactor;
+    float initialFrequency = 1.f / parameter.gridSize;
     float maxAmplitude = 0.0f;
     float currentAmplitude = 1.0f;
-    for (int o = 0; o < octaves; ++o) {
+    for (int o = 0; o < parameter.octaves; ++o) {
         maxAmplitude += currentAmplitude;
-        currentAmplitude *= persistence;
+        currentAmplitude *= parameter.persistence;
     }
     // -----------
     // * Concurrency generating the terrain
@@ -46,23 +45,22 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
         if (rowIndex == available - 1) endY += leftover;
 
         Logger::debug("Add threads");
-        threads.emplace_back([this, startY, endY, initialFrequency, persistence,
-                              lacunarity, maxAmplitude, octaves, &result,
+        threads.emplace_back([this, startY, endY, initialFrequency, parameter, maxAmplitude, &result,
                               &minValue, &maxValue]() {
             for (int y = startY; y <= endY; y++) {
                 for (int x = 0; x < resultSize.x; x++) {
                     float amplitude = 1.0f;
                     float noiseHeight = 0.0f;
                     float currentFrequency = initialFrequency;
-                    for (int o = 0; o < octaves; ++o) {
+                    for (int o = 0; o < parameter.octaves; ++o) {
                         if (currentFrequency > 1.f) currentFrequency = 1.f;
                         float sampleX = x * currentFrequency;
                         float sampleY = y * currentFrequency;
                         float perlinValue = perlin(sampleX, sampleY);
 
                         noiseHeight += perlinValue * amplitude;
-                        amplitude *= persistence;
-                        currentFrequency *= lacunarity;
+                        amplitude *= parameter.persistence;
+                        currentFrequency *= parameter.lacunarity;
                     }
 
                     result[y][x] = (noiseHeight / maxAmplitude + 1.0f) / 2.0f;
@@ -96,7 +94,7 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
         Logger::debug("Add threads");
 
         normalizingThreads.emplace_back(
-            [&result, startY, endY, minValue, range, depthFactor]() {
+            [&result, startY, endY, minValue, range, parameter]() {
                 for (int y = startY; y <= endY; y++) {
                     for (int x = 0; x < result[y].size(); x++) {
                         if ((result[y][x] - minValue) / range < 0)
@@ -104,7 +102,7 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(
                                 std::format("{} {}", result[y][x],
                                             (result[y][x] - minValue) / range));
                         result[y][x] =
-                            std::pow(((result[y][x] - minValue) / range), depthFactor);
+                            std::pow(((result[y][x] - minValue) / range), parameter.depthFactor);
                     }
                 }
             });
@@ -185,7 +183,7 @@ float TerrainGenerator::lerp(float a, float b, float t) {
 
 void TerrainGenerator::setResultSize(sf::Vector2i size) { resultSize = size; }
 
-void TerrainGenerator::createPermutation(long long seed) {
+void TerrainGenerator::createPermutation(int seed) {
     std::vector<int> shuffleArr(256);
     for (int i = 0; i < shuffleArr.size(); i++) shuffleArr[i] = i;
 

@@ -1,69 +1,26 @@
 {
     "id": "example_level",
-    "name": "The example Level",
-    "description": "A template made for creation of the default level",
-    "difficulty": "medium",
-    "waypoints": [
-        [
-            [
-                100,
-                100,
-                1
-            ],
-            [
-                500,
-                100,
-                1
-            ],
-            [
-                500,
-                1000,
-                0.9
-            ],
-            [
-                700,
-                600,
-                1
-            ],
-            [
-                700,
-                700,
-                1
-            ],
-            [
-                300,
-                700,
-                10
-            ],
-            [
-                300,
-                0,
-                1
-            ]
-        ]
-    ],
+    "name": "The example enemy configuration",
+    "description": "A template made for creation of the default configuration",
     "wave": [
         [
             {
                 "id": "basic_enemy",
                 "quantity": 2,
                 "spawn_delay": 0,
-                "internal_delay": 1,
-                "lane": 0
+                "internal_delay": 1
             },
             {
                 "id": "basic_enemy",
                 "quantity": 5,
                 "spawn_delay": 2,
-                "internal_delay": 5,
-                "lane": 0
+                "internal_delay": 5
             },
             {
                 "id": "basic_enemy",
                 "quantity": 10,
                 "spawn_delay": 1,
-                "internal_delay": 1,
-                "lane": 0
+                "internal_delay": 1
             }
         ]
     ]

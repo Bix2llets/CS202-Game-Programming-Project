@@ -38,10 +38,8 @@ void Setting::update() {
 }
 
 void Setting::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    sf::View previousView = target.getView();
-    target.setView(target.getDefaultView());
+    Window::getInstance().toggleGUIMode();
     for (auto &button : alwaysShownElements) target.draw(*button, states);
-    target.setView(previousView);
 }
 
 void Setting::createButtons() {
@@ -148,18 +146,22 @@ void Setting::setupHandlers() {
         using namespace GameConstants;
         Window::getInstance().getRenderWindow().setSize(
             {DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT});
+        Window::getInstance().adjustUserView();
         Logger::info(std::format("Changed window size to {}x{}",
                                  DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT));
     });
     subscribe("Resolution2", [this](std::any, std::any) {
         using namespace GameConstants;
-        Window::getInstance().getRenderWindow().setSize({WINDOW_WIDTH_1, WINDOW_HEIGHT_1});
+        Window::getInstance().getRenderWindow().setSize(
+            {WINDOW_WIDTH_1, WINDOW_HEIGHT_1});
         Logger::info(std::format("Changed window size to {}x{}", WINDOW_WIDTH_1,
                                  WINDOW_HEIGHT_1));
     });
     subscribe("Resolution3", [this](std::any, std::any) {
         using namespace GameConstants;
-        Window::getInstance().getRenderWindow().setSize({WINDOW_WIDTH_2, WINDOW_HEIGHT_2});
+        Window::getInstance().getRenderWindow().setSize(
+            {WINDOW_WIDTH_2, WINDOW_HEIGHT_2});
+        Window::getInstance().adjustUserView();
         Logger::info(std::format("Changed window size to {}x{}", WINDOW_WIDTH_2,
                                  WINDOW_HEIGHT_2));
     });

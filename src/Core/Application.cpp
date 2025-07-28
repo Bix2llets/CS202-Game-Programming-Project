@@ -70,7 +70,8 @@ Application::Application() : isRunning{true} {
 }
 
 Application::~Application() {
-    if (Window::getInstance().getRenderWindow().isOpen()) Window::getInstance().getRenderWindow().close();
+    if (Window::getInstance().getRenderWindow().isOpen())
+        Window::getInstance().getRenderWindow().close();
     Logger::success("Application exit success");
 }
 
@@ -86,30 +87,33 @@ void Application::run() {
     fpsDisplay.setPosition({0.f, 0.f});
     fpsDisplay.setFillColor(sf::Color::White);
     fpsDisplay.setOutlineColor(sf::Color::Black);
+    TerrainParameter parameter;
+    parameter.gridSize = 150;
+    parameter.octaves = 3;
+    parameter.persistence = -0.6;
+    parameter.lacunarity = 3.5;
+    parameter.seed = 22071997LL;
+    parameter.depthFactor = 1.f;
+    Terrain terrain(parameter);
 
-    int gridSize = 150;
-    int octaves = 3;
-    float persistance = -0.6;
-    float lacunarity = 3.5;
-    long long seed = 22071997LL;
-    float depthFactor = 1.f;
-    Terrain terrain(gridSize, octaves, persistance, lacunarity, seed, depthFactor);
-
-    sf::Text terrainInfo(*ResourceManager::getInstance().getFont("league_spartan"));
-    terrainInfo.setCharacterSize(20);
-    terrainInfo.setPosition({150.f, 0.f});
-    auto updateTerrain = [&terrainInfo, &gridSize, &octaves, &persistance,
-                          &lacunarity, &depthFactor, &seed]() {
-        terrainInfo.setString(std::format(
-            "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth factor {} Seed {}",
-            gridSize, octaves, persistance, lacunarity, depthFactor, seed));
-    };
-    terrainInfo.setFillColor(sf::Color::Red);
-    updateTerrain();
+    // sf::Text terrainInfo(
+    //     *ResourceManager::getInstance().getFont("league_spartan"));
+    // terrainInfo.setCharacterSize(20);
+    // terrainInfo.setPosition({150.f, 0.f});
+    // auto updateTerrain = [&parameter, &terrainInfo]() {
+    //     terrainInfo.setString(std::format(
+    //         "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth "
+    //         "factor {} Seed {}",
+    //         parameter.gridSize, parameter.octaves, parameter.persistence,
+    //         parameter.lacunarity, parameter.depthFactor, parameter.seed));
+    // };
+    // terrainInfo.setFillColor(sf::Color::Red);
+    // updateTerrain();
     while (isRunning) {
         frameCount++;
         Window::getInstance().toggleUserMode();
-        while (auto event = Window::getInstance().getRenderWindow().pollEvent()) {
+        while (auto event =
+                   Window::getInstance().getRenderWindow().pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
                 Window::getInstance().getRenderWindow().close();
                 isRunning = false;
@@ -128,59 +132,60 @@ void Application::run() {
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F5) {
-                        gridSize += 10;
-                        updateTerrain();
+                        parameter.gridSize += 10;
+                        // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F6) {
-                        gridSize -= 10;
-                        updateTerrain();
+                        parameter.gridSize -= 10;
+                        // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F7) {
-                        octaves++;
-                        updateTerrain();
+                        parameter.octaves++;
+                        // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F8) {
-                        octaves--;
-                        updateTerrain();
+                        parameter.octaves--;
+                        // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F9) {
-                        persistance += 0.1;
-                        updateTerrain();
+                        parameter.persistence += 0.1;
+                        // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F10) {
-                        persistance -= 0.1;
-                        updateTerrain();
+                        parameter.persistence -= 0.1;
+                        // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F11) {
-                        lacunarity += 0.1;
-                        updateTerrain();
+                        parameter.lacunarity += 0.1;
+                        // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F12) {
-                        lacunarity -= 0.1;
-                        updateTerrain();
+                        parameter.lacunarity -= 0.1;
+                        // updateTerrain();
                         continue;
                     }
 
                     if (keyPress->code == sf::Keyboard::Key::LBracket) {
-                        depthFactor -= 0.1f;
-                        updateTerrain();
-                        continue;;
+                        parameter.depthFactor -= 0.1f;
+                        // updateTerrain();
+                        continue;
+                    
                     }
                     if (keyPress->code == sf::Keyboard::Key::RBracket) {
-                        depthFactor += 0.1f;
-                        updateTerrain();
-                        continue;;
+                        parameter.depthFactor += 0.1f;
+                        // updateTerrain();
+                        continue;
+                        
                     }
                     if (keyPress->code == sf::Keyboard::Key::R) {
-                        terrain = std::move(Terrain(
-                            gridSize, octaves, persistance, lacunarity, seed, depthFactor));
+                        // terrain = std::move(Terrain(parameter));
                         continue;
                     }
                 }
@@ -195,8 +200,8 @@ void Application::run() {
         clock.restart();
         while (timeElapsed > GameConstants::TICK_INTERVAL) {
             timeElapsed -= GameConstants::TICK_INTERVAL;
-            // SceneManager::getInstance().update();
-            // EnemyPanel::getInstance().update();
+            SceneManager::getInstance().update();
+            EnemyPanel::getInstance().update();
         }
         if (fpsTime > 1.f) {
             fpsTime -= 1.f;
@@ -204,11 +209,11 @@ void Application::run() {
             frameCount = 0;
         }
         Window::getInstance().getRenderWindow().clear(sf::Color::Black);
-        // SceneManager::getInstance().render();
-        terrain.debugRender();
+        SceneManager::getInstance().render();
+        // terrain.debugRender();
         Window::getInstance().toggleGUIMode();
         Window::getInstance().getRenderWindow().draw(fpsDisplay);
-        Window::getInstance().getRenderWindow().draw(terrainInfo);
+        // Window::getInstance().getRenderWindow().draw(terrainInfo);
         Window::getInstance().getRenderWindow().draw(EnemyPanel::getInstance());
         Window::getInstance().getRenderWindow().draw(Cursor::getInstance());
         Window::getInstance().toggleUserMode();
