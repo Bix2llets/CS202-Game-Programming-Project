@@ -2,17 +2,16 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Core/JSONLoader.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Enemy/MovingState.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Path.hpp"
 #include "Scene/Scene.hpp"
-#include "Core/JSONLoader.hpp"
-EnemyFactory::EnemyFactory(Path &map, Scene &scene)
+EnemyFactory::EnemyFactory(Terrain &map, Scene &scene)
     : map(map), scene(scene) {}
-void EnemyFactory::setDifficulty(Difficulty difficulty)
-{
+void EnemyFactory::setDifficulty(Difficulty difficulty) {
     switch (difficulty) {
         case Difficulty::Easy: {
             rewardMultiplier = 1.2f;
@@ -38,20 +37,21 @@ void EnemyFactory::setDifficulty(Difficulty difficulty)
     }
 }
 
-std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id, float distance, int laneID) {
+std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
+                                                 float distance) {
     nlohmann::json enemyFile = (JSONLoader::getInstance().getEnemy(id));
     if (!enemyFile.contains("sprite") || !enemyFile.contains("stats") ||
         !enemyFile.contains("type"))
         throw std::runtime_error("Missing required enemy fields in JSON");
     std::unique_ptr<Enemy> result(new Enemy(scene));
     result->animation.loadJson(enemyFile["sprite"]);
-    result->path.setWaypoints(map.getWaypoints());
+    result->path.setWaypoints(map.getPath());
     result->path.setDistanceFromStart(distance);
     result->path.setSpeed(enemyFile["stats"]["speed"]);
     result->health.setMaxHealth(enemyFile["stats"]["max_health"]);
     result->health.setHealth(result->health.getMaxHealth());
     result->healTimer.setTimeInterval(enemyFile["stats"]["heal_interval"])
-        .setTimerMode(TimerMode::Continuous)
+        .setTimerMode(TimerMode::Single)
         .setRemainingTime(enemyFile["stats"]["heal_interval"]);
     result->healAmount = enemyFile["stats"]["heal_amount"];
     result->enemyType =

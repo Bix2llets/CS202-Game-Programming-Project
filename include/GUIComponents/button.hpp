@@ -80,7 +80,7 @@ class Button : public sf::Drawable, public MouseObserver {
     virtual void onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition);
-
+        void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) override;
     void subscribeMouseAll(MouseState& mouseState);
     void unSubscribeMouseAll(MouseState& mouseState);
     void update();

@@ -10,6 +10,8 @@
 #include <json.hpp>
 #include <string>
 
+#include "Gameplay/Terrain.hpp"
+
 class Enemy;
 enum class Difficulty;
 class Path;
@@ -27,7 +29,7 @@ class EnemyFactory {
    private:
     static constexpr float REWARD_BASIC =
         7;         ///< Base reward for defeating a basic enemy
-    Path &map;      ///< Reference to the game map for waypoint assignment
+    Terrain &map;     ///< Reference to the game map for waypoint assignment
     Scene &scene;  ///< Reference to the current scene
     float
         rewardMultiplier;  ///< Multiplier for enemy rewards based on difficulty
@@ -42,7 +44,7 @@ class EnemyFactory {
      * @param map Reference to the game map
      * @param scene Reference to the current scene
      */
-    EnemyFactory(Path &map, Scene &scene);
+    EnemyFactory(Terrain &map, Scene &scene);
 
     /**
      * @brief Create a basic enemy with specified position, rotation, and lane
@@ -51,8 +53,7 @@ class EnemyFactory {
      * @param laneID Path/lane identifier
      * @return Enemy instance
      */
-    std::unique_ptr<Enemy> createEnemy(const std::string &ID, float distance,
-                                       int laneID);
+    std::unique_ptr<Enemy> createEnemy(const std::string &ID, float distance);
 
     /**
      * @brief Load enemy configuration from a nlohmann::json object.

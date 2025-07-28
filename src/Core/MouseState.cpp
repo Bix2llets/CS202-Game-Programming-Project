@@ -7,11 +7,10 @@
 
 #include "Base/Constants.hpp"
 #include "Core/MouseObserver.hpp"
-#include "Utility/SignalMap.hpp"
-#include "Utility/logger.hpp"
-#include "Utility/WindowScale.hpp"
-
 #include "Core/Window.hpp"
+#include "Utility/SignalMap.hpp"
+#include "Utility/WindowScale.hpp"
+#include "Utility/logger.hpp"
 void MouseState::addSubscriber(Mouse button, UserEvent event,
                                MouseObserver* subscriber) {
     if (std::find(subscriberList[button][event].begin(),
@@ -56,13 +55,13 @@ void MouseState::handleEvent(const std::optional<sf::Event>& event) {
     processMousePress(event);
     processMouseRelease(event);
     processMouseMovement(event);
+    processMouseScroll(event);
 }
 
 MouseState::MouseState() {}
 
-
 void MouseState::processMousePress(const std::optional<sf::Event>& event) {
-    sf::RenderWindow& window = Window::getInstance();
+    sf::RenderWindow& window = Window::getInstance().getRenderWindow();
     const auto mouseClickEvent = event->getIf<sf::Event::MouseButtonPressed>();
     if (mouseClickEvent) {
         sf::Vector2f windowPosition =
@@ -94,7 +93,7 @@ void MouseState::processMouseRelease(const std::optional<sf::Event>& event) {
         sf::Vector2f windowPosition =
             static_cast<sf::Vector2f>(mouseReleaseEvent->position);
         sf::Vector2f worldPosition =
-            Window::getInstance().mapPixelToCoords(mouseReleaseEvent->position);
+            Window::getInstance().getRenderWindow().mapPixelToCoords(mouseReleaseEvent->position);
         windowPosition = WindowScale::screenScale(windowPosition);
         worldPosition = WindowScale::screenScale(worldPosition);
         // Logger::info(std::format("{} {} {} {}", windowPosition.x,
@@ -118,16 +117,18 @@ void MouseState::processMouseMovement(const std::optional<sf::Event>& event) {
     sf::Vector2f windowPosition =
         static_cast<sf::Vector2f>(mouseMovement->position);
     sf::Vector2f worldPosition =
-        Window::getInstance().mapPixelToCoords(mouseMovement->position);
+        Window::getInstance().getRenderWindow().mapPixelToCoords(mouseMovement->position);
     windowPosition = WindowScale::screenScale(windowPosition);
-    worldPosition =  WindowScale::screenScale(worldPosition);
+    worldPosition = WindowScale::screenScale(worldPosition);
 
     Mouse mouseButton;
-     // * Mouse movement when left mouse button is holding
+    // * Mouse movement when left mouse button is holding
     if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
         mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Left);
     else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
         mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Right);
+    else if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Middle))
+        mouseButton = SignalMap::mapSfmlMouseButton(sf::Mouse::Button::Middle);
     else
         mouseButton = Mouse::None;
 
@@ -136,4 +137,19 @@ void MouseState::processMouseMovement(const std::optional<sf::Event>& event) {
     for (MouseObserver* observer : observerList)
         observer->onMouseEvent(mouseButton, UserEvent::Move, worldPosition,
                                windowPosition);
+}
+
+void MouseState::processMouseScroll(const std::optional<sf::Event> &event) {
+    const auto mouseScroll = event->getIf<sf::Event::MouseWheelScrolled>();
+
+    if (!mouseScroll) return;
+    sf::Vector2f windowPosition = static_cast<sf::Vector2f>(mouseScroll->position);
+    sf::Vector2f worldPosition = Window::getInstance().getRenderWindow().mapPixelToCoords(mouseScroll->position);
+
+    windowPosition = WindowScale::screenScale(windowPosition);
+    worldPosition = WindowScale::screenScale(worldPosition);
+
+    std::list<MouseObserver*> observerList = subscriberList[Mouse::Scroll][UserEvent::None];
+    for (MouseObserver* observer: observerList) 
+        observer->onScrollEvent(mouseScroll->delta, worldPosition, windowPosition);
 }

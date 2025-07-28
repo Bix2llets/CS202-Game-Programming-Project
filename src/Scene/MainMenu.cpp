@@ -5,7 +5,7 @@
 #include "Core/SceneManager.hpp"
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "Utility/logger.hpp"
-
+#include "Core/Window.hpp"
 MainMenu::MainMenu()
     : Scene() {
     ButtonBuilder builder(*this);
@@ -40,6 +40,7 @@ MainMenu::MainMenu()
 }
 
 void MainMenu::draw(sf::RenderTarget &target, sf::RenderStates state) const {
+    Window::getInstance().toggleGUIMode();
     target.draw(*testBtn, state);
     target.draw(*settingBtn, state);
 }

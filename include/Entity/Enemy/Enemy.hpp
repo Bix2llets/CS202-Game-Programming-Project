@@ -20,6 +20,7 @@
 #include "Entity/Modules/Timer.hpp"
 #include "Entity/Modules/Effects/EntityEffect.hpp"
 #include "Gameplay/Waypoint.hpp"
+
 class Path;
 class EnemyFactory;
 class Scene;
@@ -145,7 +146,7 @@ class Enemy : public Entity, public Damageable {
      * @brief Get the waypoints for this enemy's path.
      * @return Pointer to the vector of waypoints.
      */
-    const std::vector<sf::Vector2f>* getWaypoints() const {
+    const std::vector<Waypoint>* getWaypoints() const {
         return path.getWaypoints();
     }
 
@@ -153,7 +154,7 @@ class Enemy : public Entity, public Damageable {
      * @brief Set the waypoints for this enemy's path.
      * @param newWaypoints Pointer to the new waypoints vector.
      */
-    void setWaypoints(const std::vector<sf::Vector2f>* newWaypoints) {
+    void setWaypoints(const std::vector<Waypoint>* newWaypoints) {
         path.setWaypoints(newWaypoints);
     }
 

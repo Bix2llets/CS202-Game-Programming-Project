@@ -11,16 +11,15 @@
 
 #include <json.hpp>
 
+#include "Core/KeyboardObserver.hpp"
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
 #include "Gameplay/Tracker.hpp"
 #include "Gameplay/Path.hpp"
+#include "Gameplay/Terrain.hpp"
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
-
-#include "Core/KeyboardObserver.hpp"
-
 /**
  * @class Level
  * @brief Scene representing a gameplay level, with map, entities, and wave
@@ -36,15 +35,17 @@ private:
     void loadLevelID(const nlohmann::json &jsonfile);
     std::unique_ptr<EntityManager> entityManager;  ///< Manages all entities in the level
     std::unique_ptr<EnemyFactory> factory;
-    Path map;  ///< The game map for this level
-    std::vector<std::vector<EnemyGroupInfo>> waveInfo;     ///< Information for each wave
+    Terrain map;  // game map for this level
+    std::vector<std::vector<EnemyGroupInfo>>
+        waveInfo;     ///< Information for each wave
     int currentWave;  ///< Index of the current wave
-
     bool isRunning;
     Tracker tracker;  ///< Tracks gameplay statistics for this level
 
-public:
-    Level();
+   public:
+    Level(TerrainParameter parameter = TerrainParameter(),
+          sf::Vector2f startingPoint = {-1.f, -1.f},
+          sf::Vector2f endPoint = {-1.f, -1.f});
 
     /**
      * @brief Updates the level logic (entities, waves, etc).
@@ -139,7 +140,9 @@ public:
      * @param jsonfile The JSON object containing the level ID.
      */
 
-     void drawBackground(sf::RenderTarget &target, sf::RenderStates state) const;
-    public:
-    void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
+    void drawBackground(sf::RenderTarget &target, sf::RenderStates state) const;
+
+   public:
+    void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
+                    const sf::Vector2f &windowPosition);
 };

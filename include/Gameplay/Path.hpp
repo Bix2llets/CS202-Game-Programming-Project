@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include "Gameplay/Waypoint.hpp"
+
 /**
  * @class Path
  * @brief Manages collections of waypoints for different paths and provides
@@ -22,7 +24,7 @@
  * map from a vector of waypoints or from a file, and to draw the map.
  */
 class Path : public sf::Drawable {
-    std::vector<sf::Vector2f> waypoints;  ///< Paths of waypoints in the map
+    std::vector<Waypoint> waypoints;  ///< Paths of waypoints in the map
 
    public:
     /**
@@ -34,7 +36,7 @@ class Path : public sf::Drawable {
      * @param pathNumber The index of the path
      * @return Pointer to the vector of waypoints for the path
      */
-    const std::vector<sf::Vector2f>* getWaypoints();
+    const std::vector<Waypoint>& getWaypoints();
 
     /**
      * @brief Draw the map (all waypoints/paths) to the render target
@@ -48,8 +50,7 @@ class Path : public sf::Drawable {
      * @param waypoints The vector of waypoints of the middle path
      * @param pathID The ID of the path
      */
-    void loadWaypoints(const std::vector<sf::Vector2f>& path);
-    
+    void loadWaypoints(const std::vector<Waypoint>& path);
 
     // Move constructor
     Path(Path&& other) noexcept
@@ -66,7 +67,6 @@ class Path : public sf::Drawable {
         }
         return *this;
     }
-
 
    private:
     sf::RenderTexture getPathTexture() const;

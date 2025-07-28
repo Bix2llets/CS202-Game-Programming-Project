@@ -190,3 +190,5 @@ void Button::resetAnimation() {
 
 
 }
+
+void Button::onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) {}
