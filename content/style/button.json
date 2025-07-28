@@ -4,17 +4,17 @@
         "style": {
             "normal": {
                 "background": "#2D3748FF",
-                "border": "#4A5568FF",
-                "text": "#FFFFFFFF"
+                "border": "#FFFFFFFF",
+                "text": "#FF00FFFF"
             },
             "hover": {
                 "background": "#4A5568FF",
-                "border": "#718096FF",
+                "border": "#FFFFFFFF",
                 "text": "#F7FAFCFF"
             },
             "click": {
                 "background": "#1A202CFF",
-                "border": "#2D3748FF",
+                "border": "#FFFFFFFF",
                 "text": "#E2E8F0FF"
             }
         },
@@ -36,23 +36,55 @@
         "style": {
             "normal": {
                 "background": "#FF0000FF",
-                "border": "#4A5568FF",
+                "border": "#FFFFFFFF",
                 "text": "#FFFFFFFF"
             },
             "hover": {
                 "background": "#00FF00FF",
-                "border": "#718096FF",
+                "border": "#FFFFFFFF",
                 "text": "#F7FAFCFF"
             },
             "click": {
                 "background": "#0000FFFF",
-                "border": "#2D3748FF",
+                "border": "#FFFFFFFF",
                 "text": "#E2E8F0FF"
             }
         },
         "border_radius": 4,
         "border_width": 2,
         "font": "league_spartan",
+        "font_size": 24,
+        "padding": [
+            12,
+            24
+        ],
+        "center": {
+            "x": "centering",
+            "y": "centering"
+        }
+    },
+    {
+        "id": "background_basic",
+        "style": {
+            "normal": {
+                "background": "#FFFFFFFF",
+                "border": "#FFFFFFFF",
+                "text": "#FFFFFFFF"
+            },
+            "hover": {
+                "background": "#FFFFFF7F",
+                "border": "#FFFFFF7F",
+                "text": "#FFFFFF7F"
+            },
+            "click": {
+                "background": "#000000FF",
+                "border": "#FFFFFF7F",
+                "text": "#FFFFFF7F"
+            }
+        },
+        "border_radius": 4,
+        "border_width": 2,
+        "font": "pixel",
         "font_size": 24,
         "padding": [
             12,

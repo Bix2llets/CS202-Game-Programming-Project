@@ -58,7 +58,7 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
             ColorMixer::perceptualLerp(style.getHover().background, fillColor,
                                        reverseHover.getCompletionPercentage());
         textColor =
-            ColorMixer::perceptualLerp(style.getHover().text, fillColor,
+            ColorMixer::perceptualLerp(style.getHover().text, textColor,
                                        reverseHover.getCompletionPercentage());
     }
 
@@ -100,6 +100,7 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     // textBound.setOutlineColor(sf::Color::Green);
     // textBound.setOutlineThickness(1.f);
     // target.draw(textBound, states);
+    label->setFillColor(textColor);
     target.draw(*label, states);
 }
 
