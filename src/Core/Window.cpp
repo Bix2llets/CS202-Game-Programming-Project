@@ -83,8 +83,9 @@ void Window::resetView() {
 void Window::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
                            const sf::Vector2f& windowPosition) {
     if (isLocked) return;
+    static const float ZOOM_FACTOR = 0.2f;
     Logger::debug(std::format("Scorlling {}", delta));
-    userView.setSize(userView.getSize() * (1 + delta * 0.1f));
-    userView.move((userView.getCenter() - worldPosition) * delta * 0.1f);
+    userView.setSize(userView.getSize() * (1 + delta * ZOOM_FACTOR));
+    userView.move((userView.getCenter() - worldPosition) * delta * ZOOM_FACTOR);
     window.setView(userView);
 }

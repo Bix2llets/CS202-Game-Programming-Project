@@ -13,7 +13,6 @@
 const std::vector<sf::Vector2f>* Path::getWaypoints() { return &waypoints; }
 
 void Path::draw(sf::RenderTarget& target, sf::RenderStates state) const {
-
     target.draw(*pathSprite, state);
 }
 
@@ -49,9 +48,9 @@ sf::RenderTexture Path::getMaskTexture() const {
     int textureWidth = marbleTexture.getSize().x;
     int textureHeight = marbleTexture.getSize().y;
 
-    static const int width = GameConstants::RENDER_TEXTURE_WIDTH;
-    static const int height = GameConstants::RENDER_TEXTURE_HEIGHT;
-    static const int tileWidth =  32;
+    static const int width = GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE;
+    static const int height = GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE;
+    static const int tileWidth = 32;
     static const int tileHeight = 32;
     sf::RenderTexture mask;
     if (!mask.resize({width, height})) {
@@ -84,8 +83,8 @@ sf::RenderTexture Path::getMaskTexture() const {
 
 sf::RenderTexture Path::getPathTexture() const {
     sf::RenderTexture pathComb;
-    static const int width = GameConstants::RENDER_TEXTURE_WIDTH;
-    static const int height = GameConstants::RENDER_TEXTURE_HEIGHT;
+    static const int width = GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE;
+    static const int height = GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE;
 
     if (!pathComb.resize({width, height})) {
         Logger::error("Cannot resize pathComb");
@@ -105,7 +104,8 @@ sf::RenderTexture Path::getPathTexture() const {
             // Perpendicular vector for thickness
             sf::Vector2f perp(-dir.y, dir.x);
 
-            float thickness = GameConstants::CELL_SIZE_WIDTH * 3;  // Set your desired thickness here
+            float thickness = GameConstants::CELL_SIZE *
+                              3;  // Set your desired thickness here
 
             // Offset points
             sf::Vector2f offset = (perp * (thickness / 2.f));
@@ -145,9 +145,12 @@ sf::RenderTexture Path::getPathTexture() const {
             // 1]) + pathway[(i - 1) * 2 + 1];
         }
     }
-    for (int i = 0; i < pathway.getVertexCount(); i++)
+    for (int i = 0; i < pathway.getVertexCount(); i++) {
         pathway[i].color = sf::Color::Blue;
-
-    pathComb.draw(pathway);
+        pathway[i].color.a = 100;
+    }
+    sf::RenderStates state;
+    state.blendMode = sf::BlendNone;
+    pathComb.draw(pathway, state);
     return std::move(pathComb);
 }

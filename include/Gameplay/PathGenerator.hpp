@@ -32,7 +32,7 @@ class PathGenerator {
         }
     };
     const std::vector<std::vector<Height::Height>> &heightMap;
-    std::vector<int> heightCost = {1500, 900, 700, 100, 700, 900, 1200, 1500};
+    std::vector<int> heightCost = {150, 60, 40, 35, 40, 70, 120, 150};
     std::vector<std::vector<int>> transitionCost;
 
    public:

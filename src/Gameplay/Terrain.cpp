@@ -7,10 +7,11 @@
 #include "Core/Window.hpp"
 #include "Gameplay/TerrainGenerator.hpp"
 #include "Utility/logger.hpp"
+#include "Base/Constants.hpp"
 Terrain::Terrain(int zoomFactor, int octave, float persistance,
                  float lacunarity, long long seed, float depthFactor) {
     TerrainGenerator generator;
-    generator.setResultSize(sf::Vector2i(800, 800));
+    generator.setResultSize(sf::Vector2i(GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT));
     std::vector<std::vector<float>> perlinResult = generator.getNoiseMap(
         zoomFactor, octave, persistance, lacunarity, seed, depthFactor);
 
@@ -30,8 +31,8 @@ Terrain::Terrain(int zoomFactor, int octave, float persistance,
 
     sf::RenderTexture temp;
     bool _ =
-        temp.resize({static_cast<unsigned int>(perlinResult.size() * 4),
-                     static_cast<unsigned int>(perlinResult[0].size() * 4)});
+        temp.resize({static_cast<unsigned int>(perlinResult.size() * GameConstants::CELL_SIZE),
+                     static_cast<unsigned int>(perlinResult[0].size() * GameConstants::CELL_SIZE)});
     heightMap.resize(perlinResult.size());
     for (int i = 0; i < heightMap.size(); i++)
         heightMap[i].resize(perlinResult.size());
@@ -60,8 +61,8 @@ Terrain::Terrain(int zoomFactor, int octave, float persistance,
             heightMap[y][x] = quantitize(perlinResult[y][x]);
             cell.setFillColor({getColor(heightMap[y][x])});
             // cell.setFillColor({255, 255, 255, 255});
-            cell.setPosition({(float)x * 4, (float)y * 4});
-            cell.setSize({4.f, 4.f});
+            cell.setPosition(sf::Vector2f{(float)x, (float)y} * static_cast<float>(GameConstants::CELL_SIZE));
+            cell.setSize({GameConstants::CELL_SIZE, GameConstants::CELL_SIZE});
             cell.setOrigin({0, 0});
             temp.draw(cell);
         }
@@ -72,7 +73,7 @@ Terrain::Terrain(int zoomFactor, int octave, float persistance,
     map = std::make_unique<sf::Sprite>(mapTexture);
 
     PathGenerator AStarPath(heightMap);
-    path.loadWaypoints(AStarPath(sf::Vector2i{0, 0}, sf::Vector2i{1000, 800}));
+    path.loadWaypoints(AStarPath(sf::Vector2i{0, 0}, sf::Vector2i{GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT} * GameConstants::CELL_SIZE));
     // path.loadWaypoints(AStarPath(sf::Vector2i{0, 0}, sf::Vector2i{400,
     // 400}));
 }
