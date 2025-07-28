@@ -45,4 +45,6 @@ class Window : public MouseObserver {
     void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
 
     void adjustUserView();
+
+    void clampView();
 };

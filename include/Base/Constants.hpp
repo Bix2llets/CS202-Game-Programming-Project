@@ -31,7 +31,7 @@ namespace GameConstants {
 
     constexpr int CELL_SIZE = 8;
 
-    constexpr int MAP_WIDTH = 350;
-    constexpr int MAP_HEIGHT = 300;
+    constexpr int MAP_WIDTH = 600;
+    constexpr int MAP_HEIGHT = 400;
 
 }

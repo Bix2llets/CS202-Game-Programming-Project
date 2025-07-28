@@ -61,6 +61,7 @@ void Window::onMouseEvent(Mouse mouse, UserEvent event,
             windowPosition - previousMiddleMousePosition;
         previousMiddleMousePosition = windowPosition;
         userView.move(-displacement);
+        // clampView();
         window.setView(userView);
         Logger::debug(std::format("Window pan Moving {} {}", displacement.x,
                                   displacement.y));
@@ -95,8 +96,27 @@ void Window::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
 void Window::adjustUserView() {
     auto winSize = window.getSize();
     float aspect = static_cast<float>(winSize.x) / winSize.y;
-    float viewHeight = GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE;
+    float viewHeight = winSize.y;
     float viewWidth = viewHeight * aspect;
     userView.setSize({viewWidth, viewHeight});
     userView.setCenter({viewWidth / 2.f, viewHeight / 2.f});
+}
+
+void Window::clampView() {
+    static const int ALLOWED_OFFSET = 100;
+    if (userView.getCenter().x - userView.getSize().x < 0 - ALLOWED_OFFSET)
+        userView.setCenter({0 - ALLOWED_OFFSET, userView.getCenter().y});
+    if (userView.getCenter().y - userView.getSize().y < 0 - ALLOWED_OFFSET)
+        userView.setCenter({userView.getCenter().x, 0 - ALLOWED_OFFSET});
+
+    if (userView.getCenter().x + userView.getSize().x >
+        GameConstants::DEFAULT_WINDOW_WIDTH + ALLOWED_OFFSET)
+        userView.setCenter(
+            {GameConstants::DEFAULT_WINDOW_WIDTH + ALLOWED_OFFSET,
+             userView.getCenter().y});
+    if (userView.getCenter().y + userView.getSize().y >
+        GameConstants::DEFAULT_WINDOW_HEIGHT + ALLOWED_OFFSET)
+        userView.setCenter(
+            {userView.getCenter().x,
+             GameConstants::DEFAULT_WINDOW_HEIGHT + ALLOWED_OFFSET});
 }
