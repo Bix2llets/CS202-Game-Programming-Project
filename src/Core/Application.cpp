@@ -16,13 +16,13 @@
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
 Application::Application() : isRunning{true} {
-    if (Window::getInstance().isOpen())
+    if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
     else
         Logger::error("Window not intitialized");
-    Window::getInstance().setFramerateLimit(60);
-    Window::getInstance().setMouseCursorVisible(false);
-    Window::getInstance().setPosition({0, 0});
+    Window::getInstance().getRenderWindow().setFramerateLimit(60);
+    Window::getInstance().getRenderWindow().setMouseCursorVisible(false);
+    Window::getInstance().getRenderWindow().setPosition({0, 0});
     JSONLoader::getInstance().loadAll();
 
     Cursor::getInstance().subscribeMouse(
@@ -33,6 +33,9 @@ Application::Application() : isRunning{true} {
         InputManager::getInstance().getMouseState());
     Cursor::getInstance().subscribeMouse(
         Mouse::None, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Middle, UserEvent::Move,
         InputManager::getInstance().getMouseState());
     // * Loading the necessary sounds
     for (auto [id, soundFile] : JSONLoader::getInstance().getAllSounds())
@@ -67,7 +70,7 @@ Application::Application() : isRunning{true} {
 }
 
 Application::~Application() {
-    if (Window::getInstance().isOpen()) Window::getInstance().close();
+    if (Window::getInstance().getRenderWindow().isOpen()) Window::getInstance().getRenderWindow().close();
     Logger::success("Application exit success");
 }
 
@@ -105,9 +108,10 @@ void Application::run() {
     updateTerrain();
     while (isRunning) {
         frameCount++;
-        while (auto event = Window::getInstance().pollEvent()) {
+        Window::getInstance().toggleUserMode();
+        while (auto event = Window::getInstance().getRenderWindow().pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
-                Window::getInstance().close();
+                Window::getInstance().getRenderWindow().close();
                 isRunning = false;
             }
 
@@ -199,13 +203,15 @@ void Application::run() {
             fpsDisplay.setString(std::to_string(frameCount));
             frameCount = 0;
         }
-        Window::getInstance().clear(sf::Color::Black);
+        Window::getInstance().getRenderWindow().clear(sf::Color::Black);
         // SceneManager::getInstance().render();
         terrain.debugRender();
-        Window::getInstance().draw(fpsDisplay);
-        Window::getInstance().draw(terrainInfo);
-        Window::getInstance().draw(EnemyPanel::getInstance());
-        Window::getInstance().draw(Cursor::getInstance());
-        Window::getInstance().display();
+        Window::getInstance().toggleGUIMode();
+        Window::getInstance().getRenderWindow().draw(fpsDisplay);
+        Window::getInstance().getRenderWindow().draw(terrainInfo);
+        Window::getInstance().getRenderWindow().draw(EnemyPanel::getInstance());
+        Window::getInstance().getRenderWindow().draw(Cursor::getInstance());
+        Window::getInstance().toggleUserMode();
+        Window::getInstance().getRenderWindow().display();
     }
 }

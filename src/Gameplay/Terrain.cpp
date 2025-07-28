@@ -18,7 +18,8 @@ Terrain::Terrain(int zoomFactor, int octave, float persistance,
     //     100, std::vector<float>(100, 0.55f));
     // for (int i = 5; i <= 8; i++) {
     //     perlinResult[i] = std::vector<float>(100, 0.f);
-    //     for (int j = perlinResult[i].size() - 1; j >= perlinResult[i].size() - 5; j--)
+    //     for (int j = perlinResult[i].size() - 1; j >= perlinResult[i].size()
+    //     - 5; j--)
     //         perlinResult[i][j] = 0.55f;
     // }
     // for (int i = 55; i <= 68; i++) {
@@ -37,7 +38,7 @@ Terrain::Terrain(int zoomFactor, int octave, float persistance,
     temp.clear(sf::Color::Transparent);
     auto quantitize = [](float val) {
         // * Quantitize height based on the noise value
-        if (val > 0.89f) return Height::SnowCap;   // * High mountain
+        if (val > 0.89f) return Height::SnowCap;   // * Hgh mountain
         if (val > 0.77f) return Height::Mountain;  // * Med mountain
         if (val > 0.65f) return Height::Rocky;     // * Low mountain
         // * Mountain area
@@ -77,8 +78,8 @@ Terrain::Terrain(int zoomFactor, int octave, float persistance,
 }
 
 void Terrain::debugRender() {
-    Window::getInstance().draw(*map);
-    Window::getInstance().draw(path);
+    Window::getInstance().getRenderWindow().draw(*map);
+    Window::getInstance().getRenderWindow().draw(path);
     // for (int y = 0; y < heightMap.size(); y++)
     //     for (int x = 0; x < heightMap[y].size(); x++) {
     //         sf::RectangleShape cell;

@@ -22,7 +22,7 @@ void TowerRotationMockScene::initialize() {
 
 void TowerRotationMockScene::createTestTower() {
     // Get window center position dynamically
-    sf::Vector2u windowSize = Window::getInstance().getSize();
+    sf::Vector2u windowSize = Window::getInstance().getRenderWindow().getSize();
     sf::Vector2f centerPos(windowSize.x / 2.0f, windowSize.y / 2.0f);
 
     std::cout << "Tower will be positioned at: " << centerPos.x << ", "

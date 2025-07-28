@@ -11,7 +11,6 @@ void SoundClickTrigger::onLeftMousePress(const sf::Vector2f &worldPosition,
 
 SoundClickTrigger::SoundClickTrigger() {}
 
-
 void SoundClickTrigger::onLeftMouseRelease(const sf::Vector2f &worldPosition,
                                            const sf::Vector2f &windowPosition) {
     Logger::info("Left release");
@@ -49,3 +48,7 @@ void SoundClickTrigger::onKeyEvent(Key key, UserEvent event,
     Logger::info(std::to_string(static_cast<int>(key)));
     Logger::info(std::to_string(static_cast<int>(event)));
 }
+
+void SoundClickTrigger::onScrollEvent(float delta,
+                                      const sf::Vector2f &worldPosition,
+                                      const sf::Vector2f &windowPosition) {}

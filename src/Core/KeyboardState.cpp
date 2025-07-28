@@ -47,7 +47,7 @@ void KeyboardState::clearSubscriber() {
 }
 
 void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
-    sf::RenderWindow& window = Window::getInstance();
+    sf::RenderWindow& window = Window::getInstance().getRenderWindow();
     auto keyPress = event->getIf<sf::Event::KeyPressed>();
     auto keyRelease = event->getIf<sf::Event::KeyReleased>();
     sf::Vector2f windowPosition =
