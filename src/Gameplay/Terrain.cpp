@@ -8,24 +8,12 @@
 #include "Gameplay/TerrainGenerator.hpp"
 #include "Utility/logger.hpp"
 #include "Base/Constants.hpp"
+
+#include "Gameplay/Waypoint.hpp"
 Terrain::Terrain(TerrainParameter parameter) {
     TerrainGenerator generator;
     generator.setResultSize(sf::Vector2i(GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT));
     std::vector<std::vector<float>> perlinResult = generator.getNoiseMap(parameter);
-
-    // std::vector<std::vector<float>> perlinResult(
-    //     100, std::vector<float>(100, 0.55f));
-    // for (int i = 5; i <= 8; i++) {
-    //     perlinResult[i] = std::vector<float>(100, 0.f);
-    //     for (int j = perlinResult[i].size() - 1; j >= perlinResult[i].size()
-    //     - 5; j--)
-    //         perlinResult[i][j] = 0.55f;
-    // }
-    // for (int i = 55; i <= 68; i++) {
-    //     perlinResult[i] = std::vector<float>(100, 0.f);
-    //     for (int j = 9; j <= 40; j++)
-    //         perlinResult[i][j] = 0.55f;
-    // }
 
     sf::RenderTexture temp;
     bool _ =
@@ -72,24 +60,11 @@ Terrain::Terrain(TerrainParameter parameter) {
 
     PathGenerator AStarPath(heightMap);
     path.loadWaypoints(AStarPath(sf::Vector2i{0, 0}, sf::Vector2i{GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT} * GameConstants::CELL_SIZE));
-    // path.loadWaypoints(AStarPath(sf::Vector2i{0, 0}, sf::Vector2i{400,
-    // 400}));
 }
 
 void Terrain::debugRender() {
     Window::getInstance().getRenderWindow().draw(*map);
     Window::getInstance().getRenderWindow().draw(path);
-    // for (int y = 0; y < heightMap.size(); y++)
-    //     for (int x = 0; x < heightMap[y].size(); x++) {
-    //         sf::RectangleShape cell;
-    //         cell.setFillColor(
-    //             {(unsigned char)(heightMap[y][x] * 255), 255, 255, 255});
-    //         // cell.setFillColor({255, 255, 255, 255});
-    //         cell.setPosition({(float)x * 32, (float)y * 32});
-    //         cell.setSize({32.f, 32.f});
-    //         cell.setOrigin({0, 0});
-    //         Window::getInstance().draw(cell);
-    //     }
 }
 
 Terrain::Terrain() : Terrain(TerrainParameter()) {}
@@ -123,7 +98,7 @@ Height::Height Terrain::getCellType(sf::Vector2f position) {
                     [static_cast<int>(position.x) / 4];
 }
 
-const std::vector<sf::Vector2f>* Terrain::getPath() {
+const std::vector<Waypoint>* Terrain::getPath() {
     return &path.getWaypoints();
 }
 

@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Gameplay/Height.hpp"
+#include "Gameplay/Waypoint.hpp"
 
 #pragma once
 /**
@@ -38,5 +39,5 @@ class PathGenerator {
    public:
     PathGenerator(const std::vector<std::vector<Height::Height>> &heightMap);
 
-    std::vector<sf::Vector2f> operator()(sf::Vector2i begin, sf::Vector2i end);
+    std::vector<Waypoint> operator()(sf::Vector2i begin, sf::Vector2i end);
 };

@@ -18,7 +18,7 @@
 #include "Core/Window.hpp"
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
              sf::Vector2f endPoint)
-    : currentWave{0}, isRunning{true}, map(parameter) {
+    : currentWave{0}, isRunning{true}, map(parameter), entityManager{map} {
     subscribeKeyboard(Key::Space, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
     entityManager.subscribeKeyboard(

@@ -8,6 +8,8 @@
 #include "Gameplay/Path.hpp"
 #include "Gameplay/PathGenerator.hpp"
 #include "Gameplay/TerrainParameter.hpp"
+
+#include "Gameplay/Waypoint.hpp"
 // * Goal for now: Perlin noise generating the height map
 class Terrain {
    private:
@@ -28,5 +30,5 @@ class Terrain {
     Height::Height getCellType(sf::Vector2f position);
     Height::Height getCellType(float x, float y);
 
-    const std::vector<sf::Vector2f>* getPath();
+    const std::vector<Waypoint>* getPath();
 };

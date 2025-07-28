@@ -8,15 +8,16 @@
 
 #include "Base/Constants.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Gameplay/Waypoint.hpp"
 #include "Utility/logger.hpp"
 
-const std::vector<sf::Vector2f>& Path::getWaypoints() { return waypoints; }
+const std::vector<Waypoint>& Path::getWaypoints() { return waypoints; }
 
 void Path::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(*pathSprite, state);
 }
 
-void Path::loadWaypoints(const std::vector<sf::Vector2f>& path) {
+void Path::loadWaypoints(const std::vector<Waypoint>& path) {
     waypoints = path;
     sf::RenderTexture mask = getMaskTexture();
     sf::RenderTexture pathComb = getPathTexture();
@@ -101,7 +102,7 @@ sf::RenderTexture Path::getPathTexture() const {
         if (i < waypoints.size() - 1) {
             // Calculate direction vector
             sf::Vector2f dir =
-                static_cast<sf::Vector2f>(waypoints[i + 1] - waypoints[i]);
+                static_cast<sf::Vector2f>(waypoints[i + 1].position - waypoints[i].position);
             float length = std::sqrt(dir.x * dir.x + dir.y * dir.y);
             if (length != 0) dir /= length;
 
@@ -115,31 +116,31 @@ sf::RenderTexture Path::getPathTexture() const {
             sf::Vector2f offset = (perp * (thickness / 2.f));
             if (i == 0) {
                 pathway[i * 4].position =
-                    static_cast<sf::Vector2f>(waypoints[i]) + offset -
+                    static_cast<sf::Vector2f>(waypoints[i].position) + offset -
                     (dir * thickness) / 2.f;
                 pathway[i * 4 + 1].position =
-                    static_cast<sf::Vector2f>(waypoints[i]) - offset -
+                    static_cast<sf::Vector2f>(waypoints[i].position) - offset -
                     (dir * thickness) / 2.f;
 
             } else {
                 pathway[i * 4].position =
-                    static_cast<sf::Vector2f>(waypoints[i]) + offset;
+                    static_cast<sf::Vector2f>(waypoints[i].position) + offset;
                 pathway[i * 4 + 1].position =
-                    static_cast<sf::Vector2f>(waypoints[i]) - offset;
+                    static_cast<sf::Vector2f>(waypoints[i].position) - offset;
             }
 
             if (i == waypoints.size() - 2) {
                 pathway[i * 4 + 2].position =
-                    (static_cast<sf::Vector2f>(waypoints[i + 1]) + offset +
+                    (static_cast<sf::Vector2f>(waypoints[i + 1].position) + offset +
                      (dir * thickness) / 2.f);
                 pathway[i * 4 + 3].position =
-                    (static_cast<sf::Vector2f>(waypoints[i + 1]) - offset +
+                    (static_cast<sf::Vector2f>(waypoints[i + 1].position) - offset +
                      (dir * thickness) / 2.f);
             } else {
                 pathway[i * 4 + 2].position =
-                    static_cast<sf::Vector2f>(waypoints[i + 1]) + offset;
+                    static_cast<sf::Vector2f>(waypoints[i + 1].position) + offset;
                 pathway[i * 4 + 3].position =
-                    static_cast<sf::Vector2f>(waypoints[i + 1]) - offset;
+                    static_cast<sf::Vector2f>(waypoints[i + 1].position) - offset;
             }
         } else {
             // For the last point, repeat the previous offset
