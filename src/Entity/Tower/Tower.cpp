@@ -211,7 +211,7 @@ void Tower::update() {
     // Combat behavior
     if (combatBehaviorPointer) {
         if (timer.isAvailable()) {
-            std::vector<Enemy*> targets = levelRef->getEntityManager()->getEnemies();
+            std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
             if(targets.empty()) return; // No targets to engage
 
             combatBehaviorPointer->engage(targets);

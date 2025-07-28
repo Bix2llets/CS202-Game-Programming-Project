@@ -18,7 +18,7 @@
 #include "Core/Window.hpp"
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
              sf::Vector2f endPoint)
-    : currentWave{0}, isRunning{true}, map(parameter), entityManager{map} {
+    : currentWave{0}, isRunning{true}, map(parameter), entityManager{map}, tracker(*this) {
     subscribeKeyboard(Key::Space, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
     entityManager.subscribeKeyboard(
@@ -27,13 +27,11 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
     entityManager.subscribeKeyboard(
         Key::F, UserEvent::Press,
         InputManager::getInstance().getKeyboardState());
-
-    
 }
 
 void Level::update() {
     if (!isRunning) return;
-    entityManager->update();
+    entityManager.update();
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
             if (group.quantity == 0) continue;
@@ -108,13 +106,13 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
-    entityManager->subscribeMouse(Mouse::Left, UserEvent::Press,
+    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
                                  InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
-    entityManager->unSubscribeMouse(Mouse::Left, UserEvent::Press,
+    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
                                    InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
 }
@@ -133,4 +131,8 @@ void Level::onKeyEvent(Key key, UserEvent event,
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
     }
+}
+
+EntityManager& Level::getEntityManager() {
+    return entityManager;
 }
