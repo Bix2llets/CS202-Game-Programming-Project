@@ -22,23 +22,23 @@
 
 class Cursor : public sf::Drawable, public MouseObserver {
     sf::Vector2f position;
-    std::unique_ptr<Tower> previewTower;
-    static const int radius = 2;
-
-    // Singleton pattern
+    sf::Sprite renderImage;
+    static const int cursorRadius = 2;
+    bool isDisplaying;
+        // Singleton pattern
    private:
     static std::unique_ptr<Cursor> instance;
     Cursor();
     Cursor(const Cursor&) = delete;
     Cursor& operator=(const Cursor&) = delete;
-    
+
     public:
     ~Cursor() = default;
     static Cursor& getInstance();
 
     void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
-    void removeTower();
-    void setTower(const std::string& id);
+    void removeRenderImage();
+    void setRenderImage(sf::Sprite sprite);
     void setPosition(const sf::Vector2f& pos);
     const sf::Vector2f& getPosition() const;
 

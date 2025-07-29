@@ -9,7 +9,6 @@
 #include "Utility/lerp.hpp"
 Button::Button(Mediator& mediator)
     : mediator(mediator),
-      onClickMessage("ButtonClicked"),
       isPressed{false},
       isHovered{false} {
     hover.setTimeInterval(0.2)
@@ -37,7 +36,6 @@ void Button::setOnClick(const std::function<void(Button*)>& callback) {
 }
 
 void Button::click() {
-    mediator.notify(onClickMessage, this);
     if (onClick) onClick(this);
 }
 
@@ -153,9 +151,6 @@ void Button::onMouseEvent(Mouse button, UserEvent event,
     }
 }
 
-void Button::setNotificationMessage(const std::string& str) {
-    onClickMessage = str;
-}
 
 void Button::subscribeMouseAll(MouseState& mouseState) {
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);

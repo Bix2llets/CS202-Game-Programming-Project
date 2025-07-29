@@ -32,8 +32,6 @@ class ButtonBuilder {
 
     ButtonBuilder& setSize(sf::Vector2f size);
 
-    ButtonBuilder& setNotificationMessage(const std::string &message);
-
     ButtonBuilder& reset();
 
     ButtonBuilder& loadJson(std::string id);
