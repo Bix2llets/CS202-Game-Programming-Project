@@ -83,13 +83,8 @@ class ResourceManager {
      * @param ID Unique key to identify the loaded texture.
      * @throws std::runtime_error if the file cannot be loaded or ID is
      * missing/duplicate.
-     * @note Use this for programmatic asset loading outside of JSON.
-     * @deprecated This method will be removed in the near future. Use
-     * JSON-based loading instead.
+     * @note Should only be used when there are no way to preload with json i.e. the tower's combined texture..
      */
-    [[deprecated(
-        "Will be removed in near future, prefer centralized loading on "
-        "initialization")]]
     void loadTexture(const std::string &path, const std::string &ID);
 
     /**

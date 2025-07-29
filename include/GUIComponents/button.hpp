@@ -29,7 +29,7 @@ class Button : public sf::Drawable, public MouseObserver {
      * @param position The position of the button in the window.
      * @param mediator Reference to the mediator for event notification.
      */
-    Button(sf::FloatRect geometricInfo, Mediator& mediator);
+    Button(Mediator& mediator);
 
    public:
     /**
@@ -92,7 +92,7 @@ class Button : public sf::Drawable, public MouseObserver {
     // * Graphic part
     std::unique_ptr<sf::Text> label;
     std::unique_ptr<sf::Sprite> backgroundSprite;
-
+    
     sf::FloatRect geometricInfo;
     Style style;
 
@@ -107,4 +107,6 @@ class Button : public sf::Drawable, public MouseObserver {
     Mediator& mediator;
     std::function<void(Button*)> onClick;
     std::string onClickMessage;
+
+    bool contains(const sf::Vector2f &windowPosition);
 };

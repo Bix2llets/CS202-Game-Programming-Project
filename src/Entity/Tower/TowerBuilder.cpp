@@ -204,7 +204,7 @@ void TowerBuilder::validate() const {
     
     // Validate cost only for buildable towers
     if (buildable) {
-        if (cost.getScraps() < 0 || cost.getPetroleum() < 0) {
+        if (cost.getScraps().value < 0 || cost.getPetroleum().value < 0) {
             throw std::invalid_argument("TowerBuilder: Cost cannot be negative for buildable towers.");
         }
     }

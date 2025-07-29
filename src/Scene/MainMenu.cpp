@@ -23,11 +23,12 @@ MainMenu::MainMenu()
                      .setPosition({300.f, 100.f})
                      .setSize({50.f, 50.f})
                      .setText("To setting")
-                     .loadJson("basic_button")
+                     .loadJson("background_basic")
                      .setNotificationMessage("Setting")
                      .setCallback([this](Button *button) {
                          Logger::debug("Setting button pressed");
                      })
+                     .setBackground(ResourceManager::getInstance().getTexture("button_base"))
                      .build();
     Logger::debug("Main menu created");
 

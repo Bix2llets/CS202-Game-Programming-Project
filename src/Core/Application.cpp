@@ -92,7 +92,7 @@ void Application::run() {
     parameter.lacunarity = 3.5;
     parameter.seed = 22071997LL;
     parameter.depthFactor = 1.f;
-    Terrain terrain(parameter);
+    // Terrain terrain(parameter);
 
     // sf::Text terrainInfo(
     //     *ResourceManager::getInstance().getFont("league_spartan"));

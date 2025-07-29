@@ -29,7 +29,7 @@ class Window : public MouseObserver {
     bool isLocked;
 
     bool isMiddlePressed = false;
-    sf::Vector2f middlePressPosition;
+    // sf::Vector2f middlePressPosition;
     sf::Vector2f previousMiddleMousePosition;
 
    public:

@@ -10,6 +10,7 @@
 #include <string>
 #include <SFML/Graphics/Texture.hpp>
 
+#include "Gameplay/CurrencyUnit.hpp"
 /**
  * @class Currency
  * @brief Manages two types of in-game currency: Scraps and Petroleum.
@@ -19,14 +20,7 @@
  */
 class Currency {
 private:
-    int scraps;     ///< Amount of scraps currency
-    int petroleum;  ///< Amount of petroleum currency
-
-    // Static metadata (to be loaded from JSON later)
-    static sf::Texture scrapsIcon;      ///< Icon texture for scraps
-    static sf::Texture petroleumIcon;   ///< Icon texture for petroleum
-    static std::string scrapsDescription;    ///< Description for scraps
-    static std::string petroleumDescription; ///< Description for petroleum
+    CurrencyUnit scrap, petroleum;
 
 public:
     /**
@@ -59,73 +53,42 @@ public:
      */
     ~Currency() = default;
 
-    // Static methods for metadata access (to be loaded from JSON)
-    /**
-     * @brief Load currency metadata from JSON files.
-     * This will be implemented when JSON loading is added.
-     */
-    static void loadMetadata();
-
-    /**
-     * @brief Get the icon texture for scraps.
-     * @return const sf::Texture& Scraps icon texture.
-     */
-    static const sf::Texture& getScrapsIcon() { return scrapsIcon; }
-
-    /**
-     * @brief Get the icon texture for petroleum.
-     * @return const sf::Texture& Petroleum icon texture.
-     */
-    static const sf::Texture& getPetroleumIcon() { return petroleumIcon; }
-
-    /**
-     * @brief Get the description for scraps.
-     * @return const std::string& Scraps description.
-     */
-    static const std::string& getScrapsDescription() { return scrapsDescription; }
-
-    /**
-     * @brief Get the description for petroleum.
-     * @return const std::string& Petroleum description.
-     */
-    static const std::string& getPetroleumDescription() { return petroleumDescription; }
-
     // Amount management
     /**
      * @brief Get the current amount of scraps.
      * @return int Current scraps amount.
      */
-    int getScraps() const { return scraps; }
+    CurrencyUnit getScraps() const { return scrap; }
 
     /**
      * @brief Get the current amount of petroleum.
      * @return int Current petroleum amount.
      */
-    int getPetroleum() const { return petroleum; }
+    CurrencyUnit getPetroleum() const { return petroleum; }
 
     /**
      * @brief Set the amount of scraps.
      * @param amount New scraps amount.
      */
-    void setScraps(int amount) { scraps = std::max(0, amount); }
+    void setScraps(int amount) { scrap.value = std::max(0, amount); }
 
     /**
      * @brief Set the amount of petroleum.
      * @param amount New petroleum amount.
      */
-    void setPetroleum(int amount) { petroleum = std::max(0, amount); }
+    void setPetroleum(int amount) { petroleum.value = std::max(0, amount); }
 
     /**
      * @brief Add to the scraps amount.
      * @param amount Amount to add.
      */
-    void addScraps(int amount) { if (amount > 0) scraps += amount; }
+    void addScraps(int amount) { if (amount > 0) scrap.value += amount; }
 
     /**
      * @brief Add to the petroleum amount.
      * @param amount Amount to add.
      */
-    void addPetroleum(int amount) { if (amount > 0) petroleum += amount; }
+    void addPetroleum(int amount) { if (amount > 0) petroleum.value += amount; }
 
     /**
      * @brief Subtract from the scraps amount.
@@ -146,14 +109,14 @@ public:
      * @param amount Amount to check for.
      * @return bool True if there's enough scraps, false otherwise.
      */
-    bool hasEnoughScraps(int amount) const { return scraps >= amount; }
+    bool hasEnoughScraps(int amount) const { return scrap.value >= amount; }
 
     /**
      * @brief Check if there's enough petroleum.
      * @param amount Amount to check for.
      * @return bool True if there's enough petroleum, false otherwise.
      */
-    bool hasEnoughPetroleum(int amount) const { return petroleum >= amount; }
+    bool hasEnoughPetroleum(int amount) const { return petroleum.value >= amount; }
 
     /**
      * @brief Check if there's enough of both currencies to afford a cost.
@@ -214,34 +177,6 @@ public:
     bool operator!=(const Currency& other) const;
 
     /**
-     * @brief Less than operator - checks if this currency is less than other.
-     * @param other Currency to compare with.
-     * @return bool True if this currency has less of both types, false otherwise.
-     */
-    bool operator<(const Currency& other) const;
-
-    /**
-     * @brief Less than or equal operator.
-     * @param other Currency to compare with.
-     * @return bool True if this currency has less than or equal amounts of both types.
-     */
-    bool operator<=(const Currency& other) const;
-
-    /**
-     * @brief Greater than operator.
-     * @param other Currency to compare with.
-     * @return bool True if this currency has more of both types, false otherwise.
-     */
-    bool operator>(const Currency& other) const;
-
-    /**
-     * @brief Greater than or equal operator.
-     * @param other Currency to compare with.
-     * @return bool True if this currency has greater than or equal amounts of both types.
-     */
-    bool operator>=(const Currency& other) const;
-
-    /**
      * @brief Scalar multiplication operator.
      * @param multiplier Value to multiply all currencies by.
      * @return Currency Result of multiplication.
@@ -255,12 +190,6 @@ public:
      */
     Currency& operator*=(int multiplier);
 
-    // Utility methods
-    /**
-     * @brief Get a string representation of the currency.
-     * @return std::string String representation showing all currency amounts.
-     */
-    std::string toString() const;
 
     /**
      * @brief Check if all currency amounts are zero.

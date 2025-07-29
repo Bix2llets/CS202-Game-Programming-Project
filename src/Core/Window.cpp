@@ -17,7 +17,7 @@ Window::Window()
     subscribeMouse(Mouse::Scroll, UserEvent::None,
                    InputManager::getInstance().getMouseState());
     isMiddlePressed = false;
-    middlePressPosition = {0.f, 0.f};
+    // middlePressPosition = {0.f, 0.f};
     previousMiddleMousePosition = {0.f, 0.f};
 
     adjustUserView();
@@ -45,7 +45,7 @@ void Window::onMouseEvent(Mouse mouse, UserEvent event,
     if (mouse == Mouse::Middle && event == UserEvent::Press) {
         if (isMiddlePressed == true) return;
         isMiddlePressed = true;
-        middlePressPosition = windowPosition;  // * Can also be world position,
+        // middlePressPosition = windowPosition;  // * Can also be world position,
                                                // should be consistent
         previousMiddleMousePosition = windowPosition;
         Logger::debug(std::format("Window pan Set {} {}",
@@ -69,7 +69,7 @@ void Window::onMouseEvent(Mouse mouse, UserEvent event,
     if (mouse == Mouse::Middle && event == UserEvent::Release) {
         if (!isMiddlePressed) return;
         isMiddlePressed = false;
-        middlePressPosition = {0.f, 0.f};
+        // middlePressPosition = {0.f, 0.f};
         previousMiddleMousePosition = {0.f, 0.f};
         Logger::debug(std::format("Window pan Release {} {}",
                                   userView.getCenter().x,

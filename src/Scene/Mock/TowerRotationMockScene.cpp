@@ -92,7 +92,7 @@ void TowerRotationMockScene::setupInfoText() {
         info += "Damage: " + std::to_string(static_cast<int>(testTower->getStat(TowerStat::DAMAGE))) + "\n";
         info += "Range: " + std::to_string(static_cast<int>(testTower->getStat(TowerStat::RANGE))) + "\n";
         info += "Fire Rate: " + std::to_string(testTower->getStat(TowerStat::FIRE_RATE)) + "\n";
-        info += "Cost: " + std::to_string(testTower->getCost().getScraps()) + " scraps\n";
+        info += "Cost: " + std::to_string(testTower->getCost().getScraps().value) + " scraps\n";
         info += "\nTurret rotates slowly to test dual-sprite system";
 
         infoText->setString(info);
@@ -133,13 +133,13 @@ void TowerRotationMockScene::updateTowerRotation() {
         info += "Damage: " +
                 std::to_string(static_cast<int>(testTower->getStat("damage"))) +
                 "\n";
-        info += "Range: " +
+    info += "Range: " +
                 std::to_string(static_cast<int>(testTower->getStat("range"))) +
                 "\n";
         info +=
             "Fire Rate: " + std::to_string(testTower->getStat("fire_rate")) +
             "\n";
-        info += "Cost: " + std::to_string(testTower->getCost().getScraps()) +
+        info += "Cost: " + std::to_string(testTower->getCost().getScraps().value) +
                 " scraps\n";
         info += "\nTurret Rotation: " +
                 std::to_string(static_cast<int>(rotationDegrees)) + "°";
