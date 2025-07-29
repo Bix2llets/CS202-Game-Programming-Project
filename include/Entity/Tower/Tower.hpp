@@ -41,6 +41,10 @@ enum class BehaviorType;
  * classes should implement specific attack or support behaviors.
  */
 class Tower : public Entity {
+
+friend class TowerBuilder; ///< Allow TowerBuilder to access private members
+friend class UpgradeManager; ///< Allow UpgradeManager to access private members
+
 private:
     Timer timer;  ///< Timer for tower actions
     std::unique_ptr<TowerStat> stats;  ///< Pointer to tower statistics/attributes
@@ -348,57 +352,6 @@ public:
     bool hasMainTarget() const { return mainTarget != nullptr; }
     
     // Setters
-    /**
-     * @brief Set the tower's display name.
-     * @param newName New name for the tower.
-     */
-    void setName(const std::string& newName) { name = newName; }
-
-    /**
-     * @brief Set the tower's description.
-     * @param newDescription New description for the tower.
-     */
-    void setDescription(const std::string& newDescription) { description = newDescription; }
-
-    /**
-     * @brief Set whether the tower is directly buildable.
-     * @param canBuild True if the tower can be built directly, false if it must be evolved.
-     */
-    void setBuildable(bool canBuild) { buildable = canBuild; }
-
-    /**
-     * @brief Set the cost required to build this tower.
-     * @param newCost New cost in game currencies.
-     */
-    void setCost(const Currency& newCost) { cost = newCost; }
-
-    /**
-     * @brief Set the tower's cooldown timer interval.
-     * @param interval The new cooldown interval.
-     */
-    void setTimerInterval(float interval);
-
-    /**
-     * @brief Set the desired texture width.
-     * @param width The width that textures should be scaled to.
-     */
-    void setTextureWidth(float width) { textureWidth = width; }
-    
-    /**
-     * @brief Set the desired texture height.
-     * @param height The height that textures should be scaled to.
-     */
-    void setTextureHeight(float height) { textureHeight = height; }
-    
-    /**
-     * @brief Set both texture dimensions at once.
-     * @param width The width that textures should be scaled to.
-     * @param height The height that textures should be scaled to.
-     */
-    void setTextureDimensions(float width, float height) { 
-        textureWidth = width; 
-        textureHeight = height; 
-    }
 
     /**
      * @brief Set the main target enemy for the tower.

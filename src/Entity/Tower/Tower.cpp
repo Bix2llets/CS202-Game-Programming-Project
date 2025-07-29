@@ -112,10 +112,6 @@ void Tower::addUpgradeType(int typeId, std::unique_ptr<UpgradeType> upgradeType)
     }
 }
 
-void Tower::setTimerInterval(float interval) {
-    timer.setTimeInterval(interval);
-}
-
 void Tower::setStats(std::unique_ptr<TowerStat> newStats) {
     stats = std::move(newStats);
 }
@@ -218,8 +214,6 @@ void Tower::update() {
 
             float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
             float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
-            setTimerInterval(interval);
-
             timer.reset();
         }
 
