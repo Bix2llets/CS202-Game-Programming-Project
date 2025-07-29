@@ -11,28 +11,56 @@
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
+#include "Core/Window.hpp"
+#include "Entity/Enemy/Enemy.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "Gameplay/Difficulty.hpp"
+#include "Gameplay/TerrainParameter.hpp"
 #include "Utility/logger.hpp"
+Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
+             sf::Vector2f endPoint)
+    : currentWave{0},
+      isRunning{true},
+      map(parameter),
+      entityManager{map, *this},
+      menu{budget},
+      tracker(*this) {
+    subscribeKeyboard(Key::Space, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    subscribeKeyboard(Key::G, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(
+        Key::D, UserEvent::Press,
+        InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(
+        Key::F, UserEvent::Press,
+        InputManager::getInstance().getKeyboardState());
 
-#include "Entity/Factory/TowerFactory.hpp"
+    subscribe("add_petrol", [this](std::any sender, std::any data) {
+        try {
+            int petrolAmount = std::any_cast<int>(data);
+            budget.addPetroleum(petrolAmount);
 
-Level::Level() : currentWave{0}, isRunning{true}, tracker(*this) {
-    subscribeKeyboard(Key::Space, UserEvent::Press, InputManager::getInstance().getKeyboardState());
+        } catch (const std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on add petrol");
+        }
+    });
+    subscribe("add_scrap", [this](std::any sender, std::any data) {
+        try {
+            int scrapAmount = std::any_cast<int>(data);
+            budget.addScraps(scrapAmount);
 
-    entityManager = std::make_unique<EntityManager>();
-    entityManager->subscribeKeyboard(Key::D, UserEvent::Press, InputManager::getInstance().getKeyboardState());
-    entityManager->subscribeKeyboard(Key::F, UserEvent::Press, InputManager::getInstance().getKeyboardState());
-
-    sf::Vector2f centerPos(400, 600);
-    std::string configFile = "rifle";
-    std::unique_ptr<Tower> tower = TowerFactory::createFromConfigFile(configFile, *this, centerPos);
-    entityManager->addTower(std::move(tower));
+        } catch (const std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on add scrap");
+        }
+    });
 }
 
 void Level::update() {
+    menu.update();
     if (!isRunning) return;
-    entityManager->update();
+
+    entityManager.update();
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
             if (group.quantity == 0) continue;
@@ -46,8 +74,7 @@ void Level::update() {
                 group.internalDelayTimer -= GameConstants::TICK_INTERVAL;
                 while (group.internalDelayTimer <= 0 && group.quantity) {
                     // ! Placeholder. Put enemy factory here
-                    entityManager->addEnemy(
-                        factory->createEnemy(group.id, 0, group.laneID));
+                    entityManager.addEnemy(factory->createEnemy(group.id, 0));
                     Logger::info(std::format("Spawning {}", group.id));
                     group.internalDelayTimer += group.internalDelay;
                     group.quantity--;
@@ -59,9 +86,13 @@ void Level::update() {
 }
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
-    drawBackground(target, state);
-    target.draw(map, state);
-    entityManager->render(state);
+    // drawBackground(target, state);
+    Window::getInstance().toggleUserMode();
+    map.render(state);
+    entityManager.render(state);
+
+    Window::getInstance().toggleGUIMode();
+    menu.render(state);
 }
 void Level::loadFromJson(const std::string &pathToFile) {
     nlohmann::json jsonFile = nlohmann::json::parse(std::ifstream(pathToFile));
@@ -69,32 +100,9 @@ void Level::loadFromJson(const std::string &pathToFile) {
 }
 
 void Level::loadFromJson(const nlohmann::json &jsonFile) {
-    loadWaypoints(jsonFile);
     loadWaves(jsonFile);
 
     factory = std::make_unique<EnemyFactory>(map, *this);
-
-    std::string difficulty = jsonFile["difficulty"].get<std::string>();
-    if (difficulty == "easy") factory->setDifficulty(Difficulty::Easy);
-    if (difficulty == "medium") factory->setDifficulty(Difficulty::Medium);
-    if (difficulty == "hard") factory->setDifficulty(Difficulty::Hard);
-}
-
-void Level::loadWaypoints(const nlohmann::json &jsonFile) {
-    using namespace nlohmann;
-    auto waypointsData = jsonFile["waypoints"];
-    int pathNumber = 0;
-    for (auto path = waypointsData.begin(); path != waypointsData.end();
-         path++, pathNumber++) {
-        std::vector<Waypoint> waypoints;
-        for (auto pointsIt = (*path).begin(); pointsIt != (*path).end();
-             pointsIt++) {
-            std::array<float, 3> waypoint = *pointsIt;
-            waypoints.push_back(
-                Waypoint({waypoint[0], waypoint[1]}, waypoint[2]));
-        }
-        map.loadWaypoints(waypoints, pathNumber);
-    }
 }
 
 void Level::loadWaves(const nlohmann::json &jsonFile) {
@@ -115,7 +123,6 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
             groupInfo.quantity = (*groupIt)["quantity"];
             groupInfo.spawnDelay = (*groupIt)["spawn_delay"];
             groupInfo.internalDelay = (*groupIt)["internal_delay"];
-            groupInfo.laneID = (*groupIt)["lane"];
 
             groupInfo.spawnDelayTimer = groupInfo.spawnDelay;
             groupInfo.internalDelayTimer = groupInfo.internalDelay;
@@ -129,13 +136,13 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
-    entityManager->subscribeMouse(Mouse::Left, UserEvent::Press,
+    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
                                  InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
-    entityManager->unSubscribeMouse(Mouse::Left, UserEvent::Press,
+    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
                                    InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
 }
@@ -154,43 +161,13 @@ void Level::onKeyEvent(Key key, UserEvent event,
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
     }
+
+    if (key == Key::G && event == UserEvent::Press) {
+        budget.addPetroleum(10);
+        budget.addScraps(10);
+    }
 }
 
-void Level::drawBackground(sf::RenderTarget &target,
-                           sf::RenderStates state) const {
-    const sf::Texture& gressTexture =
-        *ResourceManager::getInstance().getTexture("grass");
-    int textureWidth = gressTexture.getSize().x;
-    int textureHeight = gressTexture.getSize().y;
-
-    static const int width =  GameConstants::DEFAULT_WINDOW_WIDTH;
-    static const int height = GameConstants::DEFAULT_WINDOW_HEIGHT;
-    static const int tileWidth = 32;
-    static const int tileHeight = 32;
-
-    static const int horizontalTiles = textureWidth / tileWidth;
-    static const int verticalTiles = textureHeight / tileHeight;
-
-    auto hashGen = [](int val, int MOD) {
-        return int(1LL * val * 22071997 % 101 % MOD);
-    };
-    for (int i = 0; i < width; i += tileWidth)
-        for (int j = 0; j < height; j += tileHeight) {
-            sf::Vector2i texturePosition = {hashGen(i / 32, horizontalTiles),
-                                            hashGen(j / 32, verticalTiles)};
-            sf::Vector2i textureSize = {tileWidth, tileHeight};
-            sf::Sprite sprite(gressTexture);
-            sprite.setTextureRect({texturePosition * 32, textureSize});
-            sprite.setPosition(static_cast<sf::Vector2f>(sf::Vector2i{i, j}));
-            // Logger::debug(std::format("{} {}",
-            //                           texturePosition.x,
-            //                           texturePosition.y));
-            target.draw(sprite);
-            // target.draw(sprite, state);
-        }
-}
-
-// Getter for entityManager
-EntityManager* Level::getEntityManager() {
-    return entityManager.get();
+EntityManager& Level::getEntityManager() {
+    return entityManager;
 }

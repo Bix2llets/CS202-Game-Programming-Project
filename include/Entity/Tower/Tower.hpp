@@ -41,6 +41,10 @@ enum class BehaviorType;
  * classes should implement specific attack or support behaviors.
  */
 class Tower : public Entity {
+
+friend class TowerBuilder; ///< Allow TowerBuilder to access private members
+friend class UpgradeManager; ///< Allow UpgradeManager to access private members
+
 private:
     Timer timer;  ///< Timer for tower actions
     std::unique_ptr<TowerStat> stats;  ///< Pointer to tower statistics/attributes
@@ -164,11 +168,41 @@ public:
     void addBehavior(std::unique_ptr<TowerBehavior> behavior);
     void removeBehavior(BehaviorType type);
 
-    // Direct accessors for new behavior pointers
+    /**
+     * @brief Get the Combat Behavior object
+     * This method returns the combat behavior if it exists.
+     * @return CombatBehavior* 
+     */
     CombatBehavior* getCombatBehavior() const { return combatBehaviorPointer.get(); }
+
+    /**
+     * @brief Get the Resource Behavior object
+     * This method returns the resource behavior if it exists.
+     * @return ResourceBehavior* 
+     */
     ResourceBehavior* getResourceBehavior() const { return resourceBehaviorPointer.get(); }
+    
+    /**
+     * @brief Get the Glowing Behavior object
+     * This method returns the glowing behavior if it exists.
+     * @return GlowingBehavior* 
+     */
     GlowingBehavior* getGlowingBehavior() const { return glowingBehaviorPointer.get(); }
+    
+    /**
+     * @brief Get the level reference if available.
+     * @return Reference to the level.
+     * @throws std::runtime_error if the scene is not a Level.
+     */
     Level* getLevelRef() const { return levelRef; }
+
+    /**
+     * @brief Check if the tower is currently in a Level.
+     * @return true if the tower is in a Level, false otherwise.
+     */
+    bool isInLevel() const {
+        return levelRef != nullptr;
+    }
 
     // Upgrade System Methods
 
@@ -348,57 +382,6 @@ public:
     bool hasMainTarget() const { return mainTarget != nullptr; }
     
     // Setters
-    /**
-     * @brief Set the tower's display name.
-     * @param newName New name for the tower.
-     */
-    void setName(const std::string& newName) { name = newName; }
-
-    /**
-     * @brief Set the tower's description.
-     * @param newDescription New description for the tower.
-     */
-    void setDescription(const std::string& newDescription) { description = newDescription; }
-
-    /**
-     * @brief Set whether the tower is directly buildable.
-     * @param canBuild True if the tower can be built directly, false if it must be evolved.
-     */
-    void setBuildable(bool canBuild) { buildable = canBuild; }
-
-    /**
-     * @brief Set the cost required to build this tower.
-     * @param newCost New cost in game currencies.
-     */
-    void setCost(const Currency& newCost) { cost = newCost; }
-
-    /**
-     * @brief Set the tower's cooldown timer interval.
-     * @param interval The new cooldown interval.
-     */
-    void setTimerInterval(float interval);
-
-    /**
-     * @brief Set the desired texture width.
-     * @param width The width that textures should be scaled to.
-     */
-    void setTextureWidth(float width) { textureWidth = width; }
-    
-    /**
-     * @brief Set the desired texture height.
-     * @param height The height that textures should be scaled to.
-     */
-    void setTextureHeight(float height) { textureHeight = height; }
-    
-    /**
-     * @brief Set both texture dimensions at once.
-     * @param width The width that textures should be scaled to.
-     * @param height The height that textures should be scaled to.
-     */
-    void setTextureDimensions(float width, float height) { 
-        textureWidth = width; 
-        textureHeight = height; 
-    }
 
     /**
      * @brief Set the main target enemy for the tower.

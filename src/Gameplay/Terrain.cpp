@@ -7,76 +7,74 @@
 #include "Core/Window.hpp"
 #include "Gameplay/TerrainGenerator.hpp"
 #include "Utility/logger.hpp"
-Terrain::Terrain(int zoomFactor, int octave, float persistance,
-                 float lacunarity, long long seed, float depthFactor) {
+#include "Base/Constants.hpp"
+
+#include "Gameplay/Waypoint.hpp"
+Terrain::Terrain(TerrainParameter parameter) {
     TerrainGenerator generator;
-    generator.setResultSize(sf::Vector2i(800, 800));
-    heightMap = generator.getNoiseMap(zoomFactor, octave, persistance,
-                                      lacunarity, seed, depthFactor);
+    generator.setResultSize(sf::Vector2i(GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT));
+    std::vector<std::vector<float>> perlinResult = generator.getNoiseMap(parameter);
+
     sf::RenderTexture temp;
-    bool _ = temp.resize({static_cast<unsigned int>(heightMap.size() * 4),
-                          static_cast<unsigned int>(heightMap[0].size() * 4)});
+    bool _ =
+        temp.resize({static_cast<unsigned int>(perlinResult.size() * GameConstants::CELL_SIZE),
+                     static_cast<unsigned int>(perlinResult[0].size() * GameConstants::CELL_SIZE)});
+    heightMap.resize(perlinResult.size());
+    for (int i = 0; i < heightMap.size(); i++)
+        heightMap[i].resize(perlinResult.size());
     temp.clear(sf::Color::Transparent);
     auto quantitize = [](float val) {
         // * Quantitize height based on the noise value
-        if (val > 0.89f) return 7;  // * High mountain
-        if (val > 0.77f) return 6;  // * Med mountain
-        if (val > 0.65f) return 5;   // * Low mountain
+        if (val > 0.89f) return Height::SnowCap;   // * Hgh mountain
+        if (val > 0.77f) return Height::Mountain;  // * Med mountain
+        if (val > 0.65f) return Height::Rocky;     // * Low mountain
         // * Mountain area
 
-        if (val > 0.55f) return 4;  // * Dark plain
-        if (val > 0.40f) return 3;  // * Light plain
-        if (val > 0.25f) return 2;  // * Sand
-        if (val > 0.15f) return 1;  // * Shallow sea
+        if (val > 0.55f) return Height::Forest;        // * Dark plain
+        if (val > 0.40f) return Height::Plain;         // * Light plain
+        if (val > 0.25f) return Height::Sand;          // * Sand
+        if (val > 0.15f) return Height::ShallowWater;  // * Shallow sea
         // Logger::debug(std::format("{}", val));
-        return 0;  // * Deep sea
+        return Height::DeepSea;  // * Deep sea
     };
 
     auto getColor = [quantitize](float val) {
-        return sf::Color(elevationColors[quantitize(val)]);
+        return sf::Color(elevationColors[val]);
     };
-    std::ofstream outFile("heightMap.log");
     for (int y = 0; y < heightMap.size(); y++) {
         for (int x = 0; x < heightMap[y].size(); x++) {
             sf::RectangleShape cell;
-            outFile << int(20 * heightMap[y][x]) << " ";
+            heightMap[y][x] = quantitize(perlinResult[y][x]);
             cell.setFillColor({getColor(heightMap[y][x])});
             // cell.setFillColor({255, 255, 255, 255});
-            cell.setPosition({(float)x * 4, (float)y * 4});
-            cell.setSize({4.f, 4.f});
+            cell.setPosition(sf::Vector2f{(float)x, (float)y} * static_cast<float>(GameConstants::CELL_SIZE));
+            cell.setSize({GameConstants::CELL_SIZE, GameConstants::CELL_SIZE});
             cell.setOrigin({0, 0});
             temp.draw(cell);
         }
-        outFile << "\n";
     }
     temp.display();
 
     mapTexture = std::move(temp.getTexture());
     map = std::make_unique<sf::Sprite>(mapTexture);
+
+    PathGenerator AStarPath(heightMap);
+    path.loadWaypoints(AStarPath(sf::Vector2i{0, 0}, sf::Vector2i{GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT} * GameConstants::CELL_SIZE));
 }
 
 void Terrain::debugRender() {
-    Window::getInstance().draw(*map);
-    // for (int y = 0; y < heightMap.size(); y++)
-    //     for (int x = 0; x < heightMap[y].size(); x++) {
-    //         sf::RectangleShape cell;
-    //         cell.setFillColor(
-    //             {(unsigned char)(heightMap[y][x] * 255), 255, 255, 255});
-    //         // cell.setFillColor({255, 255, 255, 255});
-    //         cell.setPosition({(float)x * 32, (float)y * 32});
-    //         cell.setSize({32.f, 32.f});
-    //         cell.setOrigin({0, 0});
-    //         Window::getInstance().draw(cell);
-    //     }
+    Window::getInstance().getRenderWindow().draw(*map);
+    Window::getInstance().getRenderWindow().draw(path);
 }
 
-Terrain::Terrain() : Terrain(50, 4, 0.5, 20, 0, 1) {}
+Terrain::Terrain() : Terrain(TerrainParameter()) {}
 
 Terrain::Terrain(Terrain&& other) noexcept
     : mapTexture(std::move(other.mapTexture)),
       heightMap(std::move(other.heightMap)),
       map(std::move(other.map)) {
     map = std::make_unique<sf::Sprite>(mapTexture);
+    path = std::move(other.path);
     other.mapTexture = sf::Texture();
 }
 
@@ -86,6 +84,7 @@ Terrain& Terrain::operator=(Terrain&& rhs) noexcept {
     heightMap = std::move(rhs.heightMap);
     map = std::move(rhs.map);
     map = std::make_unique<sf::Sprite>(mapTexture);
+    path = std::move(rhs.path);
     rhs.mapTexture = sf::Texture();
     return *this;
 }
@@ -93,3 +92,17 @@ Terrain& Terrain::operator=(Terrain&& rhs) noexcept {
 const std::vector<unsigned int> Terrain::elevationColors = {
     0x00478aff, 0x0066CCFF, 0xfce490ff, 0x5C943CFF,
     0x266400ff, 0x9F8D8DFF, 0x4E4C4FFF, 0xFFFFFFFF};
+
+Height::Height Terrain::getCellType(sf::Vector2f position) {
+    return heightMap[static_cast<int>(position.y) / 4]
+                    [static_cast<int>(position.x) / 4];
+}
+
+const std::vector<Waypoint>* Terrain::getPath() {
+    return &path.getWaypoints();
+}
+
+void Terrain::render(sf::RenderStates state) const {
+    Window::getInstance().getRenderWindow().draw(*map, state);
+    Window::getInstance().getRenderWindow().draw(path, state);
+}

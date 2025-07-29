@@ -291,10 +291,10 @@ UpgradeDetails TowerFactory::parseUpgradeDetails(const nlohmann::json& detailsJs
     // Parse cost
     Currency cost(0, 0);
     if (detailsJson.contains("scrap")) {
-        cost = Currency(detailsJson["scrap"].get<int>(), cost.getPetroleum());
+        cost = Currency(detailsJson["scrap"].get<int>(), cost.getPetroleum().value);
     }
     if (detailsJson.contains("petroleum")) {
-        cost = Currency(cost.getScraps(), detailsJson["petroleum"].get<int>());
+        cost = Currency(cost.getScraps().value, detailsJson["petroleum"].get<int>());
     }
     
     // Parse bonus stats

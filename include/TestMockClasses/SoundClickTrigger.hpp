@@ -62,4 +62,5 @@ class SoundClickTrigger : public MouseObserver, public KeyboardObserver {
 
     void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
                     const sf::Vector2f &windowPosition);
+  void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
 };

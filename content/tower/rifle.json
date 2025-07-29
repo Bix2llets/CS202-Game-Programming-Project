@@ -14,10 +14,10 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 30,
-    "fire_rate": 1.6,
-    "range": 240,
-    "max_targets": 1
+    "damage": 36,
+    "fire_rate": 1.8,
+    "range": 360,
+    "max_targets": 3
   },
   "upgrades": {
     "max_total_upgrades": 5,

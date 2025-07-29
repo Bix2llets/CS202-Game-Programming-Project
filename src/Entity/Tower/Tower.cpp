@@ -112,10 +112,6 @@ void Tower::addUpgradeType(int typeId, std::unique_ptr<UpgradeType> upgradeType)
     }
 }
 
-void Tower::setTimerInterval(float interval) {
-    timer.setTimeInterval(interval);
-}
-
 void Tower::setStats(std::unique_ptr<TowerStat> newStats) {
     stats = std::move(newStats);
 }
@@ -207,15 +203,13 @@ void Tower::update() {
     // Combat behavior
     if (combatBehaviorPointer) {
         if (timer.isAvailable()) {
-            std::vector<Enemy*> targets = levelRef->getEntityManager()->getEnemies();
+            std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
             if(targets.empty()) return; // No targets to engage
 
             combatBehaviorPointer->engage(targets);
 
             float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
             float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
-            setTimerInterval(interval);
-
             timer.reset();
         }
 

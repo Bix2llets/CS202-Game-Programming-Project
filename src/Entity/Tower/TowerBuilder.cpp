@@ -154,16 +154,17 @@ std::unique_ptr<Tower> TowerBuilder::build() {
     auto tower = std::make_unique<Tower>(*scene, id, position, angle);
 
     // Configure the tower with optional parameters
-    tower->setName(name);
-    tower->setDescription(description);
-    tower->setBuildable(buildable);
-    tower->setCost(cost);
+    tower->name = name;
+    tower->description = description;
+    tower->buildable = buildable;
+    tower->cost = cost;
 
     // Set timer interval
-    tower->setTimerInterval(timerInterval);
+    tower->timer = timerInterval;
 
     // Set texture dimensions
-    tower->setTextureDimensions(textureWidth, textureHeight);
+    tower->textureWidth = textureWidth;
+    tower->textureHeight = textureHeight;
 
     // Set statistics if provided
     if (stats) {
@@ -203,7 +204,7 @@ void TowerBuilder::validate() const {
     
     // Validate cost only for buildable towers
     if (buildable) {
-        if (cost.getScraps() < 0 || cost.getPetroleum() < 0) {
+        if (cost.getScraps().value < 0 || cost.getPetroleum().value < 0) {
             throw std::invalid_argument("TowerBuilder: Cost cannot be negative for buildable towers.");
         }
     }

@@ -5,7 +5,7 @@
 #include "Core/SceneManager.hpp"
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "Utility/logger.hpp"
-
+#include "Core/Window.hpp"
 MainMenu::MainMenu()
     : Scene() {
     ButtonBuilder builder(*this);
@@ -23,11 +23,12 @@ MainMenu::MainMenu()
                      .setPosition({300.f, 100.f})
                      .setSize({50.f, 50.f})
                      .setText("To setting")
-                     .loadJson("basic_button")
+                     .loadJson("background_basic")
                      .setNotificationMessage("Setting")
                      .setCallback([this](Button *button) {
                          Logger::debug("Setting button pressed");
                      })
+                     .setBackground(ResourceManager::getInstance().getTexture("button_base"))
                      .build();
     Logger::debug("Main menu created");
 
@@ -40,6 +41,7 @@ MainMenu::MainMenu()
 }
 
 void MainMenu::draw(sf::RenderTarget &target, sf::RenderStates state) const {
+    Window::getInstance().toggleGUIMode();
     target.draw(*testBtn, state);
     target.draw(*settingBtn, state);
 }

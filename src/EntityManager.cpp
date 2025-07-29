@@ -1,10 +1,11 @@
 #include "EntityManager.hpp"
 
+#include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
-#include "Core/KeyboardState.hpp"
+#include "Scene/Level.hpp"
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
@@ -39,21 +40,21 @@ void EntityManager::render(sf::RenderStates state) const {
     // Render towers
     for (const auto& tower : towers) {
         if (tower) {
-            Window::getInstance().draw(*tower, state);
+            Window::getInstance().getRenderWindow().draw(*tower, state);
         }
     }
 
     // Render enemies
     for (const auto& enemy : enemies) {
         if (enemy && enemy->isAlive()) {
-            Window::getInstance().draw(*enemy, state);
+            Window::getInstance().getRenderWindow().draw(*enemy, state);
         }
     }
 
     // Render projectiles
     for (const auto& projectile : projectiles) {
         if (projectile && projectile->isAlive()) {
-            Window::getInstance().draw(*projectile, state);
+            Window::getInstance().getRenderWindow().draw(*projectile, state);
         }
     }
 }
@@ -67,11 +68,23 @@ void EntityManager::cleanup() {
                  towers.end());
 
     // Remove dead enemies
-    enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
-                                 [](const std::unique_ptr<Enemy>& enemy) {
-                                     return !enemy || !enemy->isAlive();
-                                 }),
-                  enemies.end());
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+                       [this](const std::unique_ptr<Enemy>& enemy) {
+                           if (!enemy) return true;
+                           if (!enemy->isAlive()) {
+                               Logger::debug(std::format(
+                                   "Reward: {} {}", enemy->getPetroleumReward(),
+                                   enemy->getScrapReward()));
+                               level.notify("add_petrol", *enemy,
+                                            enemy->getPetroleumReward());
+                               level.notify("add_scrap", *enemy,
+                                            enemy->getScrapReward());
+                               return true;
+                           }
+                           return false;
+                       }),
+        enemies.end());
 
     // Remove dead projectiles
     projectiles.erase(
@@ -172,3 +185,7 @@ void EntityManager::onKeyEvent(Key key, UserEvent event,
         if (foundEnemy) foundEnemy->onHeal(50);
     }
 };
+
+void EntityManager::onScrollEvent(float delta,
+                                  const sf::Vector2f& worldPosition,
+                                  const sf::Vector2f& windowPosition) {}

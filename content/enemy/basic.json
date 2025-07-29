@@ -8,7 +8,10 @@
         "heal_interval": 0.5,
         "resistance": 20,
         "speed": 100,
-        "reward": 9
+        "reward": {
+            "petroleum": 0,
+            "scrap": 9
+        }
     },
     "sprite": {
         "texture_id": "basic_enemy",

@@ -15,7 +15,7 @@ void SceneManager::changeScene(const std::string &sceneName) {
 void SceneManager::render() {
     try {
         checkNullptr();
-        Window::getInstance().draw(*currentScene);
+        Window::getInstance().getRenderWindow().draw(*currentScene);
     } catch (GameException exception) {
         Logger::critical("Drawing a non-existent scene");
     }

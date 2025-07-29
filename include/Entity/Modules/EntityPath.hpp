@@ -30,5 +30,7 @@ class EntityPath {
         return waypoints->size() == 0 || waypointIndex == waypoints->size() - 1;
     }
 
+    EntityPath() : multiplier{1.f} {}
+
     sf::Angle angleByVertical();
 };

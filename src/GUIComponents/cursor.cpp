@@ -6,6 +6,9 @@
 
 #include "Core/UserEvent.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
+#include "Utility/Logger.hpp"
+
+#include "Core/Window.hpp"
 std::unique_ptr<Cursor> Cursor::instance = nullptr;
 Cursor::Cursor() : position(0.f, 0.f) {}
 
@@ -38,9 +41,11 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     shape.setPosition(position);
     shape.setFillColor(sf::Color::White);
 
-    outerRing.setOrigin({static_cast<float>(radius + 1), static_cast<float>(radius + 1)});
+    outerRing.setOrigin(
+        {static_cast<float>(radius + 1), static_cast<float>(radius + 1)});
     outerRing.setPosition(position);
     outerRing.setFillColor(sf::Color::Black);
+    Window::getInstance().toggleGUIMode();
     target.draw(outerRing, states);
     target.draw(shape, states);
 
@@ -64,10 +69,15 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 }
 
 void Cursor::onMouseEvent(Mouse mouse, UserEvent event,
-                        const sf::Vector2f& worldPosition,
-                        const sf::Vector2f& windowPosition) {
+                          const sf::Vector2f& worldPosition,
+                          const sf::Vector2f& windowPosition) {
     if (event == UserEvent::Move) {
         position = windowPosition;
+        // Logger::debug("processing moues movent in cursor");
+
         return;
     }
 }
+
+void Cursor::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                           const sf::Vector2f& windowPosition) {}

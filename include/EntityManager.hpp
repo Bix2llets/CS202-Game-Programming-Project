@@ -5,9 +5,12 @@
 #include <memory>
 #include <vector>
 
-#include "Core/MouseObserver.hpp"
 #include "Core/KeyboardObserver.hpp"
+#include "Core/MouseObserver.hpp"
 #include "EntitySystem.hpp"
+#include "Gameplay/Terrain.hpp"
+
+class Level;
 /**
  * @brief Manager class for handling collections of entities
  *
@@ -21,8 +24,11 @@ class EntityManager : public MouseObserver, public KeyboardObserver {
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Projectile>> projectiles;
 
+    Terrain &terrain;
+    Level& level;
+
    public:
-    EntityManager() {}
+    EntityManager(Terrain &terrain, Level& parentLevel) : terrain{terrain}, level{parentLevel} {}
     /**
      * @brief Update all entities
      *
@@ -95,4 +101,6 @@ class EntityManager : public MouseObserver, public KeyboardObserver {
 
     void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
                     const sf::Vector2f &windowPosition) override;
+    void onScrollEvent(float delta, const sf::Vector2f &worldPosition,
+                       const sf::Vector2f &windowPosition) override;
 };

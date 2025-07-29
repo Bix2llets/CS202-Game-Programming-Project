@@ -63,14 +63,13 @@ void EntityPath::update() {
             remainingTravelDistance -=
                 ((*waypoints)[waypointIndex].position - position).length();
             position = (*waypoints)[waypointIndex].position;
-            multiplier *= (*waypoints)[waypointIndex].speedMultiplier;
+            multiplier = (*waypoints)[waypointIndex].speedMultiplier;
         } else {
             position = supposedNextPosition;
             remainingTravelDistance = 0;
         }
     }
-    if (waypointIndex == waypoints->size() - 1)
-        position = waypoints->back().position;
+    if (waypointIndex == waypoints->size() - 1) position = waypoints->back().position;
 }
 
 const std::vector<Waypoint>* EntityPath::getWaypoints() const {
@@ -83,12 +82,13 @@ void EntityPath::setWaypoints(const std::vector<Waypoint>* newWaypoints) {
     distanceFromStart = 0.f;
     if (waypoints && !waypoints->empty()) {
         position = waypoints->front().position;
-        multiplier = waypoints->front().speedMultiplier;
+        // multiplier = waypoints->front().speedMultiplier;
     }
 }
 
 sf::Angle EntityPath::angleByVertical() {
-    if (waypointIndex == waypoints->size() - 1) return sf::Angle(sf::radians(0));
+    if (waypointIndex == waypoints->size() - 1)
+        return sf::Angle(sf::radians(0));
     sf::Vector2f displacement = ((*waypoints)[waypointIndex + 1].position -
                                  (*waypoints)[waypointIndex].position)
                                     .normalized();

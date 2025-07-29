@@ -4,11 +4,12 @@
 #include <vector>
 #include <SFML/System/Vector2.hpp> 
 
+#include "Gameplay/TerrainParameter.hpp"
 class TerrainGenerator {
 public:
     std::vector<int> permutation;
 
-    std::vector<std::vector<float>> getNoiseMap(int zoomFactor, int octaves, float persistence, float lacunarity, long long seed, float depthFactor);
+    std::vector<std::vector<float>> getNoiseMap(TerrainParameter parameter);
 
     void setResultSize(sf::Vector2i size);
 
@@ -24,5 +25,5 @@ private:
 
     int hashCoordinates(int xGrid, int yGrid);
 
-    void createPermutation(long long seed);
+    void createPermutation(int seed);
 };

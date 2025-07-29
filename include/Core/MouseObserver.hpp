@@ -67,4 +67,6 @@ class MouseObserver {
     virtual void onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition) = 0;
+
+   virtual void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) = 0;
 };

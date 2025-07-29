@@ -43,4 +43,5 @@ class Cursor : public sf::Drawable, public MouseObserver {
     const sf::Vector2f& getPosition() const;
 
     void onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
+    void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) override;
 };

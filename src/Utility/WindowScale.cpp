@@ -18,9 +18,9 @@ sf::Vector2f WindowScale::screenScale(sf::Vector2f source) {
 
 float WindowScale::getXRatio() {
     return static_cast<float>(GameConstants::DEFAULT_WINDOW_WIDTH) /
-           static_cast<float>(Window::getInstance().getSize().x);
+           static_cast<float>(Window::getInstance().getRenderWindow().getSize().x);
 }
 float WindowScale::getYRatio() {
     return static_cast<float>(GameConstants::DEFAULT_WINDOW_HEIGHT) /
-           static_cast<float>(Window::getInstance().getSize().y);
+           static_cast<float>(Window::getInstance().getRenderWindow().getSize().y);
 }

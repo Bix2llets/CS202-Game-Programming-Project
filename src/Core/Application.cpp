@@ -17,13 +17,13 @@
 #include "Utility/logger.hpp"
 
 Application::Application() : isRunning{true} {
-    if (Window::getInstance().isOpen())
+    if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
     else
         Logger::error("Window not intitialized");
-    Window::getInstance().setFramerateLimit(60);
-    Window::getInstance().setMouseCursorVisible(false);
-    Window::getInstance().setPosition({0, 0});
+    Window::getInstance().getRenderWindow().setFramerateLimit(60);
+    Window::getInstance().getRenderWindow().setMouseCursorVisible(false);
+    Window::getInstance().getRenderWindow().setPosition({0, 0});
     JSONLoader::getInstance().loadAll();
 
     Cursor::getInstance().subscribeMouse(
@@ -34,6 +34,9 @@ Application::Application() : isRunning{true} {
         InputManager::getInstance().getMouseState());
     Cursor::getInstance().subscribeMouse(
         Mouse::None, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Middle, UserEvent::Move,
         InputManager::getInstance().getMouseState());
     // * Loading the necessary sounds
     for (auto [id, soundFile] : JSONLoader::getInstance().getAllSounds())
@@ -65,7 +68,8 @@ Application::Application() : isRunning{true} {
 }
 
 Application::~Application() {
-    if (Window::getInstance().isOpen()) Window::getInstance().close();
+    if (Window::getInstance().getRenderWindow().isOpen())
+        Window::getInstance().getRenderWindow().close();
     Logger::success("Application exit success");
 }
 
@@ -81,30 +85,35 @@ void Application::run() {
     fpsDisplay.setPosition({0.f, 0.f});
     fpsDisplay.setFillColor(sf::Color::White);
     fpsDisplay.setOutlineColor(sf::Color::Black);
+    TerrainParameter parameter;
+    parameter.gridSize = 150;
+    parameter.octaves = 3;
+    parameter.persistence = -0.6;
+    parameter.lacunarity = 3.5;
+    parameter.seed = 22071997LL;
+    parameter.depthFactor = 1.f;
+    // Terrain terrain(parameter);
 
-    // int gridSize = 150;
-    // int octaves = 3;
-    // float persistance = -0.6;
-    // float lacunarity = 3.5;
-    // long long seed = 22071997LL;
-    // float depthFactor = 1.f;
-    // Terrain terrain(gridSize, octaves, persistance, lacunarity, seed, depthFactor);
-    // sf::Text terrainInfo(*ResourceManager::getInstance().getFont("league_spartan"));
+    // sf::Text terrainInfo(
+    //     *ResourceManager::getInstance().getFont("league_spartan"));
     // terrainInfo.setCharacterSize(20);
     // terrainInfo.setPosition({150.f, 0.f});
-    // auto updateTerrain = [&terrainInfo, &gridSize, &octaves, &persistance,
-    //                       &lacunarity, &depthFactor, &seed]() {
+    // auto updateTerrain = [&parameter, &terrainInfo]() {
     //     terrainInfo.setString(std::format(
-    //         "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth factor {} Seed {}",
-    //         gridSize, octaves, persistance, lacunarity, depthFactor, seed));
+    //         "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth "
+    //         "factor {} Seed {}",
+    //         parameter.gridSize, parameter.octaves, parameter.persistence,
+    //         parameter.lacunarity, parameter.depthFactor, parameter.seed));
     // };
     // terrainInfo.setFillColor(sf::Color::Red);
     // updateTerrain();
     while (isRunning) {
         frameCount++;
-        while (auto event = Window::getInstance().pollEvent()) {
+        Window::getInstance().toggleUserMode();
+        while (auto event =
+                   Window::getInstance().getRenderWindow().pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
-                Window::getInstance().close();
+                Window::getInstance().getRenderWindow().close();
                 isRunning = false;
             }
 
@@ -121,59 +130,60 @@ void Application::run() {
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F5) {
-                        // gridSize += 10;
+                        parameter.gridSize += 10;
                         // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F6) {
-                        // gridSize -= 10;
+                        parameter.gridSize -= 10;
                         // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F7) {
-                        // octaves++;
+                        parameter.octaves++;
                         // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F8) {
-                        // octaves--;
+                        parameter.octaves--;
                         // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F9) {
-                        // persistance += 0.1;
+                        parameter.persistence += 0.1;
                         // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F10) {
-                        // persistance -= 0.1;
+                        parameter.persistence -= 0.1;
                         // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F11) {
-                        // lacunarity += 0.1;
+                        parameter.lacunarity += 0.1;
                         // updateTerrain();
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F12) {
-                        // lacunarity -= 0.1;
+                        parameter.lacunarity -= 0.1;
                         // updateTerrain();
                         continue;
                     }
 
                     if (keyPress->code == sf::Keyboard::Key::LBracket) {
-                        // depthFactor -= 0.1f;
+                        parameter.depthFactor -= 0.1f;
                         // updateTerrain();
-                        continue;;
+                        continue;
+                    
                     }
                     if (keyPress->code == sf::Keyboard::Key::RBracket) {
-                        // depthFactor += 0.1f;
+                        parameter.depthFactor += 0.1f;
                         // updateTerrain();
-                        continue;;
+                        continue;
+                        
                     }
                     if (keyPress->code == sf::Keyboard::Key::R) {
-                        // terrain = std::move(Terrain(
-                        //     gridSize, octaves, persistance, lacunarity, seed, depthFactor));
+                        // terrain = std::move(Terrain(parameter));
                         continue;
                     }
                 }
@@ -196,13 +206,15 @@ void Application::run() {
             fpsDisplay.setString(std::to_string(frameCount));
             frameCount = 0;
         }
-        Window::getInstance().clear(sf::Color::Black);
+        Window::getInstance().getRenderWindow().clear(sf::Color::Black);
         SceneManager::getInstance().render();
         // terrain.debugRender();
-        Window::getInstance().draw(fpsDisplay);
-        // Window::getInstance().draw(terrainInfo);
-        Window::getInstance().draw(EnemyPanel::getInstance());
-        Window::getInstance().draw(Cursor::getInstance());
-        Window::getInstance().display();
+        Window::getInstance().toggleGUIMode();
+        Window::getInstance().getRenderWindow().draw(fpsDisplay);
+        // Window::getInstance().getRenderWindow().draw(terrainInfo);
+        Window::getInstance().getRenderWindow().draw(EnemyPanel::getInstance());
+        Window::getInstance().getRenderWindow().draw(Cursor::getInstance());
+        Window::getInstance().toggleUserMode();
+        Window::getInstance().getRenderWindow().display();
     }
 }

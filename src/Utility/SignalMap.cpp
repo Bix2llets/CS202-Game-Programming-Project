@@ -9,6 +9,8 @@ Mouse SignalMap::mapSfmlMouseButton(sf::Mouse::Button button) {
             return Mouse::Left;
         case sf::Mouse::Button::Right:
             return Mouse::Right;
+        case sf::Mouse::Button::Middle:
+            return Mouse::Middle;
         default:
             return Mouse::Left; // Or Mouse::Unknown if you have it
     }

@@ -7,6 +7,7 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Utility/logger.hpp"
 
+#include "Core/Window.hpp"
 EnemyPanel& EnemyPanel::getInstance() {
     static EnemyPanel instance;
     return instance;
@@ -151,6 +152,7 @@ void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
         positionMarker.setOrigin({2.f, 2.f});
         positionMarker.setPosition(object.getPosition());
         positionMarker.setFillColor(sf::Color::White);
+        Window::getInstance().toggleGUIMode();
         target.draw(positionMarker);
     };
     drawOriginMarker(health);
@@ -185,12 +187,11 @@ void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 
     ringTexture.display();
     sf::Sprite ringSprite(ringTexture.getTexture());
-    // Logger::debug(std::format("{} {}", ringSprite.getPosition().x,
-    //                           ringSprite.getPosition().y));
 
     ringSprite.setOrigin(ringSprite.getLocalBounds().size / 2.f);
     ringSprite.setPosition(displayingEnemy->position);
     // Draw the ring texture to the target
+    Window::getInstance().toggleUserMode();
     target.draw(ringSprite, state);
 }
 

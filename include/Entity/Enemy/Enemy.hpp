@@ -20,6 +20,7 @@
 #include "Entity/Modules/Timer.hpp"
 #include "Entity/Modules/Effects/EntityEffect.hpp"
 #include "Gameplay/Waypoint.hpp"
+
 class Path;
 class EnemyFactory;
 class Scene;
@@ -55,7 +56,8 @@ class Enemy : public Entity, public Damageable {
 
     std::unique_ptr<EnemyState> currentState;  ///< Current AI state
     EnemyType enemyType;  ///< Type of enemy (ground, aerial, etc.)
-    int reward;           ///< Reward for defeating this enemy
+    int petroleumReward;           ///< Reward for defeating this enemy
+    int scrapReward;
 
     std::string name;
 
@@ -73,6 +75,9 @@ class Enemy : public Entity, public Damageable {
      * @param other Enemy to copy from.
      */
     Enemy(const Enemy& other);
+    Enemy(const Enemy&& other);
+    Enemy& operator= (Enemy& other);
+    Enemy& operator= (Enemy&& other);
 
     /**
      * @brief Destructor.
@@ -139,7 +144,8 @@ class Enemy : public Entity, public Damageable {
      * @brief Get the reward for defeating this enemy.
      * @return int Reward value.
      */
-    int getReward() const { return reward; }
+    int getPetroleumReward() const { return petroleumReward; }
+    int getScrapReward() const { return scrapReward; }
 
     /**
      * @brief Get the waypoints for this enemy's path.
