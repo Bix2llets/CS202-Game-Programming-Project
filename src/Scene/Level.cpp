@@ -23,7 +23,8 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
       isRunning{true},
       map(parameter),
       entityManager{map, *this},
-      menu{budget} {
+      menu{budget},
+      tracker(*this) {
     subscribeKeyboard(Key::Space, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
     subscribeKeyboard(Key::G, UserEvent::Press,
@@ -165,4 +166,8 @@ void Level::onKeyEvent(Key key, UserEvent event,
         budget.addPetroleum(10);
         budget.addScraps(10);
     }
+}
+
+EntityManager& Level::getEntityManager() {
+    return entityManager;
 }

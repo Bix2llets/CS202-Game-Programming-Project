@@ -168,11 +168,41 @@ public:
     void addBehavior(std::unique_ptr<TowerBehavior> behavior);
     void removeBehavior(BehaviorType type);
 
-    // Direct accessors for new behavior pointers
+    /**
+     * @brief Get the Combat Behavior object
+     * This method returns the combat behavior if it exists.
+     * @return CombatBehavior* 
+     */
     CombatBehavior* getCombatBehavior() const { return combatBehaviorPointer.get(); }
+
+    /**
+     * @brief Get the Resource Behavior object
+     * This method returns the resource behavior if it exists.
+     * @return ResourceBehavior* 
+     */
     ResourceBehavior* getResourceBehavior() const { return resourceBehaviorPointer.get(); }
+    
+    /**
+     * @brief Get the Glowing Behavior object
+     * This method returns the glowing behavior if it exists.
+     * @return GlowingBehavior* 
+     */
     GlowingBehavior* getGlowingBehavior() const { return glowingBehaviorPointer.get(); }
+    
+    /**
+     * @brief Get the level reference if available.
+     * @return Reference to the level.
+     * @throws std::runtime_error if the scene is not a Level.
+     */
     Level* getLevelRef() const { return levelRef; }
+
+    /**
+     * @brief Check if the tower is currently in a Level.
+     * @return true if the tower is in a Level, false otherwise.
+     */
+    bool isInLevel() const {
+        return levelRef != nullptr;
+    }
 
     // Upgrade System Methods
 
