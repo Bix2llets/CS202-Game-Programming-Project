@@ -18,5 +18,26 @@
     {
         "id": "button_base",
         "path": "assets/texture/buttonBase.png"
+    },
+    {
+        "id": "tower_selection_base",
+        "path": "assets/texture/TowerSelectionPanel.png"
+    },
+    {
+        "id": "prev",
+        "path": "assets/texture/prev.png"
+    },
+    {
+        "id": "next",
+        "path": "assets/texture/next.png"
+    },
+    {
+        "id": "petroleum",
+        "path": "assets/texture/petroleum.png"
+    },
+    {
+        "id": "scrap",
+        "path": "assets/texture/scrap.png"
+        
     }
 ]

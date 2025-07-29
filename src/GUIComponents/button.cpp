@@ -12,21 +12,21 @@ Button::Button(Mediator& mediator)
       onClickMessage("ButtonClicked"),
       isPressed{false},
       isHovered{false} {
-    hover.setTimeInterval(0.5)
+    hover.setTimeInterval(0.2)
         .setTimerDirection(TimerDirection::Forward)
         .setTimerMode(TimerMode::Single)
-        .setRemainingTime(0.5);
-    press.setTimeInterval(0.5)
+        .setRemainingTime(0.2);
+    press.setTimeInterval(0.2)
         .setTimerDirection(TimerDirection::Forward)
         .setTimerMode(TimerMode::Single)
-        .setRemainingTime(0.5);
+        .setRemainingTime(0.2);
 
-    reverseHover.setTimeInterval(0.5)
+    reverseHover.setTimeInterval(0.2)
         .setTimerDirection(TimerDirection::Backward)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0);
 
-    reversePress.setTimeInterval(0.5)
+    reversePress.setTimeInterval(0.2)
         .setTimerDirection(TimerDirection::Backward)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0);
