@@ -7,6 +7,11 @@ namespace Combat {
 void InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     if (!tower) return;
     
+    // Set the main target to the first enemy in the vector (index 0)
+    if (!target.empty() && target[0] != nullptr) {
+        tower->setMainTarget(target[0]);
+    }
+    
     // Get damage from tower stats
     float damageValue = tower->getStat(TowerStat::DAMAGE, 0.0f);
     int damage = static_cast<int>(damageValue);
@@ -28,11 +33,25 @@ void InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
 }
 
 void ProjectileFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
+    if (!tower) return;
+    
+    // Set the main target to the first enemy in the vector (index 0)
+    if (!target.empty() && target[0] != nullptr) {
+        tower->setMainTarget(target[0]);
+    }
+    
     // TODO: Implement projectile fire mode
     // This would create projectile entities that travel to targets
 }
 
 void ContinuousFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
+    if (!tower) return;
+    
+    // Set the main target to the first enemy in the vector (index 0)
+    if (!target.empty() && target[0] != nullptr) {
+        tower->setMainTarget(target[0]);
+    }
+    
     // TODO: Implement continuous fire mode  
     // This would apply damage over time while targets remain in range
 }

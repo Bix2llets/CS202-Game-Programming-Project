@@ -2,7 +2,7 @@
 
 #include "Base/Constants.hpp"
 
-bool Timer::isAvailable() { return available > 0; }
+bool Timer::isAvailable() const { return available > 0; }
 
 Timer& Timer::update() {
     if (!running) return *this;
@@ -45,11 +45,6 @@ Timer& Timer::setTimeInterval(float interval) {
     return *this;
 }
 
-Timer& Timer::setTimerDirection(TimerDirection direction) {
-    this->direction = direction;
-    return *this;
-}
-
 Timer& Timer::setTimerMode(TimerMode mode) {
     this->mode = mode;
     return *this;
@@ -67,6 +62,7 @@ float Timer::getPassedTime() const {
         if (available) return timeInterval;
         return timeInterval - remainingTime;
     }
+    return 0.0f;
 }
 
 Timer& Timer::pause() {

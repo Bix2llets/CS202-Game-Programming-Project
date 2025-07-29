@@ -7,6 +7,16 @@
 #pragma once
 
 /**
+ * @enum DamageType
+ * @brief Enumeration for different damage types.
+ */
+enum class DamageType {
+    Physical,  ///< Physical damage (default)
+    Fire,      ///< Fire damage (affected by fire resistance)
+    Napalm     ///< Napalm damage (ignores fire resistance)
+};
+
+/**
  * @class Damageable
  * @brief Interface for entities that can take damage and be healed.
  *
@@ -17,8 +27,9 @@ public:
     /**
      * @brief Deal damage to the entity.
      * @param damage Amount of damage to deal.
+     * @param damageType Type of damage being dealt.
      */
-    virtual void onHit(int damage) = 0;
+    virtual void onHit(int damage, DamageType damageType = DamageType::Physical) = 0;
 
     /**
      * @brief Heal the entity.

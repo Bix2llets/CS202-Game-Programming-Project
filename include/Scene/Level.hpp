@@ -14,6 +14,7 @@
 #include "Core/KeyboardObserver.hpp"
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
+#include "Gameplay/Tracker.hpp"
 #include "Gameplay/Path.hpp"
 #include "Gameplay/Terrain.hpp"
 #include "Gameplay/Waypoint.hpp"
@@ -32,16 +33,17 @@
  * game logic, and rendering.
  */
 class Level : public Scene, public KeyboardObserver {
-   private:
+private:
     std::string levelID;  ///< Unique identifier for the level
     void loadLevelID(const nlohmann::json &jsonfile);
-    EntityManager entityManager;  ///< Manages all entities in the level
+    std::unique_ptr<EntityManager> entityManager;  ///< Manages all entities in the level
     std::unique_ptr<EnemyFactory> factory;
     Terrain map;  // game map for this level
     std::vector<std::vector<EnemyGroupInfo>>
         waveInfo;     ///< Information for each wave
     int currentWave;  ///< Index of the current wave
     bool isRunning;
+    Tracker tracker;  ///< Tracks gameplay statistics for this level
 
     Currency budget;
     TowerMenu menu;
@@ -80,6 +82,24 @@ class Level : public Scene, public KeyboardObserver {
      * @return The level's unique ID string.
      */
     inline const std::string getID() const { return "Level" + levelID; }
+
+    /**
+     * @brief Gets the tracker for this level.
+     * @return Reference to the level's tracker.
+     */
+    Tracker& getTracker() { return tracker; }
+
+    /**
+     * @brief Gets the tracker for this level (const version).
+     * @return Const reference to the level's tracker.
+     */
+    const Tracker& getTracker() const { return tracker; }
+
+    /**
+     * @brief Gets the entity manager for this level.
+     * @return Reference to the level's entity manager.
+     */
+    EntityManager* getEntityManager();
 
     /**
      * @brief Registers UI components and event handlers for the level.

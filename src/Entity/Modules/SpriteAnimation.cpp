@@ -32,7 +32,6 @@ void SpriteAnimation::loadJson(const nlohmann::json& jsonFile) {
     animationTimer = std::make_unique<Timer>();
     animationTimer->setTimeInterval(jsonFile["animation_interval"])
         .setTimerMode(TimerMode::Continuous)
-        .setTimerDirection(TimerDirection::Backward)
         .setRemainingTime(jsonFile["animation_interval"]);
 }
 

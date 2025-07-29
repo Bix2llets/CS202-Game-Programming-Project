@@ -15,6 +15,7 @@
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
+
 Application::Application() : isRunning{true} {
     if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
@@ -56,14 +57,11 @@ Application::Application() : isRunning{true} {
     Logger::success("Resource loading");
     SceneManager::getInstance().registerScene<MainMenu>("Main menu");
     SceneManager::getInstance().registerScene<Setting>("Setting");
-    SceneManager::getInstance().registerScene<TowerRotationMockScene>(
-        "Tower Test");
+    SceneManager::getInstance().registerScene<TowerRotationMockScene>("Tower Test");
 
-    SceneManager::getInstance().changeScene(
-        "Tower Test");  // Start with the tower test scene
+    SceneManager::getInstance().changeScene("Tower Test");  // Start with the tower test scene
 
-    SceneManager::getInstance().loadLevel(
-        "Gameplay", levelFactory.getLevel("example_level"));
+    SceneManager::getInstance().loadLevel("Gameplay", levelFactory.getLevel("example_level"));
 
     SceneManager::getInstance().changeScene("Main menu");
     // sceneManager.changeScene("Setting");
