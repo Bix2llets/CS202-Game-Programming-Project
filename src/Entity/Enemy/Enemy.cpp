@@ -6,7 +6,6 @@
 #include "Entity/Enemy/DyingState.hpp"
 #include "Entity/Enemy/EnemyState.hpp"
 #include "Entity/Enemy/MovingState.hpp"
-
 #include "GUIComponents/EnemyPanel.hpp"
 
 // Deep-copying copy constructor
@@ -16,7 +15,43 @@ Enemy::Enemy(const Enemy &other)
       currentState(other.currentState ? other.currentState->clone() : nullptr),
       health(other.health),
       enemyType(other.enemyType),
-      reward(other.reward) {
+      petroleumReward(other.petroleumReward),
+      scrapReward(other.scrapReward) {}
+Enemy::Enemy(const Enemy &&other)
+    : Entity(other),
+      Damageable(other),
+      currentState(other.currentState ? other.currentState->clone() : nullptr),
+      health(other.health),
+      enemyType(other.enemyType),
+      petroleumReward(other.petroleumReward),
+      scrapReward(other.scrapReward) {}
+Enemy &Enemy::operator=(Enemy &other) {
+    if (this != &other) {
+        // Entity::operator=(other);
+        Damageable::operator=(other);
+        if (other.currentState) {
+            currentState = other.currentState->clone();
+        } else {
+            currentState.reset();
+        }
+        health = other.health;
+        enemyType = other.enemyType;
+        petroleumReward = other.petroleumReward;
+        scrapReward = other.scrapReward;
+    }
+    return *this;
+};
+Enemy &Enemy::operator=(Enemy &&other) {
+    if (this != &other) {
+        // Entity::operator=(std::move(other));
+        Damageable::operator=(std::move(other));
+        currentState = std::move(other.currentState);
+        health = std::move(other.health);
+        enemyType = std::move(other.enemyType);
+        petroleumReward = std::move(other.petroleumReward);
+        scrapReward = std::move(other.scrapReward);
+    }
+    return *this;
 }
 
 void Enemy::update() {
@@ -74,9 +109,7 @@ void Enemy::onDeath() {
 void Enemy::setPosition(const sf::Vector2f &position) {}
 void Enemy::setRotation(const sf::Angle &angle) {}
 void Enemy::onHeal(int healAmount) { health.heal(healAmount); }
-bool Enemy::isAlive() { return health.getHealth() > 0
-    && !path.isFinished(); 
-}
+bool Enemy::isAlive() { return health.getHealth() > 0 && !path.isFinished(); }
 
 Enemy::Enemy(Scene &scene) : Entity(scene) {}
 
@@ -89,6 +122,4 @@ sf::Sprite Enemy::changeSpriteContent(sf::Sprite current, sf::Sprite target) {
     return current;
 }
 
-Enemy::~Enemy() {
-    onDeath();
-}
+Enemy::~Enemy() { onDeath(); }

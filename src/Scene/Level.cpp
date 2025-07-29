@@ -11,15 +11,22 @@
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
+#include "Core/Window.hpp"
+#include "Entity/Enemy/Enemy.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
 #include "Utility/logger.hpp"
-#include "Core/Window.hpp"
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
              sf::Vector2f endPoint)
-    : currentWave{0}, isRunning{true}, map(parameter), entityManager{map} {
+    : currentWave{0},
+      isRunning{true},
+      map(parameter),
+      entityManager{map, *this},
+      menu{budget} {
     subscribeKeyboard(Key::Space, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    subscribeKeyboard(Key::G, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
     entityManager.subscribeKeyboard(
         Key::D, UserEvent::Press,
@@ -28,11 +35,30 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
         Key::F, UserEvent::Press,
         InputManager::getInstance().getKeyboardState());
 
-    
+    subscribe("add_petrol", [this](std::any sender, std::any data) {
+        try {
+            int petrolAmount = std::any_cast<int>(data);
+            budget.addPetroleum(petrolAmount);
+
+        } catch (const std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on add petrol");
+        }
+    });
+    subscribe("add_scrap", [this](std::any sender, std::any data) {
+        try {
+            int scrapAmount = std::any_cast<int>(data);
+            budget.addScraps(scrapAmount);
+
+        } catch (const std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on add scrap");
+        }
+    });
 }
 
 void Level::update() {
+    menu.update();
     if (!isRunning) return;
+
     entityManager.update();
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
@@ -47,8 +73,7 @@ void Level::update() {
                 group.internalDelayTimer -= GameConstants::TICK_INTERVAL;
                 while (group.internalDelayTimer <= 0 && group.quantity) {
                     // ! Placeholder. Put enemy factory here
-                    entityManager.addEnemy(
-                        factory->createEnemy(group.id, 0));
+                    entityManager.addEnemy(factory->createEnemy(group.id, 0));
                     Logger::info(std::format("Spawning {}", group.id));
                     group.internalDelayTimer += group.internalDelay;
                     group.quantity--;
@@ -64,6 +89,9 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     Window::getInstance().toggleUserMode();
     map.render(state);
     entityManager.render(state);
+
+    Window::getInstance().toggleGUIMode();
+    menu.render(state);
 }
 void Level::loadFromJson(const std::string &pathToFile) {
     nlohmann::json jsonFile = nlohmann::json::parse(std::ifstream(pathToFile));
@@ -74,7 +102,6 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     loadWaves(jsonFile);
 
     factory = std::make_unique<EnemyFactory>(map, *this);
-
 }
 
 void Level::loadWaves(const nlohmann::json &jsonFile) {
@@ -132,5 +159,10 @@ void Level::onKeyEvent(Key key, UserEvent event,
                        const sf::Vector2f &windowPosition) {
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
+    }
+
+    if (key == Key::G && event == UserEvent::Press) {
+        budget.addPetroleum(10);
+        budget.addScraps(10);
     }
 }

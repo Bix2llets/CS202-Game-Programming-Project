@@ -5,6 +5,7 @@
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
+#include "Scene/Level.hpp"
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
@@ -67,11 +68,23 @@ void EntityManager::cleanup() {
                  towers.end());
 
     // Remove dead enemies
-    enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
-                                 [](const std::unique_ptr<Enemy>& enemy) {
-                                     return !enemy || !enemy->isAlive();
-                                 }),
-                  enemies.end());
+    enemies.erase(
+        std::remove_if(enemies.begin(), enemies.end(),
+                       [this](const std::unique_ptr<Enemy>& enemy) {
+                           if (!enemy) return true;
+                           if (!enemy->isAlive()) {
+                               Logger::debug(std::format(
+                                   "Reward: {} {}", enemy->getPetroleumReward(),
+                                   enemy->getScrapReward()));
+                               level.notify("add_petrol", *enemy,
+                                            enemy->getPetroleumReward());
+                               level.notify("add_scrap", *enemy,
+                                            enemy->getScrapReward());
+                               return true;
+                           }
+                           return false;
+                       }),
+        enemies.end());
 
     // Remove dead projectiles
     projectiles.erase(

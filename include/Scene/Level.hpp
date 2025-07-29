@@ -19,6 +19,9 @@
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
+
+#include "Gameplay/Currency.hpp"
+#include "Gameplay/TowerMenu.hpp"
 /**
  * @class Level
  * @brief Scene representing a gameplay level, with map, entities, and wave
@@ -39,6 +42,9 @@ class Level : public Scene, public KeyboardObserver {
         waveInfo;     ///< Information for each wave
     int currentWave;  ///< Index of the current wave
     bool isRunning;
+
+    Currency budget;
+    TowerMenu menu;
 
    public:
     Level(TerrainParameter parameter = TerrainParameter(),

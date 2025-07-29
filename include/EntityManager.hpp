@@ -9,6 +9,8 @@
 #include "Core/MouseObserver.hpp"
 #include "EntitySystem.hpp"
 #include "Gameplay/Terrain.hpp"
+
+class Level;
 /**
  * @brief Manager class for handling collections of entities
  *
@@ -23,9 +25,10 @@ class EntityManager : public MouseObserver, public KeyboardObserver {
     std::vector<std::unique_ptr<Projectile>> projectiles;
 
     Terrain &terrain;
+    Level& level;
 
    public:
-    EntityManager(Terrain &terrain) : terrain{terrain} {}
+    EntityManager(Terrain &terrain, Level& parentLevel) : terrain{terrain}, level{parentLevel} {}
     /**
      * @brief Update all entities
      *

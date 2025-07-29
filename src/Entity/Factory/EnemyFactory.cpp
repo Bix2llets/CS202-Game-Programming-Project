@@ -10,7 +10,11 @@
 #include "Gameplay/Path.hpp"
 #include "Scene/Scene.hpp"
 EnemyFactory::EnemyFactory(Terrain &map, Scene &scene)
-    : map(map), scene(scene) {}
+    : map(map), scene(scene) {
+        rewardMultiplier = 1.f;
+        speedMultiplier = 1.f;
+        healthMultiplier = 1.f;
+    }
 void EnemyFactory::setDifficulty(Difficulty difficulty) {
     switch (difficulty) {
         case Difficulty::Easy: {
@@ -31,9 +35,14 @@ void EnemyFactory::setDifficulty(Difficulty difficulty) {
             healthMultiplier = 1.05f;
             return;
         }
-
-        default:
-            break;
+        
+        default: {
+            rewardMultiplier = 1.f;
+            speedMultiplier = 1.f;
+            healthMultiplier = 1.f;
+            return;
+            
+        }
     }
 }
 
@@ -58,8 +67,10 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
     result->enemyType =
         (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);
 
-    result->reward =
-        static_cast<float>(enemyFile["stats"]["reward"]) * rewardMultiplier;
+    result->petroleumReward =
+        static_cast<float>(enemyFile["stats"]["reward"]["petroleum"]) * rewardMultiplier;
+    result->scrapReward =
+        static_cast<float>(enemyFile["stats"]["reward"]["scrap"]) * rewardMultiplier;
 
     result->name = enemyFile["name"];
     return std::move(result);
