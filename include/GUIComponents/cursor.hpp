@@ -15,33 +15,41 @@
  * is discouraged.
  */
 #pragma once
+#include <Core/MouseObserver.hpp>
 #include <Entity/Tower/Tower.hpp>
 #include <SFML/Graphics.hpp>
 #include <memory>
-#include <Core/MouseObserver.hpp>
 
 class Cursor : public sf::Drawable, public MouseObserver {
     sf::Vector2f position;
     sf::Sprite renderImage;
     static const int cursorRadius = 2;
     bool isDisplaying;
-        // Singleton pattern
+    // Singleton pattern
    private:
+    std::string carryingTowerId;
     static std::unique_ptr<Cursor> instance;
     Cursor();
     Cursor(const Cursor&) = delete;
     Cursor& operator=(const Cursor&) = delete;
 
-    public:
+   public:
     ~Cursor() = default;
     static Cursor& getInstance();
 
     void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
     void removeRenderImage();
+    void clearCarryingTower();
+
     void setRenderImage(sf::Sprite sprite);
+    void setCarryingTower(std::string id);
+
     void setPosition(const sf::Vector2f& pos);
     const sf::Vector2f& getPosition() const;
 
-    void onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
-    void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) override;
+    bool onMouseEvent(Mouse mouse, UserEvent event,
+                      const sf::Vector2f& worldPosition,
+                      const sf::Vector2f& windowPosition);
+    bool onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                       const sf::Vector2f& windowPosition) override;
 };

@@ -41,8 +41,8 @@ class Window : public MouseObserver {
     void toggleGUIMode();
     void toggleUserMode();
 
-    void onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
-    void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
+    bool onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
+    bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
 
     void adjustUserView();
 

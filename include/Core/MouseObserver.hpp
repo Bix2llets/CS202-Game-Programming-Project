@@ -64,9 +64,9 @@ class MouseObserver {
      * @param worldPosition The mouse position in world coordinates.
      * @param windowPosition The mouse position in window coordinates.
      */
-    virtual void onMouseEvent(Mouse button, UserEvent event,
+    virtual bool onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition) = 0;
 
-   virtual void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) = 0;
+   virtual bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) = 0;
 };

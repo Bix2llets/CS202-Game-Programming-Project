@@ -8,9 +8,7 @@
 #include "Core/UserEvent.hpp"
 #include "Utility/lerp.hpp"
 Button::Button(Mediator& mediator)
-    : mediator(mediator),
-      isPressed{false},
-      isHovered{false} {
+    : mediator(mediator), isPressed{false}, isHovered{false} {
     hover.setTimeInterval(0.5)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0.5);
@@ -74,15 +72,13 @@ void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         sf::Sprite renderingSprite = *backgroundSprite;
         renderingSprite.setColor(fillColor);
         target.draw(renderingSprite, states);
-    }
-    else {
+    } else {
         sf::RectangleShape rect;
         rect.setPosition(geometricInfo.position);
         rect.setSize(geometricInfo.size);
         rect.setFillColor(fillColor);
-    
+
         target.draw(rect, states);
-        
     }
     // ? Uncomment these lines to see the bounding box for the text of button
     // sf::RectangleShape textBound;
@@ -102,7 +98,7 @@ std::string Button::getLabel() const { return label->getString(); }
 
 sf::Vector2f Button::getPosition() const { return geometricInfo.position; }
 
-void Button::onMouseEvent(Mouse button, UserEvent event,
+bool Button::onMouseEvent(Mouse button, UserEvent event,
                           const sf::Vector2f& worldPosition,
                           const sf::Vector2f& windowPosition) {
     if (button == Mouse::Left && event == UserEvent::Press)
@@ -115,25 +111,27 @@ void Button::onMouseEvent(Mouse button, UserEvent event,
             }
             click();
 
-            return;
+            return true;
         }
 
     if (button == Mouse::Left && event == UserEvent::Release) {
-        if (!isPressed) return;
+        if (!isPressed) return false;
         isPressed = false;
         reversePress.reset();
         reversePress.setRemainingTime(press.getPassedTime());
         press.reset();
+        return true;
     }
     if (event == UserEvent::Move) {
         if (contains(static_cast<sf::Vector2f>(windowPosition))) {
-            if (isHovered == true) return;
+            if (isHovered == true) return false;
             isHovered = true;
             hover.reset();
             hover.setRemainingTime(reverseHover.getPassedTime());
             reverseHover.reset();
+            return true;
         } else {
-            if (!(isHovered)) return;
+            if (!(isHovered)) return false;
             isHovered = false;
 
             reverseHover.reset();
@@ -143,16 +141,18 @@ void Button::onMouseEvent(Mouse button, UserEvent event,
             reverseHover.setRemainingTime(hover.getPassedTime());
 
             hover.reset();
+            return true;
         }
     }
+    return false;
 }
-
 
 void Button::subscribeMouseAll(MouseState& mouseState) {
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
     subscribeMouse(Mouse::Right, UserEvent::Move, mouseState);
+    subscribeMouse(Mouse::Middle, UserEvent::Move, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
 }
 void Button::unSubscribeMouseAll(MouseState& mouseState) {
@@ -161,6 +161,7 @@ void Button::unSubscribeMouseAll(MouseState& mouseState) {
     unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
     unSubscribeMouse(Mouse::Right, UserEvent::Move, mouseState);
     unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
+    unSubscribeMouse(Mouse::Middle, UserEvent::Move, mouseState);
 }
 
 void Button::update() {
@@ -192,11 +193,12 @@ void Button::resetAnimation() {
     isHovered = false;
 }
 
-void Button::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
-                           const sf::Vector2f& windowPosition) {}
+bool Button::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                           const sf::Vector2f& windowPosition) {
+    return false;
+}
 
-
-bool Button::contains(const sf::Vector2f &windowPosition) {
+bool Button::contains(const sf::Vector2f& windowPosition) {
     if (backgroundSprite) {
         return backgroundSprite->getGlobalBounds().contains(windowPosition);
     }

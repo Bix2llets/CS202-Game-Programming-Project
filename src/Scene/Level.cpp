@@ -35,7 +35,12 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
     entityManager.subscribeKeyboard(
         Key::F, UserEvent::Press,
         InputManager::getInstance().getKeyboardState());
-
+    
+    MouseState& mouseState = InputManager::getInstance().getMouseState();
+    subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
+    subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
+    subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
+    subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
     subscribe("add_petrol", [this](std::any sender, std::any data) {
         try {
             int petrolAmount = std::any_cast<int>(data);
@@ -56,6 +61,13 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
     });
 }
 
+Level::~Level() {
+    MouseState& mouseState = InputManager::getInstance().getMouseState();
+    unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
+    unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
+}
 void Level::update() {
     menu.update();
     if (!isRunning) return;
@@ -75,7 +87,7 @@ void Level::update() {
                 while (group.internalDelayTimer <= 0 && group.quantity) {
                     // ! Placeholder. Put enemy factory here
                     entityManager.addEnemy(factory->createEnemy(group.id, 0));
-                    Logger::info(std::format("Spawning {}", group.id));
+                    Logger::info(std::format("Spawning {}", group.id)); 
                     group.internalDelayTimer += group.internalDelay;
                     group.quantity--;
                 }
@@ -139,7 +151,6 @@ void Level::onLoad() {
     entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
                                  InputManager::getInstance().getMouseState());
 
-    menu.onLoad();
 }
 
 void Level::onUnload() {
@@ -147,7 +158,6 @@ void Level::onUnload() {
     entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
                                    InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
-    menu.onUnload();
 }
 
 bool Level::isWaveFinished() {
@@ -158,15 +168,32 @@ bool Level::isWaveFinished() {
     return true;
 }
 
-void Level::onKeyEvent(Key key, UserEvent event,
+bool Level::onKeyEvent(Key key, UserEvent event,
                        const sf::Vector2f &worldPosition,
                        const sf::Vector2f &windowPosition) {
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
+        return true;
     }
 
     if (key == Key::G && event == UserEvent::Press) {
         notify("add_petrol", 0, 10);
         notify("add_scrap", 0, 10);
+        return true;
     }
+    return false;
+}
+
+bool Level::onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) {
+    if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
+        return true;
+    }
+    if (entityManager.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
+        return true;
+    }
+    return false;
+}
+
+bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) {
+    return false;
 }

@@ -143,25 +143,27 @@ size_t EntityManager::getTotalEntityCount() const {
     return towers.size() + enemies.size() + projectiles.size();
 }
 
-void EntityManager::onMouseEvent(Mouse button, UserEvent event,
+bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
                                  const sf::Vector2f& worldPosition,
                                  const sf::Vector2f& windowPosition) {
-    if (!(button == Mouse::Left && event == UserEvent::Press)) return;
-
-    Enemy* foundEnemy = nullptr;
-    for (auto& enemy : enemies) {
-        if (enemy->contains(worldPosition)) {
-            foundEnemy = enemy.get();
-            break;
+    if ((button == Mouse::Left && event == UserEvent::Press)) {
+        Enemy* foundEnemy = nullptr;
+        for (auto& enemy : enemies) {
+            if (enemy->contains(worldPosition)) {
+                foundEnemy = enemy.get();
+                break;
+            }
         }
+        if (foundEnemy)
+            EnemyPanel::getInstance().setEnemy(*foundEnemy);
+        else
+            EnemyPanel::getInstance().clearEnemy();
+        return true;
     }
-    if (foundEnemy)
-        EnemyPanel::getInstance().setEnemy(*foundEnemy);
-    else
-        EnemyPanel::getInstance().clearEnemy();
+    return false;
 }
 
-void EntityManager::onKeyEvent(Key key, UserEvent event,
+bool EntityManager::onKeyEvent(Key key, UserEvent event,
                                const sf::Vector2f& worldPosition,
                                const sf::Vector2f& windowPosition) {
     if (key == Key::D && event == UserEvent::Press) {
@@ -172,7 +174,10 @@ void EntityManager::onKeyEvent(Key key, UserEvent event,
                 break;
             }
         }
-        if (foundEnemy) foundEnemy->onHit(50);
+        if (foundEnemy) {
+            foundEnemy->onHit(50);
+            return true;
+        }
     }
     if (key == Key::F && event == UserEvent::Press) {
         Enemy* foundEnemy = nullptr;
@@ -182,10 +187,17 @@ void EntityManager::onKeyEvent(Key key, UserEvent event,
                 break;
             }
         }
-        if (foundEnemy) foundEnemy->onHeal(50);
+        if (foundEnemy) {
+            foundEnemy->onHeal(50);
+            return true;
+        }
+        return false;
     }
+    return false;
 };
 
-void EntityManager::onScrollEvent(float delta,
+bool EntityManager::onScrollEvent(float delta,
                                   const sf::Vector2f& worldPosition,
-                                  const sf::Vector2f& windowPosition) {}
+                                  const sf::Vector2f& windowPosition) {
+    return false;
+}

@@ -24,28 +24,28 @@ class SoundClickTrigger : public MouseObserver, public KeyboardObserver {
      * @param windowPosition Mouse position in window coordinates.
      */
    private:
-    void onLeftMousePress(const sf::Vector2f &worldPosition,
+    bool onLeftMousePress(const sf::Vector2f &worldPosition,
                           const sf::Vector2f &windowPosition);
     /**
      * @brief Called on right mouse press.
      * @param worldPosition Mouse position in world coordinates.
      * @param windowPosition Mouse position in window coordinates.
      */
-    void onRightMousePress(const sf::Vector2f &worldPosition,
+    bool onRightMousePress(const sf::Vector2f &worldPosition,
                            const sf::Vector2f &windowPosition);
     /**
      * @brief Called on left mouse release.
      * @param worldPosition Mouse position in world coordinates.
      * @param windowPosition Mouse position in window coordinates.
      */
-    void onLeftMouseRelease(const sf::Vector2f &worldPosition,
+    bool onLeftMouseRelease(const sf::Vector2f &worldPosition,
                             const sf::Vector2f &windowPosition);
     /**
      * @brief Called on right mouse release.
      * @param worldPosition Mouse position in world coordinates.
      * @param windowPosition Mouse position in window coordinates.
      */
-    void onRightMouseRelease(const sf::Vector2f &worldPosition,
+    bool onRightMouseRelease(const sf::Vector2f &worldPosition,
                              const sf::Vector2f &windowPosition);
 
    public:
@@ -56,11 +56,11 @@ class SoundClickTrigger : public MouseObserver, public KeyboardObserver {
      * @param worldPosition Mouse position in world coordinates
      * @param windowPosition Mouse position in window coordinates
      */
-    void onMouseEvent(Mouse button, UserEvent event,
+    bool onMouseEvent(Mouse button, UserEvent event,
                       const sf::Vector2f &worldPosition,
                       const sf::Vector2f &windowPosition);
 
-    void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
+    bool onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
                     const sf::Vector2f &windowPosition);
-  void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
+  bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
 };

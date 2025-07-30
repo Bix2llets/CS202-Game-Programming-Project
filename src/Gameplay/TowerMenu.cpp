@@ -10,6 +10,7 @@
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Utility/Logger.hpp"
+#include "Utility/WindowScale.hpp"
 TowerMenu::TowerMenu(const Currency& currencyRef, Mediator& superMediator)
     : basePanel{*ResourceManager::getInstance().getTexture(
           "tower_selection_base")},
@@ -95,8 +96,14 @@ void TowerMenu::setTowerButtonDisplay() {
 
     auto getStaticTowerTexture = [](nlohmann::json jsonFile) {
         sf::RenderTexture basePlate;
-        basePlate.resize(static_cast<sf::Vector2u>(sf::Vector2f{
-            jsonFile["texture"]["width"], jsonFile["texture"]["height"]}));
+        if (basePlate.resize(static_cast<sf::Vector2u>(sf::Vector2f{
+                jsonFile["texture"]["width"], jsonFile["texture"]["height"]})))
+            {
+                Logger::success("Resize succ");
+            }
+            else {
+                Logger::error("Resize failed");
+            }
         basePlate.clear(sf::Color::Transparent);
         sf::Sprite baseTexture(*ResourceManager::getInstance().getTexture(
             jsonFile["texture"]["base"]));
@@ -129,7 +136,8 @@ void TowerMenu::setTowerButtonDisplay() {
             Logger::error("Resized unsucc");
         }
         buttonRenderTexture.clear(sf::Color::Transparent);
-        std::unique_ptr<sf::Texture> staticTower = std::make_unique<sf::Texture>(getStaticTowerTexture(jsonFile));
+        std::unique_ptr<sf::Texture> staticTower =
+            std::make_unique<sf::Texture>(getStaticTowerTexture(jsonFile));
         sf::Sprite towerSprite(*(staticTower.get()));
         towerTextures.push_back(std::move(staticTower));
         towerSprite.setPosition(sf::Vector2f{20.f, 20.f});
@@ -209,9 +217,9 @@ void TowerMenu::setTowerButtonDisplay() {
                 .setBackground(combinedTowerTextures.back().get())
                 .setPosition({buttonPosition})
                 .setSize(buttonSize)
-                .setCallback([this, towerSprite](Button* button) {
+                .setCallback([this, towerSprite, entry](Button* button) {
                     Logger::debug("Button presseed");
-                    notify("tower_button_pressed", 0, towerSprite);
+                    notify("tower_button_pressed", entry.first, towerSprite);
                 })
                 .build();
         renderTexes.push_back(std::move(buttonRenderTexture));
@@ -220,22 +228,24 @@ void TowerMenu::setTowerButtonDisplay() {
 }
 
 void TowerMenu::onLoad() {
-    for (auto& button : towerButtons) {
-        button->subscribeMouseAll(InputManager::getInstance().getMouseState());
-    }
+    // for (auto& button : towerButtons) {
+    //     button->subscribeMouseAll(InputManager::getInstance().getMouseState());
+    // }
 }
 
 void TowerMenu::onUnload() {
-    for (auto& button : towerButtons) {
-        button->unSubscribeMouseAll(
-            InputManager::getInstance().getMouseState());
-    }
+    // for (auto& button : towerButtons) {
+    //     button->unSubscribeMouseAll(
+    //         InputManager::getInstance().getMouseState());
+    // }
 }
 
 void TowerMenu::registerMessages() {
-    subscribe("tower_button_pressed", [this](std::any sender, std::any data) {
-        sf::Sprite buttonBackground = std::any_cast<sf::Sprite>(data);
+    subscribe("tower_button_pressed", [this](std::any id, std::any sprite) {
+        sf::Sprite buttonBackground = std::any_cast<sf::Sprite>(sprite);
+        std::string towerId = std::any_cast<std::string>(id);
         Cursor::getInstance().setRenderImage(buttonBackground);
+        Cursor::getInstance().setCarryingTower(towerId);
         isTowerSelected = true;
     });
     subscribe("press_inside", [this](std::any, std::any) {
@@ -248,4 +258,62 @@ void TowerMenu::registerMessages() {
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
         Cursor::getInstance().removeRenderImage();
     });
+}
+
+bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
+                             const sf::Vector2f& worldPosition,
+                             const sf::Vector2f& windowPosition) {
+    bool isProcessed = false;
+
+    if (mouse == Mouse::Left && event == UserEvent::Press) {
+        for (std::unique_ptr<Button>& button : towerButtons)
+            if (button->onMouseEvent(mouse, event, worldPosition,
+                                     windowPosition))
+                return true;
+
+        if (isTowerSelected &&
+            WindowScale::screenScale(basePanel.getGlobalBounds())
+                .contains(windowPosition)) {
+            notify("press_inside");
+            return true;
+        }
+        if (isTowerSelected) {
+            notify("press_outside");
+            return true;
+        }
+        return false;
+    }
+
+    if (event == UserEvent::Move) {
+        for (std::unique_ptr<Button>& button : towerButtons) {
+            if (button->onMouseEvent(Mouse::None, event, worldPosition,
+                                     windowPosition))
+                continue;
+            if (button->onMouseEvent(Mouse::Left, event, worldPosition,
+                                     windowPosition))
+                continue;
+            if (button->onMouseEvent(Mouse::Right, event, worldPosition,
+                                     windowPosition))
+                continue;
+            if (button->onMouseEvent(Mouse::Middle, event, worldPosition,
+                                     windowPosition))
+                continue;
+        }
+        return false;
+    }
+
+    if (event == UserEvent::Release && mouse == Mouse::Left) {
+        bool isInBound = false;
+        for (auto& button : towerButtons) {
+            isInBound |= button->onMouseEvent(mouse, event, worldPosition,
+                                              windowPosition);
+        }
+        return isInBound;
+    }
+    return false;
+}
+
+bool TowerMenu::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                              const sf::Vector2f& windowPosition) {
+    return false;
 }

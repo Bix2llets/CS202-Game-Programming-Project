@@ -4,27 +4,31 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "Utility/logger.hpp"
-void SoundClickTrigger::onLeftMousePress(const sf::Vector2f &worldPosition,
+bool SoundClickTrigger::onLeftMousePress(const sf::Vector2f &worldPosition,
                                          const sf::Vector2f &windowPosition) {
     Logger::info("Left press");
+    return true;
 }
 
 SoundClickTrigger::SoundClickTrigger() {}
 
-void SoundClickTrigger::onLeftMouseRelease(const sf::Vector2f &worldPosition,
+bool SoundClickTrigger::onLeftMouseRelease(const sf::Vector2f &worldPosition,
                                            const sf::Vector2f &windowPosition) {
     Logger::info("Left release");
+    return true;
 }
-void SoundClickTrigger::onRightMousePress(const sf::Vector2f &worldPosition,
+bool SoundClickTrigger::onRightMousePress(const sf::Vector2f &worldPosition,
                                           const sf::Vector2f &windowPosition) {
     Logger::info("Right press");
+    return true;
 }
-void SoundClickTrigger::onRightMouseRelease(
+bool SoundClickTrigger::onRightMouseRelease(
     const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) {
     Logger::info("Right release");
+    return true;
 }
 
-void SoundClickTrigger::onMouseEvent(Mouse button, UserEvent event,
+bool SoundClickTrigger::onMouseEvent(Mouse button, UserEvent event,
                                      const sf::Vector2f &worldPosition,
                                      const sf::Vector2f &windowPosition) {
     if (button == Mouse::Left) {
@@ -40,15 +44,16 @@ void SoundClickTrigger::onMouseEvent(Mouse button, UserEvent event,
         if (event == UserEvent::Release)
             return onRightMouseRelease(worldPosition, windowPosition);
     }
+    return false;
 }
 
-void SoundClickTrigger::onKeyEvent(Key key, UserEvent event,
+bool SoundClickTrigger::onKeyEvent(Key key, UserEvent event,
                                    const sf::Vector2f &worldPosition,
                                    const sf::Vector2f &windowPosition) {
     Logger::info(std::to_string(static_cast<int>(key)));
     Logger::info(std::to_string(static_cast<int>(event)));
 }
 
-void SoundClickTrigger::onScrollEvent(float delta,
+bool SoundClickTrigger::onScrollEvent(float delta,
                                       const sf::Vector2f &worldPosition,
                                       const sf::Vector2f &windowPosition) {}

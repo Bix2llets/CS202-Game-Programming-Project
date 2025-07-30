@@ -38,12 +38,12 @@ void Window::toggleUserMode() {
     isLocked = false;
 }
 
-void Window::onMouseEvent(Mouse mouse, UserEvent event,
+bool Window::onMouseEvent(Mouse mouse, UserEvent event,
                           const sf::Vector2f& worldPosition,
                           const sf::Vector2f& windowPosition) {
-    if (isLocked) return;
+    if (isLocked) return false;
     if (mouse == Mouse::Middle && event == UserEvent::Press) {
-        if (isMiddlePressed == true) return;
+        if (isMiddlePressed == true) return false;
         isMiddlePressed = true;
         // middlePressPosition = windowPosition;  // * Can also be world position,
                                                // should be consistent
@@ -52,11 +52,11 @@ void Window::onMouseEvent(Mouse mouse, UserEvent event,
                                   userView.getCenter().x,
                                   userView.getCenter().y));
         window.setMouseCursorGrabbed(true);
-        return;
+        return true;
     }
 
     if (mouse == Mouse::Middle && event == UserEvent::Move) {
-        if (!isMiddlePressed) return;
+        if (!isMiddlePressed) return false;
         sf::Vector2f displacement =
             windowPosition - previousMiddleMousePosition;
         previousMiddleMousePosition = windowPosition;
@@ -65,9 +65,10 @@ void Window::onMouseEvent(Mouse mouse, UserEvent event,
         window.setView(userView);
         Logger::debug(std::format("Window pan Moving {} {}", displacement.x,
                                   displacement.y));
+            return true;
     }
     if (mouse == Mouse::Middle && event == UserEvent::Release) {
-        if (!isMiddlePressed) return;
+        if (!isMiddlePressed) return false;
         isMiddlePressed = false;
         // middlePressPosition = {0.f, 0.f};
         previousMiddleMousePosition = {0.f, 0.f};
@@ -75,7 +76,9 @@ void Window::onMouseEvent(Mouse mouse, UserEvent event,
                                   userView.getCenter().x,
                                   userView.getCenter().y));
         window.setMouseCursorGrabbed(false);
+        return true;
     }
+    return false;
 }
 
 void Window::resetView() {
@@ -83,14 +86,15 @@ void Window::resetView() {
     if (!isLocked) window.setView(userView);
 }
 
-void Window::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+bool Window::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
                            const sf::Vector2f& windowPosition) {
-    if (isLocked) return;
+    if (isLocked) return false;
     static const float ZOOM_FACTOR = 0.2f;
     Logger::debug(std::format("Scorlling {}", delta));
     userView.setSize(userView.getSize() * (1 + delta * ZOOM_FACTOR));
     userView.move((userView.getCenter() - worldPosition) * delta * ZOOM_FACTOR);
     window.setView(userView);
+    return true;
 }
 
 void Window::adjustUserView() {
