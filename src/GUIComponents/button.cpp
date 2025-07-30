@@ -11,22 +11,18 @@ Button::Button(Mediator& mediator)
     : mediator(mediator),
       isPressed{false},
       isHovered{false} {
-    hover.setTimeInterval(0.2)
-        .setTimerDirection(TimerDirection::Forward)
+    hover.setTimeInterval(0.5)
         .setTimerMode(TimerMode::Single)
-        .setRemainingTime(0.2);
-    press.setTimeInterval(0.2)
-        .setTimerDirection(TimerDirection::Forward)
+        .setRemainingTime(0.5);
+    press.setTimeInterval(0.5)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0.2);
 
-    reverseHover.setTimeInterval(0.2)
-        .setTimerDirection(TimerDirection::Backward)
+    reverseHover.setTimeInterval(0.5)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0);
 
-    reversePress.setTimeInterval(0.2)
-        .setTimerDirection(TimerDirection::Backward)
+    reversePress.setTimeInterval(0.5)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0);
 }

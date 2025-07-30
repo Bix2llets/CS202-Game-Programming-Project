@@ -28,7 +28,6 @@ void InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     float interval = 1.0f / fireRate; // Convert fire rate to interval (seconds between shots)
     
     // Update tower timer directly (no const_cast needed anymore)
-    tower->setTimerInterval(interval);
     tower->getTimer().reset(); // Reset the timer to start the cooldown
 }
 

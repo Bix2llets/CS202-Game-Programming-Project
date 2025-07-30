@@ -36,7 +36,7 @@ class Level : public Scene, public KeyboardObserver {
 private:
     std::string levelID;  ///< Unique identifier for the level
     void loadLevelID(const nlohmann::json &jsonfile);
-    std::unique_ptr<EntityManager> entityManager;  ///< Manages all entities in the level
+    EntityManager entityManager;  ///< Manages all entities in the level
     std::unique_ptr<EnemyFactory> factory;
     Terrain map;  // game map for this level
     std::vector<std::vector<EnemyGroupInfo>>
@@ -99,7 +99,7 @@ private:
      * @brief Gets the entity manager for this level.
      * @return Reference to the level's entity manager.
      */
-    EntityManager* getEntityManager();
+    EntityManager& getEntityManager();
 
     /**
      * @brief Registers UI components and event handlers for the level.

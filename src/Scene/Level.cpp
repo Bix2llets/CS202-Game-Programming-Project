@@ -23,7 +23,8 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
       isRunning{true},
       map(parameter),
       entityManager{map, *this},
-      menu{budget, *this} {
+      menu{budget, *this},
+      tracker(*this) {
     subscribeKeyboard(Key::Space, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
     subscribeKeyboard(Key::G, UserEvent::Press,
@@ -135,7 +136,7 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
-    entityManager->subscribeMouse(Mouse::Left, UserEvent::Press,
+    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
                                  InputManager::getInstance().getMouseState());
 
     menu.onLoad();
@@ -143,7 +144,7 @@ void Level::onLoad() {
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
-    entityManager->unSubscribeMouse(Mouse::Left, UserEvent::Press,
+    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
                                    InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
     menu.onUnload();
