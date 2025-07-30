@@ -3,9 +3,23 @@
   "texture": {
     "width": 128,
     "height": 128,
-    "base": "rifle_base.png",
-    "turret": "rifle_turret.png",
-    "turret_shooting": "rifle_turret_shooting.png"
+    "base": "rifle_base",
+    "turret": "rifle_turret",
+    "turret_animation": {
+      "texture_id": "rifle_turret",
+      "width": 128,
+      "height": 128,
+      "animation_interval": 0.1,
+      "type": "linear",
+      "center_x": 64,
+      "center_y": 64,
+      "viewport" : {
+          "x": 0,
+          "y": 0,
+          "width": 64,
+          "height": 64
+      }
+    }
   },
   "name": "Sniper Tower",
   "description": "A long-range tower that deals high damage to single targets. Effective against tough enemies.",

@@ -17,6 +17,9 @@
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
 #include "Utility/logger.hpp"
+
+#include "Entity/Factory/TowerFactory.hpp" // For testing purposes
+
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
              sf::Vector2f endPoint)
     : currentWave{0},
@@ -54,6 +57,9 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             Logger::error("Sent illegal signal on add scrap");
         }
     });
+
+    std::unique_ptr<Tower> tower = TowerFactory::createFromConfigFile("rifle", *this, sf::Vector2f(300.f, 400.f));
+    entityManager.addTower(std::move(tower));
 }
 
 void Level::update() {

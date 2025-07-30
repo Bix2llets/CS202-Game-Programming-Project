@@ -24,13 +24,13 @@ enum class BehaviorType;
 #include <memory>
 #include <string>
 #include "Entity/Modules/Timer.hpp"
+#include "Entity/Modules/SpriteAnimation.hpp"
 #include "Entity/Entity.hpp"
 #include "Entity/Tower/TowerStat.hpp"
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Base/Constants.hpp"
-// enum class RoundEvent;
 
 /**
  * @class Tower
@@ -64,6 +64,7 @@ private:
     // Dual sprite system
     sf::Sprite base;   ///< Base sprite with independent rotation
     sf::Angle baseRotation;          ///< Rotation angle for the base sprite
+    SpriteAnimation turretAnimation; ///< Animation for the turret sprite (originally from Entity)
 
     // Texture dimensions
     float textureWidth;      ///< Desired width for tower textures
