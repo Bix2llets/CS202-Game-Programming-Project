@@ -209,7 +209,6 @@ void Tower::update() {
             std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
             if(targets.empty()) return; // No targets to engage
             
-            
             combatBehaviorPointer->engage(targets);
             turretAnimation.restart();
 
