@@ -7,8 +7,8 @@ SpriteAnimation::SpriteAnimation()
 
 void SpriteAnimation::loadJson(const nlohmann::json& jsonFile) {
     const sf::Texture* texture = ResourceManager::getInstance().getTexture(jsonFile["texture_id"]);
-    int width = static_cast<int>(jsonFile["width"]);
-    int height = static_cast<int>(jsonFile["height"]);
+    width = static_cast<int>(jsonFile["width"]);
+    height = static_cast<int>(jsonFile["height"]);
 
     nlohmann::json viewport = jsonFile["viewport"];
 

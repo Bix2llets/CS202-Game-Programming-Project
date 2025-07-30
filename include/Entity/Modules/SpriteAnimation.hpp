@@ -31,19 +31,44 @@ enum class AnimationType {
 class SpriteAnimation {
     friend class SpriteAnimationBuilder;
 
-   private:
+private:
     AnimationType type;               ///< Animation type (linear or circular)
-    sf::Vector2i spriteSize;          ///< Size of each sprite frame
     int currentFrame;                 ///< Current frame index
     std::vector<sf::Sprite> sprites;  ///< List of sprite frames
-    std::unique_ptr<Timer>
-        animationTimer;  ///< Timer for animation frame updates
+    std::unique_ptr<Timer> animationTimer;  ///< Timer for animation frame updates
 
-   public:
+    int width; ///< Width of each sprite frame
+    int height; ///< Height of each sprite frame
+
+public:
     /**
      * @brief Default constructor for SpriteAnimation.
      */
     SpriteAnimation();
+    
+    /**
+     * @brief Gets the current sprite for rendering.
+     * @return The current sf::Sprite frame.
+     */
+    sf::Sprite getCurrentSprite();
+
+    /**
+     * @brief Gets the width of each sprite frame.
+     * @return The width of the sprite frame.
+     */
+    int getWidth() const { return width; }
+
+    /**
+     * @brief Gets the height of each sprite frame.
+     * @return The height of the sprite frame.
+     */
+    int getHeight() const { return height; }
+
+    /**
+     * @brief Gets the size of the sprite frame.
+     * @return sf::Vector2u containing width and height.
+     */
+    sf::Vector2u getSpriteSize() const { return sf::Vector2u(width, height); }
 
     /**
      * @brief Loads animation data from a JSON file and resource manager.
@@ -57,11 +82,6 @@ class SpriteAnimation {
      */
     void update();
 
-    /**
-     * @brief Gets the current sprite for rendering.
-     * @return The current sf::Sprite frame.
-     */
-    sf::Sprite getCurrentSprite();
 
     /**
      * @brief Restarts the animation from the first frame.

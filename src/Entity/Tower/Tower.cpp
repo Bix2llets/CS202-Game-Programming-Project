@@ -170,9 +170,11 @@ void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
 }
 
 void Tower::loadTurretSpriteTexture(const sf::Texture& texture) {
-    loadSpriteTexture(texture);  // Use Entity's method
+    // loadSpriteTexture(texture);  // Use Entity's method
+    sprite = turretAnimation.getCurrentSprite();
+
     // Get original texture size
-    sf::Vector2u originalSize = texture.getSize();
+    sf::Vector2u originalSize = turretAnimation.getSpriteSize();
     
     // Set origin to center of ORIGINAL texture size (before scaling)
     sprite.setOrigin(sf::Vector2f(originalSize.x / 2.0f, originalSize.y / 2.0f));
@@ -199,22 +201,27 @@ void Tower::update() {
     if (!levelRef) return;
     
     timer.update();
+    turretAnimation.update();
 
     // Combat behavior
     if (combatBehaviorPointer) {
         if (timer.isAvailable()) {
             std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
             if(targets.empty()) return; // No targets to engage
-
+            
+            
             combatBehaviorPointer->engage(targets);
+            turretAnimation.restart();
 
             float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
             float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
             timer.reset();
         }
-
+        
         if (mainTarget) {
             pointTurretTowards(mainTarget->getPosition());
         }
     }
+
+    loadTurretSpriteTexture(turretAnimation.getCurrentSprite().getTexture());
 }

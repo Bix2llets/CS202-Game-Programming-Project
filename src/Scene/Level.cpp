@@ -176,3 +176,7 @@ void Level::onKeyEvent(Key key, UserEvent event,
         notify("add_scrap", 0, 10);
     }
 }
+
+EntityManager& Level::getEntityManager() {
+    return entityManager;
+}
