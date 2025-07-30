@@ -26,7 +26,7 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
       isRunning{true},
       map(parameter),
       entityManager{map, *this},
-      menu{budget},
+      menu{budget, *this},
       tracker(*this) {
     subscribeKeyboard(Key::Space, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
@@ -144,6 +144,8 @@ void Level::onLoad() {
     // stats
     entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
                                  InputManager::getInstance().getMouseState());
+
+    menu.onLoad();
 }
 
 void Level::onUnload() {
@@ -151,6 +153,7 @@ void Level::onUnload() {
     entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
                                    InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
+    menu.onUnload();
 }
 
 bool Level::isWaveFinished() {
@@ -169,11 +172,7 @@ void Level::onKeyEvent(Key key, UserEvent event,
     }
 
     if (key == Key::G && event == UserEvent::Press) {
-        budget.addPetroleum(10);
-        budget.addScraps(10);
+        notify("add_petrol", 0, 10);
+        notify("add_scrap", 0, 10);
     }
-}
-
-EntityManager& Level::getEntityManager() {
-    return entityManager;
 }

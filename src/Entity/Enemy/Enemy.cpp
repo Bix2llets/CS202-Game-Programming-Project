@@ -175,7 +175,9 @@ sf::Sprite Enemy::changeSpriteContent(sf::Sprite current, sf::Sprite target) {
     return current;
 }
 
-Enemy::~Enemy() { onDeath(); }
+Enemy::~Enemy() {
+    onDeath();
+}
 
 void Enemy::applyEffect(EffectType type, EffectID id, int level, float duration) {
     auto effect = std::make_unique<Effect>(type, id, level, duration);

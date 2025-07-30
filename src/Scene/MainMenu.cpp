@@ -14,9 +14,9 @@ MainMenu::MainMenu()
                   .setSize({120.f, 50.f})
                   .setText("Gameplay")
                   .loadJson("basic_button")
-                  .setNotificationMessage("Gameplay")
                   .setCallback([this](Button *button) {
                       Logger::debug("Turning to gameplay");
+                      notify("Gameplay");
                   })
                   .build();
     settingBtn = builder.reset()
@@ -24,9 +24,9 @@ MainMenu::MainMenu()
                      .setSize({50.f, 50.f})
                      .setText("To setting")
                      .loadJson("background_basic")
-                     .setNotificationMessage("Setting")
                      .setCallback([this](Button *button) {
                          Logger::debug("Setting button pressed");
+                         notify("Setting");
                      })
                      .setBackground(ResourceManager::getInstance().getTexture("button_base"))
                      .build();

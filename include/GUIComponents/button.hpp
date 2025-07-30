@@ -21,7 +21,7 @@
 class Button : public sf::Drawable, public MouseObserver {
     friend class ButtonBuilder;
 
-   private:
+   protected:
     /**
      * @brief Constructs a Button with a label, position, and mediator
      * reference.
@@ -80,7 +80,8 @@ class Button : public sf::Drawable, public MouseObserver {
     virtual void onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition);
-        void onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f& windowPosition) override;
+    void onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                       const sf::Vector2f& windowPosition) override;
     void subscribeMouseAll(MouseState& mouseState);
     void unSubscribeMouseAll(MouseState& mouseState);
     void update();
@@ -88,11 +89,12 @@ class Button : public sf::Drawable, public MouseObserver {
     void setDisplayText(std::string text);
     virtual void resetAnimation();
 
-   private:
+    inline sf::Sprite* getBackground() {return backgroundSprite.get();}
+   protected:
     // * Graphic part
     std::unique_ptr<sf::Text> label;
     std::unique_ptr<sf::Sprite> backgroundSprite;
-    
+
     sf::FloatRect geometricInfo;
     Style style;
 
@@ -106,7 +108,6 @@ class Button : public sf::Drawable, public MouseObserver {
     // * Communication part
     Mediator& mediator;
     std::function<void(Button*)> onClick;
-    std::string onClickMessage;
 
-    bool contains(const sf::Vector2f &windowPosition);
+    bool contains(const sf::Vector2f& windowPosition);
 };

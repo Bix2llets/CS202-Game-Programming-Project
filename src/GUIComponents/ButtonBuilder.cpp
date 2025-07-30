@@ -19,12 +19,6 @@ ButtonBuilder& ButtonBuilder::setSize(const sf::Vector2f size) {
     return *this;
 }
 
-ButtonBuilder& ButtonBuilder::setNotificationMessage(
-    const std::string& message) {
-    this->notificationMessage = message;
-    return *this;
-}
-
 ButtonBuilder& ButtonBuilder::reset() {
     text = "";
     styleConfig = nlohmann::json();
@@ -45,7 +39,6 @@ std::unique_ptr<Button> ButtonBuilder::build() {
     std::unique_ptr<Button> result(new Button(mediator));
 
     result->geometricInfo = {position, size};
-    result->setNotificationMessage(notificationMessage);
     result->style.loadJson(styleConfig);
     result->setOnClick(callback);
     fontName = styleConfig["font"];

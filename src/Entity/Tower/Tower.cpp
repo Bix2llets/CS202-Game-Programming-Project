@@ -146,11 +146,7 @@ void Tower::setTurretRotation(const sf::Angle& rot) {
 }
 
 void Tower::pointTurretTowards(const sf::Vector2f& targetPosition) {
-    // Calculate the angle from tower position to target position
-    sf::Angle targetAngle = MathUtils::calculateAngleTo(getPosition(), targetPosition);
-    
-    // Set the turret rotation to point at the target
-    setTurretRotation(targetAngle + sf::degrees(90.f)); // Adjust by 90 degrees if needed
+    setTurretRotation((targetPosition - position).angle() + sf::degrees(90));
 }
 
 void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
