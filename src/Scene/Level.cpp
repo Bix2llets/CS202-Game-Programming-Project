@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <json.hpp>
+#include <memory>
 
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
@@ -13,10 +14,12 @@
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Enemy/Enemy.hpp"
+#include "Entity/Factory/TowerFactory.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
 #include "Utility/logger.hpp"
+#include "GUIComponents/cursor.hpp"
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
              sf::Vector2f endPoint)
     : currentWave{0},
@@ -35,8 +38,8 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
     entityManager.subscribeKeyboard(
         Key::F, UserEvent::Press,
         InputManager::getInstance().getKeyboardState());
-    
-    MouseState& mouseState = InputManager::getInstance().getMouseState();
+
+    MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
@@ -59,10 +62,18 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             Logger::error("Sent illegal signal on add scrap");
         }
     });
+    subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
+        sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
+
+        TowerFactory factory;
+        std::unique_ptr<Tower> newTower = std::move(factory.createFromConfigFile(Cursor::getInstance().getCarryingTowerID(), *this, worldPosition));
+
+        entityManager.addTower(std::move(newTower));
+    });
 }
 
 Level::~Level() {
-    MouseState& mouseState = InputManager::getInstance().getMouseState();
+    MouseState &mouseState = InputManager::getInstance().getMouseState();
     unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
     unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
@@ -87,7 +98,7 @@ void Level::update() {
                 while (group.internalDelayTimer <= 0 && group.quantity) {
                     // ! Placeholder. Put enemy factory here
                     entityManager.addEnemy(factory->createEnemy(group.id, 0));
-                    Logger::info(std::format("Spawning {}", group.id)); 
+                    Logger::info(std::format("Spawning {}", group.id));
                     group.internalDelayTimer += group.internalDelay;
                     group.quantity--;
                 }
@@ -150,7 +161,6 @@ void Level::onLoad() {
     // stats
     entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
                                  InputManager::getInstance().getMouseState());
-
 }
 
 void Level::onUnload() {
@@ -184,16 +194,20 @@ bool Level::onKeyEvent(Key key, UserEvent event,
     return false;
 }
 
-bool Level::onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) {
+bool Level::onMouseEvent(Mouse mouse, UserEvent event,
+                         const sf::Vector2f &worldPosition,
+                         const sf::Vector2f &windowPosition) {
     if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
         return true;
     }
-    if (entityManager.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
+    if (entityManager.onMouseEvent(mouse, event, worldPosition,
+                                   windowPosition)) {
         return true;
     }
     return false;
 }
 
-bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) {
+bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
+                          const sf::Vector2f &windowPosition) {
     return false;
 }

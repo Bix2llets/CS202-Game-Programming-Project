@@ -52,4 +52,6 @@ class Cursor : public sf::Drawable, public MouseObserver {
                       const sf::Vector2f& windowPosition);
     bool onScrollEvent(float delta, const sf::Vector2f& worldPosition,
                        const sf::Vector2f& windowPosition) override;
+
+    inline std::string getCarryingTowerID() { return carryingTowerId; }
 };

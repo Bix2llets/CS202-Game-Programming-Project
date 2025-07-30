@@ -251,12 +251,17 @@ void TowerMenu::registerMessages() {
     subscribe("press_inside", [this](std::any, std::any) {
         if (isTowerSelected == false) return;
         Cursor::getInstance().removeRenderImage();
+        Cursor::getInstance().clearCarryingTower();
         isTowerSelected = false;
     });
     subscribe("press_outside", [this](std::any sender, std::any data) {
         if (isTowerSelected == false) return;
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
+        superMediator->notify("place_tower_cursor", 0, worldPosition);
+        
         Cursor::getInstance().removeRenderImage();
+        Cursor::getInstance().clearCarryingTower();
+        isTowerSelected = false;
     });
 }
 
@@ -278,7 +283,7 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
             return true;
         }
         if (isTowerSelected) {
-            notify("press_outside");
+            notify("press_outside", 0, worldPosition);
             return true;
         }
         return false;
