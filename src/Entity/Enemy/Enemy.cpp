@@ -92,7 +92,7 @@ void Enemy::update() {
     
     // Apply speed modifications to path
     float speedModifier = effects.getSpeedModifier();
-    path.setSpeedMultiplier(speedModifier);
+    path.setEffectSpeedModifier(speedModifier);
     
     // if (currentState) {
     //     currentState->update(this);

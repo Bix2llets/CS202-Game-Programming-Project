@@ -35,17 +35,17 @@ void EntityPath::setDistanceFromStart(float distance) {
 }
 
 float EntityPath::getOriginalSpeed() const { return speed; }
-float EntityPath::getActualSpeed() const { return speed * multiplier; }
+float EntityPath::getActualSpeed() const { return speed * effectMultiplier * terrainMultiplier; }
 
 void EntityPath::setSpeed(float s) { speed = s; }
 
-void EntityPath::setSpeedMultiplier(float m) { multiplier = m; }
+void EntityPath::setEffectSpeedModifier(float m) { effectMultiplier = m; }
 
 void EntityPath::update() {
-    distanceFromStart += speed * GameConstants::TICK_INTERVAL * multiplier;
+    distanceFromStart += getActualSpeed() * GameConstants::TICK_INTERVAL;
 
     float remainingTravelDistance =
-        speed * GameConstants::TICK_INTERVAL * multiplier;
+        getActualSpeed() * GameConstants::TICK_INTERVAL;
     while (remainingTravelDistance > 0 &&
            waypointIndex + 1 < waypoints->size()) {
         sf::Vector2f unitVector = (waypoints->at(waypointIndex + 1).position -
@@ -63,7 +63,7 @@ void EntityPath::update() {
             remainingTravelDistance -=
                 ((*waypoints)[waypointIndex].position - position).length();
             position = (*waypoints)[waypointIndex].position;
-            multiplier = (*waypoints)[waypointIndex].speedMultiplier;
+            terrainMultiplier = (*waypoints)[waypointIndex].speedMultiplier;
         } else {
             position = supposedNextPosition;
             remainingTravelDistance = 0;

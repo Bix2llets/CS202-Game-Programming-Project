@@ -160,7 +160,8 @@ std::vector<Waypoint> PathGenerator::operator()(sf::Vector2i begin,
     }
     std::reverse(result.begin(), result.end());
     // for (auto &node : result) {
-    //     Logger::debug(std::format("{} {}", node.x, node.y));
+    //     Logger::debug(std::format("{} {} {}", node.position.x,
+    //     node.position.y, node.speedMultiplier));
     // }
 
     // for (auto x : f) {
