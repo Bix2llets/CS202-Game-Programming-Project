@@ -7,8 +7,8 @@
     "turret": "rifle_turret",
     "turret_animation": {
       "texture_id": "rifle_turret",
-      "width": 128,
-      "height": 128,
+      "width": 32,
+      "height": 32,
       "animation_interval": 0.1,
       "type": "linear",
       "center_x": 64,
