@@ -218,3 +218,7 @@ void Tower::update() {
         }
     }
 }
+
+bool Tower::contains(sf::Vector2f position) {
+    return base.getGlobalBounds().contains(position);
+}

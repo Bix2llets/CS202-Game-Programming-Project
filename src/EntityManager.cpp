@@ -6,6 +6,8 @@
 #include "Core/Window.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "Scene/Level.hpp"
+
+#include "GUIComponents/cursor.hpp"
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
@@ -159,6 +161,9 @@ bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
         else
             EnemyPanel::getInstance().clearEnemy();
         return true;
+    }
+
+    if (event == UserEvent::Move) {
     }
     return false;
 }

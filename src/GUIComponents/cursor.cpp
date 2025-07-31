@@ -27,12 +27,12 @@ const sf::Vector2f& Cursor::getPosition() const { return position; }
 
 void Cursor::setRenderImage(sf::Sprite sprite) {
     renderImage = sprite;
-    isDisplaying = true;
+    displaying = true;
     // ! Assume there is a way to construct tower from its id
 }
 
 void Cursor::removeRenderImage() {
-    isDisplaying = false;
+    displaying = false;
     renderImage = sf::Sprite(GameConstants::BLANK_TEXTURE);
 }
 
@@ -54,7 +54,7 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
     // Draw tower preview if available
 
-    if (isDisplaying) {
+    if (displaying) {
         sf::RenderStates previewStates = states;
         previewStates.shader = nullptr;
         previewStates.blendMode = sf::BlendAlpha;
@@ -98,3 +98,15 @@ bool Cursor::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
                            const sf::Vector2f& windowPosition) {
                             return false;
                            }
+
+void Cursor::setValidPlacement() {
+    sf::Color color  = sf::Color::White;
+    color.a = 127;
+    renderImage.setColor(color);
+}
+
+void Cursor::setInvalidPlacement() {
+    sf::Color color = sf::Color::Red;
+    color.a = 127;
+    renderImage.setColor(color);
+}

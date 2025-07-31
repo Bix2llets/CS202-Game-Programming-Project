@@ -24,7 +24,7 @@ class Cursor : public sf::Drawable, public MouseObserver {
     sf::Vector2f position;
     sf::Sprite renderImage;
     static const int cursorRadius = 2;
-    bool isDisplaying;
+    bool displaying;
     // Singleton pattern
    private:
     std::string carryingTowerId;
@@ -54,4 +54,9 @@ class Cursor : public sf::Drawable, public MouseObserver {
                        const sf::Vector2f& windowPosition) override;
 
     inline std::string getCarryingTowerID() { return carryingTowerId; }
+
+    void setInvalidPlacement();
+    void setValidPlacement();
+
+    inline bool isDisplaying() {return displaying;}
 };
