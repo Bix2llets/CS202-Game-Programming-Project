@@ -4,13 +4,14 @@
 #include <SFML/Graphics.hpp>
 #include <optional>
 
+#include "Core/JSONLoader.hpp"
 #include "Core/UserEvent.hpp"
+#include "Core/Window.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
 #include "Utility/Logger.hpp"
-
-#include "Core/Window.hpp"
 std::unique_ptr<Cursor> Cursor::instance = nullptr;
-Cursor::Cursor() : position(0.f, 0.f), renderImage{GameConstants::BLANK_TEXTURE} {}
+Cursor::Cursor()
+    : position(0.f, 0.f), renderImage{GameConstants::BLANK_TEXTURE} {}
 
 Cursor& Cursor::getInstance() {
     static Cursor instance;
@@ -28,6 +29,7 @@ const sf::Vector2f& Cursor::getPosition() const { return position; }
 void Cursor::setRenderImage(sf::Sprite sprite) {
     renderImage = sprite;
     displaying = true;
+    sprite.setPosition(position);
     // ! Assume there is a way to construct tower from its id
 }
 
@@ -40,16 +42,17 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     // Draw the cursor (e.g., a circle)
     sf::CircleShape shape(cursorRadius);
     sf::CircleShape outerRing(cursorRadius + 1);
-    shape.setOrigin({static_cast<float>(cursorRadius), static_cast<float>(cursorRadius)});
+    shape.setOrigin(
+        {static_cast<float>(cursorRadius), static_cast<float>(cursorRadius)});
     shape.setPosition(position);
     shape.setFillColor(sf::Color::White);
 
-    outerRing.setOrigin(
-        {static_cast<float>(cursorRadius + 1), static_cast<float>(cursorRadius + 1)});
+    outerRing.setOrigin({static_cast<float>(cursorRadius + 1),
+                         static_cast<float>(cursorRadius + 1)});
     outerRing.setPosition(position);
     outerRing.setFillColor(sf::Color::Black);
-    Window::getInstance().toggleGUIMode();
     target.draw(outerRing, states);
+    Window::getInstance().toggleGUIMode();
     target.draw(shape, states);
 
     // Draw tower preview if available
@@ -59,11 +62,12 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         previewStates.shader = nullptr;
         previewStates.blendMode = sf::BlendAlpha;
         // Set alpha in states, not by modifying previewTower
-        sf::Color color = sf::Color::White;
-        color.a = 128;  // semi-transparent
         // Assuming previewTower uses its own color, we can use a shader or
         // blend mode for transparency. If previewTower does not support color
         // via states, this will only affect blending.
+        Window::getInstance().toggleUserMode();
+        target.draw(rangePreview);
+        Window::getInstance().toggleGUIMode();
         target.draw(renderImage, previewStates);
 
         // float attackRadius = previewTower->getStat("range", 0);
@@ -78,6 +82,7 @@ bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
     if (event == UserEvent::Move) {
         position = windowPosition;
         renderImage.setPosition(position);
+        rangePreview.setPosition(worldPosition);
         // Logger::debug("processing moues movent in cursor");
 
         return true;
@@ -87,26 +92,37 @@ bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
 
 void Cursor::setCarryingTower(std::string id) {
     carryingTowerId = id;
-
+    rangePreview.setRadius(
+        JSONLoader::getInstance().getTower(id)["stats"]["range"]);
+    rangePreview.setOrigin({rangePreview.getRadius(), rangePreview.getRadius()});
+    Window::getInstance().toggleUserMode();
+    sf::Vector2f worldPosition = Window::getInstance().getRenderWindow().mapPixelToCoords(sf::Mouse::getPosition(Window::getInstance().getRenderWindow()));
+    rangePreview.setPosition(worldPosition);
 }
 
 void Cursor::clearCarryingTower() {
     carryingTowerId = "";
+    rangePreview.setRadius(0);
 }
 
 bool Cursor::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
                            const sf::Vector2f& windowPosition) {
-                            return false;
-                           }
+    return false;
+}
 
 void Cursor::setValidPlacement() {
-    sf::Color color  = sf::Color::White;
+    sf::Color color = sf::Color::White;
     color.a = 127;
-    renderImage.setColor(color);
+    sf::Color previewColor = sf::Color::Black;
+    previewColor.a = 127;
+    renderImage.setColor(previewColor);
+
+    rangePreview.setFillColor(previewColor);
 }
 
 void Cursor::setInvalidPlacement() {
     sf::Color color = sf::Color::Red;
     color.a = 127;
     renderImage.setColor(color);
+    rangePreview.setFillColor(color);
 }

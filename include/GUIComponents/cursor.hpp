@@ -25,7 +25,7 @@ class Cursor : public sf::Drawable, public MouseObserver {
     sf::Sprite renderImage;
     static const int cursorRadius = 2;
     bool displaying;
-    // Singleton pattern
+    sf::CircleShape rangePreview;
    private:
     std::string carryingTowerId;
     static std::unique_ptr<Cursor> instance;
