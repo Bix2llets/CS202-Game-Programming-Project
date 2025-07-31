@@ -24,7 +24,6 @@ TowerBuilder& TowerBuilder::reset() {
     position = sf::Vector2f(0, 0);
     angle = sf::radians(0.f);
     baseTextureId.clear();
-    turretTextureId.clear();
     turretAnimationPath.clear();
     textureWidth = 32.0f;
     textureHeight = 32.0f;
@@ -79,11 +78,6 @@ TowerBuilder& TowerBuilder::setAngle(const sf::Angle& angle) {
 
 TowerBuilder& TowerBuilder::setBaseTexturePath(const std::string& texturePath) {
     this->baseTextureId = texturePath;
-    return *this;
-}
-
-TowerBuilder& TowerBuilder::setTurretTexturePath(const std::string& texturePath) {
-    this->turretTextureId = texturePath;
     return *this;
 }
 
@@ -170,7 +164,6 @@ std::unique_ptr<Tower> TowerBuilder::build() {
     // Set texture dimensions
     tower->textureWidth = textureWidth;
     tower->textureHeight = textureHeight;
-    tower->turretAnimation.loadJson(turretAnimationPath);
 
     // Set statistics if provided
     if (stats) {
@@ -267,14 +260,12 @@ void TowerBuilder::validate() const {
 
 void TowerBuilder::loadTextures(Tower& tower) const {
     // Load textures using the new Scene texture methods
-
     if (!baseTextureId.empty()) {
         std::cout << "TowerBuilder: Loading base texture from: "
                   << baseTextureId << std::endl;
 
         try {
-            const sf::Texture* baseTexture =
-                ResourceManager::getInstance().getTexture(baseTextureId);
+            const sf::Texture* baseTexture = ResourceManager::getInstance().getTexture(baseTextureId);
             if (baseTexture) {
                 tower.loadBaseSpriteTexture(*baseTexture);
                 std::cout << "TowerBuilder: Successfully loaded base texture"
@@ -290,25 +281,26 @@ void TowerBuilder::loadTextures(Tower& tower) const {
         }
     }
 
-    if (!turretTextureId.empty()) {
-        std::cout << "TowerBuilder: Loading turret texture from: "
-                  << turretTextureId << std::endl;
+    if(turretAnimationPath != nullptr) {
+        std::cout << "TowerBuilder: Loading turret animation from: "
+                  << turretAnimationPath.dump() << std::endl;
 
         try {
-            const sf::Texture* turretTexture =
-                ResourceManager::getInstance().getTexture(turretTextureId);
-            if (turretTexture) {
-                tower.loadTurretSpriteTexture(*turretTexture);
-                std::cout << "TowerBuilder: Successfully loaded turret texture"
-                          << std::endl;
-            } else {
-                std::cout << "TowerBuilder: Failed to get turret texture from "
-                             "ResourceManager"
-                          << std::endl;
-            }
+            tower.loadTurretSpriteAnimation(turretAnimationPath);
+            std::cout << "TowerBuilder: Successfully loaded turret animation"
+                      << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "TowerBuilder: Error loading turret texture: "
+            std::cout << "TowerBuilder: Error loading turret animation: "
                       << e.what() << std::endl;
         }
+    }
+    
+    // Load the icon after both base and turret textures are loaded
+    std::cout << "TowerBuilder: Loading combined icon sprite" << std::endl;
+    try {
+        tower.loadIcon();
+        std::cout << "TowerBuilder: Successfully loaded icon sprite" << std::endl;
+    } catch (const std::exception& e) {
+        std::cout << "TowerBuilder: Error loading icon sprite: " << e.what() << std::endl;
     }
 }

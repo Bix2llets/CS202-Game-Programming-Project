@@ -1,7 +1,9 @@
 #include "Entity/Modules/SpriteAnimation.hpp"
+#include "Entity/Tower/Tower.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
 #include <stdexcept>
+
 SpriteAnimation::SpriteAnimation()
     : type(AnimationType::Linear), currentFrame(0) {
     // Default constructor - initialize members
@@ -239,8 +241,6 @@ void SpriteAnimation::update() {
     }
 }
 
-sf::Sprite SpriteAnimation::getCurrentSprite() { return sprites[currentFrame]; }
-
 void SpriteAnimation::restart() {
     animationTimer->reset();
     currentFrame = 0;
@@ -249,3 +249,22 @@ void SpriteAnimation::restart() {
 void SpriteAnimation::resume() { animationTimer->resume(); }
 
 void SpriteAnimation::pause() { animationTimer->pause(); }
+
+void SpriteAnimation::setCurrentFrame(int frame) {
+    if (frame < 0 || frame >= sprites.size()) {
+        Logger::error("SpriteAnimation::setCurrentFrame: Frame index out of range");
+        throw std::out_of_range("SpriteAnimation::setCurrentFrame: Frame index out of range");
+    }
+    currentFrame = frame;
+}
+
+void SpriteAnimation::updateSpriteSize(Tower* tower) {
+    if (tower) {
+        for (sf::Sprite& sprite : sprites) {
+            sprite.setScale({tower->getTextureWidth() / width,
+                            tower->getTextureHeight() / height});
+        }
+    } else {
+        Logger::warning("SpriteAnimation::updateSpriteSize: Tower pointer is null, cannot update sprite size");
+    }
+}

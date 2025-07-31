@@ -36,7 +36,7 @@
  * collisions between types.
  */
 class JSONLoader {
-   public:
+public:
     /**
      * @brief Loads all JSON files from mod and content subfolders (enemy,
      * level, projectile, tower).
@@ -205,7 +205,7 @@ class JSONLoader {
     std::unordered_map<std::string, nlohmann::json>
         styles;  ///< Style objects by ID
 
-   private:
+private:
     JSONLoader() = default;
     JSONLoader(const JSONLoader&) = delete;
     JSONLoader& operator=(const JSONLoader&) = delete;

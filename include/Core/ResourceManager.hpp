@@ -137,6 +137,17 @@ class ResourceManager {
         "Will be removed in near future, prefer centralized loading on "
         "initialization")]]
     void loadMusic(const std::string &path, const std::string &ID);
+
+
+    /**
+     * @brief Loads an animation from a JSON file.
+     * @param file JSON object containing animation metadata (must include ID
+     * and path fields).
+     * @throws std::runtime_error if the file cannot be loaded or ID is
+     * missing/duplicate.
+     */
+    void loadTextureFromAnimation(const nlohmann::json &file);
+
     /**
      * @brief Destructor. Frees all loaded fonts, sound buffers, textures, and
      * music tracks.

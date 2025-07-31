@@ -76,7 +76,7 @@ public:
      * 
      * @param enemies List of available enemies to target
      */
-    void engage(const std::vector<Enemy*>& enemies) const;
+    int engage(const std::vector<Enemy*>& enemies) const;
 };
 
 class ResourceBehavior : public TowerBehavior {

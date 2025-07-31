@@ -4,20 +4,19 @@
     "width": 128,
     "height": 128,
     "base": "rifle_base",
-    "turret": "rifle_turret",
     "turret_animation": {
       "texture_id": "rifle_turret",
-      "width": 128,
-      "height": 128,
-      "animation_interval": 0.1,
+      "width": 32,
+      "height": 32,
+      "animation_interval": 0.05,
       "type": "linear",
-      "center_x": 64,
-      "center_y": 64,
+      "center_x": 16,
+      "center_y": 16,
       "viewport" : {
           "x": 0,
           "y": 0,
-          "width": 64,
-          "height": 64
+          "width": 128,
+          "height": 32
       }
     }
   },
@@ -25,9 +24,10 @@
   "description": "A long-range tower that deals high damage to single targets. Effective against tough enemies.",
   "buildable": false,
   "stats": {
-    "damage": 25,
+    "damage": 80,
     "fire_rate": 0.5,
-    "range": 180
+    "range": 600,
+    "max_targets": 1
   },
   "behaviors": {
     "combat": {

@@ -10,9 +10,12 @@
 #include "Scene/Scene.hpp"
 #include "Scene/Level.hpp"
 
+#include "Utility/logger.hpp"
+
 Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const sf::Angle& angle)
     : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0),
       base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f),
+      icon(GameConstants::BLANK_TEXTURE),
       mainTarget(nullptr) {
     upgradeManager = std::make_unique<UpgradeManager>(this);
     setPosition(pos);
@@ -169,24 +172,48 @@ void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
     base.setRotation(baseRotation);  // Use the stored base rotation
 }
 
-void Tower::loadTurretSpriteTexture(const sf::Texture& texture) {
-    // loadSpriteTexture(texture);  // Use Entity's method
-    sprite = turretAnimation.getCurrentSprite();
+void Tower::loadTurretSpriteAnimation(const nlohmann::json& turretAnimationPath) {
+    turretAnimation.loadJson(turretAnimationPath);
+    turretAnimation.updateSpriteSize(this);
+    turretAnimation.setCurrentFrame(turretAnimation.getFrameCount() - 1);
+    
+    updateSpriteTurretAnimation();
+}
 
-    // Get original texture size
-    sf::Vector2u originalSize = turretAnimation.getSpriteSize();
-    
-    // Set origin to center of ORIGINAL texture size (before scaling)
-    sprite.setOrigin(sf::Vector2f(originalSize.x / 2.0f, originalSize.y / 2.0f));
-    
-    // Scale sprite to desired dimensions
-    float scaleX = textureWidth / static_cast<float>(originalSize.x);
-    float scaleY = textureHeight / static_cast<float>(originalSize.y);
-    sprite.setScale(sf::Vector2f(scaleX, scaleY));
-    
-    // Ensure position and rotation are set correctly after scaling
+void Tower::updateSpriteTurretAnimation() {
+    sprite = turretAnimation.getCurrentSprite();
     sprite.setPosition(position);
-    sprite.setRotation(rotation);  // Use Entity's rotation for turret
+    sprite.setRotation(rotation);
+}
+
+void Tower::loadIcon() {
+    if(iconRenderTexture.resize(static_cast<sf::Vector2u>(sf::Vector2f{textureWidth, textureHeight}))) {
+        Logger::success("Base plate resized successfully");
+    } else {
+        Logger::error("Failed to resize base plate");
+    }
+    iconRenderTexture.clear(sf::Color::Transparent);
+
+    sf::Sprite baseClone = base;
+    sf::Sprite turretClone = turretAnimation.getCurrentSprite();
+
+    // Reset the scale to 1:1 for the icon
+    baseClone.setScale(sf::Vector2f(1.0f, 1.0f));
+    turretClone.setScale(sf::Vector2f(1.0f, 1.0f));
+
+    // baseClone.setOrigin(baseClone.getLocalBounds().position + baseClone.getLocalBounds().size / 2.f);
+
+    // turretClone.setTextureRect({sf::Vector2i{0, 0}, {(int) textureWidth, (int) textureHeight}});
+    // turretClone.setOrigin(turretClone.getLocalBounds().position + turretClone.getLocalBounds().size / 2.f);
+
+    baseClone.setPosition(static_cast<sf::Vector2f>(iconRenderTexture.getSize()) / 2.f);
+    turretClone.setPosition(static_cast<sf::Vector2f>(iconRenderTexture.getSize()) / 2.f);
+
+    iconRenderTexture.draw(baseClone);
+    iconRenderTexture.draw(turretClone);
+
+    iconRenderTexture.display();
+    icon = sf::Sprite(iconRenderTexture.getTexture());
 }
 
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates state) const {
@@ -209,12 +236,12 @@ void Tower::update() {
             std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
             if(targets.empty()) return; // No targets to engage
             
-            combatBehaviorPointer->engage(targets);
-            turretAnimation.restart();
-
-            float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
-            float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
-            timer.reset();
+            if(combatBehaviorPointer->engage(targets)) {
+                turretAnimation.restart();
+                float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
+                float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
+                timer.reset();
+            }
         }
         
         if (mainTarget) {
@@ -222,5 +249,5 @@ void Tower::update() {
         }
     }
 
-    loadTurretSpriteTexture(turretAnimation.getCurrentSprite().getTexture());
+    updateSpriteTurretAnimation();
 }

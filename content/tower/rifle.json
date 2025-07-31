@@ -4,7 +4,6 @@
     "width": 128,
     "height": 128,
     "base": "rifle_base",
-    "turret": "rifle_turret",
     "turret_animation": {
       "texture_id": "rifle_turret",
       "width": 32,
@@ -31,7 +30,7 @@
   "stats": {
     "damage": 10,
     "fire_rate": 6.0,
-    "range": 636,
+    "range": 300,
     "max_targets": 1
   },
   "upgrades": {
@@ -131,7 +130,6 @@
   "behaviors": {
     "combat": {
       "type": "instant",
-      "animation_texture": "rifle_spark",
       "targeting": "nearest",
       "effects": []
     }

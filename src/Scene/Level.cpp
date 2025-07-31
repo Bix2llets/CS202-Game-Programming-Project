@@ -29,12 +29,14 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
       isRunning{true},
       map(parameter),
       entityManager{map, *this},
-      menu{budget, *this},
+      menu{budget, this},
       tracker(*this) {
+
     subscribeKeyboard(Key::Space, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
     subscribeKeyboard(Key::G, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
+
     entityManager.subscribeKeyboard(
         Key::D, UserEvent::Press,
         InputManager::getInstance().getKeyboardState());
@@ -47,6 +49,7 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
     subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
     subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
+    
     subscribe("add_petrol", [this](std::any sender, std::any data) {
         try {
             int petrolAmount = std::any_cast<int>(data);
@@ -56,6 +59,7 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             Logger::error("Sent illegal signal on add petrol");
         }
     });
+
     subscribe("add_scrap", [this](std::any sender, std::any data) {
         try {
             int scrapAmount = std::any_cast<int>(data);
@@ -65,12 +69,12 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             Logger::error("Sent illegal signal on add scrap");
         }
     });
+
     subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
 
         TowerFactory factory;
         std::unique_ptr<Tower> newTower = std::move(factory.createFromConfigFile(Cursor::getInstance().getCarryingTowerID(), *this, worldPosition));
-
         entityManager.addTower(std::move(newTower));
     });
 }
@@ -88,6 +92,7 @@ void Level::update() {
     if (!isRunning) return;
 
     entityManager.update();
+    
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
             if (group.quantity == 0) continue;
@@ -214,10 +219,4 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
 bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
                           const sf::Vector2f &windowPosition) {
     return false;
-}
-    }
-}
-
-EntityManager& Level::getEntityManager() {
-    return entityManager;
 }

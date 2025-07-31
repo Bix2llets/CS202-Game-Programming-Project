@@ -43,7 +43,6 @@ private:
     
     // Asset paths for texture loading
     std::string baseTextureId;
-    std::string turretTextureId;
     nlohmann::json turretAnimationPath;
     
     // Texture dimensions
@@ -138,13 +137,6 @@ public:
      * @return TowerBuilder& Reference to this builder for chaining.
      */
     TowerBuilder& setBaseTexturePath(const std::string& texturePath);
-    
-    /**
-     * @brief Set the turret texture path.
-     * @param texturePath Path to the turret texture file.
-     * @return TowerBuilder& Reference to this builder for chaining.
-     */
-    TowerBuilder& setTurretTexturePath(const std::string& texturePath);
     
     /**
      * @brief Set the turret animation path from a JSON section.

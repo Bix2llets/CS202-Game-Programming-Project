@@ -66,6 +66,9 @@ private:
     sf::Angle baseRotation;          ///< Rotation angle for the base sprite
     SpriteAnimation turretAnimation; ///< Animation for the turret sprite (originally from Entity)
 
+    sf::RenderTexture iconRenderTexture; ///< Render texture for the tower icon
+    sf::Sprite icon; ///< Non-animated sprite of the tower for UI display
+
     // Texture dimensions
     float textureWidth;      ///< Desired width for tower textures
     float textureHeight;     ///< Desired height for tower textures
@@ -155,11 +158,25 @@ public:
     void loadBaseSpriteTexture(const sf::Texture& texture);
 
     /**
-     * @brief Create and set the turret sprite from a texture.
-     * This is an alias for loadSpriteTexture from Entity class.
-     * @param texture The texture to use for the turret sprite.
+     * @brief Create and set the turret sprite and animations from turretAnimationPath.
      */
-    void loadTurretSpriteTexture(const sf::Texture& texture);
+    void loadTurretSpriteAnimation(const nlohmann::json& turretAnimationPath);
+
+    /**
+     * @brief Update the turret animation based on the current state.
+     */
+    void updateSpriteTurretAnimation();
+
+    /**
+     * @brief Load the tower's icon sprite for GUI display.
+     */
+    void loadIcon();
+
+    /**
+     * @brief Get the icon sprite for GUI display.
+     * @return sf::Sprite Icon sprite representing the tower for UI.
+     */
+    sf::Sprite getIcon() const { return icon; }
 
     /**
      * @brief Add a new behavior to the tower.

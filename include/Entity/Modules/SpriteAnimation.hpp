@@ -12,6 +12,8 @@
 
 #include "Entity/Modules/Timer.hpp"
 
+class Tower;
+
 /**
  * @enum AnimationType
  * @brief Types of animation supported by SpriteAnimation.
@@ -47,10 +49,22 @@ public:
     SpriteAnimation();
     
     /**
+     * @brief Gets the current animation type.
+     * @return The current AnimationType.
+     */
+    int getCurrentFrame() const { return currentFrame; }
+
+    /**
+     * @brief Gets the total number of frames in the animation.
+     * @return The number of frames.
+     */
+    int getFrameCount() const { return static_cast<int>(sprites.size()); }
+
+    /**
      * @brief Gets the current sprite for rendering.
      * @return The current sf::Sprite frame.
      */
-    sf::Sprite getCurrentSprite();
+    sf::Sprite getCurrentSprite() const { return sprites[currentFrame]; }
 
     /**
      * @brief Gets the width of each sprite frame.
@@ -97,4 +111,17 @@ public:
      * @brief Stop playing the animation aT the current frame
      */
     void pause();
+
+    /**
+     * @brief Sets the current frame to a specific index.
+     * @param frame The index of the frame to set.
+     * @throws std::out_of_range if the frame index is invalid.
+     */
+    void setCurrentFrame(int frame);
+
+    /**
+     * @brief Updates the sprite size based on the tower's size.
+     * @param tower Pointer to the Tower object.
+     */
+    void updateSpriteSize(Tower* tower);
 };

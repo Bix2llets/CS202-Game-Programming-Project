@@ -67,19 +67,15 @@ TowerBuilder TowerFactory::builderFromJson(const nlohmann::json& config) {
 
     // Parse and set texture paths and dimensions
     if (config.contains("texture")) {
-        std::string baseTextureId, turretTextureId;
+        std::string baseTextureId;
         nlohmann::json turretAnimationPath;
         float textureWidth, textureHeight;
         
-        parseTextures(config["texture"], baseTextureId, turretTextureId, textureWidth, textureHeight);
+        parseTextures(config["texture"], baseTextureId, textureWidth, textureHeight);
 
         // Set texture paths
         if (!baseTextureId.empty()) {
             builder.setBaseTexturePath(baseTextureId);
-        }
-
-        if (!turretTextureId.empty()) {
-            builder.setTurretTexturePath(turretTextureId);
         }
 
         if (config["texture"].contains("turret_animation")) {
@@ -144,16 +140,11 @@ std::unique_ptr<TowerStat> TowerFactory::parseStats(
 
 void TowerFactory::parseTextures(const nlohmann::json& textureJson,
                                  std::string& baseTextureId,
-                                 std::string& turretTextureId,
                                  float& width,
                                  float& height) {
     // Parse texture paths
     if (textureJson.contains("base")) {
         baseTextureId = textureJson["base"].get<std::string>();
-    }
-
-    if (textureJson.contains("turret")) {
-        turretTextureId = textureJson["turret"].get<std::string>();
     }
 
     // Parse texture dimensions with defaults
@@ -175,11 +166,6 @@ void TowerFactory::parseTextures(const nlohmann::json& textureJson,
                   << std::endl;
     }
 
-    if (!turretTextureId.empty()) {
-        std::cout << "TowerFactory: Turret texture path: " << turretTextureId
-                  << std::endl;
-    }
-
     std::cout << "TowerFactory: Texture dimensions: " << width << "x" << height
               << std::endl;
 }
@@ -187,6 +173,11 @@ void TowerFactory::parseTextures(const nlohmann::json& textureJson,
 void TowerFactory::validateConfig(const nlohmann::json& config) {
     // Check for required fields
     if (!config.contains("id")) {
+
+        // Print out config for debugging
+        std::cerr << "TowerFactory: Missing required field 'id' in tower configuration" << std::endl;
+        std::cerr << "TowerFactory: Configuration: " << config.dump(4) << std::endl;
+
         throw std::runtime_error(
             "TowerFactory: Missing required field 'id' in tower configuration");
     }

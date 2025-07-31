@@ -138,6 +138,7 @@ void ResourceManager::loadMusic(const std::string &path,
     musics[ID] = std::move(music);
     Logger::success("Successfully loaded music: " + ID + " from " + path);
 }
+
 ResourceManager::~ResourceManager() {
     textures.clear();
     soundBuffers.clear();

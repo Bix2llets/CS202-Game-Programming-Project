@@ -90,7 +90,6 @@ private:
     static void parseTextures(
         const nlohmann::json& textureJson,
         std::string& baseTextureId,
-        std::string& turretTextureId,
         float& width,
         float& height
     );

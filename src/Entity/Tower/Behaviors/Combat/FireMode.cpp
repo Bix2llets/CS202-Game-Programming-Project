@@ -4,8 +4,8 @@
 
 namespace Combat {
 
-void InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
-    if (!tower) return;
+int InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
+    if (!tower) return 0;
     
     // Set the main target to the first enemy in the vector (index 0)
     if (!target.empty() && target[0] != nullptr) {
@@ -29,10 +29,12 @@ void InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     
     // Update tower timer directly (no const_cast needed anymore)
     tower->getTimer().reset(); // Reset the timer to start the cooldown
+
+    return target.size(); // Return number of targets hit
 }
 
-void ProjectileFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
-    if (!tower) return;
+int ProjectileFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
+    if (!tower) return 0;
     
     // Set the main target to the first enemy in the vector (index 0)
     if (!target.empty() && target[0] != nullptr) {
@@ -41,11 +43,12 @@ void ProjectileFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     
     // TODO: Implement projectile fire mode
     // This would create projectile entities that travel to targets
+    return target.size(); // Return number of targets hit
 }
 
-void ContinuousFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
-    if (!tower) return;
-    
+int ContinuousFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
+    if (!tower) return 0;
+
     // Set the main target to the first enemy in the vector (index 0)
     if (!target.empty() && target[0] != nullptr) {
         tower->setMainTarget(target[0]);
@@ -53,6 +56,7 @@ void ContinuousFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     
     // TODO: Implement continuous fire mode  
     // This would apply damage over time while targets remain in range
+    return target.size(); // Return number of targets hit
 }
 
 }

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <SFML/Graphics.hpp>
 
 #include "Core/MouseObserver.hpp"
@@ -5,8 +7,11 @@
 #include "GUIComponents/Mediator.hpp"
 #include "GUIComponents/button.hpp"
 #include "Gameplay/Currency.hpp"
+
 class TowerMenu : public Mediator , public MouseObserver  {
-   private:
+private:
+    std::map<std::string, std::unique_ptr<Tower>> towerList;
+
     sf::Sprite basePanel;
     std::vector<std::unique_ptr<Button>> towerButtons;
     std::vector<std::unique_ptr<sf::Texture>> combinedTowerTextures;
@@ -27,10 +32,10 @@ class TowerMenu : public Mediator , public MouseObserver  {
 
     bool isTowerSelected;
 
-    Mediator* superMediator;
+    Level* level; // Reference to the level for tower placement
 
-   public:
-    TowerMenu(const Currency& budget, Mediator& superMediator);
+public:
+    TowerMenu(const Currency& budget, Level* level);
     void update();
 
     void render(sf::RenderStates state) const;
@@ -40,7 +45,7 @@ class TowerMenu : public Mediator , public MouseObserver  {
 
     bool onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
     bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
-   private:
+private:
     void setResourceDisplay();
     void setTowerButtonDisplay();
     void registerMessages();

@@ -20,22 +20,22 @@ public:
      * @param tower The combat tower firing
      * @param target The target to fire at
      */
-    virtual void fire(Tower* tower, std::vector<Enemy*>& target) const = 0;
+    virtual int fire(Tower* tower, std::vector<Enemy*>& target) const = 0;
 };
 
 class InstantFireMode : public FireMode {
 public:
-    void fire(Tower* tower, std::vector<Enemy*>& target) const override;
+    int fire(Tower* tower, std::vector<Enemy*>& target) const override;
 };
 
 class ProjectileFireMode : public FireMode {
 public:
-    void fire(Tower* tower, std::vector<Enemy*>& target) const override;
+    int fire(Tower* tower, std::vector<Enemy*>& target) const override;
 };
 
 class ContinuousFireMode : public FireMode {
 public:
-    void fire(Tower* tower, std::vector<Enemy*>& target) const override;
+    int fire(Tower* tower, std::vector<Enemy*>& target) const override;
 };
 
 }

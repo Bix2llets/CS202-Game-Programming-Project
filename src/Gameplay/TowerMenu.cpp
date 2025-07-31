@@ -9,20 +9,35 @@
 #include "GUIComponents/ButtonBuilder.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Currency.hpp"
+#include "Scene/Level.hpp"
 #include "Utility/Logger.hpp"
 #include "Utility/WindowScale.hpp"
-TowerMenu::TowerMenu(const Currency& currencyRef, Mediator& superMediator)
+
+#include "Entity/Factory/TowerFactory.hpp"
+#include "Entity/Tower/Tower.hpp"
+
+TowerMenu::TowerMenu(const Currency& currencyRef, Level* level)
     : basePanel{*ResourceManager::getInstance().getTexture(
           "tower_selection_base")},
-      superMediator{&superMediator},
+      level{level},
       budgetRef{currencyRef},
       petroleumDisplay{*ResourceManager::getInstance().getFont("pixel")},
       scrapDisplay{*ResourceManager::getInstance().getFont("pixel")},
       scrapIcon{currencyRef.getScraps().icon},
       petrolIcon{currencyRef.getPetroleum().icon} {
+
+    for (auto entry : JSONLoader::getInstance().getAllTowers()) {
+        std::unique_ptr<Tower> tower = TowerFactory::createFromJson(entry.second, *level, sf::Vector2f(300, 300));
+        
+        if(tower->isBuildable()) {
+            towerList[entry.first] = std::move(tower);
+            Logger::debug(std::format("Tower {} is added to towerList, new size: {}", entry.first, towerList.size()));
+        }
+    }
+
     setResourceDisplay();
-    setTowerButtonDisplay();
     registerMessages();
+    setTowerButtonDisplay();
     isTowerSelected = false;
 }
 
@@ -32,6 +47,7 @@ void TowerMenu::update() {
 
     for (auto& button : towerButtons) button->update();
 }
+
 void TowerMenu::render(sf::RenderStates state) const {
     sf::RenderWindow& window = Window::getInstance().getRenderWindow();
     window.draw(basePanel, state);
@@ -89,57 +105,63 @@ void TowerMenu::setResourceDisplay() {
 }
 
 void TowerMenu::setTowerButtonDisplay() {
-    auto towerList = JSONLoader::getInstance().getAllTowers();
-
     const sf::Vector2f buttonSize = {80, 90};
     // * Index is the size of the vector pre-push_back
 
-    auto getStaticTowerTexture = [](nlohmann::json jsonFile) {
-        sf::RenderTexture basePlate;
-        if (basePlate.resize(static_cast<sf::Vector2u>(sf::Vector2f{
-                jsonFile["texture"]["width"], jsonFile["texture"]["height"]})))
-            {
-                Logger::success("Resize succ");
-            }
-            else {
-                Logger::error("Resize failed");
-            }
-        basePlate.clear(sf::Color::Transparent);
-        sf::Sprite baseTexture(*ResourceManager::getInstance().getTexture(
-            jsonFile["texture"]["base"]));
-        sf::Sprite turretTexture(*ResourceManager::getInstance().getTexture(
-            jsonFile["texture"]["turret"]));
+    // auto getStaticTowerTexture = [](nlohmann::json jsonFile) {
+    //     sf::RenderTexture basePlate;
+    //     if (basePlate.resize(static_cast<sf::Vector2u>(sf::Vector2f{
+    //             jsonFile["texture"]["width"], jsonFile["texture"]["height"]})))
+    //         {
+    //             Logger::success("Resize succ");
+    //         }
+    //         else {
+    //             Logger::error("Resize failed");
+    //         }
+    //     basePlate.clear(sf::Color::Transparent);
+    //     sf::Sprite baseTexture(*ResourceManager::getInstance().getTexture(
+    //         jsonFile["texture"]["base"]));
+    //     sf::Sprite turretTexture(*ResourceManager::getInstance().getTexture(
+    //         jsonFile["texture"]["turret"]));
 
-        baseTexture.setOrigin(baseTexture.getLocalBounds().position +
-                              baseTexture.getLocalBounds().size / 2.f);
-        turretTexture.setOrigin(turretTexture.getLocalBounds().position +
-                                turretTexture.getLocalBounds().size / 2.f);
+    //     baseTexture.setOrigin(baseTexture.getLocalBounds().position +
+    //                           baseTexture.getLocalBounds().size / 2.f);
+    //     turretTexture.setOrigin(turretTexture.getLocalBounds().position +
+    //                             turretTexture.getLocalBounds().size / 2.f);
 
-        baseTexture.setPosition(static_cast<sf::Vector2f>(basePlate.getSize()) /
-                                2.f);
-        turretTexture.setPosition(
-            static_cast<sf::Vector2f>(basePlate.getSize()) / 2.f);
-        basePlate.draw(baseTexture);
-        basePlate.draw(turretTexture);
+    //     baseTexture.setPosition(static_cast<sf::Vector2f>(basePlate.getSize()) /
+    //                             2.f);
+    //     turretTexture.setPosition(
+    //         static_cast<sf::Vector2f>(basePlate.getSize()) / 2.f);
+    //     basePlate.draw(baseTexture);
+    //     basePlate.draw(turretTexture);
 
-        basePlate.display();
-        return std::move(basePlate.getTexture());
-    };
+    //     basePlate.display();
+    //     return std::move(basePlate.getTexture());
+    // };
+
     ButtonBuilder builder(*this);
-    for (std::pair<std::string, nlohmann::json> entry : towerList) {
+    for (const auto& [towerName, tower] : towerList) {
+        Logger::debug(std::format("Adding tower button for {}", towerName));
+
         // * Cosmetic towers
-        nlohmann::json& jsonFile = entry.second;
         sf::RenderTexture buttonRenderTexture;
         if (buttonRenderTexture.resize(static_cast<sf::Vector2u>(buttonSize))) {
-            Logger::debug("Resized succ");
+            Logger::debug("Resized successfully");
         } else {
-            Logger::error("Resized unsucc");
+            Logger::error("Resized failed");
         }
         buttonRenderTexture.clear(sf::Color::Transparent);
-        std::unique_ptr<sf::Texture> staticTower =
-            std::make_unique<sf::Texture>(getStaticTowerTexture(jsonFile));
-        sf::Sprite towerSprite(*(staticTower.get()));
-        towerTextures.push_back(std::move(staticTower));
+        // std::unique_ptr<sf::Texture> staticTower = tower->getIcon();
+        
+        // sf::Sprite towerSprite(*(staticTower.get()));
+        sf::Sprite towerSprite = tower->getIcon();
+
+        // if (towerSprite.getTexture() == nullptr) {
+        //     Logger::error(std::format("Tower {} has no valid texture for icon", towerName));
+        //     continue; // Skip this tower if no valid texture
+        // }
+
         towerSprite.setPosition(sf::Vector2f{20.f, 20.f});
         Logger::debug(std::format("{} {}", towerSprite.getLocalBounds().size.x,
                                   towerSprite.getLocalBounds().size.y));
@@ -150,11 +172,10 @@ void TowerMenu::setTowerButtonDisplay() {
         towerSprite.setOrigin(towerSprite.getLocalBounds().position +
                               towerSprite.getLocalBounds().size / 2.f);
 
-        nlohmann::json cost = jsonFile["cost"];
         // int scrapCost = cost["scrap"];
         // int petroleumCost = cost["petroleum"];
-        int scrapCost = 0;
-        int petroleumCost = 0;
+        int scrapCost = tower->getCost().getScraps().value;
+        int petroleumCost = tower->getCost().getPetroleum().value;
 
         sf::Text petroleumCostDisplay(
             *ResourceManager::getInstance().getFont("pixel"));
@@ -177,8 +198,8 @@ void TowerMenu::setTowerButtonDisplay() {
         petroleumIcon.setScale({0.75f, 0.75f});
         scrapIcon.setOrigin(scrapIcon.getLocalBounds().position +
                             scrapIcon.getLocalBounds().size / 2.f);
-        petroleumIcon.setOrigin(scrapIcon.getLocalBounds().position +
-                                scrapIcon.getLocalBounds().size / 2.f);
+        petroleumIcon.setOrigin(petroleumIcon.getLocalBounds().position +
+                                petroleumIcon.getLocalBounds().size / 2.f);
 
         scrapCostDisplay.setOrigin(
             {0.f, scrapCostDisplay.getLocalBounds().position.y +
@@ -217,9 +238,9 @@ void TowerMenu::setTowerButtonDisplay() {
                 .setBackground(combinedTowerTextures.back().get())
                 .setPosition({buttonPosition})
                 .setSize(buttonSize)
-                .setCallback([this, towerSprite, entry](Button* button) {
+                .setCallback([this, towerSprite, towerName](Button* button) {
                     Logger::debug("Button presseed");
-                    notify("tower_button_pressed", entry.first, towerSprite);
+                    notify("tower_button_pressed", towerName, towerSprite);
                 })
                 .build();
         renderTexes.push_back(std::move(buttonRenderTexture));
@@ -257,7 +278,7 @@ void TowerMenu::registerMessages() {
     subscribe("press_outside", [this](std::any sender, std::any data) {
         if (isTowerSelected == false) return;
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
-        superMediator->notify("place_tower_cursor", 0, worldPosition);
+        level->notify("place_tower_cursor", 0, worldPosition);
         
         Cursor::getInstance().removeRenderImage();
         Cursor::getInstance().clearCarryingTower();
