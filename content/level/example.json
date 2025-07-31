@@ -6,21 +6,21 @@
         [
             {
                 "id": "basic_enemy",
-                "quantity": 2,
+                "quantity": 200,
                 "spawn_delay": 0,
-                "internal_delay": 1
+                "internal_delay": 2
             },
             {
                 "id": "basic_enemy",
-                "quantity": 5,
-                "spawn_delay": 2,
+                "quantity": 500,
+                "spawn_delay": 10,
                 "internal_delay": 5
             },
             {
                 "id": "basic_enemy",
-                "quantity": 10,
+                "quantity": 100,
                 "spawn_delay": 1,
-                "internal_delay": 1
+                "internal_delay": 0
             }
         ]
     ]

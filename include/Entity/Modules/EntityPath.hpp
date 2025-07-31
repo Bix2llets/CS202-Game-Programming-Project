@@ -10,7 +10,8 @@ class EntityPath {
     const std::vector<Waypoint>* waypoints;
     float speed;
     float distanceFromStart;
-    float multiplier;
+    float terrainMultiplier;
+    float effectMultiplier;
     int waypointIndex;
 
    public:
@@ -22,7 +23,7 @@ class EntityPath {
 
     void setDistanceFromStart(float distance);
     void setSpeed(float speed);
-    void setSpeedMultiplier(float multiplier);
+    void setEffectSpeedModifier(float multiplier);
     void setWaypoints(const std::vector<Waypoint>* newWaypoints);
     void update();
 
@@ -30,7 +31,7 @@ class EntityPath {
         return waypoints->size() == 0 || waypointIndex == waypoints->size() - 1;
     }
 
-    EntityPath() : multiplier{1.f} {}
+    EntityPath() : terrainMultiplier{1.f} {}
 
     sf::Angle angleByVertical();
 };

@@ -12,6 +12,7 @@ int CombatBehavior::engage(const std::vector<Enemy*>& enemies) const {
         if(base->getMainTarget() != nullptr && !(base->getMainTarget()->isAlive())) {
             base->setMainTarget(nullptr); // Clear main target if it's not alive
         }
+        return true;
     }
 
     return targets.size(); // Return number of targets engaged

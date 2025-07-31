@@ -1,12 +1,14 @@
-#include "Entity/Tower/Behaviors/TowerBehavior.hpp"
-#include "Base/Constants.hpp"
 #include "Entity/Tower/Tower.hpp"
-#include "Entity/Enemy/Enemy.hpp"
-#include "Utility/MathUtils.hpp"
-#include <cmath>
+
 #include <algorithm>
-#include <iostream> // Include for debug output
+#include <cmath>
+#include <iostream>  // Include for debug output
 #include <stdexcept>
+
+#include "Base/Constants.hpp"
+#include "Entity/Enemy/Enemy.hpp"
+#include "Entity/Tower/Behaviors/TowerBehavior.hpp"
+#include "Scene/Level.hpp"
 #include "Scene/Scene.hpp"
 #include "Scene/Level.hpp"
 
@@ -30,18 +32,23 @@ void Tower::addBehavior(std::unique_ptr<TowerBehavior> behavior) {
     if (!behavior) return;
     Tower* existingTower = behavior->getTower();
     if (existingTower != nullptr && existingTower != this) {
-        throw std::runtime_error("Cannot add behavior to tower - behavior already belongs to another tower");
+        throw std::runtime_error(
+            "Cannot add behavior to tower - behavior already belongs to "
+            "another tower");
     }
     behavior->setTower(this);
     switch (behavior->getType()) {
         case BehaviorType::Combat:
-            combatBehaviorPointer.reset(reinterpret_cast<CombatBehavior*>(behavior.release()));
+            combatBehaviorPointer.reset(
+                reinterpret_cast<CombatBehavior*>(behavior.release()));
             break;
         case BehaviorType::Resource:
-            resourceBehaviorPointer.reset(reinterpret_cast<ResourceBehavior*>(behavior.release()));
+            resourceBehaviorPointer.reset(
+                reinterpret_cast<ResourceBehavior*>(behavior.release()));
             break;
         case BehaviorType::Glowing:
-            glowingBehaviorPointer.reset(reinterpret_cast<GlowingBehavior*>(behavior.release()));
+            glowingBehaviorPointer.reset(
+                reinterpret_cast<GlowingBehavior*>(behavior.release()));
             break;
     }
 }
@@ -60,39 +67,46 @@ void Tower::removeBehavior(BehaviorType type) {
     }
 }
 
-const TowerStat* Tower::getStats() const {
-    return stats.get();
-}
+const TowerStat* Tower::getStats() const { return stats.get(); }
 
-TowerStat* Tower::getStats() {
-    return stats.get();
-}
+TowerStat* Tower::getStats() { return stats.get(); }
 
 float Tower::getStat(const std::string& statName, float defaultValue) const {
     // Get base stat with any multipliers
-    float baseStat = stats ? stats->getStatWithBonus(statName, defaultValue) : defaultValue;
-    
+    float baseStat =
+        stats ? stats->getStatWithBonus(statName, defaultValue) : defaultValue;
+
     // Add upgrade bonuses
-    float upgradeBonus = upgradeManager ? upgradeManager->getTotalStatBonus(statName) : 0.0f;
-    
+    float upgradeBonus =
+        upgradeManager ? upgradeManager->getTotalStatBonus(statName) : 0.0f;
+
     return baseStat + upgradeBonus;
 }
 
-float Tower::getBaseStat(const std::string& statName, float defaultValue) const {
-    return stats ? stats->getStatWithBonus(statName, defaultValue) : defaultValue;
+float Tower::getBaseStat(const std::string& statName,
+                         float defaultValue) const {
+    return stats ? stats->getStatWithBonus(statName, defaultValue)
+                 : defaultValue;
 }
 
 // Upgrade System Methods
-UpgradeResult Tower::attemptUpgrade(int upgradeTypeId, Currency& playerCurrency) {
-    return upgradeManager ? upgradeManager->attemptUpgrade(upgradeTypeId, playerCurrency) : UpgradeResult::InvalidUpgradeType;
+UpgradeResult Tower::attemptUpgrade(int upgradeTypeId,
+                                    Currency& playerCurrency) {
+    return upgradeManager
+               ? upgradeManager->attemptUpgrade(upgradeTypeId, playerCurrency)
+               : UpgradeResult::InvalidUpgradeType;
 }
 
-bool Tower::canUpgrade(int upgradeTypeId, const Currency& playerCurrency) const {
-    return upgradeManager ? upgradeManager->canUpgrade(upgradeTypeId, playerCurrency) : false;
+bool Tower::canUpgrade(int upgradeTypeId,
+                       const Currency& playerCurrency) const {
+    return upgradeManager
+               ? upgradeManager->canUpgrade(upgradeTypeId, playerCurrency)
+               : false;
 }
 
 const UpgradeDetails* Tower::getNextUpgradeCost(int upgradeTypeId) const {
-    return upgradeManager ? upgradeManager->getNextUpgradeCost(upgradeTypeId) : nullptr;
+    return upgradeManager ? upgradeManager->getNextUpgradeCost(upgradeTypeId)
+                          : nullptr;
 }
 
 int Tower::getUpgradeLevel(int upgradeTypeId) const {
@@ -100,7 +114,8 @@ int Tower::getUpgradeLevel(int upgradeTypeId) const {
 }
 
 std::vector<std::string> Tower::getAvailableEvolutions() const {
-    return upgradeManager ? upgradeManager->getAvailableEvolutions() : std::vector<std::string>{};
+    return upgradeManager ? upgradeManager->getAvailableEvolutions()
+                          : std::vector<std::string>{};
 }
 
 void Tower::setMaxTotalUpgrades(int maxUpgrades) {
@@ -109,7 +124,8 @@ void Tower::setMaxTotalUpgrades(int maxUpgrades) {
     }
 }
 
-void Tower::addUpgradeType(int typeId, std::unique_ptr<UpgradeType> upgradeType) {
+void Tower::addUpgradeType(int typeId,
+                           std::unique_ptr<UpgradeType> upgradeType) {
     if (upgradeManager && upgradeType) {
         upgradeManager->addUpgradeType(typeId, std::move(upgradeType));
     }
@@ -122,28 +138,26 @@ void Tower::setStats(std::unique_ptr<TowerStat> newStats) {
 // Implementation of dual sprite system methods
 void Tower::setPosition(const sf::Vector2f& pos) {
     position = pos;
-    
+
     // Update base sprite position if it exists
     base.setPosition(pos);
-    
+
     // Update turret sprite position if it exists
     sprite.setPosition(pos);
 }
 
-void Tower::setRotation(const sf::Angle& rot) {
-    setTurretRotation(rot);
-}
+void Tower::setRotation(const sf::Angle& rot) { setTurretRotation(rot); }
 
 void Tower::setBaseRotation(const sf::Angle& rot) {
     baseRotation = rot;
-    
+
     // Update base sprite rotation if it exists
     base.setRotation(rot);
 }
 
 void Tower::setTurretRotation(const sf::Angle& rot) {
     rotation = rot;  // Update Entity's rotation
-    
+
     // Update turret sprite rotation if it exists
     sprite.setRotation(rot);
 }
@@ -154,19 +168,19 @@ void Tower::pointTurretTowards(const sf::Vector2f& targetPosition) {
 
 void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
     base = sf::Sprite(texture);
-    
+
     // Get original texture size
     sf::Vector2u originalSize = texture.getSize();
-    
+
     // Set origin to center of ORIGINAL texture size (before scaling)
     sf::Vector2f origin(originalSize.x / 2.0f, originalSize.y / 2.0f);
     base.setOrigin(origin);
-    
+
     // Scale sprite to desired dimensions
     float scaleX = textureWidth / static_cast<float>(originalSize.x);
     float scaleY = textureHeight / static_cast<float>(originalSize.y);
     base.setScale(sf::Vector2f(scaleX, scaleY));
-    
+
     // Ensure position and rotation are set correctly after scaling
     base.setPosition(position);
     base.setRotation(baseRotation);  // Use the stored base rotation
@@ -219,14 +233,14 @@ void Tower::loadIcon() {
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     // Draw base sprite first (if it exists)
     target.draw(base, state);
-    
+
     // Draw turret sprite on top (if it exists)
     target.draw(sprite, state);
 }
 
 void Tower::update() {
     if (!levelRef) return;
-    
+
     timer.update();
     turretAnimation.update();
 
@@ -243,11 +257,15 @@ void Tower::update() {
                 timer.reset();
             }
         }
-        
+
         if (mainTarget) {
             pointTurretTowards(mainTarget->getPosition());
         }
     }
 
     updateSpriteTurretAnimation();
+}
+
+bool Tower::contains(sf::Vector2f position) {
+    return base.getGlobalBounds().contains(position);
 }

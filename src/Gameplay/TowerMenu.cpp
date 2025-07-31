@@ -35,6 +35,15 @@ TowerMenu::TowerMenu(const Currency& currencyRef, Level* level)
         }
     }
 
+    position.y = 0;
+    position.x = GameConstants::DEFAULT_WINDOW_WIDTH - buttonGap.x -
+                 borderSize.x * 2.f - buttonSize.x * BUTTON_PER_ROW;
+    baseRectangle.setOrigin({0.f, 0.f});
+    baseRectangle.setPosition(position);
+    baseRectangle.setSize({GameConstants::DEFAULT_WINDOW_WIDTH - position.x,
+                           GameConstants::DEFAULT_WINDOW_HEIGHT});
+    baseRectangle.setFillColor(sf::Color(93, 153, 189, 255));
+
     setResourceDisplay();
     registerMessages();
     setTowerButtonDisplay();
@@ -50,7 +59,7 @@ void TowerMenu::update() {
 
 void TowerMenu::render(sf::RenderStates state) const {
     sf::RenderWindow& window = Window::getInstance().getRenderWindow();
-    window.draw(basePanel, state);
+    window.draw(baseRectangle, state);
 
     window.draw(scrapDisplay, state);
     window.draw(petroleumDisplay, state);
@@ -92,16 +101,13 @@ void TowerMenu::setResourceDisplay() {
     fixOriginIcon(scrapIcon);
     fixOriginIcon(petrolIcon);
 
-    scrapIcon.setPosition(position + sf::Vector2f{40, 40});
-    scrapDisplay.setPosition(position + sf::Vector2f{55, 40});
-    petrolIcon.setPosition(position + sf::Vector2f{40, 80});
-    petroleumDisplay.setPosition(position + sf::Vector2f{55, 80});
+    scrapIcon.setPosition(position + sf::Vector2f{borderSize.x + scrapIcon.getLocalBounds().size.x / 2, 40});
+    scrapDisplay.setPosition(scrapIcon.getPosition() + sf::Vector2f{scrapIcon.getLocalBounds().size.x / 2.f, 0.f} + sf::Vector2f{10, 0});
+    petrolIcon.setPosition(position + sf::Vector2f{borderSize.x + petrolIcon.getLocalBounds().size.x / 2, 80});
+    petroleumDisplay.setPosition(petrolIcon.getPosition() + sf::Vector2f{petrolIcon.getLocalBounds().size.x / 2.f, 0.f} + sf::Vector2f{10, 0});
 
-    petroleumDisplay.setFillColor(sf::Color::Black);
-    scrapDisplay.setFillColor(sf::Color::Black);
-    basePanel.setPosition(position);
-    basePanel.setScale({size.x / basePanel.getLocalBounds().size.x,
-                        size.y / basePanel.getLocalBounds().size.y});
+    petroleumDisplay.setFillColor(sf::Color::White);
+    scrapDisplay.setFillColor(sf::Color::White);
 }
 
 void TowerMenu::setTowerButtonDisplay() {
@@ -186,8 +192,8 @@ void TowerMenu::setTowerButtonDisplay() {
         scrapCostDisplay.setString(std::to_string(scrapCost));
         petroleumCostDisplay.setCharacterSize(20);
         scrapCostDisplay.setCharacterSize(20);
-        petroleumCostDisplay.setFillColor(sf::Color::Black);
-        scrapCostDisplay.setFillColor(sf::Color::Black);
+        petroleumCostDisplay.setFillColor(sf::Color(22, 50, 60, 255));
+        scrapCostDisplay.setFillColor(sf::Color(22, 50, 60, 255));
 
         sf::Sprite scrapIcon(
             *ResourceManager::getInstance().getTexture("scrap"));
@@ -207,10 +213,11 @@ void TowerMenu::setTowerButtonDisplay() {
         petroleumCostDisplay.setOrigin(
             {0.f, petroleumCostDisplay.getLocalBounds().position.y +
                       petroleumCostDisplay.getLocalBounds().size.y / 2.f});
-        petroleumCostDisplay.setPosition({25, 50});
-        petroleumIcon.setPosition({10, 50});
-        scrapCostDisplay.setPosition({25, 75});
-        scrapIcon.setPosition({10, 75});
+        int yOffset = 35;
+        petroleumCostDisplay.setPosition({25, towerSprite.getPosition().y + yOffset+ 5});
+        petroleumIcon.setPosition({10, towerSprite.getPosition().y + yOffset + 5});
+        scrapCostDisplay.setPosition({25, towerSprite.getPosition().y + yOffset + 30});
+        scrapIcon.setPosition({10, towerSprite.getPosition().y + yOffset + 30});
 
         buttonRenderTexture.draw(towerSprite);
         buttonRenderTexture.draw(petroleumCostDisplay);
@@ -298,7 +305,7 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
                 return true;
 
         if (isTowerSelected &&
-            WindowScale::screenScale(basePanel.getGlobalBounds())
+            WindowScale::screenScale(baseRectangle.getGlobalBounds())
                 .contains(windowPosition)) {
             notify("press_inside");
             return true;

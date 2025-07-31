@@ -112,6 +112,8 @@ public:
      */
     void pause();
 
+    inline bool isRunning() {return animationTimer->isRunning();}
+
     /**
      * @brief Sets the current frame to a specific index.
      * @param frame The index of the frame to set.

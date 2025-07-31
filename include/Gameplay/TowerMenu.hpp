@@ -17,10 +17,13 @@ private:
     std::vector<std::unique_ptr<sf::Texture>> combinedTowerTextures;
     std::vector<std::unique_ptr<sf::Texture>> towerTextures;
     std::vector<sf::RenderTexture> renderTexes;
-    const sf::Vector2f position = {1000, 0};
-    const sf::Vector2f size = {200, 600};
+    sf::Vector2f position;
+
+    sf::RectangleShape baseRectangle;
 
     const sf::Vector2i buttonGap = {5, 5};
+    const sf::Vector2i buttonSize = {80, 80};
+    const sf::Vector2f borderSize = {5, 5};
     const int BUTTON_PER_ROW = 2;
 
     const Currency& budgetRef;

@@ -9,6 +9,7 @@
 
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
+#include "Core/JSONLoader.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
@@ -16,15 +17,15 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
+#include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
 #include "Utility/logger.hpp"
-#include "GUIComponents/cursor.hpp"
 
 #include "Entity/Factory/TowerFactory.hpp" // For testing purposes
 
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
-             sf::Vector2f endPoint)
+             sf::Vector2f endPoint) 
     : currentWave{0},
       isRunning{true},
       map(parameter),
@@ -69,13 +70,22 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             Logger::error("Sent illegal signal on add scrap");
         }
     });
-
     subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
 
         TowerFactory factory;
-        std::unique_ptr<Tower> newTower = std::move(factory.createFromConfigFile(Cursor::getInstance().getCarryingTowerID(), *this, worldPosition));
-        entityManager.addTower(std::move(newTower));
+        std::unique_ptr<Tower> newTower =
+            std::move(factory.createFromConfigFile(
+                Cursor::getInstance().getCarryingTowerID(), *this,
+                worldPosition));
+        
+        
+        if (isPlacementValid(worldPosition)) {
+
+            budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
+            budget.subtractScraps(newTower->getCost().getScraps().value);
+            entityManager.addTower(std::move(newTower));
+        }
     });
 }
 
@@ -209,14 +219,98 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
     if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
         return true;
     }
+
+    if (Cursor::getInstance().isDisplaying()) {
+        if (isPlacementValid(worldPosition)) {
+            Cursor::getInstance().setValidPlacement();
+        } else {
+            Cursor::getInstance().setInvalidPlacement();
+        }
+    }
     if (entityManager.onMouseEvent(mouse, event, worldPosition,
                                    windowPosition)) {
         return true;
     }
+
     return false;
 }
 
 bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
                           const sf::Vector2f &windowPosition) {
     return false;
+}
+
+bool Level::isPlacementValid(sf::Vector2f worldPosition) {
+    std::string towerID = Cursor::getInstance().getCarryingTowerID();
+
+    nlohmann::json obj = JSONLoader::getInstance().getTower(towerID);
+
+    int petroleumCost = obj["cost"]["petroleum"];
+    int scrapCost = obj["cost"]["scrap"];
+    auto pointInQuad = [](const sf::Vector2f &pt,
+        const sf::Vector2f quad[4]) -> bool {
+        auto sign = [](const sf::Vector2f &p1, const sf::Vector2f &p2,
+                       const sf::Vector2f &p3) {
+            return (p1.x - p3.x) * (p2.y - p3.y) -
+                   (p2.x - p3.x) * (p1.y - p3.y);
+        };
+        bool b1, b2, b3, b4;
+        b1 = sign(pt, quad[0], quad[1]) < 0.0f;
+        b2 = sign(pt, quad[1], quad[2]) < 0.0f;
+        b3 = sign(pt, quad[2], quad[3]) < 0.0f;
+        b4 = sign(pt, quad[3], quad[0]) < 0.0f;
+        if ((b1 == b2) && (b2 == b3) && (b3 == b4))
+        Logger::debug(std::format("{} {} {} {}", b1, b2, b3, b4));
+        return ((b1 == b2) && (b2 == b3) && (b3 == b4));
+    };
+    bool isValid = true;
+    if (scrapCost > budget.getScraps().value || petroleumCost > budget.getPetroleum().value) return false;
+    for (auto &tower : entityManager.getTowers())
+    if (tower->contains(worldPosition)) return false;
+    std::vector<Waypoint> pathway = *map.getPath();
+
+    int towerBaseWidth =
+        JSONLoader::getInstance().getTower(towerID)["texture"]["width"];
+    int towerBaseHeight =
+        JSONLoader::getInstance().getTower(towerID)["texture"]["height"];
+    for (int i = 0; i < pathway.size() - 1; i++) {
+        Waypoint current = pathway[i];
+        Waypoint nextPoint = pathway[i + 1];
+
+        sf::Vector2f pathVector = pathway[i + 1].position - pathway[i].position;
+        sf::Vector2f normal = {pathVector.y, -pathVector.x};
+        normal = normal.normalized();
+        sf::Vector2f pathRect[4] = {
+            pathway[i].position + GameConstants::PATH_THICKNESS / 2.f * normal,
+            pathway[i].position - GameConstants::PATH_THICKNESS / 2.F * normal,
+            pathway[i + 1].position +
+                GameConstants::PATH_THICKNESS / 2.f * normal,
+            pathway[i + 1].position -
+                GameConstants::PATH_THICKNESS / 2.f * normal};
+        sf::Vector2f baseCornerPos[4] = {
+            worldPosition + sf::Vector2f(towerBaseWidth, towerBaseHeight) / 2.f,
+            worldPosition +
+                sf::Vector2f(-towerBaseWidth, towerBaseHeight) / 2.f,
+            worldPosition +
+                sf::Vector2f(towerBaseWidth, -towerBaseHeight) / 2.f,
+            worldPosition +
+                sf::Vector2f(-towerBaseWidth, -towerBaseHeight) / 2.f,
+        };
+
+        // Helper lambda to check if a point is inside a convex quad
+
+        // Check if any baseCornerPos is inside pathRect
+        for (int j = 0; j < 4; ++j) {
+            if (pointInQuad(baseCornerPos[j], pathRect)) {
+                return false;
+            }
+        }
+        // Check if any pathRect corner is inside baseCornerPos quad
+        for (int j = 0; j < 4; ++j) {
+            if (pointInQuad(pathRect[j], baseCornerPos)) {
+                return false;
+            }
+        }
+    }
+    return true;
 }

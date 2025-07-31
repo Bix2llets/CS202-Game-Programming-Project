@@ -100,7 +100,7 @@ void EnemyPanel::update() {
     if (currentSpeed != previousSpeed) {
         previousSpeed = currentSpeed;
         isChanged = true;
-        speed.setString(std::format("{:.2f}", currentSpeed));
+        speed.setString(std::format("{:.2f}", previousSpeed));
     }
     if (isChanged) calibrate();
 }

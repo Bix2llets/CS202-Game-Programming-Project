@@ -412,4 +412,6 @@ public:
      * @param newStats Unique pointer to new tower statistics.
      */
     void setStats(std::unique_ptr<TowerStat> newStats);
+
+    bool contains(sf::Vector2f position);
 };

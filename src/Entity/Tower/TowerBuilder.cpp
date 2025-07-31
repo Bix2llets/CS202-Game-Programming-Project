@@ -7,12 +7,17 @@
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Scene/Scene.hpp"
 
-TowerBuilder::TowerBuilder() 
-    : scene(nullptr), buildable(true), cost(0, 0), 
-      position(0, 0), angle(sf::radians(0.f)), 
-      textureWidth(32.0f), textureHeight(32.0f),
-      timerInterval(1.0f), isBuilt(false), maxTotalUpgrades(10) {
-}
+TowerBuilder::TowerBuilder()
+    : scene(nullptr),
+      buildable(true),
+      cost(0, 0),
+      position(0, 0),
+      angle(sf::radians(0.f)),
+      textureWidth(32.0f),
+      textureHeight(32.0f),
+      timerInterval(1.0f),
+      isBuilt(false),
+      maxTotalUpgrades(10) {}
 
 TowerBuilder& TowerBuilder::reset() {
     id.clear();
@@ -109,18 +114,19 @@ TowerBuilder& TowerBuilder::setMaxTotalUpgrades(int maxUpgrades) {
     return *this;
 }
 
-TowerBuilder& TowerBuilder::addUpgradeType(int typeId, std::unique_ptr<UpgradeType> upgradeType) {
+TowerBuilder& TowerBuilder::addUpgradeType(
+    int typeId, std::unique_ptr<UpgradeType> upgradeType) {
     if (upgradeType) {
         upgradeTypes[typeId] = std::move(upgradeType);
     }
     return *this;
 }
 
-TowerBuilder& TowerBuilder::addSimpleUpgradeType(int typeId, const std::string& displayName, 
-                                                const std::string& description, int maxLevel,
-                                                const std::string& iconPath, 
-                                                const std::string& evolveTo) {
-    auto upgradeType = std::make_unique<UpgradeType>(displayName, description, maxLevel, iconPath, evolveTo);
+TowerBuilder& TowerBuilder::addSimpleUpgradeType(
+    int typeId, const std::string& displayName, const std::string& description,
+    int maxLevel, const std::string& iconPath, const std::string& evolveTo) {
+    auto upgradeType = std::make_unique<UpgradeType>(
+        displayName, description, maxLevel, iconPath, evolveTo);
     upgradeTypes[typeId] = std::move(upgradeType);
     return *this;
 }
@@ -159,7 +165,9 @@ std::unique_ptr<Tower> TowerBuilder::build() {
     tower->cost = cost;
 
     // Set timer interval
-    tower->timer = timerInterval;
+    tower->timer.setTimeInterval(timerInterval)
+        .setRemainingTime(0)
+        .setTimerMode(TimerMode::Single);
 
     // Set texture dimensions
     tower->textureWidth = textureWidth;
@@ -174,16 +182,16 @@ std::unique_ptr<Tower> TowerBuilder::build() {
     for (auto& behavior : behaviors) {
         tower->addBehavior(std::move(behavior));
     }
-    behaviors.clear(); // Clear since we moved them
-    
+    behaviors.clear();  // Clear since we moved them
+
     // Configure upgrade system
     tower->setMaxTotalUpgrades(maxTotalUpgrades);
     for (auto& [typeId, upgradeType] : upgradeTypes) {
         // Move the upgrade type to the tower
         tower->addUpgradeType(typeId, std::move(upgradeType));
     }
-    upgradeTypes.clear(); // Clear since we moved them
-    
+    upgradeTypes.clear();  // Clear since we moved them
+
     // Load textures
     loadTextures(*tower);
 
@@ -200,61 +208,77 @@ void TowerBuilder::validate() const {
         throw std::invalid_argument(
             "TowerBuilder: Scene reference is required.");
     }
-    
+
     // Validate cost only for buildable towers
     if (buildable) {
         if (cost.getScraps().value < 0 || cost.getPetroleum().value < 0) {
-            throw std::invalid_argument("TowerBuilder: Cost cannot be negative for buildable towers.");
+            throw std::invalid_argument(
+                "TowerBuilder: Cost cannot be negative for buildable towers.");
         }
     }
-    
+
     // Validate timer interval
     if (timerInterval <= 0.0f) {
-        throw std::invalid_argument("TowerBuilder: Timer interval must be positive.");
+        throw std::invalid_argument(
+            "TowerBuilder: Timer interval must be positive.");
     }
-    
+
     // Validate texture dimensions
     if (textureWidth <= 0.0f || textureHeight <= 0.0f) {
-        throw std::invalid_argument("TowerBuilder: Texture dimensions must be positive.");
+        throw std::invalid_argument(
+            "TowerBuilder: Texture dimensions must be positive.");
     }
-    
+
     // Validate upgrade system consistency
     if (maxTotalUpgrades < 0) {
-        throw std::invalid_argument("TowerBuilder: Maximum total upgrades cannot be negative.");
+        throw std::invalid_argument(
+            "TowerBuilder: Maximum total upgrades cannot be negative.");
     }
-    
+
     // Validate upgrade types (only if there are any)
     if (!upgradeTypes.empty()) {
         for (const auto& [typeId, upgradeType] : upgradeTypes) {
             if (!upgradeType) {
-                throw std::invalid_argument("TowerBuilder: Upgrade type " + std::to_string(typeId) + " is null.");
+                throw std::invalid_argument("TowerBuilder: Upgrade type " +
+                                            std::to_string(typeId) +
+                                            " is null.");
             }
-            
+
             if (upgradeType->getMaxLevel() <= 0) {
-                throw std::invalid_argument("TowerBuilder: Upgrade type " + std::to_string(typeId) + " must have positive max level.");
+                throw std::invalid_argument("TowerBuilder: Upgrade type " +
+                                            std::to_string(typeId) +
+                                            " must have positive max level.");
             }
-            
+
             if (upgradeType->getDisplayName().empty()) {
-                throw std::invalid_argument("TowerBuilder: Upgrade type " + std::to_string(typeId) + " must have a display name.");
+                throw std::invalid_argument("TowerBuilder: Upgrade type " +
+                                            std::to_string(typeId) +
+                                            " must have a display name.");
             }
         }
-        
+
         // Calculate total possible upgrades
         int totalPossibleUpgrades = 0;
         for (const auto& [typeId, upgradeType] : upgradeTypes) {
             totalPossibleUpgrades += upgradeType->getMaxLevel();
         }
-        
-        // Warn if max total upgrades is higher than what's possible (not an error, just a warning)
+
+        // Warn if max total upgrades is higher than what's possible (not an
+        // error, just a warning)
         if (maxTotalUpgrades > totalPossibleUpgrades) {
-            std::cout << "TowerBuilder Warning: Max total upgrades (" << maxTotalUpgrades 
-                      << ") is higher than total possible upgrades (" << totalPossibleUpgrades << ")." << std::endl;
+            std::cout << "TowerBuilder Warning: Max total upgrades ("
+                      << maxTotalUpgrades
+                      << ") is higher than total possible upgrades ("
+                      << totalPossibleUpgrades << ")." << std::endl;
         }
     }
-    
-    // Validate that non-buildable towers don't have upgrade types (per your requirements)
+
+    // Validate that non-buildable towers don't have upgrade types (per your
+    // requirements)
     if (!buildable && !upgradeTypes.empty()) {
-        throw std::invalid_argument("TowerBuilder: Non-buildable towers should not have upgrade types defined. They inherit upgrades during evolution.");
+        throw std::invalid_argument(
+            "TowerBuilder: Non-buildable towers should not have upgrade types "
+            "defined. They inherit upgrades during evolution.");
     }
 }
 

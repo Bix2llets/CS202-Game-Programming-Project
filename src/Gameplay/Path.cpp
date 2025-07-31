@@ -109,8 +109,7 @@ sf::RenderTexture Path::getPathTexture() const {
             // Perpendicular vector for thickness
             sf::Vector2f perp(-dir.y, dir.x);
 
-            float thickness = GameConstants::CELL_SIZE *
-                              3;  // Set your desired thickness here
+            float thickness = GameConstants::PATH_THICKNESS;  
 
             // Offset points
             sf::Vector2f offset = (perp * (thickness / 2.f));
