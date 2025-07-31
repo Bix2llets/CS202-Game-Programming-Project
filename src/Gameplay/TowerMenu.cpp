@@ -91,24 +91,31 @@ void TowerMenu::setResourceDisplay() {
 void TowerMenu::setTowerButtonDisplay() {
     auto towerList = JSONLoader::getInstance().getAllTowers();
 
-    const sf::Vector2f buttonSize = {80, 90};
+    const sf::Vector2f buttonSize = {100, 90};
     // * Index is the size of the vector pre-push_back
 
     auto getStaticTowerTexture = [](nlohmann::json jsonFile) {
         sf::RenderTexture basePlate;
-        if (basePlate.resize(static_cast<sf::Vector2u>(sf::Vector2f{
-                jsonFile["texture"]["width"], jsonFile["texture"]["height"]})))
-            {
-                Logger::success("Resize succ");
-            }
-            else {
-                Logger::error("Resize failed");
-            }
+        if (basePlate.resize(static_cast<sf::Vector2u>(
+                sf::Vector2f{jsonFile["texture"]["width"],
+                             jsonFile["texture"]["height"]}))) {
+            Logger::success("Resize succ");
+        } else {
+            Logger::error("Resize failed");
+        }
         basePlate.clear(sf::Color::Transparent);
+        nlohmann::json animationInfo = jsonFile["texture"]["turret_animation"];
         sf::Sprite baseTexture(*ResourceManager::getInstance().getTexture(
             jsonFile["texture"]["base"]));
         sf::Sprite turretTexture(*ResourceManager::getInstance().getTexture(
-            jsonFile["texture"]["turret"]));
+            animationInfo["texture_id"]));
+
+        turretTexture.setTextureRect(
+            {sf::Vector2i{0, 0}, sf::Vector2i{(int)animationInfo["width"],
+                                              (int)animationInfo["height"]}});
+
+        turretTexture.setOrigin(
+            {animationInfo["center_x"], animationInfo["center_y"]});
 
         baseTexture.setOrigin(baseTexture.getLocalBounds().position +
                               baseTexture.getLocalBounds().size / 2.f);
@@ -258,7 +265,7 @@ void TowerMenu::registerMessages() {
         if (isTowerSelected == false) return;
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
         superMediator->notify("place_tower_cursor", 0, worldPosition);
-        
+
         Cursor::getInstance().removeRenderImage();
         Cursor::getInstance().clearCarryingTower();
         isTowerSelected = false;
