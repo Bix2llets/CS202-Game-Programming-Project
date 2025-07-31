@@ -95,12 +95,12 @@ class EntityManager : public MouseObserver, public KeyboardObserver {
      */
     size_t getTotalEntityCount() const;
 
-    void onMouseEvent(Mouse button, UserEvent event,
+    bool onMouseEvent(Mouse button, UserEvent event,
                       const sf::Vector2f &worldPosition,
                       const sf::Vector2f &windowPosition) override;
 
-    void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
+    bool onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
                     const sf::Vector2f &windowPosition) override;
-    void onScrollEvent(float delta, const sf::Vector2f &worldPosition,
+    bool onScrollEvent(float delta, const sf::Vector2f &worldPosition,
                        const sf::Vector2f &windowPosition) override;
 };

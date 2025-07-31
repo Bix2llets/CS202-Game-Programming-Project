@@ -44,6 +44,6 @@ class KeyboardObserver {
      * @param worldPosition The world coordinates of the event (based on mouse position, if relevant).
      * @param windowPosition The window coordinates of the event (based on mouse position, if relevant).
      */
-    virtual void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
+    virtual bool onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
                     const sf::Vector2f &windowPosition) = 0;
 };

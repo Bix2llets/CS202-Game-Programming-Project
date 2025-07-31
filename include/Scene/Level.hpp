@@ -32,7 +32,7 @@
  * projectiles), and wave progression. It supports loading from JSON, updating
  * game logic, and rendering.
  */
-class Level : public Scene, public KeyboardObserver {
+class Level : public Scene, public KeyboardObserver, public MouseObserver {
 private:
     std::string levelID;  ///< Unique identifier for the level
     void loadLevelID(const nlohmann::json &jsonfile);
@@ -53,6 +53,7 @@ private:
           sf::Vector2f startingPoint = {-1.f, -1.f},
           sf::Vector2f endPoint = {-1.f, -1.f});
 
+    ~Level();
     /**
      * @brief Updates the level logic (entities, waves, etc).
      */
@@ -99,7 +100,7 @@ private:
      * @brief Gets the entity manager for this level.
      * @return Reference to the level's entity manager.
      */
-    EntityManager& getEntityManager();
+    inline EntityManager& getEntityManager() {return entityManager;};
 
     /**
      * @brief Registers UI components and event handlers for the level.
@@ -146,9 +147,11 @@ private:
      * @param jsonfile The JSON object containing the level ID.
      */
 
-    void drawBackground(sf::RenderTarget &target, sf::RenderStates state) const;
 
    public:
-    void onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
+    bool onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
                     const sf::Vector2f &windowPosition);
+    bool onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
+
+    bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
 };

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <json.hpp>
+#include <memory>
 
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
@@ -13,10 +14,12 @@
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Enemy/Enemy.hpp"
+#include "Entity/Factory/TowerFactory.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
 #include "Utility/logger.hpp"
+#include "GUIComponents/cursor.hpp"
 
 #include "Entity/Factory/TowerFactory.hpp" // For testing purposes
 
@@ -39,6 +42,11 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
         Key::F, UserEvent::Press,
         InputManager::getInstance().getKeyboardState());
 
+    MouseState &mouseState = InputManager::getInstance().getMouseState();
+    subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
+    subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
+    subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
+    subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
     subscribe("add_petrol", [this](std::any sender, std::any data) {
         try {
             int petrolAmount = std::any_cast<int>(data);
@@ -57,9 +65,22 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             Logger::error("Sent illegal signal on add scrap");
         }
     });
+    subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
+        sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
 
-    std::unique_ptr<Tower> tower = TowerFactory::createFromConfigFile("rifle", *this, sf::Vector2f(300.f, 400.f));
-    entityManager.addTower(std::move(tower));
+        TowerFactory factory;
+        std::unique_ptr<Tower> newTower = std::move(factory.createFromConfigFile(Cursor::getInstance().getCarryingTowerID(), *this, worldPosition));
+
+        entityManager.addTower(std::move(newTower));
+    });
+}
+
+Level::~Level() {
+    MouseState &mouseState = InputManager::getInstance().getMouseState();
+    unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
+    unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
 }
 
 void Level::update() {
@@ -144,8 +165,6 @@ void Level::onLoad() {
     // stats
     entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
                                  InputManager::getInstance().getMouseState());
-
-    menu.onLoad();
 }
 
 void Level::onUnload() {
@@ -153,7 +172,6 @@ void Level::onUnload() {
     entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
                                    InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
-    menu.onUnload();
 }
 
 bool Level::isWaveFinished() {
@@ -164,16 +182,39 @@ bool Level::isWaveFinished() {
     return true;
 }
 
-void Level::onKeyEvent(Key key, UserEvent event,
+bool Level::onKeyEvent(Key key, UserEvent event,
                        const sf::Vector2f &worldPosition,
                        const sf::Vector2f &windowPosition) {
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
+        return true;
     }
 
     if (key == Key::G && event == UserEvent::Press) {
         notify("add_petrol", 0, 10);
         notify("add_scrap", 0, 10);
+        return true;
+    }
+    return false;
+}
+
+bool Level::onMouseEvent(Mouse mouse, UserEvent event,
+                         const sf::Vector2f &worldPosition,
+                         const sf::Vector2f &windowPosition) {
+    if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
+        return true;
+    }
+    if (entityManager.onMouseEvent(mouse, event, worldPosition,
+                                   windowPosition)) {
+        return true;
+    }
+    return false;
+}
+
+bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
+                          const sf::Vector2f &windowPosition) {
+    return false;
+}
     }
 }
 

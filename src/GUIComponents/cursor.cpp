@@ -72,7 +72,7 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 }
 
-void Cursor::onMouseEvent(Mouse mouse, UserEvent event,
+bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
                           const sf::Vector2f& worldPosition,
                           const sf::Vector2f& windowPosition) {
     if (event == UserEvent::Move) {
@@ -80,9 +80,21 @@ void Cursor::onMouseEvent(Mouse mouse, UserEvent event,
         renderImage.setPosition(position);
         // Logger::debug("processing moues movent in cursor");
 
-        return;
+        return true;
     }
+    return false;
 }
 
-void Cursor::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
-                           const sf::Vector2f& windowPosition) {}
+void Cursor::setCarryingTower(std::string id) {
+    carryingTowerId = id;
+
+}
+
+void Cursor::clearCarryingTower() {
+    carryingTowerId = "";
+}
+
+bool Cursor::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                           const sf::Vector2f& windowPosition) {
+                            return false;
+                           }
