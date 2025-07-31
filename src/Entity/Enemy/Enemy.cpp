@@ -19,7 +19,8 @@ Enemy::Enemy(const Enemy &other)
       enemyType(other.enemyType),
       petroleumReward(other.petroleumReward),
       scrapReward(other.scrapReward) {}
-Enemy::Enemy(const Enemy &&other)
+
+      Enemy::Enemy(const Enemy &&other)
     : Entity(other),
       Damageable(other),
       currentState(other.currentState ? other.currentState->clone() : nullptr),
@@ -27,6 +28,7 @@ Enemy::Enemy(const Enemy &&other)
       enemyType(other.enemyType),
       petroleumReward(other.petroleumReward),
       scrapReward(other.scrapReward) {}
+
 Enemy &Enemy::operator=(Enemy &other) {
     if (this != &other) {
         // Entity::operator=(other);
@@ -43,6 +45,7 @@ Enemy &Enemy::operator=(Enemy &other) {
     }
     return *this;
 };
+
 Enemy &Enemy::operator=(Enemy &&other) {
     if (this != &other) {
         // Entity::operator=(std::move(other));
@@ -160,8 +163,11 @@ void Enemy::onDeath() {
 }
 
 void Enemy::setPosition(const sf::Vector2f &position) {}
+
 void Enemy::setRotation(const sf::Angle &angle) {}
+
 void Enemy::onHeal(int healAmount) { health.heal(healAmount); }
+
 bool Enemy::isAlive() { return health.getHealth() > 0 && !path.isFinished(); }
 
 Enemy::Enemy(Scene &scene) : Entity(scene) {}

@@ -30,6 +30,7 @@ TowerBuilder& TowerBuilder::reset() {
     angle = sf::radians(0.f);
     baseTextureId.clear();
     turretTextureId.clear();
+    turretAnimationPath.clear();
     textureWidth = 32.0f;
     textureHeight = 32.0f;
     stats.reset();
@@ -86,9 +87,13 @@ TowerBuilder& TowerBuilder::setBaseTexturePath(const std::string& texturePath) {
     return *this;
 }
 
-TowerBuilder& TowerBuilder::setTurretTexturePath(
-    const std::string& texturePath) {
+TowerBuilder& TowerBuilder::setTurretTexturePath(const std::string& texturePath) {
     this->turretTextureId = texturePath;
+    return *this;
+}
+
+TowerBuilder& TowerBuilder::setTurretAnimationPath(const nlohmann::json& jsonFile) {
+    this->turretAnimationPath = jsonFile;
     return *this;
 }
 
@@ -173,6 +178,7 @@ std::unique_ptr<Tower> TowerBuilder::build() {
     // Set texture dimensions
     tower->textureWidth = textureWidth;
     tower->textureHeight = textureHeight;
+    tower->turretAnimation.loadJson(turretAnimationPath);
 
     // Set statistics if provided
     if (stats) {
@@ -313,11 +319,6 @@ void TowerBuilder::loadTextures(Tower& tower) const {
                   << turretTextureId << std::endl;
 
         try {
-            // Load texture into ResourceManager through Scene
-
-            // ResourceManager::getInstance().loadTexture(turretTextureId,
-            // turretTextureId);
-
             const sf::Texture* turretTexture =
                 ResourceManager::getInstance().getTexture(turretTextureId);
             if (turretTexture) {

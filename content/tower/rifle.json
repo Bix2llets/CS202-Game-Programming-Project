@@ -4,7 +4,22 @@
     "width": 128,
     "height": 128,
     "base": "rifle_base",
-    "turret": "rifle_turret"
+    "turret": "rifle_turret",
+    "turret_animation": {
+      "texture_id": "rifle_turret",
+      "width": 32,
+      "height": 32,
+      "animation_interval": 0.05,
+      "type": "linear",
+      "center_x": 16,
+      "center_y": 16,
+      "viewport" : {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 32
+      }
+    }
   },
   "name": "Rifle Tower",
   "description": "A versatile, well-rounded tower with balanced range and damage. Good for early defense.",
@@ -14,10 +29,10 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 36,
-    "fire_rate": 1.8,
-    "range": 360,
-    "max_targets": 3
+    "damage": 10,
+    "fire_rate": 6.0,
+    "range": 636,
+    "max_targets": 1
   },
   "upgrades": {
     "max_total_upgrades": 5,

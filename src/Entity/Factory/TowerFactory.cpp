@@ -68,9 +68,10 @@ TowerBuilder TowerFactory::builderFromJson(const nlohmann::json& config) {
     // Parse and set texture paths and dimensions
     if (config.contains("texture")) {
         std::string baseTextureId, turretTextureId;
+        nlohmann::json turretAnimationPath;
         float textureWidth, textureHeight;
-        parseTextures(config["texture"], baseTextureId, turretTextureId,
-                      textureWidth, textureHeight);
+        
+        parseTextures(config["texture"], baseTextureId, turretTextureId, textureWidth, textureHeight);
 
         // Set texture paths
         if (!baseTextureId.empty()) {
@@ -79,6 +80,10 @@ TowerBuilder TowerFactory::builderFromJson(const nlohmann::json& config) {
 
         if (!turretTextureId.empty()) {
             builder.setTurretTexturePath(turretTextureId);
+        }
+
+        if (config["texture"].contains("turret_animation")) {
+            builder.setTurretAnimationPath(config["texture"]["turret_animation"]);
         }
 
         // Set texture dimensions
@@ -139,7 +144,8 @@ std::unique_ptr<TowerStat> TowerFactory::parseStats(
 
 void TowerFactory::parseTextures(const nlohmann::json& textureJson,
                                  std::string& baseTextureId,
-                                 std::string& turretTextureId, float& width,
+                                 std::string& turretTextureId,
+                                 float& width,
                                  float& height) {
     // Parse texture paths
     if (textureJson.contains("base")) {

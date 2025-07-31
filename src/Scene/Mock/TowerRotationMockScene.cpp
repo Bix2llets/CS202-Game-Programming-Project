@@ -28,6 +28,8 @@ void TowerRotationMockScene::createTestTower() {
     std::cout << "Tower will be positioned at: " << centerPos.x << ", "
               << centerPos.y << std::endl;
 
+    // return;
+    
     try {
         // Test TowerFactory: Create tower from JSON configuration
         std::string configFile = "rifle";
@@ -42,29 +44,7 @@ void TowerRotationMockScene::createTestTower() {
                   << std::endl;
 
     } catch (const std::exception& e) {
-        std::cout << "Failed to load tower from JSON: " << e.what()
-                  << std::endl;
-        std::cout << "Falling back to TowerBuilder..." << std::endl;
-
-        // Fallback: Create tower using TowerBuilder (original method)
-        auto stats = std::make_unique<TowerStat>();
-        stats->setStat("damage", 10.0f);
-        stats->setStat("fire_rate", 1.2f);
-        stats->setStat("range", 120.0f);
-
-        TowerBuilder builder;
-        testTower =
-            builder.setId("mock_rifle")
-                .setScene(*this)
-                .setName("Mock Rifle Tower (Fallback)")
-                .setDescription("A test rifle tower created with TowerBuilder")
-                .setBuildable(true)
-                .setCost(Currency(100, 0))
-                .setPosition(centerPos)
-                .setAngle(sf::radians(0.f))
-                .setStats(std::move(stats))
-                .setTimerInterval(1.0f / 1.2f)
-                .build();
+        std::cout << "Failed to load tower from JSON: " << e.what() << std::endl;
     }
 
     // Note: In a real implementation, you would load actual textures here

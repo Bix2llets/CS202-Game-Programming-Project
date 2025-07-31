@@ -21,6 +21,9 @@
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
 #include "Utility/logger.hpp"
+
+#include "Entity/Factory/TowerFactory.hpp" // For testing purposes
+
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
              sf::Vector2f endPoint)
     : currentWave{0},
