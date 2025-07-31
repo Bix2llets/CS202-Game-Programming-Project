@@ -16,16 +16,15 @@
 #include "Core/Window.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
+#include "Entity/Factory/TowerFactory.hpp"  // For testing purposes
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
 #include "Utility/logger.hpp"
 
-#include "Entity/Factory/TowerFactory.hpp" // For testing purposes
-
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
-             sf::Vector2f endPoint) 
+             sf::Vector2f endPoint)
     : currentWave{0},
       isRunning{true},
       map(parameter),
@@ -52,6 +51,16 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
         try {
             int petrolAmount = std::any_cast<int>(data);
             budget.addPetroleum(petrolAmount);
+            Window::getInstance().toggleUserMode();
+
+            if (Cursor::getInstance().isDisplaying())
+                if (isPlacementValid(
+                        Window::getInstance()
+                            .getRenderWindow()
+                            .mapPixelToCoords(static_cast<sf::Vector2i>(
+                                Cursor::getInstance().getPosition())))) {
+                    Cursor::getInstance().setValidPlacement();
+                }
 
         } catch (const std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on add petrol");
@@ -61,6 +70,15 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
         try {
             int scrapAmount = std::any_cast<int>(data);
             budget.addScraps(scrapAmount);
+            Window::getInstance().toggleUserMode();
+            if (Cursor::getInstance().isDisplaying())
+                if (isPlacementValid(
+                        Window::getInstance()
+                            .getRenderWindow()
+                            .mapPixelToCoords(static_cast<sf::Vector2i>(
+                                Cursor::getInstance().getPosition())))) {
+                    Cursor::getInstance().setValidPlacement();
+                }
 
         } catch (const std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on add scrap");
@@ -74,10 +92,8 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             std::move(factory.createFromConfigFile(
                 Cursor::getInstance().getCarryingTowerID(), *this,
                 worldPosition));
-        
-        
-        if (isPlacementValid(worldPosition)) {
 
+        if (isPlacementValid(worldPosition)) {
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);
             entityManager.addTower(std::move(newTower));
@@ -242,7 +258,7 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
     int petroleumCost = obj["cost"]["petroleum"];
     int scrapCost = obj["cost"]["scrap"];
     auto pointInQuad = [](const sf::Vector2f &pt,
-        const sf::Vector2f quad[4]) -> bool {
+                          const sf::Vector2f quad[4]) -> bool {
         auto sign = [](const sf::Vector2f &p1, const sf::Vector2f &p2,
                        const sf::Vector2f &p3) {
             return (p1.x - p3.x) * (p2.y - p3.y) -
@@ -254,13 +270,15 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
         b3 = sign(pt, quad[2], quad[3]) < 0.0f;
         b4 = sign(pt, quad[3], quad[0]) < 0.0f;
         if ((b1 == b2) && (b2 == b3) && (b3 == b4))
-        Logger::debug(std::format("{} {} {} {}", b1, b2, b3, b4));
+            Logger::debug(std::format("{} {} {} {}", b1, b2, b3, b4));
         return ((b1 == b2) && (b2 == b3) && (b3 == b4));
     };
     bool isValid = true;
-    if (scrapCost > budget.getScraps().value || petroleumCost > budget.getPetroleum().value) return false;
+    if (scrapCost > budget.getScraps().value ||
+        petroleumCost > budget.getPetroleum().value)
+        return false;
     for (auto &tower : entityManager.getTowers())
-    if (tower->contains(worldPosition)) return false;
+        if (tower->contains(worldPosition)) return false;
     std::vector<Waypoint> pathway = *map.getPath();
 
     int towerBaseWidth =
