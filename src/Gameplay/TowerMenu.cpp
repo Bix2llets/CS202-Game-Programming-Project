@@ -151,10 +151,10 @@ void TowerMenu::setTowerButtonDisplay() {
                               towerSprite.getLocalBounds().size / 2.f);
 
         nlohmann::json cost = jsonFile["cost"];
-        // int scrapCost = cost["scrap"];
-        // int petroleumCost = cost["petroleum"];
         int scrapCost = 0;
         int petroleumCost = 0;
+        scrapCost = cost["scrap"];
+        petroleumCost = cost["petroleum"];
 
         sf::Text petroleumCostDisplay(
             *ResourceManager::getInstance().getFont("pixel"));

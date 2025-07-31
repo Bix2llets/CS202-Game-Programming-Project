@@ -232,9 +232,18 @@ void Tower::update() {
         if (timer.isAvailable()) {
             std::vector<Enemy*> targets =
                 levelRef->getEntityManager().getEnemies();
-            if (targets.empty()) return;  // No targets to engage
+            if (targets.empty()) {
+                return;
+            }  // No targets to engage
 
-            combatBehaviorPointer->engage(targets);
+            if (!combatBehaviorPointer->engage(targets)) {
+                if (turretAnimation.isRunning()) {
+                    turretAnimation.pause();
+                }
+            } else {
+                if (!turretAnimation.isRunning()) turretAnimation.resume();
+            }
+
             turretAnimation.restart();
 
             float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);

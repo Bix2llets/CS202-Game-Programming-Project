@@ -35,5 +35,9 @@
       "targeting": "nearest",
       "effects": []
     }
+  },
+  "cost": {
+    "petroleum": 100,
+    "scrap": 10
   }
 }

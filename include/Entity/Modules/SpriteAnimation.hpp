@@ -97,4 +97,6 @@ public:
      * @brief Stop playing the animation aT the current frame
      */
     void pause();
+
+    inline bool isRunning() {return animationTimer->isRunning();}
 };

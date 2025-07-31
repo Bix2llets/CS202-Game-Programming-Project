@@ -98,4 +98,6 @@ class Timer {
     Timer& resume();
 
     inline float getInterval() const {return timeInterval;}
+
+    inline bool isRunning() {return running;}
 };
