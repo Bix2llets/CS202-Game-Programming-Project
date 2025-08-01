@@ -16,16 +16,16 @@
 #include "Core/Window.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
+#include "Entity/Factory/TowerFactory.hpp"  // For testing purposes
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
+#include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
 
-#include "Entity/Factory/TowerFactory.hpp" // For testing purposes
-
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
-             sf::Vector2f endPoint) 
+             sf::Vector2f endPoint)
     : currentWave{0},
       isRunning{true},
       map(parameter),
@@ -55,6 +55,16 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
         try {
             int petrolAmount = std::any_cast<int>(data);
             budget.addPetroleum(petrolAmount);
+            Window::getInstance().toggleUserMode();
+
+            if (Cursor::getInstance().isDisplaying())
+                if (isPlacementValid(
+                        Window::getInstance()
+                            .getRenderWindow()
+                            .mapPixelToCoords(static_cast<sf::Vector2i>(
+                                Cursor::getInstance().getPosition())))) {
+                    Cursor::getInstance().setValidPlacement();
+                }
 
         } catch (const std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on add petrol");
@@ -65,6 +75,15 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
         try {
             int scrapAmount = std::any_cast<int>(data);
             budget.addScraps(scrapAmount);
+            Window::getInstance().toggleUserMode();
+            if (Cursor::getInstance().isDisplaying())
+                if (isPlacementValid(
+                        Window::getInstance()
+                            .getRenderWindow()
+                            .mapPixelToCoords(static_cast<sf::Vector2i>(
+                                Cursor::getInstance().getPosition())))) {
+                    Cursor::getInstance().setValidPlacement();
+                }
 
         } catch (const std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on add scrap");
@@ -78,10 +97,8 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             std::move(factory.createFromConfigFile(
                 Cursor::getInstance().getCarryingTowerID(), *this,
                 worldPosition));
-        
-        
-        if (isPlacementValid(worldPosition)) {
 
+        if (isPlacementValid(worldPosition)) {
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);
             entityManager.addTower(std::move(newTower));
@@ -241,6 +258,8 @@ bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
 }
 
 bool Level::isPlacementValid(sf::Vector2f worldPosition) {
+    // Window::getInstance().toggleUserMode();
+    // if (menu.contains((sf::Vector2f)Window::getInstance().getRenderWindow().mapCoordsToPixel(worldPosition))) return false;
     std::string towerID = Cursor::getInstance().getCarryingTowerID();
 
     nlohmann::json obj = JSONLoader::getInstance().getTower(towerID);
@@ -248,33 +267,38 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
     int petroleumCost = obj["cost"]["petroleum"];
     int scrapCost = obj["cost"]["scrap"];
 
-    auto pointInQuad = [](const sf::Vector2f &pt,
-        const sf::Vector2f quad[4]) -> bool {
-        auto sign = [](const sf::Vector2f &p1, const sf::Vector2f &p2,
-                       const sf::Vector2f &p3) {
-            return (p1.x - p3.x) * (p2.y - p3.y) -
-                   (p2.x - p3.x) * (p1.y - p3.y);
-        };
-        bool b1, b2, b3, b4;
-        b1 = sign(pt, quad[0], quad[1]) < 0.0f;
-        b2 = sign(pt, quad[1], quad[2]) < 0.0f;
-        b3 = sign(pt, quad[2], quad[3]) < 0.0f;
-        b4 = sign(pt, quad[3], quad[0]) < 0.0f;
-        if ((b1 == b2) && (b2 == b3) && (b3 == b4))
-        Logger::debug(std::format("{} {} {} {}", b1, b2, b3, b4));
-        return ((b1 == b2) && (b2 == b3) && (b3 == b4));
-    };
-    
     bool isValid = true;
-    if (scrapCost > budget.getScraps().value || petroleumCost > budget.getPetroleum().value) return false;
-    for (auto &tower : entityManager.getTowers())
-    if (tower->contains(worldPosition)) return false;
-    std::vector<Waypoint> pathway = *map.getPath();
-
     int towerBaseWidth =
         JSONLoader::getInstance().getTower(towerID)["texture"]["width"];
     int towerBaseHeight =
         JSONLoader::getInstance().getTower(towerID)["texture"]["height"];
+
+    sf::Vector2f upperLeft =
+        worldPosition +
+        sf::Vector2f{(float)-towerBaseWidth, (float)-towerBaseHeight} / 2.f;
+    sf::Vector2f lowerLeft =
+        worldPosition +
+        sf::Vector2f{(float)-towerBaseWidth, (float)+towerBaseHeight} / 2.f;
+    sf::Vector2f lowerRight =
+        worldPosition +
+        sf::Vector2f{(float)+towerBaseWidth, (float)+towerBaseHeight} / 2.f;
+    sf::Vector2f upperRight =
+        worldPosition +
+        sf::Vector2f{(float)+towerBaseWidth, (float)-towerBaseHeight} / 2.f;
+    sf::Vector2f towerBound[4] = {upperLeft, upperRight, lowerRight, lowerLeft};
+
+    for (float x = upperLeft.x; x <= lowerRight.x;
+         x += GameConstants::CELL_SIZE)
+        for (float y = upperLeft.y; y <= lowerRight.y;
+             y += GameConstants::CELL_SIZE)
+            if (map.getCellType({x, y}) == Height::DeepSea) return false;
+    if (scrapCost > budget.getScraps().value ||
+        petroleumCost > budget.getPetroleum().value)
+        return false;
+    for (auto &tower : entityManager.getTowers())
+        if (tower->intersects(towerBound)) return false;
+    std::vector<Waypoint> pathway = *map.getPath();
+
     for (int i = 0; i < pathway.size() - 1; i++) {
         Waypoint current = pathway[i];
         Waypoint nextPoint = pathway[i + 1];
@@ -289,30 +313,8 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
                 GameConstants::PATH_THICKNESS / 2.f * normal,
             pathway[i + 1].position -
                 GameConstants::PATH_THICKNESS / 2.f * normal};
-        sf::Vector2f baseCornerPos[4] = {
-            worldPosition + sf::Vector2f(towerBaseWidth, towerBaseHeight) / 2.f,
-            worldPosition +
-                sf::Vector2f(-towerBaseWidth, towerBaseHeight) / 2.f,
-            worldPosition +
-                sf::Vector2f(towerBaseWidth, -towerBaseHeight) / 2.f,
-            worldPosition +
-                sf::Vector2f(-towerBaseWidth, -towerBaseHeight) / 2.f,
-        };
-
-        // Helper lambda to check if a point is inside a convex quad
-
-        // Check if any baseCornerPos is inside pathRect
-        for (int j = 0; j < 4; ++j) {
-            if (pointInQuad(baseCornerPos[j], pathRect)) {
-                return false;
-            }
-        }
-        // Check if any pathRect corner is inside baseCornerPos quad
-        for (int j = 0; j < 4; ++j) {
-            if (pointInQuad(pathRect[j], baseCornerPos)) {
-                return false;
-            }
-        }
-    }
+        if (CollisionChecker::isQuadilateralCrossed(pathRect, towerBound))
+            return false;
+    };
     return true;
 }

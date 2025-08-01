@@ -12,6 +12,7 @@ TerrainGenerator::TerrainGenerator() {};
 std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(TerrainParameter parameter) {
     
     if (parameter.gridSize == 0) parameter.gridSize = 1;
+    Logger::debug(std::format("{} {} {} {} {} {}", parameter.depthFactor, parameter.gridSize, parameter.lacunarity, parameter.octaves, parameter.persistence, parameter.seed));
     createPermutation(parameter.seed);
     std::vector<std::vector<float>> result;
     result.resize(resultSize.y);
@@ -71,14 +72,22 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(TerrainParameter p
         });
     }
 
+    for (auto &thread : threads) {
+        if (thread.joinable()) thread.join();
+    }
+    
+    // for (auto& vector: result) {
+    //     std::string map;
+    //     for (auto& value: vector) {
+    //         map = map + std::to_string(value) + " ";
+
+    //     }
+    //     Logger::debug(map);
+    // }
     for (auto &v : result) {
         minValue = std::min(minValue, *std::min_element(v.begin(), v.end()));
         maxValue = std::max(maxValue, *std::max_element(v.begin(), v.end()));
     }
-    for (auto &thread : threads) {
-        if (thread.joinable()) thread.join();
-    }
-
     float range = maxValue - minValue;
     available = std::thread::hardware_concurrency();
     if (available == 0) available = 1;
@@ -110,6 +119,16 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(TerrainParameter p
 
     for (auto &thread : normalizingThreads)
         if (thread.joinable()) thread.join();
+    
+    for (auto& vector: result) {
+        std::string map;
+        for (auto& value: vector) {
+            map = map + std::to_string(value) + " ";
+
+        }
+        Logger::debug(map);
+    }
+
     return std::move(result);
 }
 

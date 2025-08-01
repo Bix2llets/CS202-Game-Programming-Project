@@ -48,6 +48,10 @@ public:
 
     bool onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
     bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
+
+    inline bool contains(sf::Vector2f position) {
+        return baseRectangle.getGlobalBounds().contains(position);
+    }
 private:
     void setResourceDisplay();
     void setTowerButtonDisplay();

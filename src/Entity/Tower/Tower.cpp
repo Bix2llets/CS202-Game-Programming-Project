@@ -10,9 +10,8 @@
 #include "Entity/Tower/Behaviors/TowerBehavior.hpp"
 #include "Scene/Level.hpp"
 #include "Scene/Scene.hpp"
-#include "Scene/Level.hpp"
-
-#include "Utility/logger.hpp"
+#include "Utility/MathUtils.hpp"
+#include "Utility/CollisionChecker.hpp"
 
 Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const sf::Angle& angle)
     : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0),
@@ -268,4 +267,12 @@ void Tower::update() {
 
 bool Tower::contains(sf::Vector2f position) {
     return base.getGlobalBounds().contains(position);
+}
+
+bool Tower::intersects(sf::Vector2f points[4]) {
+    sf::Rect bound = base.getGlobalBounds();
+    sf::Vector2f baseBound[4] = {
+        bound.position, bound.position + sf::Vector2f{bound.size.x, 0},
+        bound.position + bound.size, bound.position + sf::Vector2f{0, bound.size.y}};
+    return CollisionChecker::isQuadilateralCrossed(points, baseBound);
 }

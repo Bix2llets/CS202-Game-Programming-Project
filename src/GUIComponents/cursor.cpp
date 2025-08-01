@@ -11,7 +11,9 @@
 #include "Utility/Logger.hpp"
 std::unique_ptr<Cursor> Cursor::instance = nullptr;
 Cursor::Cursor()
-    : position(0.f, 0.f), renderImage{GameConstants::BLANK_TEXTURE} {}
+    : position(0.f, 0.f), renderImage{GameConstants::BLANK_TEXTURE} {
+        setValidPlacement();
+    }
 
 Cursor& Cursor::getInstance() {
     static Cursor instance;
