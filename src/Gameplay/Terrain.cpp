@@ -94,8 +94,8 @@ const std::vector<unsigned int> Terrain::elevationColors = {
     0x266400ff, 0x9F8D8DFF, 0x4E4C4FFF, 0xFFFFFFFF};
 
 Height::Height Terrain::getCellType(sf::Vector2f position) {
-    return heightMap[static_cast<int>(position.y) / 4]
-                    [static_cast<int>(position.x) / 4];
+    return heightMap[static_cast<int>(position.y) / GameConstants::CELL_SIZE]
+                    [static_cast<int>(position.x) / GameConstants::CELL_SIZE];
 }
 
 const std::vector<Waypoint>* Terrain::getPath() {

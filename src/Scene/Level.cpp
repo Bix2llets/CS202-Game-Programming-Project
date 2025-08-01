@@ -257,23 +257,22 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
 
     int petroleumCost = obj["cost"]["petroleum"];
     int scrapCost = obj["cost"]["scrap"];
-    auto pointInQuad = [](const sf::Vector2f &pt,
-                          const sf::Vector2f quad[4]) -> bool {
-        auto sign = [](const sf::Vector2f &p1, const sf::Vector2f &p2,
-                       const sf::Vector2f &p3) {
-            return (p1.x - p3.x) * (p2.y - p3.y) -
-                   (p2.x - p3.x) * (p1.y - p3.y);
+    auto isCrossed = [](sf::Vector2f p11, sf::Vector2f p12, sf::Vector2f p21,
+                        sf::Vector2f p22) {
+        auto orientation = [](sf::Vector2f p1, sf::Vector2f p2,
+                              sf::Vector2f p3) -> int {
+            float value =
+                (p2.y - p1.y) * (p3.x - p2.x) - (p2.x - p1.x)*(p3.y - p2.y);
+            if (value == 0) return value;
+            return value / abs(value);
         };
-        bool b1, b2, b3, b4;
-        b1 = sign(pt, quad[0], quad[1]) < 0.0f;
-        b2 = sign(pt, quad[1], quad[2]) < 0.0f;
-        b3 = sign(pt, quad[2], quad[3]) < 0.0f;
-        b4 = sign(pt, quad[3], quad[0]) < 0.0f;
-        if ((b1 == b2) && (b2 == b3) && (b3 == b4))
-            Logger::debug(std::format("{} {} {} {}", b1, b2, b3, b4));
-        return ((b1 == b2) && (b2 == b3) && (b3 == b4));
+        return (orientation(p11, p12, p21) != orientation(p11, p12, p22)) &&
+               (orientation(p21, p22, p11) != orientation(p21, p22, p12));
     };
+
     bool isValid = true;
+
+    if (map.getCellType(worldPosition) == Height::DeepSea) return false;
     if (scrapCost > budget.getScraps().value ||
         petroleumCost > budget.getPetroleum().value)
         return false;
@@ -312,17 +311,13 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
         // Helper lambda to check if a point is inside a convex quad
 
         // Check if any baseCornerPos is inside pathRect
-        for (int j = 0; j < 4; ++j) {
-            if (pointInQuad(baseCornerPos[j], pathRect)) {
-                return false;
-            }
-        }
-        // Check if any pathRect corner is inside baseCornerPos quad
-        for (int j = 0; j < 4; ++j) {
-            if (pointInQuad(pathRect[j], baseCornerPos)) {
-                return false;
-            }
-        }
+        for (int i1 = 0; i1 < 4; i1++)
+            for (int j1 = i1 + 1; j1 < 4; j1++)
+                for (int i2 = 0; i2 < 4; i2++)
+                    for (int j2 = i2 + 1; j2 < 4; j2++)
+                        if (isCrossed(pathRect[i1], pathRect[j1],
+                                    baseCornerPos[i2], baseCornerPos[j2]))
+                            return false;
     }
     return true;
 }
