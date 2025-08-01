@@ -247,6 +247,7 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
 
     int petroleumCost = obj["cost"]["petroleum"];
     int scrapCost = obj["cost"]["scrap"];
+
     auto pointInQuad = [](const sf::Vector2f &pt,
         const sf::Vector2f quad[4]) -> bool {
         auto sign = [](const sf::Vector2f &p1, const sf::Vector2f &p2,
@@ -263,6 +264,7 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
         Logger::debug(std::format("{} {} {} {}", b1, b2, b3, b4));
         return ((b1 == b2) && (b2 == b3) && (b3 == b4));
     };
+    
     bool isValid = true;
     if (scrapCost > budget.getScraps().value || petroleumCost > budget.getPetroleum().value) return false;
     for (auto &tower : entityManager.getTowers())
