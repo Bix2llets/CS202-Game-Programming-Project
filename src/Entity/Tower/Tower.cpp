@@ -13,6 +13,8 @@
 #include "Utility/MathUtils.hpp"
 #include "Utility/CollisionChecker.hpp"
 
+#include "Utility/logger.hpp"
+
 Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const sf::Angle& angle)
     : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0),
       base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f),
