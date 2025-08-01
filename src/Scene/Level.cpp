@@ -21,6 +21,7 @@
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/TerrainParameter.hpp"
+#include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
 
 Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
@@ -251,39 +252,47 @@ bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
 }
 
 bool Level::isPlacementValid(sf::Vector2f worldPosition) {
+    // Window::getInstance().toggleUserMode();
+    // if (menu.contains((sf::Vector2f)Window::getInstance().getRenderWindow().mapCoordsToPixel(worldPosition))) return false;
     std::string towerID = Cursor::getInstance().getCarryingTowerID();
 
     nlohmann::json obj = JSONLoader::getInstance().getTower(towerID);
 
     int petroleumCost = obj["cost"]["petroleum"];
     int scrapCost = obj["cost"]["scrap"];
-    auto isCrossed = [](sf::Vector2f p11, sf::Vector2f p12, sf::Vector2f p21,
-                        sf::Vector2f p22) {
-        auto orientation = [](sf::Vector2f p1, sf::Vector2f p2,
-                              sf::Vector2f p3) -> int {
-            float value =
-                (p2.y - p1.y) * (p3.x - p2.x) - (p2.x - p1.x)*(p3.y - p2.y);
-            if (value == 0) return value;
-            return value / abs(value);
-        };
-        return (orientation(p11, p12, p21) != orientation(p11, p12, p22)) &&
-               (orientation(p21, p22, p11) != orientation(p21, p22, p12));
-    };
 
     bool isValid = true;
-
-    if (map.getCellType(worldPosition) == Height::DeepSea) return false;
-    if (scrapCost > budget.getScraps().value ||
-        petroleumCost > budget.getPetroleum().value)
-        return false;
-    for (auto &tower : entityManager.getTowers())
-        if (tower->contains(worldPosition)) return false;
-    std::vector<Waypoint> pathway = *map.getPath();
-
     int towerBaseWidth =
         JSONLoader::getInstance().getTower(towerID)["texture"]["width"];
     int towerBaseHeight =
         JSONLoader::getInstance().getTower(towerID)["texture"]["height"];
+
+    sf::Vector2f upperLeft =
+        worldPosition +
+        sf::Vector2f{(float)-towerBaseWidth, (float)-towerBaseHeight} / 2.f;
+    sf::Vector2f lowerLeft =
+        worldPosition +
+        sf::Vector2f{(float)-towerBaseWidth, (float)+towerBaseHeight} / 2.f;
+    sf::Vector2f lowerRight =
+        worldPosition +
+        sf::Vector2f{(float)+towerBaseWidth, (float)+towerBaseHeight} / 2.f;
+    sf::Vector2f upperRight =
+        worldPosition +
+        sf::Vector2f{(float)+towerBaseWidth, (float)-towerBaseHeight} / 2.f;
+    sf::Vector2f towerBound[4] = {upperLeft, upperRight, lowerRight, lowerLeft};
+
+    for (float x = upperLeft.x; x <= lowerRight.x;
+         x += GameConstants::CELL_SIZE)
+        for (float y = upperLeft.y; y <= lowerRight.y;
+             y += GameConstants::CELL_SIZE)
+            if (map.getCellType({x, y}) == Height::DeepSea) return false;
+    if (scrapCost > budget.getScraps().value ||
+        petroleumCost > budget.getPetroleum().value)
+        return false;
+    for (auto &tower : entityManager.getTowers())
+        if (tower->intersects(towerBound)) return false;
+    std::vector<Waypoint> pathway = *map.getPath();
+
     for (int i = 0; i < pathway.size() - 1; i++) {
         Waypoint current = pathway[i];
         Waypoint nextPoint = pathway[i + 1];
@@ -298,26 +307,8 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
                 GameConstants::PATH_THICKNESS / 2.f * normal,
             pathway[i + 1].position -
                 GameConstants::PATH_THICKNESS / 2.f * normal};
-        sf::Vector2f baseCornerPos[4] = {
-            worldPosition + sf::Vector2f(towerBaseWidth, towerBaseHeight) / 2.f,
-            worldPosition +
-                sf::Vector2f(-towerBaseWidth, towerBaseHeight) / 2.f,
-            worldPosition +
-                sf::Vector2f(towerBaseWidth, -towerBaseHeight) / 2.f,
-            worldPosition +
-                sf::Vector2f(-towerBaseWidth, -towerBaseHeight) / 2.f,
-        };
-
-        // Helper lambda to check if a point is inside a convex quad
-
-        // Check if any baseCornerPos is inside pathRect
-        for (int i1 = 0; i1 < 4; i1++)
-            for (int j1 = i1 + 1; j1 < 4; j1++)
-                for (int i2 = 0; i2 < 4; i2++)
-                    for (int j2 = i2 + 1; j2 < 4; j2++)
-                        if (isCrossed(pathRect[i1], pathRect[j1],
-                                    baseCornerPos[i2], baseCornerPos[j2]))
-                            return false;
-    }
+        if (CollisionChecker::isQuadilateralCrossed(pathRect, towerBound))
+            return false;
+    };
     return true;
 }

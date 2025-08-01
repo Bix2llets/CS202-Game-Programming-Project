@@ -397,4 +397,5 @@ public:
     void setStats(std::unique_ptr<TowerStat> newStats);
 
     bool contains(sf::Vector2f position);
+    bool intersects(sf::Vector2f points[4]);
 };

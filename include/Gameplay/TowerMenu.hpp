@@ -5,7 +5,7 @@
 #include "GUIComponents/Mediator.hpp"
 #include "GUIComponents/button.hpp"
 #include "Gameplay/Currency.hpp"
-class TowerMenu : public Mediator , public MouseObserver  {
+class TowerMenu : public Mediator, public MouseObserver {
    private:
     sf::Sprite basePanel;
     std::vector<std::unique_ptr<Button>> towerButtons;
@@ -41,8 +41,16 @@ class TowerMenu : public Mediator , public MouseObserver  {
     void onLoad();
     void onUnload();
 
-    bool onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
-    bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition);
+    bool onMouseEvent(Mouse mouse, UserEvent event,
+                      const sf::Vector2f& worldPosition,
+                      const sf::Vector2f& windowPosition);
+    bool onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                       const sf::Vector2f& windowPosition);
+
+    inline bool contains(sf::Vector2f position) {
+        return baseRectangle.getGlobalBounds().contains(position);
+    }
+
    private:
     void setResourceDisplay();
     void setTowerButtonDisplay();
