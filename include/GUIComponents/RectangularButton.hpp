@@ -19,7 +19,7 @@
  * associated mediator and can also invoke a user-defined callback. The button
  * can be drawn using SFML.
  */
-class RectangularButton : public Button {
+class RectangularButton : public ButtonBase {
     friend class RectangularButtonBuilder;
 
    protected:

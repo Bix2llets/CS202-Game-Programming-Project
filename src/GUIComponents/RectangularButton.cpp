@@ -103,7 +103,7 @@ void RectangularButton::unSubscribeMouseAll(MouseState& mouseState) {
 }
 
 void RectangularButton::update() {
-    Button::update();
+    ButtonBase::update();
 }
 
 void RectangularButton::setDisplayText(std::string text) {
@@ -114,7 +114,7 @@ void RectangularButton::setDisplayText(std::string text) {
 }
 
 void RectangularButton::resetAnimation() {
-    Button::resetAnimation();
+    ButtonBase::resetAnimation();
 }
 
 bool RectangularButton::onScrollEvent(float delta,

@@ -201,6 +201,7 @@ public:
      * @brief Reset all currency amounts to zero.
      */
     void clear();
+
 };
 
 // Global operators for scalar multiplication (commutative)

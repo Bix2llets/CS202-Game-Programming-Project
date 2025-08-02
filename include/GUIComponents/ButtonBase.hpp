@@ -6,7 +6,7 @@
 #include "Entity/Modules/Timer.hpp"
 #include "GUICOmponents/Style.hpp"
 #include "Utility/lerp.hpp"
-class Button : public sf::Drawable, public MouseObserver {
+class ButtonBase : public sf::Drawable, public MouseObserver {
    protected:
     sf::Vector2f position;  // Could be the center or the top-left cornder,
                             // depending on the implementation
@@ -29,8 +29,8 @@ class Button : public sf::Drawable, public MouseObserver {
     sf::Color getFillColor() const;
     sf::Color getTextColor() const;
    public:
-   Button();
-   ~Button();
+   ButtonBase();
+   ~ButtonBase();
     virtual void draw(sf::RenderTarget &target,
                       sf::RenderStates state) const override = 0;
     virtual bool onMouseEvent(Mouse button, UserEvent event,
@@ -40,6 +40,6 @@ class Button : public sf::Drawable, public MouseObserver {
                               const sf::Vector2f &worldPosition,
                               const sf::Vector2f &windowPosition) = 0;
 
-    void update();
+    virtual void update();
 
 };

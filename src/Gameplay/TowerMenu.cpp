@@ -10,7 +10,7 @@
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Utility/Logger.hpp"
-#include "Utility/WindowScale.hpp"
+#include "Utility/Scaler.hpp"
 TowerMenu::TowerMenu(const Currency& currencyRef, Mediator& superMediator)
     : basePanel{*ResourceManager::getInstance().getTexture(
           "tower_selection_base")},
@@ -292,7 +292,7 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
                 return true;
 
         if (isTowerSelected &&
-            WindowScale::screenScale(baseRectangle.getGlobalBounds())
+            Scaler::screenScale(baseRectangle.getGlobalBounds())
                 .contains(windowPosition)) {
             notify("press_inside");
             return true;

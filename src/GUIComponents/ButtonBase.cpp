@@ -3,7 +3,7 @@
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
 
-Button::Button() : position(0.f, 0.f), isPressed(false), isHovered(false) {
+ButtonBase::ButtonBase() : position(0.f, 0.f), isPressed(false), isHovered(false) {
     hover.setTimeInterval(0.2f)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0.2f);
@@ -20,11 +20,11 @@ Button::Button() : position(0.f, 0.f), isPressed(false), isHovered(false) {
         .setRemainingTime(0.f);
 }
 
-Button::~Button() {
+ButtonBase::~ButtonBase() {
     // Destructor implementation if needed
 }
 
-void Button::resetAnimation() {
+void ButtonBase::resetAnimation() {
     hover.setRemainingTime(hover.getInterval());
     press.setRemainingTime(press.getInterval());
     reverseHover.setRemainingTime(0);
@@ -33,7 +33,7 @@ void Button::resetAnimation() {
     isHovered = false;
 }
 
-void Button::updatePressState(bool isPressed) {
+void ButtonBase::updatePressState(bool isPressed) {
     if (isPressed != this->isPressed) {
         this->isPressed = isPressed;
         if (isPressed) {
@@ -50,7 +50,7 @@ void Button::updatePressState(bool isPressed) {
     }
 }
 
-void Button::updateHoverState(bool isHovered) {
+void ButtonBase::updateHoverState(bool isHovered) {
     if (isHovered != this->isHovered) {
         this->isHovered = isHovered;
         if (isHovered) {
@@ -67,7 +67,7 @@ void Button::updateHoverState(bool isHovered) {
     }
 }
 
-void Button::update() {
+void ButtonBase::update() {
     if (isPressed) {
         press.update();
         Logger::debug(std::format("Button is pressed, updating press timer {}", press.getCompletionPercentage()));
@@ -84,7 +84,7 @@ void Button::update() {
     }
 }
 
-sf::Color Button::getFillColor() const {
+sf::Color ButtonBase::getFillColor() const {
     sf::Color result = style.getNormal().background;
     if (isHovered) {
         result = ColorMixer::perceptualLerp(result, style.getHover().background,
@@ -105,7 +105,7 @@ sf::Color Button::getFillColor() const {
     return result;
 }
 
-sf::Color Button::getTextColor() const {
+sf::Color ButtonBase::getTextColor() const {
     sf::Color result = style.getNormal().text;
     if (isHovered) {
         result = ColorMixer::perceptualLerp(result, style.getHover().text,
