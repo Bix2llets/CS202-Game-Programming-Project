@@ -53,8 +53,8 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
                          static_cast<float>(cursorRadius + 1)});
     outerRing.setPosition(position);
     outerRing.setFillColor(sf::Color::Black);
-    target.draw(outerRing, states);
     Window::getInstance().toggleGUIMode();
+    target.draw(outerRing, states);
     target.draw(shape, states);
 
     // Draw tower preview if available

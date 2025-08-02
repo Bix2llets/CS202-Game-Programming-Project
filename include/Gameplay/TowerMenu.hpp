@@ -3,12 +3,12 @@
 #include "Core/MouseObserver.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "GUIComponents/Mediator.hpp"
-#include "GUIComponents/button.hpp"
+#include "GUIComponents/RectangularButton.hpp"
 #include "Gameplay/Currency.hpp"
 class TowerMenu : public Mediator, public MouseObserver {
    private:
     sf::Sprite basePanel;
-    std::vector<std::unique_ptr<Button>> towerButtons;
+    std::vector<std::unique_ptr<RectangularButton>> towerButtons;
     std::vector<std::unique_ptr<sf::Texture>> combinedTowerTextures;
     std::vector<std::unique_ptr<sf::Texture>> towerTextures;
     std::vector<sf::RenderTexture> renderTexes;

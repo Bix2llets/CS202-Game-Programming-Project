@@ -2,9 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 #include "Gameplay/Currency.hpp"
+#include "Core/MouseObserver.hpp"
 class Tower;
 
-class TowerPanelButton {
+class TowerPanelButton : public sf::Drawable, public MouseObserver {
     sf::Vector2f position;
     sf::CircleShape background;
     sf::Sprite foreground;
@@ -16,8 +17,12 @@ class TowerPanelButton {
     public:
     void render(sf::RenderStates state = sf::RenderStates::Default);
 
+    void setForeground(sf::Texture texture);
+    void setForeground(sf::Sprite sprite);
+
+
     
-}
+};
 class TowerPanel {
     private:
     Tower* referencingTower;

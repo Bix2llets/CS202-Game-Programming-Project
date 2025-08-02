@@ -6,7 +6,7 @@
 #include "Core/JSONLoader.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/Window.hpp"
-#include "GUIComponents/ButtonBuilder.hpp"
+#include "GUIComponents/RectangularButtonBuilder.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Utility/Logger.hpp"
@@ -138,7 +138,7 @@ void TowerMenu::setTowerButtonDisplay() {
         basePlate.display();
         return std::move(basePlate.getTexture());
     };
-    ButtonBuilder builder(*this);
+    RectangularButtonBuilder builder(*this);
     for (std::pair<std::string, nlohmann::json> entry : towerList) {
         // * Cosmetic towers
         nlohmann::json& jsonFile = entry.second;
@@ -226,13 +226,13 @@ void TowerMenu::setTowerButtonDisplay() {
         buttonPosition.y =
             row * (buttonGap.y + buttonSize.y) + position.y + 120;
 
-        std::unique_ptr<Button> button =
+        std::unique_ptr<RectangularButton> button =
             builder.reset()
                 .loadJson("background_basic")
                 .setBackground(combinedTowerTextures.back().get())
                 .setPosition({buttonPosition})
                 .setSize(buttonSize)
-                .setCallback([this, towerSprite, entry](Button* button) {
+                .setCallback([this, towerSprite, entry](RectangularButton* button) {
                     Logger::debug("Button presseed");
                     notify("tower_button_pressed", entry.first, towerSprite);
                 })
@@ -286,7 +286,7 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
     bool isProcessed = false;
 
     if (mouse == Mouse::Left && event == UserEvent::Press) {
-        for (std::unique_ptr<Button>& button : towerButtons)
+        for (std::unique_ptr<RectangularButton>& button : towerButtons)
             if (button->onMouseEvent(mouse, event, worldPosition,
                                      windowPosition))
                 return true;
@@ -305,7 +305,7 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
     }
 
     if (event == UserEvent::Move) {
-        for (std::unique_ptr<Button>& button : towerButtons) {
+        for (std::unique_ptr<RectangularButton>& button : towerButtons) {
             if (button->onMouseEvent(Mouse::None, event, worldPosition,
                                      windowPosition))
                 continue;

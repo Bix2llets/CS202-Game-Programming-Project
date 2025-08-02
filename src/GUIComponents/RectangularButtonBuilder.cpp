@@ -1,25 +1,25 @@
-#include "GUIComponents/ButtonBuilder.hpp"
+#include "GUIComponents/RectangularButtonBuilder.hpp"
 
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
-ButtonBuilder::ButtonBuilder(Mediator& mediator) : mediator{mediator} {}
+RectangularButtonBuilder::RectangularButtonBuilder(Mediator& mediator) : mediator{mediator} {}
 
-ButtonBuilder& ButtonBuilder::setText(const std::string& text) {
+RectangularButtonBuilder& RectangularButtonBuilder::setText(const std::string& text) {
     this->text = text;
     return *this;
 }
 
-ButtonBuilder& ButtonBuilder::setPosition(const sf::Vector2f position) {
+RectangularButtonBuilder& RectangularButtonBuilder::setPosition(const sf::Vector2f position) {
     this->position = position;
     return *this;
 }
 
-ButtonBuilder& ButtonBuilder::setSize(const sf::Vector2f size) {
+RectangularButtonBuilder& RectangularButtonBuilder::setSize(const sf::Vector2f size) {
     this->size = size;
     return *this;
 }
 
-ButtonBuilder& ButtonBuilder::reset() {
+RectangularButtonBuilder& RectangularButtonBuilder::reset() {
     text = "";
     styleConfig = nlohmann::json();
     position = {0.f, 0.f};
@@ -30,13 +30,13 @@ ButtonBuilder& ButtonBuilder::reset() {
     return *this;
 }
 
-ButtonBuilder& ButtonBuilder::loadJson(std::string id) {
+RectangularButtonBuilder& RectangularButtonBuilder::loadJson(std::string id) {
     styleConfig = JSONLoader::getInstance().getStyle(id);
     return *this;
 }
 
-std::unique_ptr<Button> ButtonBuilder::build() {
-    std::unique_ptr<Button> result(new Button(mediator));
+std::unique_ptr<RectangularButton> RectangularButtonBuilder::build() {
+    std::unique_ptr<RectangularButton> result(new RectangularButton(mediator));
 
     result->geometricInfo = {position, size};
     result->style.loadJson(styleConfig);
@@ -59,17 +59,16 @@ std::unique_ptr<Button> ButtonBuilder::build() {
     label->setOrigin(label->getLocalBounds().position +
                      label->getLocalBounds().size / 2.f);
     label->setPosition(position + size / 2.f);
-
     result->label = std::move(label);
     return std::move(result);
 }
 
-ButtonBuilder& ButtonBuilder::setCallback(std::function<void(Button*)> call) {
+RectangularButtonBuilder& RectangularButtonBuilder::setCallback(std::function<void(RectangularButton*)> call) {
     callback = call;
     return *this;
 }
 
-ButtonBuilder& ButtonBuilder::setBackground(const sf::Texture* tex) {
+RectangularButtonBuilder& RectangularButtonBuilder::setBackground(const sf::Texture* tex) {
     this->tex = tex;
     return *this;
 }

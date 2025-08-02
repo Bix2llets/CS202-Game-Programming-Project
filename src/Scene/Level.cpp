@@ -252,8 +252,8 @@ bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
 }
 
 bool Level::isPlacementValid(sf::Vector2f worldPosition) {
-    // Window::getInstance().toggleUserMode();
-    // if (menu.contains((sf::Vector2f)Window::getInstance().getRenderWindow().mapCoordsToPixel(worldPosition))) return false;
+    Window::getInstance().toggleUserMode();
+    if (menu.contains((sf::Vector2f)Window::getInstance().getRenderWindow().mapCoordsToPixel(worldPosition))) return false;
     std::string towerID = Cursor::getInstance().getCarryingTowerID();
 
     nlohmann::json obj = JSONLoader::getInstance().getTower(towerID);

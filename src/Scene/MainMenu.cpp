@@ -3,18 +3,18 @@
 #include "Core/InputManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/SceneManager.hpp"
-#include "GUIComponents/ButtonBuilder.hpp"
+#include "GUIComponents/RectangularButtonBuilder.hpp"
 #include "Utility/logger.hpp"
 #include "Core/Window.hpp"
 MainMenu::MainMenu()
     : Scene() {
-    ButtonBuilder builder(*this);
+    RectangularButtonBuilder builder(*this);
     testBtn = builder.reset()
                   .setPosition({120.f, 100.f})
                   .setSize({120.f, 50.f})
                   .setText("Gameplay")
                   .loadJson("basic_button")
-                  .setCallback([this](Button *button) {
+                  .setCallback([this](RectangularButton *button) {
                       Logger::debug("Turning to gameplay");
                       notify("Gameplay");
                   })
@@ -24,7 +24,7 @@ MainMenu::MainMenu()
                      .setSize({50.f, 50.f})
                      .setText("To setting")
                      .loadJson("background_basic")
-                     .setCallback([this](Button *button) {
+                     .setCallback([this](RectangularButton *button) {
                          Logger::debug("Setting button pressed");
                          notify("Setting");
                      })
