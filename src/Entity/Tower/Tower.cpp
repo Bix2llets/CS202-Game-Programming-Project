@@ -256,6 +256,7 @@ void Tower::update() {
 
             float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
             float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
+            timer.setTimeInterval(interval);
             timer.reset();
         }
 

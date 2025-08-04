@@ -110,6 +110,8 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             amount = amount * 0.8f;
             budget += amount;
             entityManager.removeTower(tower);
+
+            upgradeMenu.removeFocus();
         } catch (std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on sell tower");
             return;
@@ -140,6 +142,9 @@ Level::~Level() {
 }
 void Level::update() {
     menu.update();
+    if (upgradeMenu.isDisplaying()) {
+        upgradeMenu.update();
+    }
     if (!isRunning) return;
 
     entityManager.update();
@@ -171,8 +176,8 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     // drawBackground(target, state);
     Window::getInstance().toggleUserMode();
     map.render(state);
-    entityManager.render(state);
 
+    entityManager.render(state);
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.render(state);
     }
@@ -222,15 +227,14 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 void Level::onLoad() {
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
-    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
-                                 InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
-    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
-                                   InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
+    Cursor::getInstance().clearCarryingTower();
+    Cursor::getInstance().removeRenderImage();
+    upgradeMenu.removeFocus();
 }
 
 bool Level::isWaveFinished() {

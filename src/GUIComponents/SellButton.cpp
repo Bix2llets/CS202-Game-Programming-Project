@@ -27,6 +27,7 @@ void SellButton::update() {
 
     buttonShape.setFillColor(fillColor);
     buttonShape.setOutlineColor(borderColor);
+    sellIcon.setColor(fillColor);
 }
 
 SellButton& SellButton::setPosition(const sf::Vector2f& position) {
@@ -48,12 +49,27 @@ void SellButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 bool SellButton::onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition) {
-    if (event == UserEvent::Press && contains(worldPosition) &&
+    if (!isPressed && event == UserEvent::Press && contains(worldPosition) &&
         button == Mouse::Left) {
         if (parentRadialMenu) {
             parentRadialMenu->notify("sell");
+            Logger::info("SellButton: Sell button pressed");
         }
+        ButtonBase::updatePressState(true);
         return true;
+    }
+
+    if (isPressed && event == UserEvent::Release && button == Mouse::Left) {
+        ButtonBase::updatePressState(false);
+        return false;
+    }
+    if (!isHovered && event == UserEvent::Move && contains(worldPosition)) {
+        ButtonBase::updateHoverState(true);
+        return false;
+    }
+    if (isHovered && event == UserEvent::Move && !contains(worldPosition)) {
+        ButtonBase::updateHoverState(false);
+        return false;
     }
     return false;
 }
@@ -63,7 +79,7 @@ bool SellButton::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
     return false;
 }
 bool SellButton::contains(const sf::Vector2f& mousePosition) {
-    if (buttonShape.getGlobalBounds().contains(mousePosition)) {
+    if ((mousePosition - buttonShape.getPosition()).length() <= buttonShape.getRadius() + buttonShape.getOutlineThickness()) {
         return true;
     }
     return false;

@@ -48,9 +48,9 @@ bool Window::onMouseEvent(Mouse mouse, UserEvent event,
         // middlePressPosition = windowPosition;  // * Can also be world position,
                                                // should be consistent
         previousMiddleMousePosition = windowPosition;
-        Logger::debug(std::format("Window pan Set {} {}",
-                                  userView.getCenter().x,
-                                  userView.getCenter().y));
+        // Logger::debug(std::format("Window pan Set {} {}",
+        //                           userView.getCenter().x,
+        //                           userView.getCenter().y));
         window.setMouseCursorGrabbed(true);
         return true;
     }
@@ -63,8 +63,8 @@ bool Window::onMouseEvent(Mouse mouse, UserEvent event,
         userView.move(-displacement);
         // clampView();
         window.setView(userView);
-        Logger::debug(std::format("Window pan Moving {} {}", displacement.x,
-                                  displacement.y));
+        // Logger::debug(std::format("Window pan Moving {} {}", displacement.x,
+                                //   displacement.y));
             return true;
     }
     if (mouse == Mouse::Middle && event == UserEvent::Release) {
@@ -72,9 +72,9 @@ bool Window::onMouseEvent(Mouse mouse, UserEvent event,
         isMiddlePressed = false;
         // middlePressPosition = {0.f, 0.f};
         previousMiddleMousePosition = {0.f, 0.f};
-        Logger::debug(std::format("Window pan Release {} {}",
-                                  userView.getCenter().x,
-                                  userView.getCenter().y));
+        // Logger::debug(std::format("Window pan Release {} {}",
+                                //   userView.getCenter().x,
+                                //   userView.getCenter().y));
         window.setMouseCursorGrabbed(false);
         return true;
     }

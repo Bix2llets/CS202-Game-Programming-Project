@@ -19,7 +19,12 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
     subscribe("upgrade", [this, &parentLevel](std::any sender, std::any data) {
         try {
             int upgradeID = std::any_cast<int>(data);
+            parentLevel.notify(
+                "subtract_currency", *this,
+                upgradeManager->getNextUpgradeDetail(upgradeID)->cost);
+
             upgradeManager->upgrade(upgradeID);
+
         } catch (std::bad_any_cast& e) {
             Logger::error(std::format(
                 "RadialUpgradeMenu: Bad any cast in upgrade event handler: {}",
@@ -67,23 +72,24 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
             angle = sf::degrees(-90.f);
         } else {
             angle = startingAngle +
-                      upgradeDisplayInterval / (upgradeButtons.size() - 1) * i;
+                    upgradeDisplayInterval / (upgradeButtons.size() - 1) * i;
         }
         sf::Vector2f displacement = {newRadius + 2, 0};
         displacement = displacement.rotatedBy(angle);
 
         upgradeButtons[i].setParentRadialMenu(this).setRadius(30).setPosition(
             position + displacement);
-        if (upgradeManager->getNextUpgradeDetail(i + 1)) {
-            upgradeButtons[i].setUpgradeID(i + 1);
-            upgradeButtons[i].setPrice(
-                upgradeManager->getNextUpgradeDetail(i + 1)->cost);
-        }
 
+        upgradeButtons[i].setUpgradeManager(*upgradeManager);
+        upgradeButtons[i].setUpgradeID(i + 1);
         upgradeButtons[i].refreshInfo();
+        upgradeButtons[i].resetAnimation();
     }
     sellBtn.setPosition(
         sf::Vector2f(newRadius + 2, 0).rotatedBy(sf::degrees(90)) + position);
+
+    sellBtn.resetAnimation();
+    update();
 }
 
 void RadialUpgradeMenu::removeFocus() {
@@ -131,6 +137,7 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
     if (!displaying) return;
 
     sf::RenderTarget& target = Window::getInstance().getRenderWindow();
+    Window::getInstance().toggleGUIMode();
     target.draw(ring, state);
 
     for (const auto& upgradeButton : upgradeButtons) {
@@ -138,4 +145,58 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
     }
 
     target.draw(sellBtn, state);
+
+    sf::CircleShape rangeIndicator;
+    rangeIndicator.setRadius(refTower->getStat(TowerStat::RANGE));
+    rangeIndicator.setOrigin(
+        {rangeIndicator.getRadius(), rangeIndicator.getRadius()});
+    rangeIndicator.setPosition(position);
+    rangeIndicator.setFillColor(sf::Color(0, 0, 0, 100));
+
+    target.draw(rangeIndicator);
+}
+
+void RadialUpgradeMenu::update() {
+    if (upgradeManager)
+        for (int i = 0; i < upgradeManager->getAllUpgradeTypes().size(); i++) {
+            if (upgradeManager->canUpgrade(i + 1, parentLevel.getBudget()))
+                upgradeButtons[i].setCanUpgrade(true);
+            else
+                upgradeButtons[i].setCanUpgrade(false);
+        }
+    updatePositions();
+    for (auto& button : upgradeButtons) button.update();
+    sellBtn.update();
+}
+
+void RadialUpgradeMenu::updatePositions() {
+    Window::getInstance().toggleUserMode();
+    position = static_cast<sf::Vector2f>(
+        Window::getInstance().getRenderWindow().mapCoordsToPixel(
+            refTower->getPosition()));
+
+    sf::Angle upgradeDisplayInterval = sf::degrees(360 * 4.f / 6.f);
+    sf::Angle startingAngle =
+        sf::degrees(0.f) + sf::degrees(60.f) + sf::degrees(90.f);
+    ring.setPosition(position);
+    ring = Aligner::align(ring, HorizontalAlignment::Center,
+                          VerticalAlignment::Middle);
+
+    for (int i = 0; i < upgradeButtons.size(); i++) {
+        sf::Angle angle;
+        if (upgradeButtons.size() == 1) {
+            angle = sf::degrees(-90.f);
+        } else {
+            angle = startingAngle +
+                    upgradeDisplayInterval / (upgradeButtons.size() - 1) * i;
+        }
+        sf::Vector2f displacement = {ring.getRadius() + 2, 0};
+        displacement = displacement.rotatedBy(angle);
+
+        upgradeButtons[i].setPosition(position + displacement);
+    }
+
+    sellBtn.setPosition(
+        position +
+        sf::Vector2f(ring.getRadius() + 2, 0).rotatedBy(sf::degrees(90)));
 }

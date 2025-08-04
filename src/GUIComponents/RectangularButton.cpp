@@ -35,6 +35,8 @@ void RectangularButton::draw(sf::RenderTarget& target,
         rect.setPosition(geometricInfo.position);
         rect.setSize(geometricInfo.size);
         rect.setFillColor(fillColor);
+        rect.setOutlineColor(getBorderColor());
+        rect.setOutlineThickness(style.getBorderWidth());
 
         target.draw(rect, states);
     }

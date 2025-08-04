@@ -22,6 +22,8 @@ class RadialUpgradeMenu : public Mediator, public MouseObserver {
     UpgradeManager* upgradeManager = nullptr;
     Tower* refTower = nullptr;
 
+    void updatePositions();
+
     public:
     RadialUpgradeMenu(Level& parentLevel);
 
@@ -38,4 +40,8 @@ class RadialUpgradeMenu : public Mediator, public MouseObserver {
     bool onScrollEvent(float delta, const sf::Vector2f& worldPosition, const sf::Vector2f& windowPosition);
 
     void render(sf::RenderStates state = sf::RenderStates::Default) const;
+
+    void update();
+
+
 };

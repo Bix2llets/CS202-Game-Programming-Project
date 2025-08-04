@@ -21,17 +21,17 @@ class ButtonBase : public sf::Drawable, public MouseObserver {
     bool isHovered;
 
     virtual bool contains(const sf::Vector2f &position) = 0;
-    void resetAnimation();
-
+    
     void updatePressState(bool isPressed);
     void updateHoverState(bool isPressed);
-
+    
     sf::Color getFillColor() const;
     sf::Color getTextColor() const;
     sf::Color getBorderColor() const;
-   public:
-   ButtonBase();
-   ~ButtonBase();
+    public:
+    ButtonBase();
+    ~ButtonBase();
+    void resetAnimation();
     virtual void draw(sf::RenderTarget &target,
                       sf::RenderStates state) const override = 0;
     virtual bool onMouseEvent(Mouse button, UserEvent event,

@@ -2,13 +2,13 @@
 
 #include "Base/Constants.hpp"
 #include "Core/JSONLoader.hpp"
+#include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Core/UserEvent.hpp"
 #include "Gameplay/RadialUpgradeMenu.hpp"
 #include "Utility/Scaler.hpp"
 #include "Utility/aligner.hpp"
 #include "Utility/logger.hpp"
-#include "Core/MouseState.hpp"
-#include "Core/UserEvent.hpp"
 UpgradeButton::UpgradeButton()
     : radius(0),
       parentRadialMenu(nullptr),
@@ -18,16 +18,19 @@ UpgradeButton::UpgradeButton()
     buttonShape.setOutlineThickness(4);
     buttonShape.setOutlineColor(sf::Color::Black);
 
-    buttonShape= Aligner::align(buttonShape, HorizontalAlignment::Center,
-                                   VerticalAlignment::Middle);
+    buttonShape = Aligner::align(buttonShape, HorizontalAlignment::Center,
+                                 VerticalAlignment::Middle);
 
-    
     style.loadJson(JSONLoader::getInstance().getStyle("background_basic"));
     price.setPetroleum(0);
     price.setScraps(0);
 }
 UpgradeButton& UpgradeButton::setPosition(const sf::Vector2f& position) {
     buttonShape.setPosition(position);
+
+    tagDisplay.setPosition(
+        position + sf::Vector2f{0, static_cast<float>(radius)} * TAG_OFFSET);
+    upgradeIcon.setPosition(position);
     return *this;
 }
 
@@ -49,11 +52,14 @@ void UpgradeButton::updatePriceTag() {
     petroleumText.setString(std::to_string(price.getPetroleum().value));
     scrapText.setString(std::to_string(price.getScraps().value));
 
-    petroleumText.setCharacterSize(12);
-    scrapText.setCharacterSize(12);
+    petroleumText.setCharacterSize(24);
+    scrapText.setCharacterSize(24);
 
-    petroleumText.setFillColor(sf::Color::White);
-    scrapText.setFillColor(sf::Color::White);
+    petroleumText.setFillColor(sf::Color::Black);
+    scrapText.setFillColor(sf::Color::Black);
+
+    scrapIcon.setScale({0.5f, 0.5f});
+    petrolIcon.setScale({0.5f, 0.5f});
 
     petroleumText = Aligner::align(petroleumText, HorizontalAlignment::Left,
                                    VerticalAlignment::Middle);
@@ -68,13 +74,13 @@ void UpgradeButton::updatePriceTag() {
     const int iconTextPadding = 5;
     const int contentPadding = 10;
     sf::Vector2u contentDimension;
-    contentDimension.x = petrolIcon.getLocalBounds().size.x +
-                         scrapIcon.getLocalBounds().size.x +
-                         petroleumText.getLocalBounds().size.x +
-                         scrapText.getLocalBounds().size.x +
+    contentDimension.x = petrolIcon.getGlobalBounds().size.x +
+                         scrapIcon.getGlobalBounds().size.x +
+                         petroleumText.getGlobalBounds().size.x +
+                         scrapText.getGlobalBounds().size.x +
                          iconTextPadding * 2 + contentPadding * 3;
-    contentDimension.y = std::max(petrolIcon.getLocalBounds().size.y,
-                                  petroleumText.getLocalBounds().size.y) +
+    contentDimension.y = std::max(petrolIcon.getGlobalBounds().size.y,
+                                  petroleumText.getGlobalBounds().size.y) +
                          contentPadding * 2;
     bool resizeResult = priceContent.resize(contentDimension);
 
@@ -85,32 +91,37 @@ void UpgradeButton::updatePriceTag() {
 
     priceContent.clear(sf::Color::Transparent);
     int baselineY = contentDimension.y / 2;
-    scrapIcon.setPosition({contentPadding, static_cast<float>(baselineY)});
+    scrapIcon.setPosition(
+        {contentPadding + scrapIcon.getGlobalBounds().size.y / 2.f,
+         static_cast<float>(baselineY)});
     scrapText.setPosition({scrapIcon.getPosition().x +
-                               scrapIcon.getLocalBounds().size.x / 2 +
+                               scrapIcon.getGlobalBounds().size.x / 2 +
                                iconTextPadding,
                            scrapIcon.getPosition().y});
     petrolIcon.setPosition({scrapText.getPosition().x +
-                                scrapText.getLocalBounds().size.x +
+                                scrapText.getGlobalBounds().size.x +
                                 contentPadding,
                             scrapText.getPosition().y});
     petroleumText.setPosition({petrolIcon.getPosition().x +
-                                   petrolIcon.getLocalBounds().size.x / 2 +
+                                   petrolIcon.getGlobalBounds().size.x / 2 +
                                    iconTextPadding,
                                petrolIcon.getPosition().y});
-    priceContent.draw(scrapIcon);
-    priceContent.draw(scrapText);
-    priceContent.draw(petrolIcon);
-    priceContent.draw(petroleumText);
+
+    if (!isCapped) {
+        priceContent.draw(scrapIcon);
+        priceContent.draw(scrapText);
+        priceContent.draw(petrolIcon);
+        priceContent.draw(petroleumText);
+    }
     priceContent.display();
 
     sf::Sprite priceSprite(priceContent.getTexture());
     priceSprite = Aligner::align(priceSprite, HorizontalAlignment::Center,
                                  VerticalAlignment::Middle);
 
-    float borderThickness = 2.f;
+    float borderThickness = buttonShape.getOutlineThickness();
     if (!priceTag.resize(static_cast<sf::Vector2u>(
-            priceSprite.getLocalBounds().size +
+            priceSprite.getGlobalBounds().size +
             sf::Vector2f{borderThickness, borderThickness}))) {
         Logger::error("Failed to resize price tag texture");
         throw std::runtime_error("Failed to resize price tag texture");
@@ -126,14 +137,17 @@ void UpgradeButton::updatePriceTag() {
                      static_cast<unsigned int>(borderThickness) * 2}));
     background.setFillColor(sf::Color::White);
     background.setOutlineThickness(borderThickness);
-    background.setOutlineColor(sf::Color::White);
+    background.setOutlineColor(sf::Color::Black);
     priceTag.draw(background);
     priceTag.draw(priceSprite);
     priceTag.display();
-    tagDisplay.setTexture(priceTag.getTexture());
+    // priceTag.setSmooth(true);
+    tagDisplay = sf::Sprite(priceTag.getTexture());
+    tagDisplay = Aligner::align(tagDisplay, HorizontalAlignment::Center,
+                                VerticalAlignment::Top);
     tagDisplay.setPosition(buttonShape.getPosition() +
-                           sf::Vector2f{9, static_cast<float>(radius)} * 9.f /
-                               10.f);
+                           sf::Vector2f{0, static_cast<float>(radius)} *
+                               TAG_OFFSET);
 }
 
 void UpgradeButton::draw(sf::RenderTarget& target,
@@ -149,7 +163,7 @@ void UpgradeButton::update() {
     sf::Color fillColor = getFillColor();
     sf::Color borderColor = getBorderColor();
     sf::Color textColor = getTextColor();
-    if (!canUpgrade) {
+    if (!isCapped && !canUpgrade) {
         sf::Color mixColor = sf::Color::Red;
         fillColor = ColorMixer::perceptualLerp(fillColor, mixColor, 0.5f);
         borderColor = ColorMixer::perceptualLerp(borderColor, mixColor, 0.5f);
@@ -162,23 +176,24 @@ void UpgradeButton::update() {
 }
 
 void UpgradeButton::refreshInfo() {
-    if (parentRadialMenu) {
-        price = parentRadialMenu->getUpgradeDetail(upgradeID)->cost;
+    if (upgrades->getNextUpgradeDetail(upgradeID) == nullptr) {
+        isCapped = true;
+        price = Currency(0, 0);
+        upgradeIcon.setTexture(GameConstants::BLANK_TEXTURE);
+    } else if (parentRadialMenu) {
+        price = upgrades->getNextUpgradeDetail(upgradeID)->cost;
+        const UpgradeType* upgradeType = upgrades->getUpgradeType(upgradeID);
+        if (upgradeType && ResourceManager::getInstance().getTexture(upgradeType->getIconPath()))
+            upgradeIcon = sf::Sprite(*ResourceManager::getInstance().getTexture(
+                upgradeType->getIconPath()));
+        upgradeIcon = Aligner::align(upgradeIcon);
+
     } else {
         Logger::error("Parent radial menu is not set for UpgradeButton");
         return;
     }
     updatePriceTag();
-}
-
-UpgradeButton& UpgradeButton::setUpgradeID(int id) {
-    upgradeID = id;
-    return *this;
-}
-
-UpgradeButton& UpgradeButton::setPrice(Currency currency) {
-    price = currency;
-    return *this;
+    updateSpritePosition();
 }
 
 UpgradeButton& UpgradeButton::setParentRadialMenu(
@@ -198,22 +213,22 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
                                  const sf::Vector2f& worldPosition,
                                  const sf::Vector2f& windowPosition) {
     if (event == UserEvent::Press && button == Mouse::Left) {
-        if (contains(worldPosition)) {
+        if (contains(windowPosition)) {
             updatePressState(true);
             return true;
         }
     } else if (event == UserEvent::Release && button == Mouse::Left) {
-        if (isPressed && contains(worldPosition)) {
+        if (isPressed) {
             updatePressState(false);
-            if (canUpgrade) {
-                parentRadialMenu->notify("upgrade", upgradeID);
+            if (contains(windowPosition) && canUpgrade) {
+                parentRadialMenu->notify("upgrade", *this, upgradeID);
+                refreshInfo();
             }
-            return true;
+            return false;
         }
     } else if (event == UserEvent::Move) {
-        if (contains(worldPosition)) {
+        if (contains(windowPosition)) {
             updateHoverState(true);
-            return true;
         } else {
             updateHoverState(false);
         }
@@ -238,11 +253,28 @@ UpgradeButton::UpgradeButton(const UpgradeButton& other)
       upgradeIcon(other.upgradeIcon),
       tagDisplay(other.tagDisplay) {
     // Deep copy for priceTag (sf::RenderTexture)
-    // SFML RenderTexture cannot be copied directly, so we copy the texture if available
+    // SFML RenderTexture cannot be copied directly, so we copy the texture if
+    // available
     updatePriceTag();
 }
 
-void UpgradeButton::setCanUpgrade(bool canUpgrade) {
-    this->canUpgrade = canUpgrade;
-    update();
+UpgradeButton& UpgradeButton::setUpgradeManager(UpgradeManager& target) {
+    upgrades = &target;
+    return *this;
+}
+
+UpgradeButton& UpgradeButton::setUpgradeID(int id) {
+    this->upgradeID = id;
+    return *this;
+}
+
+void UpgradeButton::updateSpritePosition() {
+    upgradeIcon = Aligner::align(upgradeIcon, HorizontalAlignment::Center,
+                                 VerticalAlignment::Middle);
+    upgradeIcon.setPosition(buttonShape.getPosition());
+}
+
+UpgradeButton& UpgradeButton::setCanUpgrade(bool val) {
+    canUpgrade = val;
+    return *this;
 }

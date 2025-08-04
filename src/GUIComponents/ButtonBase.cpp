@@ -37,12 +37,12 @@ void ButtonBase::updatePressState(bool isPressed) {
     if (isPressed != this->isPressed) {
         this->isPressed = isPressed;
         if (isPressed) {
-            Logger::debug("Button pressed");
+            // Logger::debug("Button pressed");
             press.reset();
             press.setRemainingTime(reversePress.getPassedTime());
             reversePress.reset();
         } else {
-            Logger::debug("Button released");
+            // Logger::debug("Button released");
             reversePress.reset();
             reversePress.setRemainingTime(press.getPassedTime());
             press.reset();
@@ -54,12 +54,12 @@ void ButtonBase::updateHoverState(bool isHovered) {
     if (isHovered != this->isHovered) {
         this->isHovered = isHovered;
         if (isHovered) {
-            Logger::debug("Button hovered");
+            // Logger::debug("Button hovered");
             hover.reset();
             hover.setRemainingTime(reverseHover.getPassedTime());
             reverseHover.reset();
         } else {
-            Logger::debug("Button unhovered");
+            // Logger::debug("Button unhovered");
             reverseHover.reset();
             reverseHover.setRemainingTime(hover.getPassedTime());
             hover.reset();
@@ -70,13 +70,13 @@ void ButtonBase::updateHoverState(bool isHovered) {
 void ButtonBase::update() {
     if (isPressed) {
         press.update();
-        Logger::debug(std::format("Button is pressed, updating press timer {}", press.getCompletionPercentage()));
+        // Logger::debug(std::format("Button is pressed, updating press timer {}", press.getCompletionPercentage()));
     } else {
         reversePress.update();
         // Logger::debug("Button is unpressed, updating reversePress timer");
     }
     if (isHovered) {
-        Logger::debug(std::format("Button is hovered, updating hover timer {}", hover.getCompletionPercentage()));
+        // Logger::debug(std::format("Button is hovered, updating hover timer {}", hover.getCompletionPercentage()));
         hover.update();
     } else {
         // Logger::debug("Button is unhovered, updating unhover timer");
