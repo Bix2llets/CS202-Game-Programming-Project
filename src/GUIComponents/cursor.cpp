@@ -69,7 +69,6 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         // via states, this will only affect blending.
         Window::getInstance().toggleUserMode();
         target.draw(rangePreview);
-        Window::getInstance().toggleGUIMode();
         target.draw(renderImage, previewStates);
 
         // float attackRadius = previewTower->getStat("range", 0);
@@ -83,7 +82,7 @@ bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
                           const sf::Vector2f& windowPosition) {
     if (event == UserEvent::Move) {
         position = windowPosition;
-        renderImage.setPosition(position);
+        renderImage.setPosition(worldPosition);
         rangePreview.setPosition(worldPosition);
         // Logger::debug("processing moues movent in cursor");
 

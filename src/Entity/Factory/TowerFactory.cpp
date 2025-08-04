@@ -268,11 +268,11 @@ std::unique_ptr<UpgradeType> TowerFactory::parseUpgradeType(int typeId, const nl
     std::string displayName = upgradeJson.value("display_name", "");
     std::string description = upgradeJson.value("description", "");
     int maxLevel = upgradeJson.value("max_level", 1);
-    std::string iconPath = upgradeJson.value("icon", "");
+    std::string iconID = upgradeJson.value("icon", "");
     std::string evolveTo = upgradeJson.value("evolve_to", "");
     
     // Create the upgrade type
-    auto upgradeType = std::make_unique<UpgradeType>(displayName, description, maxLevel, iconPath, evolveTo);
+    auto upgradeType = std::make_unique<UpgradeType>(displayName, description, maxLevel, iconID, evolveTo);
     
     // Parse upgrade details for each level
     if (upgradeJson.contains("upgrade_details")) {

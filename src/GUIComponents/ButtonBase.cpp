@@ -125,3 +125,24 @@ sf::Color ButtonBase::getTextColor() const {
 
     return result;
 }
+
+sf::Color ButtonBase::getBorderColor() const {
+    sf::Color result = style.getNormal().border;
+    if (isHovered) {
+        result = ColorMixer::perceptualLerp(result, style.getHover().border,
+                                          hover.getCompletionPercentage());
+    } else {
+        result = ColorMixer::perceptualLerp(style.getHover().border, result,
+                                          reverseHover.getCompletionPercentage());
+    }
+
+    if (isPressed) {
+        result = ColorMixer::perceptualLerp(result, style.getClick().border,
+                                          press.getCompletionPercentage());
+    } else {
+        result = ColorMixer::perceptualLerp(style.getClick().border, result,
+                                          reversePress.getCompletionPercentage());
+    }
+
+    return result;
+}

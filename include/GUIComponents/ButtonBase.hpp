@@ -28,6 +28,7 @@ class ButtonBase : public sf::Drawable, public MouseObserver {
 
     sf::Color getFillColor() const;
     sf::Color getTextColor() const;
+    sf::Color getBorderColor() const;
    public:
    ButtonBase();
    ~ButtonBase();

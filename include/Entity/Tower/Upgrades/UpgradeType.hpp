@@ -22,7 +22,7 @@ private:
     std::string displayName;        ///< User-friendly name for the upgrade
     std::string description;        ///< Description with placeholders for bonus values
     int maxLevel;                   ///< Maximum level for this upgrade type
-    std::string iconPath;           ///< Path to the upgrade icon
+    std::string iconID;           ///< Path to the upgrade icon
     std::string evolveTo;           ///< Tower type to evolve to at max level
     std::unordered_map<int, UpgradeDetails> levelDetails; ///< Map of level -> upgrade details
 
@@ -43,7 +43,7 @@ public:
     UpgradeType(const std::string& name, const std::string& desc, int maxLvl, 
                 const std::string& icon, const std::string& evolve)
         : displayName(name), description(desc), maxLevel(maxLvl), 
-          iconPath(icon), evolveTo(evolve) {}
+          iconID(icon), evolveTo(evolve) {}
 
     /**
      * @brief Add upgrade details for a specific level.
@@ -79,7 +79,7 @@ public:
     const std::string& getDisplayName() const { return displayName; }
     const std::string& getDescription() const { return description; }
     int getMaxLevel() const { return maxLevel; }
-    const std::string& getIconPath() const { return iconPath; }
+    const std::string& getIconPath() const { return iconID; }
     const std::string& getEvolveTo() const { return evolveTo; }
 
     /**
@@ -111,6 +111,6 @@ public:
     void setDisplayName(const std::string& name) { displayName = name; }
     void setDescription(const std::string& desc) { description = desc; }
     void setMaxLevel(int maxLvl) { maxLevel = maxLvl; }
-    void setIconPath(const std::string& icon) { iconPath = icon; }
+    void setIconPath(const std::string& icon) { iconID = icon; }
     void setEvolveTo(const std::string& evolve) { evolveTo = evolve; }
 };

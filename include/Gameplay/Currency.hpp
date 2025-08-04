@@ -181,14 +181,14 @@ public:
      * @param multiplier Value to multiply all currencies by.
      * @return Currency Result of multiplication.
      */
-    Currency operator*(int multiplier) const;
+    Currency operator*(float multiplier) const;
 
     /**
      * @brief Scalar multiplication assignment operator.
      * @param multiplier Value to multiply all currencies by.
      * @return Currency& Reference to this Currency object.
      */
-    Currency& operator*=(int multiplier);
+    Currency& operator*=(float multiplier);
 
 
     /**

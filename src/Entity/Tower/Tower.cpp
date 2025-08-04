@@ -97,11 +97,18 @@ float Tower::getBaseStat(const std::string& statName,
 }
 
 // Upgrade System Methods
-UpgradeResult Tower::attemptUpgrade(int upgradeTypeId,
-                                    Currency& playerCurrency) {
-    return upgradeManager
-               ? upgradeManager->attemptUpgrade(upgradeTypeId, playerCurrency)
-               : UpgradeResult::InvalidUpgradeType;
+UpgradeResult Tower::upgrade(int upgradeTypeId) 
+{
+    if (!upgradeManager) {
+        return UpgradeResult::InvalidUpgradeType;
+    }
+
+    if (levelRef) {
+        levelRef->notify("sell_tower", this, upgradeManager->getNextUpgradeDetail(upgradeTypeId)->cost);
+        upgradeManager->upgrade(upgradeTypeId);
+        return UpgradeResult::Success;
+    }
+    return UpgradeResult::InsufficientFunds;
 }
 
 bool Tower::canUpgrade(int upgradeTypeId,
@@ -111,8 +118,8 @@ bool Tower::canUpgrade(int upgradeTypeId,
                : false;
 }
 
-const UpgradeDetails* Tower::getNextUpgradeCost(int upgradeTypeId) const {
-    return upgradeManager ? upgradeManager->getNextUpgradeCost(upgradeTypeId)
+const UpgradeDetails* Tower::getNextUpgradeDetail(int upgradeTypeId) const {
+    return upgradeManager ? upgradeManager->getNextUpgradeDetail(upgradeTypeId)
                           : nullptr;
 }
 

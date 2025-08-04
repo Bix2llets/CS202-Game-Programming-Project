@@ -103,4 +103,7 @@ class EntityManager : public MouseObserver, public KeyboardObserver {
                     const sf::Vector2f &windowPosition) override;
     bool onScrollEvent(float delta, const sf::Vector2f &worldPosition,
                        const sf::Vector2f &windowPosition) override;
+
+
+   void removeTower(Tower* tower);
 };
