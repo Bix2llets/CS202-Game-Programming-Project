@@ -41,10 +41,15 @@ class UpgradeButton : public ButtonBase {
     sf::RenderTexture priceTag;
     sf::Sprite tagDisplay;
     sf::Sprite upgradeIcon;
+
     RadialUpgradeMenu* parentRadialMenu;
     bool canUpgrade = false;
     bool isCapped = false;
     int upgradeID;
 
     UpgradeManager* upgrades;
+
+    sf::Color getFillColor();
+    sf::Color getBorderColor();
+    sf::Color getTextColor();
 };

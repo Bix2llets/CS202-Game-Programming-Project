@@ -11,6 +11,7 @@
 #include "Gameplay/Currency.hpp"
 #include "Utility/Logger.hpp"
 #include "Utility/Scaler.hpp"
+#include "Utility/aligner.hpp"
 TowerMenu::TowerMenu(const Currency& currencyRef, Mediator& superMediator)
     : basePanel{*ResourceManager::getInstance().getTexture(
           "tower_selection_base")},
@@ -108,7 +109,7 @@ void TowerMenu::setResourceDisplay() {
 void TowerMenu::setTowerButtonDisplay() {
     auto towerList = JSONLoader::getInstance().getAllTowers();
 
-    const sf::Vector2f buttonSize = {80, 110};
+    const sf::Vector2f buttonSize = {80, 120};
     const std::string buttonStyleID = "background_basic";
     // * Index is the size of the vector pre-push_back
 
@@ -220,13 +221,21 @@ void TowerMenu::setTowerButtonDisplay() {
                       petroleumCostDisplay.getLocalBounds().size.y / 2.f});
         int yOffset = 35;
         petroleumCostDisplay.setPosition(
-            {30, towerSprite.getPosition().y + yOffset + 5});
+            {30, towerSprite.getPosition().y + yOffset + 35});
         petroleumIcon.setPosition(
-            {15, towerSprite.getPosition().y + yOffset + 5});
+            {15, towerSprite.getPosition().y + yOffset + 35});
         scrapCostDisplay.setPosition(
-            {30, towerSprite.getPosition().y + yOffset + 30});
-        scrapIcon.setPosition({15, towerSprite.getPosition().y + yOffset + 30});
+            {30, towerSprite.getPosition().y + yOffset + 5});
+        scrapIcon.setPosition({15, towerSprite.getPosition().y + yOffset + 5});
 
+        sf::RectangleShape background;
+        background.setSize(sf::Vector2f(buttonRenderTexture.getSize() - sf::Vector2u{4, 4}));
+        background = Aligner::align(background);
+        background.setPosition(static_cast<sf::Vector2f>(buttonRenderTexture.getSize()) / 2.f);
+        background.setOutlineThickness(2);
+        background.setFillColor(sf::Color::Transparent);
+        background.setOutlineColor(sf::Color(0, 0, 0, 255));
+        buttonRenderTexture.draw(background);
         buttonRenderTexture.draw(towerSprite);
         buttonRenderTexture.draw(petroleumCostDisplay);
         buttonRenderTexture.draw(scrapCostDisplay);

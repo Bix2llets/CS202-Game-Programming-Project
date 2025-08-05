@@ -21,7 +21,7 @@ UpgradeButton::UpgradeButton()
     buttonShape = Aligner::align(buttonShape, HorizontalAlignment::Center,
                                  VerticalAlignment::Middle);
 
-    style.loadJson(JSONLoader::getInstance().getStyle("background_basic"));
+    style.loadJson(JSONLoader::getInstance().getStyle("upgrade_button"));
     price.setPetroleum(0);
     price.setScraps(0);
 }
@@ -74,14 +74,14 @@ void UpgradeButton::updatePriceTag() {
     const int iconTextPadding = 5;
     const int contentPadding = 10;
     sf::Vector2u contentDimension;
-    contentDimension.x = petrolIcon.getGlobalBounds().size.x +
-                         scrapIcon.getGlobalBounds().size.x +
-                         petroleumText.getGlobalBounds().size.x +
-                         scrapText.getGlobalBounds().size.x +
-                         iconTextPadding * 2 + contentPadding * 3;
-    contentDimension.y = std::max(petrolIcon.getGlobalBounds().size.y,
-                                  petroleumText.getGlobalBounds().size.y) +
-                         contentPadding * 2;
+    contentDimension.x = std::max(petrolIcon.getGlobalBounds().size.x +
+                                      petroleumText.getGlobalBounds().size.x,
+                                  scrapText.getGlobalBounds().size.x +
+                                      scrapIcon.getGlobalBounds().size.x) +
+                         iconTextPadding * 1 + contentPadding * 2;
+    contentDimension.y = scrapText.getGlobalBounds().size.y +
+                         petroleumText.getGlobalBounds().size.y +
+                         contentPadding * 3;
     bool resizeResult = priceContent.resize(contentDimension);
 
     if (resizeResult == false) {
@@ -92,16 +92,16 @@ void UpgradeButton::updatePriceTag() {
     priceContent.clear(sf::Color::Transparent);
     int baselineY = contentDimension.y / 2;
     scrapIcon.setPosition(
-        {contentPadding + scrapIcon.getGlobalBounds().size.y / 2.f,
-         static_cast<float>(baselineY)});
+        {contentPadding + scrapIcon.getGlobalBounds().size.x / 2.f,
+         contentPadding + scrapIcon.getGlobalBounds().size.y / 2.f});
     scrapText.setPosition({scrapIcon.getPosition().x +
                                scrapIcon.getGlobalBounds().size.x / 2 +
                                iconTextPadding,
                            scrapIcon.getPosition().y});
-    petrolIcon.setPosition({scrapText.getPosition().x +
-                                scrapText.getGlobalBounds().size.x +
-                                contentPadding,
-                            scrapText.getPosition().y});
+    petrolIcon.setPosition(
+        {scrapIcon.getPosition().x, scrapIcon.getPosition().y +
+                                        scrapIcon.getGlobalBounds().size.y / 2 +
+                                        contentPadding + petrolIcon.getGlobalBounds().size.y / 2});
     petroleumText.setPosition({petrolIcon.getPosition().x +
                                    petrolIcon.getGlobalBounds().size.x / 2 +
                                    iconTextPadding,
@@ -135,9 +135,9 @@ void UpgradeButton::updatePriceTag() {
         priceTag.getSize() -
         sf::Vector2u{static_cast<unsigned int>(borderThickness) * 2,
                      static_cast<unsigned int>(borderThickness) * 2}));
-    background.setFillColor(sf::Color::White);
+    background.setFillColor(getFillColor());
     background.setOutlineThickness(borderThickness);
-    background.setOutlineColor(sf::Color::Black);
+    background.setOutlineColor(getBorderColor());
     priceTag.draw(background);
     priceTag.draw(priceSprite);
     priceTag.display();
@@ -153,8 +153,10 @@ void UpgradeButton::updatePriceTag() {
 void UpgradeButton::draw(sf::RenderTarget& target,
                          sf::RenderStates states) const {
     target.draw(buttonShape, states);
-    target.draw(upgradeIcon, states);
-    target.draw(tagDisplay, states);
+    if (!isCapped) {
+        target.draw(upgradeIcon, states);
+        target.draw(tagDisplay, states);
+    }
 }
 
 void UpgradeButton::update() {
@@ -163,16 +165,10 @@ void UpgradeButton::update() {
     sf::Color fillColor = getFillColor();
     sf::Color borderColor = getBorderColor();
     sf::Color textColor = getTextColor();
-    if (!isCapped && !canUpgrade) {
-        sf::Color mixColor = sf::Color::Red;
-        fillColor = ColorMixer::perceptualLerp(fillColor, mixColor, 0.5f);
-        borderColor = ColorMixer::perceptualLerp(borderColor, mixColor, 0.5f);
-        textColor = ColorMixer::perceptualLerp(textColor, mixColor, 0.5f);
-    }
+    updatePriceTag();
     buttonShape.setFillColor(fillColor);
     buttonShape.setOutlineColor(borderColor);
-    tagDisplay.setColor(fillColor);
-    upgradeIcon.setColor(fillColor);
+    upgradeIcon.setColor(sf::Color(255, 255, 255, fillColor.a));
 }
 
 void UpgradeButton::refreshInfo() {
@@ -180,10 +176,12 @@ void UpgradeButton::refreshInfo() {
         isCapped = true;
         price = Currency(0, 0);
         upgradeIcon.setTexture(GameConstants::BLANK_TEXTURE);
+        upgradeIcon.setTextureRect(sf::IntRect({0, 0}, {0, 0}));
     } else if (parentRadialMenu) {
         price = upgrades->getNextUpgradeDetail(upgradeID)->cost;
         const UpgradeType* upgradeType = upgrades->getUpgradeType(upgradeID);
-        if (upgradeType && ResourceManager::getInstance().getTexture(upgradeType->getIconPath()))
+        if (upgradeType && ResourceManager::getInstance().getTexture(
+                               upgradeType->getIconPath()))
             upgradeIcon = sf::Sprite(*ResourceManager::getInstance().getTexture(
                 upgradeType->getIconPath()));
         upgradeIcon = Aligner::align(upgradeIcon);
@@ -277,4 +275,29 @@ void UpgradeButton::updateSpritePosition() {
 UpgradeButton& UpgradeButton::setCanUpgrade(bool val) {
     canUpgrade = val;
     return *this;
+}
+
+sf::Color UpgradeButton::getFillColor() {
+    sf::Color fillColor = ButtonBase::getFillColor();
+    if (!isCapped && !canUpgrade) {
+        sf::Color mixColor = sf::Color::Red;
+        return ColorMixer::perceptualLerp(fillColor, mixColor, 0.5f);
+    }
+    return fillColor;
+}
+sf::Color UpgradeButton::getBorderColor() {
+    sf::Color borderColor = ButtonBase::getBorderColor();
+    if (!isCapped && !canUpgrade) {
+        sf::Color mixColor = sf::Color::Red;
+        return ColorMixer::perceptualLerp(borderColor, mixColor, 0.5f);
+    }
+    return borderColor;
+}
+sf::Color UpgradeButton::getTextColor() {
+    sf::Color textColor = ButtonBase::getTextColor();
+    if (!isCapped && !canUpgrade) {
+        sf::Color mixColor = sf::Color::Red;
+        return ColorMixer::perceptualLerp(textColor, mixColor, 0.5f);
+    }
+    return textColor;
 }

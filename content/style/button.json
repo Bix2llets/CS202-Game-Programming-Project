@@ -94,5 +94,37 @@
             "x": "centering",
             "y": "centering"
         }
+    },
+    {
+        "id": "upgrade_button",
+        "style": {
+            "normal": {
+                "background": "#aa571aFF",
+                "border": "#641e02FF",
+                "text": "#807061FF"
+            },
+            "hover": {
+                "background": "#7E3304FF",
+                "border": "#7C2F08FF",
+                "text": "#918171FF"
+            },
+            "click": {
+                "background": "#521701FF",
+                "border": "#C36014FF",
+                "text": "#C4AB95FF"
+            }
+        },
+        "border_radius": 4,
+        "border_width": 2,
+        "font": "pixel",
+        "font_size": 24,
+        "padding": [
+            12,
+            24
+        ],
+        "center": {
+            "x": "centering",
+            "y": "centering"
+        }
     }
 ]

@@ -25,9 +25,9 @@ class ButtonBase : public sf::Drawable, public MouseObserver {
     void updatePressState(bool isPressed);
     void updateHoverState(bool isPressed);
     
-    sf::Color getFillColor() const;
-    sf::Color getTextColor() const;
-    sf::Color getBorderColor() const;
+    virtual sf::Color getFillColor() const;
+    virtual sf::Color getTextColor() const;
+    virtual sf::Color getBorderColor() const;
     public:
     ButtonBase();
     ~ButtonBase();

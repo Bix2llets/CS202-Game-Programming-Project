@@ -18,7 +18,7 @@ class TowerMenu : public Mediator, public MouseObserver {
 
     const sf::Vector2i buttonGap = {5, 5};
     const sf::Vector2i buttonSize = {80, 80};
-    const sf::Vector2f borderSize = {5, 5};
+    const sf::Vector2f borderSize = {10, 10};
     const int BUTTON_PER_ROW = 2;
 
     const Currency& budgetRef;

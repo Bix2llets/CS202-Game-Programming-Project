@@ -9,7 +9,7 @@
 SellButton::SellButton()
     : ButtonBase(),
       sellIcon{*ResourceManager::getInstance().getTexture("sell_icon")} {
-    style.loadJson(JSONLoader::getInstance().getStyle("background_basic"));
+    style.loadJson(JSONLoader::getInstance().getStyle("upgrade_button"));
     buttonShape.setFillColor(sf::Color::White);
     buttonShape.setOutlineThickness(4);
     buttonShape.setOutlineColor(sf::Color::Black);
@@ -27,7 +27,7 @@ void SellButton::update() {
 
     buttonShape.setFillColor(fillColor);
     buttonShape.setOutlineColor(borderColor);
-    sellIcon.setColor(fillColor);
+    sellIcon.setColor(sf::Color(255, 255, 255, fillColor.a));
 }
 
 SellButton& SellButton::setPosition(const sf::Vector2f& position) {
