@@ -39,7 +39,7 @@ std::unique_ptr<RectangularButton> RectangularButtonBuilder::build() {
     std::unique_ptr<RectangularButton> result(new RectangularButton(mediator));
 
     result->geometricInfo = {position, size};
-    result->style.loadJson(styleConfig);
+    result->graphicState.loadStyle(styleConfig);
     result->setOnClick(callback);
     fontName = styleConfig["font"];
 

@@ -25,4 +25,5 @@ class SellButton : public ButtonBase {
     private:
     sf::Sprite sellIcon;
     RadialUpgradeMenu* parentRadialMenu = nullptr;
+    sf::Vector2f position;
 };

@@ -33,17 +33,6 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
       menu{budget, *this},
       tracker(*this),
       upgradeMenu(*this) {
-    subscribeKeyboard(Key::Space, UserEvent::Press,
-                      InputManager::getInstance().getKeyboardState());
-    subscribeKeyboard(Key::G, UserEvent::Press,
-                      InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(
-        Key::D, UserEvent::Press,
-        InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(
-        Key::F, UserEvent::Press,
-        InputManager::getInstance().getKeyboardState());
-
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
@@ -133,13 +122,7 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
     });
 }
 
-Level::~Level() {
-    MouseState &mouseState = InputManager::getInstance().getMouseState();
-    unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
-    unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
-    unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
-    unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
-}
+Level::~Level() {}
 void Level::update() {
     menu.update();
     if (upgradeMenu.isDisplaying()) {
@@ -225,6 +208,16 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 }
 
 void Level::onLoad() {
+    subscribeKeyboard(Key::Space, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    subscribeKeyboard(Key::G, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(
+        Key::D, UserEvent::Press,
+        InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(
+        Key::F, UserEvent::Press,
+        InputManager::getInstance().getKeyboardState());
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
 }
@@ -235,6 +228,12 @@ void Level::onUnload() {
     Cursor::getInstance().clearCarryingTower();
     Cursor::getInstance().removeRenderImage();
     upgradeMenu.removeFocus();
+
+    MouseState &mouseState = InputManager::getInstance().getMouseState();
+    unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
+    unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
 }
 
 bool Level::isWaveFinished() {

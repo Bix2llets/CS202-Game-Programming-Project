@@ -21,7 +21,7 @@ UpgradeButton::UpgradeButton()
     buttonShape = Aligner::align(buttonShape, HorizontalAlignment::Center,
                                  VerticalAlignment::Middle);
 
-    style.loadJson(JSONLoader::getInstance().getStyle("upgrade_button"));
+    graphicState.loadStyle(JSONLoader::getInstance().getStyle("upgrade_button"));
     price.setPetroleum(0);
     price.setScraps(0);
 }
@@ -43,8 +43,8 @@ UpgradeButton& UpgradeButton::setRadius(int radius) {
 }
 
 void UpgradeButton::updatePriceTag() {
-    sf::Text petroleumText(*style.getFont());
-    sf::Text scrapText(*style.getFont());
+    sf::Text petroleumText(*graphicState.getStyle().getFont());
+    sf::Text scrapText(*graphicState.getStyle().getFont());
 
     sf::Sprite petrolIcon(price.getPetroleum().icon);
     sf::Sprite scrapIcon(price.getScraps().icon);
@@ -212,12 +212,12 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
                                  const sf::Vector2f& windowPosition) {
     if (event == UserEvent::Press && button == Mouse::Left) {
         if (contains(windowPosition)) {
-            updatePressState(true);
+            graphicState.updatePressState(true);
             return true;
         }
     } else if (event == UserEvent::Release && button == Mouse::Left) {
-        if (isPressed) {
-            updatePressState(false);
+        if (graphicState.isPressed()) {
+            graphicState.updatePressState(false);
             if (contains(windowPosition) && canUpgrade) {
                 parentRadialMenu->notify("upgrade", *this, upgradeID);
                 refreshInfo();
@@ -226,9 +226,9 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
         }
     } else if (event == UserEvent::Move) {
         if (contains(windowPosition)) {
-            updateHoverState(true);
+            graphicState.updateHoverState(true);
         } else {
-            updateHoverState(false);
+            graphicState.updateHoverState(false);
         }
     }
     return false;
@@ -278,7 +278,7 @@ UpgradeButton& UpgradeButton::setCanUpgrade(bool val) {
 }
 
 sf::Color UpgradeButton::getFillColor() {
-    sf::Color fillColor = ButtonBase::getFillColor();
+    sf::Color fillColor = graphicState.getFillColor();
     if (!isCapped && !canUpgrade) {
         sf::Color mixColor = sf::Color::Red;
         return ColorMixer::perceptualLerp(fillColor, mixColor, 0.5f);
@@ -286,7 +286,7 @@ sf::Color UpgradeButton::getFillColor() {
     return fillColor;
 }
 sf::Color UpgradeButton::getBorderColor() {
-    sf::Color borderColor = ButtonBase::getBorderColor();
+    sf::Color borderColor = graphicState.getBorderColor();
     if (!isCapped && !canUpgrade) {
         sf::Color mixColor = sf::Color::Red;
         return ColorMixer::perceptualLerp(borderColor, mixColor, 0.5f);
@@ -294,7 +294,7 @@ sf::Color UpgradeButton::getBorderColor() {
     return borderColor;
 }
 sf::Color UpgradeButton::getTextColor() {
-    sf::Color textColor = ButtonBase::getTextColor();
+    sf::Color textColor = graphicState.getTextColor();
     if (!isCapped && !canUpgrade) {
         sf::Color mixColor = sf::Color::Red;
         return ColorMixer::perceptualLerp(textColor, mixColor, 0.5f);

@@ -9,7 +9,7 @@
 SellButton::SellButton()
     : ButtonBase(),
       sellIcon{*ResourceManager::getInstance().getTexture("sell_icon")} {
-    style.loadJson(JSONLoader::getInstance().getStyle("upgrade_button"));
+    graphicState.loadStyle(JSONLoader::getInstance().getStyle("upgrade_button"));
     buttonShape.setFillColor(sf::Color::White);
     buttonShape.setOutlineThickness(4);
     buttonShape.setOutlineColor(sf::Color::Black);
@@ -22,8 +22,8 @@ SellButton::SellButton()
 }
 void SellButton::update() {
     ButtonBase::update();
-    sf::Color fillColor = getFillColor();
-    sf::Color borderColor = getBorderColor();
+    sf::Color fillColor = graphicState.getFillColor();
+    sf::Color borderColor = graphicState.getBorderColor();
 
     buttonShape.setFillColor(fillColor);
     buttonShape.setOutlineColor(borderColor);
@@ -49,26 +49,26 @@ void SellButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 bool SellButton::onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition) {
-    if (!isPressed && event == UserEvent::Press && contains(windowPosition) &&
+    if (!graphicState.isPressed() && event == UserEvent::Press && contains(windowPosition) &&
         button == Mouse::Left) {
         if (parentRadialMenu) {
             parentRadialMenu->notify("sell");
             Logger::info("SellButton: Sell button pressed");
         }
-        ButtonBase::updatePressState(true);
+        graphicState.updatePressState(true);
         return true;
     }
 
-    if (isPressed && event == UserEvent::Release && button == Mouse::Left) {
-        ButtonBase::updatePressState(false);
+    if (graphicState.isPressed() && event == UserEvent::Release && button == Mouse::Left) {
+        graphicState.updatePressState(false);
         return false;
     }
-    if (!isHovered && event == UserEvent::Move && contains(windowPosition)) {
-        ButtonBase::updateHoverState(true);
+    if (!graphicState.isHovered() && event == UserEvent::Move && contains(windowPosition)) {
+        graphicState.updateHoverState(true);
         return false;
     }
-    if (isHovered && event == UserEvent::Move && !contains(windowPosition)) {
-        ButtonBase::updateHoverState(false);
+    if (graphicState.isHovered() && event == UserEvent::Move && !contains(windowPosition)) {
+        graphicState.updateHoverState(false);
         return false;
     }
     return false;

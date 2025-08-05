@@ -9,13 +9,15 @@
 
 #include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
+#include "Core/TextInputProcessor.hpp"
 /**
  * @class InputManager
  * @brief Handles input events and manages mouse state.
  */
 class InputManager {
-    MouseState mouseState;  ///< Manages mouse button subscriptions and events.
+    MouseState mouseState;  
     KeyboardState keyboardState;
+    TextInputProcessor textInputProcessor;  
    public:
    
    /**
@@ -29,6 +31,7 @@ class InputManager {
      */
     inline MouseState& getMouseState() { return mouseState; };
     inline KeyboardState& getKeyboardState() { return keyboardState; }
+    inline TextInputProcessor& getTextInputProcessor() { return textInputProcessor; }
     private:
     InputManager();
     InputManager(const InputManager&) = delete;

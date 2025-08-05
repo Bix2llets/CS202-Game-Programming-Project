@@ -6,16 +6,17 @@
 #include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/SceneManager.hpp"
+#include "Core/TextInputProcessor.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Scene/BlankScene.hpp"
 #include "Scene/MainMenu.hpp"
+#include "Scene/Mock/TestScene.hpp"
 #include "Scene/Mock/TowerRotationMockScene.hpp"
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-
 Application::Application() : isRunning{true} {
     if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
@@ -57,11 +58,15 @@ Application::Application() : isRunning{true} {
     Logger::success("Resource loading");
     SceneManager::getInstance().registerScene<MainMenu>("Main menu");
     SceneManager::getInstance().registerScene<Setting>("Setting");
-    SceneManager::getInstance().registerScene<TowerRotationMockScene>("Tower Test");
+    SceneManager::getInstance().registerScene<TowerRotationMockScene>(
+        "Tower Test");
+    SceneManager::getInstance().registerScene<TestScene>("Test Scene");
 
-    SceneManager::getInstance().changeScene("Tower Test");  // Start with the tower test scene
+    SceneManager::getInstance().changeScene(
+        "Tower Test");  // Start with the tower test scene
 
-    SceneManager::getInstance().loadLevel("Gameplay", levelFactory.getLevel("example_level"));
+    SceneManager::getInstance().loadLevel(
+        "Gameplay", levelFactory.getLevel("example_level"));
 
     SceneManager::getInstance().changeScene("Main menu");
     // sceneManager.changeScene("Setting");
@@ -106,6 +111,10 @@ void Application::run() {
                         SceneManager::getInstance().changeScene("Tower Test");
                         continue;
                     }
+                    if (keyPress->code == sf::Keyboard::Key::F3) {
+                        SceneManager::getInstance().changeScene("Test Scene");
+                        continue;
+                    }
                 }
             }
 
@@ -124,7 +133,8 @@ void Application::run() {
             fpsDisplay.setString(std::to_string(frameCount));
             frameCount = 0;
         }
-        Window::getInstance().getRenderWindow().clear(sf::Color(183, 183, 183, 255));
+        Window::getInstance().getRenderWindow().clear(
+            sf::Color(183, 183, 183, 255));
         SceneManager::getInstance().render();
         Window::getInstance().toggleGUIMode();
         Window::getInstance().getRenderWindow().draw(fpsDisplay);

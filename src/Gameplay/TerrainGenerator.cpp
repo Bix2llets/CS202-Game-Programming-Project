@@ -126,7 +126,7 @@ std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(TerrainParameter p
             map = map + std::to_string(value) + " ";
 
         }
-        Logger::debug(map);
+        // Logger::debug(map);
     }
 
     return std::move(result);

@@ -102,4 +102,5 @@ class RectangularButton : public ButtonBase {
     std::function<void(RectangularButton*)> onClick;
 
     bool contains(const sf::Vector2f& windowPosition);
+    sf::Vector2f position;
 };

@@ -24,8 +24,8 @@ void RectangularButton::draw(sf::RenderTarget& target,
     sf::Color fillColor;
     sf::Color textColor;
 
-    fillColor = getFillColor();
-    textColor = getTextColor();
+    fillColor = graphicState.getFillColor();
+    textColor = graphicState.getTextColor();
     if (backgroundSprite) {
         sf::Sprite renderingSprite = *backgroundSprite;
         renderingSprite.setColor(fillColor);
@@ -35,8 +35,8 @@ void RectangularButton::draw(sf::RenderTarget& target,
         rect.setPosition(geometricInfo.position);
         rect.setSize(geometricInfo.size);
         rect.setFillColor(fillColor);
-        rect.setOutlineColor(getBorderColor());
-        rect.setOutlineThickness(style.getBorderWidth());
+        rect.setOutlineColor(graphicState.getBorderColor());
+        rect.setOutlineThickness(graphicState.getStyle().getBorderWidth());
 
         target.draw(rect, states);
     }
@@ -65,22 +65,22 @@ bool RectangularButton::onMouseEvent(Mouse button, UserEvent event,
                                      const sf::Vector2f& windowPosition) {
     if (button == Mouse::Left && event == UserEvent::Press)
         if (contains(static_cast<sf::Vector2f>(windowPosition))) {
-            updatePressState(true);
+            graphicState.updatePressState(true);
             click();
 
             return true;
         }
 
     if (button == Mouse::Left && event == UserEvent::Release) {
-        updatePressState(false);
+        graphicState.updatePressState(false);
         return false;
     }
     if (event == UserEvent::Move) {
         if (contains(static_cast<sf::Vector2f>(windowPosition))) {
-            updateHoverState(true);
+            graphicState.updateHoverState(true);
             return true;
         } else {
-            updateHoverState(false);
+            graphicState.updateHoverState(false);
             return false;
         }
     }
@@ -116,7 +116,7 @@ void RectangularButton::setDisplayText(std::string text) {
 }
 
 void RectangularButton::resetAnimation() {
-    ButtonBase::resetAnimation();
+    graphicState.resetAnimation();
 }
 
 bool RectangularButton::onScrollEvent(float delta,
