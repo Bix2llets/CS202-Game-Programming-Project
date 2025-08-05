@@ -49,7 +49,7 @@ void SellButton::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 bool SellButton::onMouseEvent(Mouse button, UserEvent event,
                               const sf::Vector2f& worldPosition,
                               const sf::Vector2f& windowPosition) {
-    if (!isPressed && event == UserEvent::Press && contains(worldPosition) &&
+    if (!isPressed && event == UserEvent::Press && contains(windowPosition) &&
         button == Mouse::Left) {
         if (parentRadialMenu) {
             parentRadialMenu->notify("sell");
@@ -63,11 +63,11 @@ bool SellButton::onMouseEvent(Mouse button, UserEvent event,
         ButtonBase::updatePressState(false);
         return false;
     }
-    if (!isHovered && event == UserEvent::Move && contains(worldPosition)) {
+    if (!isHovered && event == UserEvent::Move && contains(windowPosition)) {
         ButtonBase::updateHoverState(true);
         return false;
     }
-    if (isHovered && event == UserEvent::Move && !contains(worldPosition)) {
+    if (isHovered && event == UserEvent::Move && !contains(windowPosition)) {
         ButtonBase::updateHoverState(false);
         return false;
     }

@@ -107,7 +107,7 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             Tower *tower = std::any_cast<Tower *>(sender);
 
             Currency amount = tower->getTotalCost();
-            amount = amount * 0.8f;
+            amount = amount * 0.6f;
             budget += amount;
             entityManager.removeTower(tower);
 
