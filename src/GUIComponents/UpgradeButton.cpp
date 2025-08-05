@@ -301,3 +301,8 @@ sf::Color UpgradeButton::getTextColor() {
     }
     return textColor;
 }
+
+UpgradeButton& UpgradeButton::setIsCapped(bool val) {
+    isCapped = val;
+    return *this;
+}

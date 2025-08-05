@@ -18,6 +18,7 @@ class UpgradeButton : public ButtonBase {
     UpgradeButton& setUpgradeManager(UpgradeManager &target);
     UpgradeButton& setUpgradeID(int id);
     UpgradeButton& setCanUpgrade(bool val);
+    UpgradeButton& setIsCapped(bool val);
     void update() override;
     
     void refreshInfo();

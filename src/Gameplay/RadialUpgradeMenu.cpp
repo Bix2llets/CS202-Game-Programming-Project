@@ -158,6 +158,13 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
 
 void RadialUpgradeMenu::update() {
     if (upgradeManager)
+
+        if (upgradeManager->isTotalUpgradeLimitReached()) {
+            for (auto& button : upgradeButtons) {
+                button.setIsCapped(true);
+            }
+        } 
+        
         for (int i = 0; i < upgradeManager->getAllUpgradeTypes().size(); i++) {
             if (upgradeManager->canUpgrade(i + 1, parentLevel.getBudget()))
                 upgradeButtons[i].setCanUpgrade(true);
