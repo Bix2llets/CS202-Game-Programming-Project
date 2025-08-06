@@ -10,8 +10,8 @@
 #include "Core/SceneManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
-#include "GUIComponents/ButtonBuilder.hpp"
-#include "GUIComponents/button.hpp"
+#include "GUIComponents/RectangularButton.hpp"
+#include "GUIComponents/RectangularButtonBuilder.hpp"
 Setting::Setting() {
     createButtons();
     setupButtonMessages();
@@ -44,77 +44,85 @@ void Setting::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 
 void Setting::createButtons() {
     const sf::Vector2f buttonSize = {120, 50};
-    ButtonBuilder builder(*this);
-    musicVolumeDecrement =
-        builder.reset()
-            .setPosition({220.f, 20.f})
-            .setSize(buttonSize)
-            .setCallback([this](Button* button) { notify("Music Decrease"); })
-            .setText("MusicDec")
-            .loadJson("basic_button")
-            .build();
+    RectangularButtonBuilder builder(*this);
+    musicVolumeDecrement = builder.reset()
+                               .setPosition({220.f, 20.f})
+                               .setSize(buttonSize)
+                               .setCallback([this](RectangularButton* button) {
+                                   notify("Music Decrease");
+                               })
+                               .setText("MusicDec")
+                               .loadJson("basic_button")
+                               .build();
 
-    musicVolumeIncrement =
-        builder.reset()
-            .setPosition({370.f, 20.f})
-            .setSize(buttonSize)
-            .setCallback([this](Button* button) { notify("Music Increase"); })
-            .setText("MusicInc")
-            .loadJson("basic_button")
-            .build();
-    soundVolumeDecrement =
-        builder.reset()
-            .setPosition({220.f, 220.f})
-            .setSize(buttonSize)
-            .setCallback([this](Button* button) { notify("Sound Decrease"); })
-            .setText("SoundDec")
-            .loadJson("basic_button")
-            .build();
+    musicVolumeIncrement = builder.reset()
+                               .setPosition({370.f, 20.f})
+                               .setSize(buttonSize)
+                               .setCallback([this](RectangularButton* button) {
+                                   notify("Music Increase");
+                               })
+                               .setText("MusicInc")
+                               .loadJson("basic_button")
+                               .build();
+    soundVolumeDecrement = builder.reset()
+                               .setPosition({220.f, 220.f})
+                               .setSize(buttonSize)
+                               .setCallback([this](RectangularButton* button) {
+                                   notify("Sound Decrease");
+                               })
+                               .setText("SoundDec")
+                               .loadJson("basic_button")
+                               .build();
 
-    soundVolumeIncrement =
-        builder.reset()
-            .setPosition({370.f, 220.f})
-            .setSize(buttonSize)
-            .setCallback([this](Button* button) { notify("Sound Increase"); })
-            .setText("SoundInc")
-            .loadJson("basic_button")
-            .build();
+    soundVolumeIncrement = builder.reset()
+                               .setPosition({370.f, 220.f})
+                               .setSize(buttonSize)
+                               .setCallback([this](RectangularButton* button) {
+                                   notify("Sound Increase");
+                               })
+                               .setText("SoundInc")
+                               .loadJson("basic_button")
+                               .build();
 
-    resolution1 =
-        builder.reset()
-            .setPosition({200.f, 400.f})
-            .setSize(buttonSize)
-            .setCallback([this](Button* button) { notify("Resolution1"); })
-            .setText("Res1")
-            .loadJson("lerp_testing")
-            .build();
+    resolution1 = builder.reset()
+                      .setPosition({200.f, 400.f})
+                      .setSize(buttonSize)
+                      .setCallback([this](RectangularButton* button) {
+                          notify("Resolution1");
+                      })
+                      .setText("Res1")
+                      .loadJson("lerp_testing")
+                      .build();
 
-    resolution2 =
-        builder.reset()
-            .setPosition({350.f, 400.f})
-            .setSize(buttonSize)
-            .setCallback([this](Button* button) { notify("Resolution2"); })
-            .setText("Res2")
-            .loadJson("basic_button")
-            .build();
+    resolution2 = builder.reset()
+                      .setPosition({350.f, 400.f})
+                      .setSize(buttonSize)
+                      .setCallback([this](RectangularButton* button) {
+                          notify("Resolution2");
+                      })
+                      .setText("Res2")
+                      .loadJson("basic_button")
+                      .build();
 
-    resolution3 =
-        builder.reset()
-            .setPosition({500.f, 400.f})
-            .setSize(buttonSize)
-            .setCallback([this](Button* button) { notify("Resolution3"); })
-            .setText("Res3")
-            .loadJson("basic_button")
-            .build();
+    resolution3 = builder.reset()
+                      .setPosition({500.f, 400.f})
+                      .setSize(buttonSize)
+                      .setCallback([this](RectangularButton* button) {
+                          notify("Resolution3");
+                      })
+                      .setText("Res3")
+                      .loadJson("basic_button")
+                      .build();
 
-    backButton =
-        builder.reset()
-            .setPosition({50.f, 50.f})
-            .setSize(buttonSize)
-            .setCallback([this](Button* button) { notify("Main menu"); })
-            .setText("Main menu")
-            .loadJson("basic_button")
-            .build();
+    backButton = builder.reset()
+                     .setPosition({50.f, 50.f})
+                     .setSize(buttonSize)
+                     .setCallback([this](RectangularButton* button) {
+                         notify("Main menu");
+                     })
+                     .setText("Main menu")
+                     .loadJson("basic_button")
+                     .build();
 }
 
 void Setting::setupButtonMessages() {

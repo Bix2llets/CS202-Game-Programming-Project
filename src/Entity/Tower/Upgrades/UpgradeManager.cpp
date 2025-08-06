@@ -7,7 +7,7 @@
 #include "Entity/Tower/Tower.hpp"
 #include <algorithm>
 
-UpgradeResult UpgradeManager::attemptUpgrade(int typeId, Currency& playerCurrency) {
+UpgradeResult UpgradeManager::upgrade(int typeId) {
     // Check if upgrade type exists
     auto upgradeTypeIt = upgradeTypes.find(typeId);
     if (upgradeTypeIt == upgradeTypes.end()) {
@@ -35,14 +35,10 @@ UpgradeResult UpgradeManager::attemptUpgrade(int typeId, Currency& playerCurrenc
     }
 
     // Check if player has sufficient funds
-    if (!playerCurrency.canAfford(details->cost)) {
-        return UpgradeResult::InsufficientFunds;
-    }
 
-    // Perform the upgrade
-    playerCurrency.pay(details->cost);
+    Currency upgradeCost = upgradeType->getLevelDetails(nextLevel)->cost;
+    ownerTower->addTotalCost(upgradeCost);
     applyUpgrade(typeId, nextLevel);
-
     return UpgradeResult::Success;
 }
 
@@ -112,7 +108,7 @@ bool UpgradeManager::canUpgrade(int typeId, const Currency& playerCurrency) cons
     return playerCurrency.canAfford(details->cost);
 }
 
-const UpgradeDetails* UpgradeManager::getNextUpgradeCost(int typeId) const {
+const UpgradeDetails* UpgradeManager::getNextUpgradeDetail(int typeId) const {
     auto upgradeTypeIt = upgradeTypes.find(typeId);
     if (upgradeTypeIt == upgradeTypes.end()) {
         return nullptr;

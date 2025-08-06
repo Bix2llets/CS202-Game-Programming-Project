@@ -23,14 +23,15 @@ enum class BehaviorType;
 #include <map>
 #include <memory>
 #include <string>
-#include "Entity/Modules/Timer.hpp"
-#include "Entity/Modules/SpriteAnimation.hpp"
+
+#include "Base/Constants.hpp"
 #include "Entity/Entity.hpp"
+#include "Entity/Modules/SpriteAnimation.hpp"
+#include "Entity/Modules/Timer.hpp"
 #include "Entity/Tower/TowerStat.hpp"
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Gameplay/Currency.hpp"
-#include "Base/Constants.hpp"
 
 /**
  * @class Tower
@@ -41,42 +42,49 @@ enum class BehaviorType;
  * classes should implement specific attack or support behaviors.
  */
 class Tower : public Entity {
+    friend class TowerBuilder;    ///< Allow TowerBuilder to access private
+                                  ///< members
+    friend class UpgradeManager;  ///< Allow UpgradeManager to access private
+                                  ///< members
 
-friend class TowerBuilder; ///< Allow TowerBuilder to access private members
-friend class UpgradeManager; ///< Allow UpgradeManager to access private members
-
-private:
+    private:
     Timer timer;  ///< Timer for tower actions
-    std::unique_ptr<TowerStat> stats;  ///< Pointer to tower statistics/attributes
+    std::unique_ptr<TowerStat>
+        stats;  ///< Pointer to tower statistics/attributes
     std::unique_ptr<CombatBehavior> combatBehaviorPointer;
     std::unique_ptr<ResourceBehavior> resourceBehaviorPointer;
     std::unique_ptr<GlowingBehavior> glowingBehaviorPointer;
-    std::unique_ptr<UpgradeManager> upgradeManager; ///< Manager for tower upgrades
-    Level* levelRef = nullptr; ///< Reference to Level if scene is a Level, else nullptr
+    std::unique_ptr<UpgradeManager>
+        upgradeManager;  ///< Manager for tower upgrades
+    Level* levelRef =
+        nullptr;  ///< Reference to Level if scene is a Level, else nullptr
 
     // Tower identity and properties
-    std::string id;          ///< Unique identifier for the tower type
-    std::string name;        ///< Display name of the tower
-    std::string description; ///< Description of the tower's capabilities
-    bool buildable;          ///< Whether the tower can be directly built (if false, must be evolved)
-    Currency cost;           ///< Cost required to build this tower
+    std::string id;           ///< Unique identifier for the tower type
+    std::string name;         ///< Display name of the tower
+    std::string description;  ///< Description of the tower's capabilities
+    bool buildable;  ///< Whether the tower can be directly built (if false,
+                     ///< must be evolved)
+    Currency cost;   ///< Cost required to build this tower
+    Currency totalCost;
 
     // Dual sprite system
-    sf::Sprite base;   ///< Base sprite with independent rotation
-    sf::Angle baseRotation;          ///< Rotation angle for the base sprite
-    SpriteAnimation turretAnimation; ///< Animation for the turret sprite (originally from Entity)
+    sf::Sprite base;                  ///< Base sprite with independent rotation
+    sf::Angle baseRotation;           ///< Rotation angle for the base sprite
+    SpriteAnimation turretAnimation;  ///< Animation for the turret sprite
+                                      ///< (originally from Entity)
 
     sf::RenderTexture iconRenderTexture; ///< Render texture for the tower icon
     sf::Sprite icon; ///< Non-animated sprite of the tower for UI display
 
     // Texture dimensions
-    float textureWidth;      ///< Desired width for tower textures
-    float textureHeight;     ///< Desired height for tower textures
+    float textureWidth;   ///< Desired width for tower textures
+    float textureHeight;  ///< Desired height for tower textures
 
     // Target tracking
-    Enemy* mainTarget;       ///< Current main target enemy for barrel tracking
+    Enemy* mainTarget;  ///< Current main target enemy for barrel tracking
 
-public:
+    public:
     /**
      * @brief Construct a new Tower object.
      * @param scene Reference to the game scene.
@@ -84,7 +92,8 @@ public:
      * @param pos Position to place the tower.
      * @param angle Initial rotation angle.
      */
-    Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos = sf::Vector2f(0, 0),
+    Tower(Scene& scene, const std::string& id,
+          const sf::Vector2f& pos = sf::Vector2f(0, 0),
           const sf::Angle& angle = sf::radians(0.f));
 
     /**
@@ -180,7 +189,8 @@ public:
 
     /**
      * @brief Add a new behavior to the tower.
-     * Behaviors are placed in fixed slots: [0]=Combat, [1]=Resource, [2]=Glowing.
+     * Behaviors are placed in fixed slots: [0]=Combat, [1]=Resource,
+     * [2]=Glowing.
      * @param behavior Unique pointer to the behavior to add.
      */
     void addBehavior(std::unique_ptr<TowerBehavior> behavior);
@@ -189,24 +199,30 @@ public:
     /**
      * @brief Get the Combat Behavior object
      * This method returns the combat behavior if it exists.
-     * @return CombatBehavior* 
+     * @return CombatBehavior*
      */
-    CombatBehavior* getCombatBehavior() const { return combatBehaviorPointer.get(); }
+    CombatBehavior* getCombatBehavior() const {
+        return combatBehaviorPointer.get();
+    }
 
     /**
      * @brief Get the Resource Behavior object
      * This method returns the resource behavior if it exists.
-     * @return ResourceBehavior* 
+     * @return ResourceBehavior*
      */
-    ResourceBehavior* getResourceBehavior() const { return resourceBehaviorPointer.get(); }
-    
+    ResourceBehavior* getResourceBehavior() const {
+        return resourceBehaviorPointer.get();
+    }
+
     /**
      * @brief Get the Glowing Behavior object
      * This method returns the glowing behavior if it exists.
-     * @return GlowingBehavior* 
+     * @return GlowingBehavior*
      */
-    GlowingBehavior* getGlowingBehavior() const { return glowingBehaviorPointer.get(); }
-    
+    GlowingBehavior* getGlowingBehavior() const {
+        return glowingBehaviorPointer.get();
+    }
+
     /**
      * @brief Get the level reference if available.
      * @return Reference to the level.
@@ -218,9 +234,7 @@ public:
      * @brief Check if the tower is currently in a Level.
      * @return true if the tower is in a Level, false otherwise.
      */
-    bool isInLevel() const {
-        return levelRef != nullptr;
-    }
+    bool isInLevel() const { return levelRef != nullptr; }
 
     // Upgrade System Methods
 
@@ -240,10 +254,11 @@ public:
     /**
      * @brief Attempt to upgrade a specific upgrade type.
      * @param upgradeTypeId The upgrade type ID to upgrade.
-     * @param playerCurrency Reference to player's currency (will be modified if upgrade succeeds).
+     * @param playerCurrency Reference to player's currency (will be modified if
+     * upgrade succeeds).
      * @return Result of the upgrade attempt.
      */
-    UpgradeResult attemptUpgrade(int upgradeTypeId, Currency& playerCurrency);
+    UpgradeResult upgrade(int upgradeTypeId);
 
     /**
      * @brief Check if an upgrade type can be upgraded.
@@ -256,9 +271,10 @@ public:
     /**
      * @brief Get the cost for the next level of an upgrade type.
      * @param upgradeTypeId The upgrade type ID.
-     * @return Pointer to upgrade details for next level, or nullptr if not possible.
+     * @return Pointer to upgrade details for next level, or nullptr if not
+     * possible.
      */
-    const UpgradeDetails* getNextUpgradeCost(int upgradeTypeId) const;
+    const UpgradeDetails* getNextUpgradeDetail(int upgradeTypeId) const;
 
     /**
      * @brief Get the current level of a specific upgrade type.
@@ -277,7 +293,9 @@ public:
      * @brief Get the upgrade manager (const).
      * @return Pointer to the upgrade manager.
      */
-    const UpgradeManager* getUpgradeManager() const { return upgradeManager.get(); }
+    const UpgradeManager* getUpgradeManager() const {
+        return upgradeManager.get();
+    }
 
     /**
      * @brief Get the upgrade manager (non-const).
@@ -307,7 +325,8 @@ public:
 
     /**
      * @brief Check if the tower is directly buildable.
-     * @return bool True if the tower can be built directly, false if it must be evolved.
+     * @return bool True if the tower can be built directly, false if it must be
+     * evolved.
      */
     bool isBuildable() const { return buildable; }
 
@@ -340,23 +359,28 @@ public:
      * @return Pointer to the tower statistics.
      */
     TowerStat* getStats();
-    
+
     /**
      * @brief Get a specific statistic value (with upgrade bonuses) by name.
      * @param statName Name of the statistic to retrieve.
-     * @param defaultValue Default value to return if the statistic is not found.
-     * @return The value of the specified statistic including upgrade bonuses, or defaultValue if not found.
+     * @param defaultValue Default value to return if the statistic is not
+     * found.
+     * @return The value of the specified statistic including upgrade bonuses,
+     * or defaultValue if not found.
      */
     float getStat(const std::string& statName, float defaultValue = 0.0f) const;
-    
+
     /**
      * @brief Get base statistic value (without upgrade bonuses) by name.
      * @param statName Name of the statistic to retrieve.
-     * @param defaultValue Default value to return if the statistic is not found.
-     * @return The base value of the specified statistic, or defaultValue if not found.
+     * @param defaultValue Default value to return if the statistic is not
+     * found.
+     * @return The base value of the specified statistic, or defaultValue if not
+     * found.
      */
-    float getBaseStat(const std::string& statName, float defaultValue = 0.0f) const;
-    
+    float getBaseStat(const std::string& statName,
+                      float defaultValue = 0.0f) const;
+
     /**
      * @brief Check if tower has combat behavior.
      * @return True if tower has combat behavior.
@@ -367,43 +391,48 @@ public:
      * @brief Check if tower has resource behavior.
      * @return True if tower has resource behavior.
      */
-    bool hasResourceBehavior() const { return resourceBehaviorPointer != nullptr; }
+    bool hasResourceBehavior() const {
+        return resourceBehaviorPointer != nullptr;
+    }
 
     /**
      * @brief Check if tower has glowing behavior.
      * @return True if tower has glowing behavior.
      */
-    bool hasGlowingBehavior() const { return glowingBehaviorPointer != nullptr; }
-    
+    bool hasGlowingBehavior() const {
+        return glowingBehaviorPointer != nullptr;
+    }
+
     /**
      * @brief Get the desired texture width.
      * @return float The width that textures should be scaled to.
      */
     float getTextureWidth() const { return textureWidth; }
-    
+
     /**
      * @brief Get the desired texture height.
      * @return float The height that textures should be scaled to.
      */
     float getTextureHeight() const { return textureHeight; }
-    
+
     /**
      * @brief Get the current main target enemy.
      * @return Pointer to the main target enemy, or nullptr if no target is set.
      */
     Enemy* getMainTarget() const { return mainTarget; }
-    
+
     /**
      * @brief Check if the tower has a main target.
      * @return True if the tower has a main target, false otherwise.
      */
     bool hasMainTarget() const { return mainTarget != nullptr; }
-    
+
     // Setters
 
     /**
      * @brief Set the main target enemy for the tower.
-     * @param target Pointer to the enemy to target, or nullptr to clear the target.
+     * @param target Pointer to the enemy to target, or nullptr to clear the
+     * target.
      */
     void setMainTarget(Enemy* target) { mainTarget = target; }
 
@@ -415,4 +444,10 @@ public:
 
     bool contains(sf::Vector2f position);
     bool intersects(sf::Vector2f points[4]);
+
+    inline void addTotalCost(Currency amount) { totalCost += amount; }
+
+    Currency getTotalCost() const {
+        return totalCost;
+    }
 };

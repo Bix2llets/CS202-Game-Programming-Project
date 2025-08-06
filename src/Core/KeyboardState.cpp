@@ -10,7 +10,7 @@
 #include "Core/UserEvent.hpp"
 #include "Utility/SignalMap.hpp"
 #include "Utility/logger.hpp"
-#include "Utility/WindowScale.hpp"
+#include "Utility/Scaler.hpp"
 
 #include "Core/Window.hpp"
 void KeyboardState::addSubscriber(Key key, UserEvent event,
@@ -54,8 +54,8 @@ void KeyboardState::handleEvent(std::optional<sf::Event>& event) {
         static_cast<sf::Vector2f>(sf::Mouse::getPosition(window));
     sf::Vector2f worldPosititon =
         window.mapPixelToCoords(sf::Mouse::getPosition(window));
-    windowPosition = WindowScale::screenScale(windowPosition);
-    worldPosititon = WindowScale::screenScale(worldPosititon);
+    windowPosition = Scaler::screenScale(windowPosition);
+    worldPosititon = Scaler::screenScale(worldPosititon);
     if (keyPress) {
         Key key = SignalMap::mapSfmlKey(keyPress->code);
         std::list<KeyboardObserver*> observerList =

@@ -6,17 +6,14 @@
 #include "Core/JSONLoader.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/Window.hpp"
-#include "GUIComponents/ButtonBuilder.hpp"
+#include "GUIComponents/RectangularButtonBuilder.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Scene/Level.hpp"
 #include "Utility/Logger.hpp"
-#include "Utility/WindowScale.hpp"
-
-#include "Entity/Factory/TowerFactory.hpp"
-#include "Entity/Tower/Tower.hpp"
-
-TowerMenu::TowerMenu(const Currency& currencyRef, Level* level)
+#include "Utility/Scaler.hpp"
+#include "Utility/aligner.hpp"
+TowerMenu::TowerMenu(const Currency& currencyRef, Mediator& superMediator)
     : basePanel{*ResourceManager::getInstance().getTexture(
           "tower_selection_base")},
       level{level},
@@ -101,17 +98,31 @@ void TowerMenu::setResourceDisplay() {
     fixOriginIcon(scrapIcon);
     fixOriginIcon(petrolIcon);
 
-    scrapIcon.setPosition(position + sf::Vector2f{borderSize.x + scrapIcon.getLocalBounds().size.x / 2, 40});
-    scrapDisplay.setPosition(scrapIcon.getPosition() + sf::Vector2f{scrapIcon.getLocalBounds().size.x / 2.f, 0.f} + sf::Vector2f{10, 0});
-    petrolIcon.setPosition(position + sf::Vector2f{borderSize.x + petrolIcon.getLocalBounds().size.x / 2, 80});
-    petroleumDisplay.setPosition(petrolIcon.getPosition() + sf::Vector2f{petrolIcon.getLocalBounds().size.x / 2.f, 0.f} + sf::Vector2f{10, 0});
+    scrapIcon.setPosition(
+        position +
+        sf::Vector2f{borderSize.x + scrapIcon.getLocalBounds().size.x / 2, 40});
+    scrapDisplay.setPosition(
+        scrapIcon.getPosition() +
+        sf::Vector2f{scrapIcon.getLocalBounds().size.x / 2.f, 0.f} +
+        sf::Vector2f{10, 0});
+    petrolIcon.setPosition(
+        position +
+        sf::Vector2f{borderSize.x + petrolIcon.getLocalBounds().size.x / 2,
+                     80});
+    petroleumDisplay.setPosition(
+        petrolIcon.getPosition() +
+        sf::Vector2f{petrolIcon.getLocalBounds().size.x / 2.f, 0.f} +
+        sf::Vector2f{10, 0});
 
     petroleumDisplay.setFillColor(sf::Color::White);
     scrapDisplay.setFillColor(sf::Color::White);
 }
 
 void TowerMenu::setTowerButtonDisplay() {
-    const sf::Vector2f buttonSize = {80, 90};
+    auto towerList = JSONLoader::getInstance().getAllTowers();
+
+    const sf::Vector2f buttonSize = {80, 120};
+    const std::string buttonStyleID = "background_basic";
     // * Index is the size of the vector pre-push_back
 
     // auto getStaticTowerTexture = [](nlohmann::json jsonFile) {
@@ -142,15 +153,19 @@ void TowerMenu::setTowerButtonDisplay() {
     //     basePlate.draw(baseTexture);
     //     basePlate.draw(turretTexture);
 
-    //     basePlate.display();
-    //     return std::move(basePlate.getTexture());
-    // };
+        basePlate.display();
+        return std::move(basePlate.getTexture());
+    };
+    RectangularButtonBuilder builder(*this);
 
-    ButtonBuilder builder(*this);
-    for (const auto& [towerName, tower] : towerList) {
-        Logger::debug(std::format("Adding tower button for {}", towerName));
-
+    for (std::pair<std::string, nlohmann::json> entry : towerList) {
         // * Cosmetic towers
+        nlohmann::json& jsonFile = entry.second;
+        if (jsonFile["buildable"] == false) {
+            Logger::debug(
+                std::format("Skipping cosmetic tower: {}", entry.first));
+            continue;
+        }
         sf::RenderTexture buttonRenderTexture;
         if (buttonRenderTexture.resize(static_cast<sf::Vector2u>(buttonSize))) {
             Logger::debug("Resized successfully");
@@ -214,11 +229,22 @@ void TowerMenu::setTowerButtonDisplay() {
             {0.f, petroleumCostDisplay.getLocalBounds().position.y +
                       petroleumCostDisplay.getLocalBounds().size.y / 2.f});
         int yOffset = 35;
-        petroleumCostDisplay.setPosition({25, towerSprite.getPosition().y + yOffset+ 5});
-        petroleumIcon.setPosition({10, towerSprite.getPosition().y + yOffset + 5});
-        scrapCostDisplay.setPosition({25, towerSprite.getPosition().y + yOffset + 30});
-        scrapIcon.setPosition({10, towerSprite.getPosition().y + yOffset + 30});
+        petroleumCostDisplay.setPosition(
+            {30, towerSprite.getPosition().y + yOffset + 35});
+        petroleumIcon.setPosition(
+            {15, towerSprite.getPosition().y + yOffset + 35});
+        scrapCostDisplay.setPosition(
+            {30, towerSprite.getPosition().y + yOffset + 5});
+        scrapIcon.setPosition({15, towerSprite.getPosition().y + yOffset + 5});
 
+        sf::RectangleShape background;
+        background.setSize(sf::Vector2f(buttonRenderTexture.getSize() - sf::Vector2u{4, 4}));
+        background = Aligner::align(background);
+        background.setPosition(static_cast<sf::Vector2f>(buttonRenderTexture.getSize()) / 2.f);
+        background.setOutlineThickness(2);
+        background.setFillColor(sf::Color::Transparent);
+        background.setOutlineColor(sf::Color(0, 0, 0, 255));
+        buttonRenderTexture.draw(background);
         buttonRenderTexture.draw(towerSprite);
         buttonRenderTexture.draw(petroleumCostDisplay);
         buttonRenderTexture.draw(scrapCostDisplay);
@@ -239,13 +265,14 @@ void TowerMenu::setTowerButtonDisplay() {
         buttonPosition.y =
             row * (buttonGap.y + buttonSize.y) + position.y + 120;
 
-        std::unique_ptr<Button> button =
+        std::unique_ptr<RectangularButton> button =
             builder.reset()
-                .loadJson("background_basic")
+                .loadJson(buttonStyleID)
                 .setBackground(combinedTowerTextures.back().get())
                 .setPosition({buttonPosition})
                 .setSize(buttonSize)
-                .setCallback([this, towerSprite, towerName](Button* button) {
+                .setCallback([this, towerSprite,
+                              entry](RectangularButton* button) {
                     Logger::debug("Button presseed");
                     notify("tower_button_pressed", towerName, towerSprite);
                 })
@@ -299,13 +326,13 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
     bool isProcessed = false;
 
     if (mouse == Mouse::Left && event == UserEvent::Press) {
-        for (std::unique_ptr<Button>& button : towerButtons)
+        for (std::unique_ptr<RectangularButton>& button : towerButtons)
             if (button->onMouseEvent(mouse, event, worldPosition,
                                      windowPosition))
                 return true;
 
         if (isTowerSelected &&
-            WindowScale::screenScale(baseRectangle.getGlobalBounds())
+            Scaler::screenScale(baseRectangle.getGlobalBounds())
                 .contains(windowPosition)) {
             notify("press_inside");
             return true;
@@ -318,7 +345,7 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
     }
 
     if (event == UserEvent::Move) {
-        for (std::unique_ptr<Button>& button : towerButtons) {
+        for (std::unique_ptr<RectangularButton>& button : towerButtons) {
             if (button->onMouseEvent(Mouse::None, event, worldPosition,
                                      windowPosition))
                 continue;

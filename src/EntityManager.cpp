@@ -5,10 +5,8 @@
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
-#include "Scene/Level.hpp"
-
 #include "GUIComponents/cursor.hpp"
-
+#include "Scene/Level.hpp"
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
@@ -75,10 +73,8 @@ void EntityManager::cleanup() {
                                Logger::debug(std::format(
                                    "Reward: {} {}", enemy->getPetroleumReward(),
                                    enemy->getScrapReward()));
-                               level.notify("add_petrol", *enemy,
-                                            enemy->getPetroleumReward());
-                               level.notify("add_scrap", *enemy,
-                                            enemy->getScrapReward());
+                               level.notify("add_currency", *enemy,
+                                            Currency(enemy->getScrapReward(), enemy->getPetroleumReward()));
                                return true;
                            }
                            return false;
@@ -153,11 +149,27 @@ bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
                 break;
             }
         }
-        if (foundEnemy)
+        if (foundEnemy) {
             EnemyPanel::getInstance().setEnemy(*foundEnemy);
-        else
-            EnemyPanel::getInstance().clearEnemy();
-        return true;
+            return true;
+        }
+        EnemyPanel::getInstance().clearEnemy();
+
+        Tower* foundTower = nullptr;
+        for (auto& tower : towers) {
+            if (tower->contains(worldPosition)) {
+                foundTower = tower.get();
+                break;
+            }
+        }
+
+        if (foundTower) {
+            level.notify("focus_tower", foundTower);
+            return true;
+        }
+        level.notify("unfocus_tower", nullptr);
+
+        return false;
     }
 
     if (event == UserEvent::Move) {
@@ -202,4 +214,15 @@ bool EntityManager::onScrollEvent(float delta,
                                   const sf::Vector2f& worldPosition,
                                   const sf::Vector2f& windowPosition) {
     return false;
+}
+
+void EntityManager::removeTower(Tower* tower) {
+    if (!tower) return;
+    for (auto& x : towers) {
+        if (x.get() == tower) {
+            x.reset();
+            break;
+        }
+    }
+    cleanup();
 }

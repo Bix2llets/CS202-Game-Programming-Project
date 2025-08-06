@@ -93,14 +93,15 @@ bool Currency::operator!=(const Currency& other) const {
 }
 
 // Scalar multiplication
-Currency Currency::operator*(int multiplier) const {
-    int safeMultiplier = std::max(0, multiplier);  // Ensure non-negative
-    return Currency(scrap.value * safeMultiplier,
-                    petroleum.value * safeMultiplier);
+Currency Currency::operator*(float multiplier) const {
+    float safeMultiplier = std::max(0.f, multiplier);  // Ensure non-negative
+    int scrapVal = scrap.value * safeMultiplier;
+    int petrolVal = petroleum.value * safeMultiplier;
+    return Currency(scrapVal, petrolVal);
 }
 
-Currency& Currency::operator*=(int multiplier) {
-    int safeMultiplier = std::max(0, multiplier);  // Ensure non-negative
+Currency& Currency::operator*=(float multiplier) {
+    float safeMultiplier = std::max(0.f, multiplier);  // Ensure non-negative
     scrap.value *= safeMultiplier;
     petroleum.value *= safeMultiplier;
     return *this;

@@ -10,7 +10,7 @@
 #include <string>
 
 #include "Core/ResourceManager.hpp"
-#include "GUIComponents/button.hpp"
+#include "GUIComponents/RectangularButton.hpp"
 #include "GUIComponents/mediator.hpp"
 #include "Scene/Scene.hpp"
 
@@ -20,8 +20,8 @@
  */
 class MainMenu : public Scene {
    protected:
-   std::unique_ptr<Button> testBtn;
-    std::unique_ptr<Button> settingBtn;
+   std::unique_ptr<RectangularButton> testBtn;
+    std::unique_ptr<RectangularButton> settingBtn;
     void testSceneSwitching();
 
    public:

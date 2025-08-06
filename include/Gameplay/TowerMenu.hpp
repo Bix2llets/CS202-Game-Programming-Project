@@ -5,7 +5,7 @@
 #include "Core/MouseObserver.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "GUIComponents/Mediator.hpp"
-#include "GUIComponents/button.hpp"
+#include "GUIComponents/RectangularButton.hpp"
 #include "Gameplay/Currency.hpp"
 
 class TowerMenu : public Mediator , public MouseObserver  {
@@ -13,7 +13,7 @@ private:
     std::map<std::string, std::unique_ptr<Tower>> towerList;
 
     sf::Sprite basePanel;
-    std::vector<std::unique_ptr<Button>> towerButtons;
+    std::vector<std::unique_ptr<RectangularButton>> towerButtons;
     std::vector<std::unique_ptr<sf::Texture>> combinedTowerTextures;
     std::vector<std::unique_ptr<sf::Texture>> towerTextures;
     std::vector<sf::RenderTexture> renderTexes;
@@ -23,7 +23,7 @@ private:
 
     const sf::Vector2i buttonGap = {5, 5};
     const sf::Vector2i buttonSize = {80, 80};
-    const sf::Vector2f borderSize = {5, 5};
+    const sf::Vector2f borderSize = {10, 10};
     const int BUTTON_PER_ROW = 2;
 
     const Currency& budgetRef;

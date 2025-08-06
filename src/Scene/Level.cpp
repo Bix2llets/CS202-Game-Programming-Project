@@ -30,31 +30,18 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
       isRunning{true},
       map(parameter),
       entityManager{map, *this},
-      menu{budget, this},
-      tracker(*this) {
-
-    subscribeKeyboard(Key::Space, UserEvent::Press,
-                      InputManager::getInstance().getKeyboardState());
-    subscribeKeyboard(Key::G, UserEvent::Press,
-                      InputManager::getInstance().getKeyboardState());
-
-    entityManager.subscribeKeyboard(
-        Key::D, UserEvent::Press,
-        InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(
-        Key::F, UserEvent::Press,
-        InputManager::getInstance().getKeyboardState());
-
+      menu{budget, *this},
+      tracker(*this),
+      upgradeMenu(*this) {
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
     subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
-    
-    subscribe("add_petrol", [this](std::any sender, std::any data) {
+    subscribe("add_currency", [this](std::any sender, std::any data) {
         try {
-            int petrolAmount = std::any_cast<int>(data);
-            budget.addPetroleum(petrolAmount);
+            Currency currency = std::any_cast<Currency>(data);
+            budget += currency;
             Window::getInstance().toggleUserMode();
 
             if (Cursor::getInstance().isDisplaying())
@@ -67,14 +54,13 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
                 }
 
         } catch (const std::bad_any_cast &e) {
-            Logger::error("Sent illegal signal on add petrol");
+            Logger::error("Sent illegal signal on adding petroleum");
         }
     });
-
-    subscribe("add_scrap", [this](std::any sender, std::any data) {
+    subscribe("subtract_currency", [this](std::any sender, std::any data) {
         try {
-            int scrapAmount = std::any_cast<int>(data);
-            budget.addScraps(scrapAmount);
+            Currency currency = std::any_cast<Currency>(data);
+            budget -= currency;
             Window::getInstance().toggleUserMode();
             if (Cursor::getInstance().isDisplaying())
                 if (isPlacementValid(
@@ -86,7 +72,7 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
                 }
 
         } catch (const std::bad_any_cast &e) {
-            Logger::error("Sent illegal signal on add scrap");
+            Logger::error("Sent illegal signal on subtracting budget");
         }
     });
     subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
@@ -106,18 +92,44 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
             entityManager.addTower(std::move(newTower));
         }
     });
+
+    subscribe("sell_tower", [this](std::any sender, std::any data) {
+        try {
+            Tower *tower = std::any_cast<Tower *>(sender);
+
+            Currency amount = tower->getTotalCost();
+            amount = amount * 0.6f;
+            budget += amount;
+            entityManager.removeTower(tower);
+
+            upgradeMenu.removeFocus();
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on sell tower");
+            return;
+        }
+    });
+
+    subscribe("focus_tower", [this](std::any sender, std::any data) {
+        try {
+            Tower *tower = std::any_cast<Tower *>(sender);
+            upgradeMenu.setFocus(tower);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on focus tower");
+            return;
+        }
+    });
+
+    subscribe("unfocus_tower", [this](std::any sender, std::any data) {
+        upgradeMenu.removeFocus();
+    });
 }
 
-Level::~Level() {
-    MouseState &mouseState = InputManager::getInstance().getMouseState();
-    unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
-    unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
-    unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
-    unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
-}
-
+Level::~Level() {}
 void Level::update() {
     menu.update();
+    if (upgradeMenu.isDisplaying()) {
+        upgradeMenu.update();
+    }
     if (!isRunning) return;
 
     entityManager.update();
@@ -150,7 +162,11 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     // drawBackground(target, state);
     Window::getInstance().toggleUserMode();
     map.render(state);
+
     entityManager.render(state);
+    if (upgradeMenu.isDisplaying()) {
+        upgradeMenu.render(state);
+    }
 
     Window::getInstance().toggleGUIMode();
     menu.render(state);
@@ -195,17 +211,32 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 }
 
 void Level::onLoad() {
+    subscribeKeyboard(Key::Space, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    subscribeKeyboard(Key::G, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(
+        Key::D, UserEvent::Press,
+        InputManager::getInstance().getKeyboardState());
+    entityManager.subscribeKeyboard(
+        Key::F, UserEvent::Press,
+        InputManager::getInstance().getKeyboardState());
     // TODO: Register enemies and towers on left click, open side menu showing
     // stats
-    entityManager.subscribeMouse(Mouse::Left, UserEvent::Press,
-                                 InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {
     // TODO: Unregister enemies and towers on left click, close side menu
-    entityManager.unSubscribeMouse(Mouse::Left, UserEvent::Press,
-                                   InputManager::getInstance().getMouseState());
     EnemyPanel::getInstance().clearEnemy();
+    Cursor::getInstance().clearCarryingTower();
+    Cursor::getInstance().removeRenderImage();
+    upgradeMenu.removeFocus();
+
+    MouseState &mouseState = InputManager::getInstance().getMouseState();
+    unSubscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
+    unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
+    unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
 }
 
 bool Level::isWaveFinished() {
@@ -225,8 +256,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
     }
 
     if (key == Key::G && event == UserEvent::Press) {
-        notify("add_petrol", 0, 10);
-        notify("add_scrap", 0, 10);
+        notify("add_currency", 0, Currency(10, 10));
         return true;
     }
     return false;
@@ -246,6 +276,10 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
             Cursor::getInstance().setInvalidPlacement();
         }
     }
+
+    if (upgradeMenu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
+        return true;
+    }
     if (entityManager.onMouseEvent(mouse, event, worldPosition,
                                    windowPosition)) {
         return true;
@@ -260,8 +294,11 @@ bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
 }
 
 bool Level::isPlacementValid(sf::Vector2f worldPosition) {
-    // Window::getInstance().toggleUserMode();
-    // if (menu.contains((sf::Vector2f)Window::getInstance().getRenderWindow().mapCoordsToPixel(worldPosition))) return false;
+    Window::getInstance().toggleUserMode();
+    if (menu.contains((sf::Vector2f)Window::getInstance()
+                          .getRenderWindow()
+                          .mapCoordsToPixel(worldPosition)))
+        return false;
     std::string towerID = Cursor::getInstance().getCarryingTowerID();
 
     nlohmann::json obj = JSONLoader::getInstance().getTower(towerID);

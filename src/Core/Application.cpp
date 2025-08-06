@@ -6,16 +6,17 @@
 #include "Core/KeyboardState.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/SceneManager.hpp"
+#include "Core/TextInputProcessor.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Scene/BlankScene.hpp"
 #include "Scene/MainMenu.hpp"
+#include "Scene/Mock/TestScene.hpp"
 #include "Scene/Mock/TowerRotationMockScene.hpp"
 #include "Scene/Setting.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-
 Application::Application() : isRunning{true} {
     if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
@@ -57,11 +58,15 @@ Application::Application() : isRunning{true} {
     Logger::success("Resource loading");
     SceneManager::getInstance().registerScene<MainMenu>("Main menu");
     SceneManager::getInstance().registerScene<Setting>("Setting");
-    SceneManager::getInstance().registerScene<TowerRotationMockScene>("Tower Test");
+    SceneManager::getInstance().registerScene<TowerRotationMockScene>(
+        "Tower Test");
+    SceneManager::getInstance().registerScene<TestScene>("Test Scene");
 
-    SceneManager::getInstance().changeScene("Tower Test");  // Start with the tower test scene
+    SceneManager::getInstance().changeScene(
+        "Tower Test");  // Start with the tower test scene
 
-    SceneManager::getInstance().loadLevel("Gameplay", levelFactory.getLevel("example_level"));
+    SceneManager::getInstance().loadLevel(
+        "Gameplay", levelFactory.getLevel("example_level"));
 
     SceneManager::getInstance().changeScene("Main menu");
     // sceneManager.changeScene("Setting");
@@ -85,28 +90,6 @@ void Application::run() {
     fpsDisplay.setPosition({0.f, 0.f});
     fpsDisplay.setFillColor(sf::Color::White);
     fpsDisplay.setOutlineColor(sf::Color::Black);
-    TerrainParameter parameter;
-    parameter.gridSize = 150;
-    parameter.octaves = 3;
-    parameter.persistence = -0.6;
-    parameter.lacunarity = 3.5;
-    parameter.seed = 22071997LL;
-    parameter.depthFactor = 1.f;
-    // Terrain terrain(parameter);
-
-    // sf::Text terrainInfo(
-    //     *ResourceManager::getInstance().getFont("league_spartan"));
-    // terrainInfo.setCharacterSize(20);
-    // terrainInfo.setPosition({150.f, 0.f});
-    // auto updateTerrain = [&parameter, &terrainInfo]() {
-    //     terrainInfo.setString(std::format(
-    //         "Grid size: {} Octaves: {} Persistance: {} Lacunarity: {} Depth "
-    //         "factor {} Seed {}",
-    //         parameter.gridSize, parameter.octaves, parameter.persistence,
-    //         parameter.lacunarity, parameter.depthFactor, parameter.seed));
-    // };
-    // terrainInfo.setFillColor(sf::Color::Red);
-    // updateTerrain();
     while (isRunning) {
         frameCount++;
         Window::getInstance().toggleUserMode();
@@ -117,7 +100,6 @@ void Application::run() {
                 isRunning = false;
             }
 
-            // Add key to switch between scenes for testing
             if (event->is<sf::Event::KeyPressed>()) {
                 auto keyPress = event->getIf<sf::Event::KeyPressed>();
                 if (keyPress) {
@@ -129,70 +111,15 @@ void Application::run() {
                         SceneManager::getInstance().changeScene("Tower Test");
                         continue;
                     }
-                    if (keyPress->code == sf::Keyboard::Key::F5) {
-                        parameter.gridSize += 10;
-                        // updateTerrain();
-                        continue;
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::F6) {
-                        parameter.gridSize -= 10;
-                        // updateTerrain();
-                        continue;
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::F7) {
-                        parameter.octaves++;
-                        // updateTerrain();
-                        continue;
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::F8) {
-                        parameter.octaves--;
-                        // updateTerrain();
-                        continue;
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::F9) {
-                        parameter.persistence += 0.1;
-                        // updateTerrain();
-                        continue;
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::F10) {
-                        parameter.persistence -= 0.1;
-                        // updateTerrain();
-                        continue;
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::F11) {
-                        parameter.lacunarity += 0.1;
-                        // updateTerrain();
-                        continue;
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::F12) {
-                        parameter.lacunarity -= 0.1;
-                        // updateTerrain();
-                        continue;
-                    }
-
-                    if (keyPress->code == sf::Keyboard::Key::LBracket) {
-                        parameter.depthFactor -= 0.1f;
-                        // updateTerrain();
-                        continue;
-                    
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::RBracket) {
-                        parameter.depthFactor += 0.1f;
-                        // updateTerrain();
-                        continue;
-                        
-                    }
-                    if (keyPress->code == sf::Keyboard::Key::R) {
-                        // terrain = std::move(Terrain(parameter));
+                    if (keyPress->code == sf::Keyboard::Key::F3) {
+                        SceneManager::getInstance().changeScene("Test Scene");
                         continue;
                     }
                 }
             }
 
             InputManager::getInstance().handleEvent(event);
-            // SceneManager::getInstance().handleEvent(event);
         }
-        // SceneManager::getInstance().handleInput();
         timeElapsed += clock.getElapsedTime().asSeconds();
         fpsTime += clock.getElapsedTime().asSeconds();
         clock.restart();
@@ -206,12 +133,11 @@ void Application::run() {
             fpsDisplay.setString(std::to_string(frameCount));
             frameCount = 0;
         }
-        Window::getInstance().getRenderWindow().clear(sf::Color::Black);
+        Window::getInstance().getRenderWindow().clear(
+            sf::Color(183, 183, 183, 255));
         SceneManager::getInstance().render();
-        // terrain.debugRender();
         Window::getInstance().toggleGUIMode();
         Window::getInstance().getRenderWindow().draw(fpsDisplay);
-        // Window::getInstance().getRenderWindow().draw(terrainInfo);
         Window::getInstance().getRenderWindow().draw(EnemyPanel::getInstance());
         Window::getInstance().getRenderWindow().draw(Cursor::getInstance());
         Window::getInstance().toggleUserMode();

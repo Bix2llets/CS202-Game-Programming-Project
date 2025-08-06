@@ -8,35 +8,36 @@
 #include "Entity/Modules/Timer.hpp"
 #include "GUIComponents/Style.hpp"
 #include "GUIComponents/mediator.hpp"
+#include "GUIComponents/ButtonBase.hpp"
 
 /**
- * @class Button
+ * @class RectangularButton
  * @brief A clickable UI button that notifies a mediator and supports custom
  * callbacks.
  *
- * The Button class represents a simple UI button. When clicked, it notifies the
+ * The RectangularButton class represents a simple UI button. When clicked, it notifies the
  * associated mediator and can also invoke a user-defined callback. The button
  * can be drawn using SFML.
  */
-class Button : public sf::Drawable, public MouseObserver {
-    friend class ButtonBuilder;
+class RectangularButton : public ButtonBase {
+    friend class RectangularButtonBuilder;
 
    protected:
     /**
-     * @brief Constructs a Button with a label, position, and mediator
+     * @brief Constructs a RectangularButton with a label, position, and mediator
      * reference.
      * @param label The text label of the button.
      * @param position The position of the button in the window.
      * @param mediator Reference to the mediator for event notification.
      */
-    Button(Mediator& mediator);
+    RectangularButton(Mediator& mediator);
 
    public:
     /**
      * @brief Sets a callback to be called when the button is clicked.
      * @param callback The function to call on click.
      */
-    void setOnClick(const std::function<void(Button*)>& callback);
+    void setOnClick(const std::function<void(RectangularButton*)>& callback);
 
     /**
      * @brief Sets the string to be notification message when notifying the
@@ -96,18 +97,10 @@ class Button : public sf::Drawable, public MouseObserver {
     std::unique_ptr<sf::Sprite> backgroundSprite;
 
     sf::FloatRect geometricInfo;
-    Style style;
-
-    Timer hover;
-    Timer press;
-    Timer reverseHover;
-    Timer reversePress;
-
-    bool isPressed;
-    bool isHovered;
     // * Communication part
     Mediator& mediator;
-    std::function<void(Button*)> onClick;
+    std::function<void(RectangularButton*)> onClick;
 
     bool contains(const sf::Vector2f& windowPosition);
+    sf::Vector2f position;
 };

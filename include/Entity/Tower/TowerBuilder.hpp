@@ -209,13 +209,13 @@ public:
      * @param displayName Display name for the upgrade.
      * @param description Description of the upgrade.
      * @param maxLevel Maximum level for this upgrade type.
-     * @param iconPath Path to the upgrade icon.
+     * @param iconID Path to the upgrade icon.
      * @param evolveTo Tower type to evolve to at max level.
      * @return TowerBuilder& Reference to this builder for chaining.
      */
     TowerBuilder& addSimpleUpgradeType(int typeId, const std::string& displayName, 
                                       const std::string& description, int maxLevel,
-                                      const std::string& iconPath = "", 
+                                      const std::string& iconID = "", 
                                       const std::string& evolveTo = "");
     
     /**

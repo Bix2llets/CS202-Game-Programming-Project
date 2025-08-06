@@ -14,15 +14,15 @@
 #include "Core/KeyboardObserver.hpp"
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
-#include "Gameplay/Tracker.hpp"
+#include "Gameplay/Currency.hpp"
 #include "Gameplay/Path.hpp"
 #include "Gameplay/Terrain.hpp"
+#include "Gameplay/TowerMenu.hpp"
+#include "Gameplay/Tracker.hpp"
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
-
-#include "Gameplay/Currency.hpp"
-#include "Gameplay/TowerMenu.hpp"
+#include "Gameplay/RadialUpgradeMenu.hpp"
 /**
  * @class Level
  * @brief Scene representing a gameplay level, with map, entities, and wave
@@ -33,7 +33,7 @@
  * game logic, and rendering.
  */
 class Level : public Scene, public KeyboardObserver, public MouseObserver {
-private:
+    private:
     std::string levelID;  ///< Unique identifier for the level
     void loadLevelID(const nlohmann::json &jsonfile);
     EntityManager entityManager;  ///< Manages all entities in the level
@@ -44,11 +44,11 @@ private:
     int currentWave;  ///< Index of the current wave
     bool isRunning;
     Tracker tracker;  ///< Tracks gameplay statistics for this level
-
+    RadialUpgradeMenu upgradeMenu;
     Currency budget;
     TowerMenu menu;
 
-   public:
+    public:
     Level(TerrainParameter parameter = TerrainParameter(),
           sf::Vector2f startingPoint = {-1.f, -1.f},
           sf::Vector2f endPoint = {-1.f, -1.f});
@@ -88,20 +88,21 @@ private:
      * @brief Gets the tracker for this level.
      * @return Reference to the level's tracker.
      */
-    Tracker& getTracker() { return tracker; }
+    Tracker &getTracker() { return tracker; }
 
     /**
      * @brief Gets the tracker for this level (const version).
      * @return Const reference to the level's tracker.
      */
-    const Tracker& getTracker() const { return tracker; }
+    const Tracker &getTracker() const { return tracker; }
 
     /**
      * @brief Gets the entity manager for this level.
      * @return Reference to the level's entity manager.
      */
-    inline EntityManager& getEntityManager() {return entityManager;};
+    inline EntityManager &getEntityManager() { return entityManager; };
 
+    inline Currency getBudget() const { return budget; }
     /**
      * @brief Registers UI components and event handlers for the level.
      */
@@ -131,7 +132,7 @@ private:
      */
     inline bool isFinished() { return currentWave == waveInfo.size() - 1; }
 
-   private:
+    private:
     /**
      * @brief Loads waypoints from the provided JSON file.
      * @param jsonFile The JSON object containing waypoint data.
@@ -147,14 +148,15 @@ private:
      * @param jsonfile The JSON object containing the level ID.
      */
 
-
-   public:
+    public:
     bool onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
                     const sf::Vector2f &windowPosition);
-    bool onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
+    bool onMouseEvent(Mouse mouse, UserEvent event,
+                      const sf::Vector2f &worldPosition,
+                      const sf::Vector2f &windowPosition) override;
 
-    bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
-
+    bool onScrollEvent(float delta, const sf::Vector2f &worldPosition,
+                       const sf::Vector2f &windowPosition) override;
 
     private:
     bool isPlacementValid(sf::Vector2f worldPosition);

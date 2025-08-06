@@ -91,11 +91,18 @@ float Tower::getBaseStat(const std::string& statName,
 }
 
 // Upgrade System Methods
-UpgradeResult Tower::attemptUpgrade(int upgradeTypeId,
-                                    Currency& playerCurrency) {
-    return upgradeManager
-               ? upgradeManager->attemptUpgrade(upgradeTypeId, playerCurrency)
-               : UpgradeResult::InvalidUpgradeType;
+UpgradeResult Tower::upgrade(int upgradeTypeId) 
+{
+    if (!upgradeManager) {
+        return UpgradeResult::InvalidUpgradeType;
+    }
+
+    if (levelRef) {
+        levelRef->notify("sell_tower", this, upgradeManager->getNextUpgradeDetail(upgradeTypeId)->cost);
+        upgradeManager->upgrade(upgradeTypeId);
+        return UpgradeResult::Success;
+    }
+    return UpgradeResult::InsufficientFunds;
 }
 
 bool Tower::canUpgrade(int upgradeTypeId,
@@ -105,8 +112,8 @@ bool Tower::canUpgrade(int upgradeTypeId,
                : false;
 }
 
-const UpgradeDetails* Tower::getNextUpgradeCost(int upgradeTypeId) const {
-    return upgradeManager ? upgradeManager->getNextUpgradeCost(upgradeTypeId)
+const UpgradeDetails* Tower::getNextUpgradeDetail(int upgradeTypeId) const {
+    return upgradeManager ? upgradeManager->getNextUpgradeDetail(upgradeTypeId)
                           : nullptr;
 }
 
@@ -248,15 +255,26 @@ void Tower::update() {
     // Combat behavior
     if (combatBehaviorPointer) {
         if (timer.isAvailable()) {
-            std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
-            if(targets.empty()) return; // No targets to engage
-            
-            if(combatBehaviorPointer->engage(targets)) {
-                turretAnimation.restart();
-                float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
-                float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
-                timer.reset();
+            std::vector<Enemy*> targets =
+                levelRef->getEntityManager().getEnemies();
+            if (targets.empty()) {
+                return;
+            }  // No targets to engage
+
+            if (!combatBehaviorPointer->engage(targets)) {
+                if (turretAnimation.isRunning()) {
+                    turretAnimation.pause();
+                }
+            } else {
+                if (!turretAnimation.isRunning()) turretAnimation.resume();
             }
+
+            turretAnimation.restart();
+
+            float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
+            float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
+            // timer.setTimeInterval(interval);
+            timer.reset();
         }
 
         if (mainTarget) {

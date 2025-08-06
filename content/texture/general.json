@@ -39,5 +39,21 @@
         "id": "scrap",
         "path": "assets/texture/scrap.png"
         
+    },
+    {
+        "id": "sell_icon",
+        "path": "assets/texture/sell_icon.png"
+    },
+    {
+        "id": "speed_icon",
+        "path": "assets/texture/speed.png"
+    },
+    {
+        "id": "range_icon",
+        "path": "assets/texture/range.png"
+    },
+    {
+        "id": "power_icon",
+        "path": "assets/texture/power.png"
     }
 ]

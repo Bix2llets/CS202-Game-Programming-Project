@@ -124,9 +124,9 @@ TowerBuilder& TowerBuilder::addUpgradeType(
 
 TowerBuilder& TowerBuilder::addSimpleUpgradeType(
     int typeId, const std::string& displayName, const std::string& description,
-    int maxLevel, const std::string& iconPath, const std::string& evolveTo) {
+    int maxLevel, const std::string& iconID, const std::string& evolveTo) {
     auto upgradeType = std::make_unique<UpgradeType>(
-        displayName, description, maxLevel, iconPath, evolveTo);
+        displayName, description, maxLevel, iconID, evolveTo);
     upgradeTypes[typeId] = std::move(upgradeType);
     return *this;
 }
@@ -163,6 +163,7 @@ std::unique_ptr<Tower> TowerBuilder::build() {
     tower->description = description;
     tower->buildable = buildable;
     tower->cost = cost;
+    tower->totalCost = cost; 
 
     // Set timer interval
     tower->timer.setTimeInterval(timerInterval)

@@ -75,10 +75,9 @@ public:
     /**
      * @brief Attempt to upgrade a specific upgrade type.
      * @param typeId The upgrade type ID to upgrade.
-     * @param playerCurrency Reference to player's currency (will be modified if upgrade succeeds).
      * @return Result of the upgrade attempt.
      */
-    UpgradeResult attemptUpgrade(int typeId, Currency& playerCurrency);
+    UpgradeResult upgrade(int typeId);
 
     /**
      * @brief Get the current level of a specific upgrade type.
@@ -142,7 +141,7 @@ public:
      * @param typeId The upgrade type ID.
      * @return Pointer to upgrade details for next level, or nullptr if not possible.
      */
-    const UpgradeDetails* getNextUpgradeCost(int typeId) const;
+    const UpgradeDetails* getNextUpgradeDetail(int typeId) const;
 
     /**
      * @brief Check if any upgrade type has reached its evolution condition.
