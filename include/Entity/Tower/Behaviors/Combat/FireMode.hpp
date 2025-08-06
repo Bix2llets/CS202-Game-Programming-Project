@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <memory>
+#include "Entity/Tower/Projectile/Projectile.hpp"
 
 class Tower;
 class Enemy;
@@ -29,7 +31,11 @@ public:
 };
 
 class ProjectileFireMode : public FireMode {
+private:
+    std::unique_ptr<Projectile> projectile; ///< Projectile to be fired
+    friend class TowerFactory; ///< Allow TowerFactory to set projectile
 public:
+    void setProjectile(std::unique_ptr<Projectile> proj);
     int fire(Tower* tower, std::vector<Enemy*>& target) const override;
 };
 

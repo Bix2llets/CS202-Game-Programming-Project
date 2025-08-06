@@ -44,6 +44,10 @@ public:
     static inline const std::string ROCKET_SPEED = "rocket_speed";
     static inline const std::string ROCKET_COUNT = "rocket_count";
 
+    // For Projectile Towers
+    static inline const std::string PROJECTILE_SPEED = "projectile_speed";
+    static inline const std::string PROJECTILE_RANGE = "projectile_range";
+
     static inline std::string multiplier(const std::string& statName) {
         return statName + "_multiplier";
     }

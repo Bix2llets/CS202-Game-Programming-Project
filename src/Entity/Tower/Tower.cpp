@@ -10,7 +10,6 @@
 #include "Entity/Tower/Behaviors/TowerBehavior.hpp"
 #include "Scene/Level.hpp"
 #include "Scene/Scene.hpp"
-#include "Utility/MathUtils.hpp"
 #include "Utility/CollisionChecker.hpp"
 
 #include "Utility/logger.hpp"
@@ -19,7 +18,8 @@ Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const
     : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0),
       base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f),
       icon(GameConstants::BLANK_TEXTURE),
-      mainTarget(nullptr) {
+      mainTarget(nullptr) 
+{
     upgradeManager = std::make_unique<UpgradeManager>(this);
     setPosition(pos);
     setRotation(angle);

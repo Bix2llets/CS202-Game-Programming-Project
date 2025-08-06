@@ -8,15 +8,12 @@
 #include "Scene/Level.hpp"
 
 #include "GUIComponents/cursor.hpp"
+
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
         if (tower) {
             tower->update();
-
-            // Make towers attack enemies
-            auto enemyPtrs = getEnemies();
-            // tower->attack(enemyPtrs);
         }
     }
 
@@ -29,7 +26,7 @@ void EntityManager::update() {
 
     // Update projectiles
     for (auto& projectile : projectiles) {
-        if (projectile && projectile->isAlive()) {
+        if (projectile && projectile->isFlying()) {
             projectile->update();
         }
     }
@@ -55,7 +52,7 @@ void EntityManager::render(sf::RenderStates state) const {
 
     // Render projectiles
     for (const auto& projectile : projectiles) {
-        if (projectile && projectile->isAlive()) {
+        if (projectile) {
             Window::getInstance().getRenderWindow().draw(*projectile, state);
         }
     }
@@ -92,7 +89,7 @@ void EntityManager::cleanup() {
     projectiles.erase(
         std::remove_if(projectiles.begin(), projectiles.end(),
                        [](const std::unique_ptr<Projectile>& projectile) {
-                           return !projectile || !projectile->isAlive();
+                           return !projectile || !projectile->isFlying();
                        }),
         projectiles.end());
 }

@@ -183,7 +183,7 @@ int ResourceManager::getSoundVolume() const { return soundVolume; }
 int ResourceManager::getMusicVolume() const { return musicVolume; }
 
 void ResourceManager::validateJson(const nlohmann::json &jsonFile) {
-    std::cerr << jsonFile;
+    std::cerr << jsonFile << "\n";
     if (!jsonFile.contains("id") || !jsonFile.contains("path"))
         throw std::invalid_argument(
             "JSON file must contain 'ID' and 'path' fields.");

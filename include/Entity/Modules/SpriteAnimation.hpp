@@ -47,7 +47,19 @@ public:
      * @brief Default constructor for SpriteAnimation.
      */
     SpriteAnimation();
-    
+
+    /**
+     * @brief Copy constructor for SpriteAnimation.
+     * @param other The SpriteAnimation to copy from.
+     */
+    SpriteAnimation(const SpriteAnimation& other)
+        : type(other.type),
+          currentFrame(other.currentFrame),
+          sprites(other.sprites),
+          animationTimer(std::make_unique<Timer>(*other.animationTimer)),
+          width(other.width),
+          height(other.height) {}
+
     /**
      * @brief Gets the current animation type.
      * @return The current AnimationType.

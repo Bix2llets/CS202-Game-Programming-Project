@@ -92,13 +92,15 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
     subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
 
-        TowerFactory factory;
-        std::unique_ptr<Tower> newTower =
-            std::move(factory.createFromConfigFile(
-                Cursor::getInstance().getCarryingTowerID(), *this,
-                worldPosition));
-
+        
         if (isPlacementValid(worldPosition)) {
+            std::unique_ptr<Tower> newTower =
+                std::move(TowerFactory::createFromConfigFile(
+                    Cursor::getInstance().getCarryingTowerID(), 
+                    *this,
+                    worldPosition)
+                );
+            
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);
             entityManager.addTower(std::move(newTower));

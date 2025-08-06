@@ -46,7 +46,7 @@ class Enemy : public Entity, public Damageable {
     friend class EnemyFactory;
     friend class EnemyPanel;
 
-   private:
+private:
     EntityPath path;
     SpriteAnimation animation;
     Health health;  ///< Health component

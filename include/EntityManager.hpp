@@ -7,7 +7,11 @@
 
 #include "Core/KeyboardObserver.hpp"
 #include "Core/MouseObserver.hpp"
-#include "EntitySystem.hpp"
+
+#include "Entity/Enemy/Enemy.hpp"
+#include "Entity/Tower/Tower.hpp"
+#include "Entity/Tower/Projectile/Projectile.hpp"
+
 #include "Gameplay/Terrain.hpp"
 
 class Level;
@@ -18,7 +22,7 @@ class Level;
  * including update loops, rendering, and cleanup operations.
  */
 class EntityManager : public MouseObserver, public KeyboardObserver {
-   private:
+private:
     std::vector<std::unique_ptr<Entity>> entities;
     std::vector<std::unique_ptr<Tower>> towers;
     std::vector<std::unique_ptr<Enemy>> enemies;
@@ -27,7 +31,7 @@ class EntityManager : public MouseObserver, public KeyboardObserver {
     Terrain &terrain;
     Level& level;
 
-   public:
+public:
     EntityManager(Terrain &terrain, Level& parentLevel) : terrain{terrain}, level{parentLevel} {}
     /**
      * @brief Update all entities

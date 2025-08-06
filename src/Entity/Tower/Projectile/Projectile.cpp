@@ -1,0 +1,151 @@
+#include "Entity/Tower/Projectile/Projectile.hpp"
+
+#include "Entity/Tower/Projectile/FlightMode.hpp"
+#include "Entity/Enemy/Enemy.hpp"
+#include "Entity/Tower/Tower.hpp"
+#include "Scene/Level.hpp"
+#include "Entity/Modules/SpriteAnimation.hpp"
+
+#include "Utility/logger.hpp"
+
+Projectile::Projectile(Scene& scene, const std::string id)
+    : Entity(scene), levelRef(nullptr), id(id), type(ProjectileTargetType::Trajectory),
+      stopOnFirstCollision(false), pierceThrough(false), collisionDistance(5.0f),
+      speed(0.0f), velocity(0.0f, 0.0f), flying(true), source(nullptr),
+      targetEntity(nullptr), flightMode(nullptr) 
+{
+    levelRef = dynamic_cast<Level*>(&scene);
+}
+
+Projectile::Projectile(const Projectile& other) 
+    : Entity(other.scene), levelRef(other.levelRef), animation(other.animation), // Default construct animation
+      id(other.id), type(other.type), rotateToTarget(other.rotateToTarget),
+      stopOnFirstCollision(other.stopOnFirstCollision), pierceThrough(other.pierceThrough),
+      collisionDistance(other.collisionDistance), speed(other.speed), velocity(other.velocity),
+      flying(true), hitEnemies(), 
+      targetEntity(nullptr), targetLocation(other.targetLocation), flightMode(other.flightMode),
+      source(nullptr) // Initialize source to null - will be set by bindToTower call
+{
+    // Reset flying state and hit enemies for the new projectile instance
+    flying = true;
+    // Don't call bindToTower here - it will be called explicitly after construction
+}
+
+void Projectile::update() {
+    if(!flying) return; // If not flying, no need to update
+
+    animation.update(); // Update animation frame
+    
+    if (targetEntity != nullptr) {
+        if (!targetEntity->isAlive()) {
+            flying = false; // Stop flying if target is dead
+            return;
+        }
+        
+        targetLocation = targetEntity->getPosition();
+    }
+    
+    // Update projectile's flight mode behavior
+    if (flightMode) {
+        flightMode->update(this);
+    }
+    
+    if (levelRef) {
+        if (!pierceThrough && !stopOnFirstCollision && targetEntity) {
+            if (targetEntity && isCollidedWith(targetEntity->getPosition())) {
+                hitEnemies.push_back(targetEntity);
+                targetEntity->onHit(source->getStat(TowerStat::DAMAGE));
+                flying = false; // Stop flying after hitting the target
+            }
+        } else {
+            for (auto& enemy : levelRef->getEntityManager().getEnemies()) {
+                if (hasHitEnemy(enemy)) continue; // Skip already hit enemies
+                
+                if (isCollidedWith(enemy->getPosition())) {
+                    hitEnemies.push_back(enemy); // Add to hit list
+                    enemy->onHit(source->getStat(TowerStat::DAMAGE));
+                    
+                    if(stopOnFirstCollision || enemy == targetEntity) {
+                        flying = false; // Stop flying on first collision
+                        break; // Exit loop after hitting first enemy
+                    }
+                }
+            }
+        }
+    }
+    
+    if (isCollidedWith(targetLocation)) {
+        flying = false; // Stop flying if at target location
+    }
+
+    updateSpriteAnimation(); // Update sprite based on animation
+}
+
+void Projectile::loadSpriteAnimation(const nlohmann::json& spriteAnimationPath) {
+    animation.loadJson(spriteAnimationPath);
+    // animation.updateSpriteSize(width, height);
+
+    updateSpriteAnimation(); // Initialize sprite with the first frame
+}
+
+void Projectile::updateSpriteAnimation() {
+    sprite = animation.getCurrentSprite();
+    sprite.setPosition(position);
+    sprite.setRotation(rotation);
+}
+
+void Projectile::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+    target.draw(sprite, state);
+}
+
+inline bool Projectile::hasHitEnemy(Enemy* enemy) const {
+    return std::find(hitEnemies.begin(), hitEnemies.end(), enemy) != hitEnemies.end();
+}
+
+inline bool Projectile::isCollidedWith(sf::Vector2f position) const {
+    return (position - this->position).length() < collisionDistance;
+}
+
+void Projectile::bindToTower(Tower* tower) {
+    if (!tower) {
+        throw std::runtime_error("Cannot bind projectile to null tower");
+    }
+
+    source = tower;
+    speed = tower->getStat(TowerStat::PROJECTILE_SPEED, 1.0f);
+}
+
+void Projectile::setUpFlightMode() {
+    if (!flightMode) {
+        throw std::runtime_error("Flight mode is not set for projectile");
+    }
+
+    flightMode->setUp(this);
+}
+
+void Projectile::setTarget(Enemy* enemy) {
+    if(type == ProjectileTargetType::TargetEntity) {
+        targetEntity = enemy;
+        if(enemy) targetEntity = enemy;
+    } else if(type == ProjectileTargetType::TargetLocation) {
+        if(enemy) targetLocation = enemy->getPosition();
+    } else if(type == ProjectileTargetType::Trajectory) {
+        if(enemy) targetLocation = enemy->getPosition();
+
+        sf::Vector2f direction = (targetLocation - position).normalized();
+        direction *= source->getStat(TowerStat::PROJECTILE_RANGE, 300.0f);
+        targetLocation = position + direction;
+    } else {
+        throw std::runtime_error("Invalid projectile target type for setting target");
+    }
+}
+
+void Projectile::setPosition(const sf::Vector2f& pos) {
+    position = pos;
+    sprite.setPosition(position);
+}
+
+void Projectile::setRotation(const sf::Angle& rot) {
+    rotation = rot;
+    sprite.setRotation(rotation);
+}

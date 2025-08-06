@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <memory>
+
 
 #include "Entity/Tower/TowerStat.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
@@ -12,6 +14,8 @@
 #include "Entity/Tower/Behaviors/Combat/TargetSelector.hpp"
 #include "Scene/Scene.hpp"
 #include "Core/JSONLoader.hpp"
+#include "Utility/logger.hpp"
+#include "Entity/Factory/ProjectileFactory.hpp"
 
 std::unique_ptr<Tower> TowerFactory::createFromConfigFile(
     const std::string& jsonID, Scene& scene, const sf::Vector2f& position) {
@@ -23,13 +27,6 @@ std::unique_ptr<Tower> TowerFactory::createFromConfigFile(
 
 std::unique_ptr<Tower> TowerFactory::createFromJson(
     const nlohmann::json& config, Scene& scene, const sf::Vector2f& position) {
-    validateConfig(config);
-
-    TowerBuilder builder = builderFromJson(config);
-    return builder.setScene(scene).setPosition(position).build();
-}
-
-TowerBuilder TowerFactory::builderFromJson(const nlohmann::json& config) {
     validateConfig(config);
 
     TowerBuilder builder;
@@ -102,10 +99,10 @@ TowerBuilder TowerFactory::builderFromJson(const nlohmann::json& config) {
 
     // Parse and add behaviors
     if (config.contains("behaviors")) {
-        parseBehaviors(config["behaviors"], builder);
+        parseBehaviors(config["behaviors"], builder, scene);
     }
 
-    return builder;
+    return builder.setScene(scene).setPosition(position).build();
 }
 
 Currency TowerFactory::parseCost(const nlohmann::json& costJson) {
@@ -162,12 +159,10 @@ void TowerFactory::parseTextures(const nlohmann::json& textureJson,
 
     // Log texture information for debugging
     if (!baseTextureId.empty()) {
-        std::cout << "TowerFactory: Base texture path: " << baseTextureId
-                  << std::endl;
+        Logger::debug("TowerFactory: Base texture path: " + baseTextureId);
     }
 
-    std::cout << "TowerFactory: Texture dimensions: " << width << "x" << height
-              << std::endl;
+    Logger::debug("TowerFactory: Texture dimensions: " + std::to_string(width) + "x" + std::to_string(height));
 }
 
 void TowerFactory::validateConfig(const nlohmann::json& config) {
@@ -308,11 +303,11 @@ UpgradeDetails TowerFactory::parseUpgradeDetails(const nlohmann::json& detailsJs
     return UpgradeDetails(cost, bonusStats);
 }
 
-void TowerFactory::parseBehaviors(const nlohmann::json& behaviorsJson, TowerBuilder& builder) {
+void TowerFactory::parseBehaviors(const nlohmann::json& behaviorsJson, TowerBuilder& builder, Scene& scene) {
     // Parse combat behavior
     if (behaviorsJson.contains("combat")) {
         const auto& combatJson = behaviorsJson["combat"];
-        auto combatBehavior = parseCombatBehavior(combatJson);
+        auto combatBehavior = parseCombatBehavior(combatJson, scene);
         if (combatBehavior) {
             builder.addBehavior(std::move(combatBehavior));
         }
@@ -332,7 +327,7 @@ void TowerFactory::parseBehaviors(const nlohmann::json& behaviorsJson, TowerBuil
     // }
 }
 
-std::unique_ptr<CombatBehavior> TowerFactory::parseCombatBehavior(const nlohmann::json& combatJson) {
+std::unique_ptr<CombatBehavior> TowerFactory::parseCombatBehavior(const nlohmann::json& combatJson, Scene& scene) {
     // Parse fire mode type
     std::string fireType = combatJson.value("type", "instant");
     
@@ -340,9 +335,23 @@ std::unique_ptr<CombatBehavior> TowerFactory::parseCombatBehavior(const nlohmann
     Combat::FireMode* fireMode = nullptr;
     if (fireType == "instant") {
         fireMode = new Combat::InstantFireMode();
+    } else if (fireType == "projectile") {
+        Combat::ProjectileFireMode* projectileFireMode = new Combat::ProjectileFireMode();
+        
+        if (!combatJson.contains("projectile")) {
+            Logger::warning("TowerFactory: Fire mode type 'projectile' requires a 'projectile' field. Skipping combat behavior.");
+            delete projectileFireMode; // Clean up if not used
+            return nullptr;
+        }
+
+        std::string projectileId = combatJson["projectile"].get<std::string>();
+        std::unique_ptr<Projectile> projectile = ProjectileFactory::createFromConfigFile(projectileId, scene);
+        projectileFireMode->setProjectile(std::move(projectile));
+
+        fireMode = projectileFireMode;
     } else {
         // For other fire mode types, do nothing yet as requested
-        std::cout << "TowerFactory: Fire mode type '" << fireType << "' not yet implemented. Skipping combat behavior." << std::endl;
+        // std::cout << "TowerFactory: Fire mode type '" << fireType << "' not yet implemented. Skipping combat behavior." << std::endl;
         return nullptr;
     }
     
@@ -353,12 +362,19 @@ std::unique_ptr<CombatBehavior> TowerFactory::parseCombatBehavior(const nlohmann
     Combat::TargetSelector* targetSelector = nullptr;
     if (targeting == "nearest") {
         targetSelector = new Combat::NearestTargetSelector();
+    } else if (targeting == "farthest" || targeting == "furthest") {
+        targetSelector = new Combat::FarthestTargetSelector();
+    } else if (targeting == "lowest" || targeting == "lowest_health" || targeting == "weakest") {
+        targetSelector = new Combat::LowestHealthTargetSelector();
+    } else if (targeting == "highest" || targeting == "highest_health" || targeting == "strongest") {
+        targetSelector = new Combat::HighestHealthTargetSelector();
     } else {
         // For other targeting strategies, default to nearest for now
-        std::cout << "TowerFactory: Targeting strategy '" << targeting << "' not fully implemented. Using nearest targeting." << std::endl;
+        Logger::warning("TowerFactory: Targeting strategy '" + targeting + "' not found. Using nearest targeting.");
         targetSelector = new Combat::NearestTargetSelector();
     }
     
+
     // Create and return combat behavior
     // Note: CombatBehavior constructor takes ownership of the pointers
     return std::make_unique<CombatBehavior>(nullptr, targetSelector, fireMode);

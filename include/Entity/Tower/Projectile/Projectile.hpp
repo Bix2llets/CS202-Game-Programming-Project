@@ -1,0 +1,143 @@
+/**
+ * @file Projectile.hpp
+ * @brief Declares the Projectile class for projectiles fired by towers.
+ *
+ * Projectiles can target entities or locations, move, and detect collisions.
+ */
+#pragma once
+
+#include "Entity/Entity.hpp"
+#include <memory>
+
+// Forward declarations
+class Enemy;
+class Tower;
+class Scene;
+class Level;
+class FlightMode;
+
+// Need full definition for member variable
+#include "Entity/Modules/SpriteAnimation.hpp"
+
+/**
+ * @enum ProjectileType
+ * @brief Enumeration for projectile target types.
+ */
+enum class ProjectileTargetType {
+    Trajectory,    ///< Moves along a trajectory
+    TargetEntity,   ///< Targets and tracks an entity
+    TargetLocation  ///< Targets a fixed locatio
+};
+
+/**
+ * @class Projectile
+ * @brief Projectile entity fired by towers to attack enemies.
+ *
+ * Handles movement, collision detection, and damage application.
+ */
+class Projectile : public Entity {
+private:
+    Level* levelRef = nullptr; ///< Reference to Level if scene is a Level, else nullptr
+    SpriteAnimation animation; ///< Animation for the projectile sprite
+
+    std::string id; ///< Unique identifier for the projectile
+
+    ProjectileTargetType type; ///< Type of projectile (target entity or location)
+
+    bool rotateToTarget; ///< Whether to rotate towards target
+    bool stopOnFirstCollision; ///< Whether the projectile stops on first entity hit (even if it's not the main target)
+    bool pierceThrough; ///< Whether the projectile can deal damage to entities along its path (not just the target)
+
+    float collisionDistance; ///< Collision distance threshold
+    float speed; ///< Movement speed
+    sf::Vector2f velocity; ///< Current velocity vector
+    
+    bool flying; ///< Whether the projectile has hit its target
+    std::vector<Enemy*> hitEnemies; ///< Enemies hit by this projectile
+    
+    Tower* source; ///< Tower that fired this projectile
+    
+    Enemy* targetEntity; ///< Target entity (if any)
+    sf::Vector2f targetLocation; ///< Target location
+
+    FlightMode* flightMode; ///< Flying behavior mode for the projectile
+
+    /**
+     * @brief Construct a new Projectile object (private, for factory use).
+     * @param scene Reference to the scene this projectile belongs to.
+     */
+    friend class ProjectileFactory;
+    friend class FlightMode; ///< Allow FlightMode to access private members
+    friend class LinearFlightMode; ///< Allow LinearFlightMode to access private members
+    
+    public:
+    Projectile(Scene& scene, const std::string id);
+
+    Projectile(const Projectile& other); ///< Copy constructor (deep copy).
+    /**
+     * @brief Destructor.
+     */
+    ~Projectile() override = default;
+
+    /**
+     * @brief Update the projectile's movement and collision.
+     * Handles movement, collision checks, and state updates.
+     */
+    void update() override;
+    
+    /**
+     * @brief Update the sprite animation for the projectile.
+     */
+    void updateSpriteAnimation();
+
+    /**
+     * @brief Load the projectile's sprite animation from a JSON file.
+     * @param spriteAnimationPath Path to the JSON file containing animation data.
+     */
+    void loadSpriteAnimation(const nlohmann::json& spriteAnimationPath);
+
+    /**
+     * @brief Render the projectile.
+     * @param target Render target to draw on.
+     * @param state The render state of object.
+     */
+    void draw(sf::RenderTarget& target, sf::RenderStates state) const override;
+
+    ProjectileTargetType getType() const { return type; }
+
+    bool isStopOnFirstCollision() const { return stopOnFirstCollision; }
+    bool isPierceThrough() const { return pierceThrough; }
+
+    float getCollisionDistance() const { return collisionDistance; }
+    float getSpeed() const { return speed; }
+    sf::Vector2f getVelocity() const { return velocity; }
+    bool isFlying() const { return flying; }
+
+    const std::vector<Enemy*>& getHitEnemies() const { return hitEnemies; }
+
+    Tower* getSource() const { return source; }
+
+    Enemy* getTargetEntity() const { return targetEntity; }
+    sf::Vector2f getTargetLocation() const { return targetLocation; }
+
+    FlightMode* getFlightMode() const { return flightMode; }
+
+
+    inline bool hasHitEnemy(Enemy* enemy) const;
+    inline bool isCollidedWith(sf::Vector2f position) const;
+
+    // Override Entity pure virtual methods
+    void setPosition(const sf::Vector2f& pos) override;
+    void setRotation(const sf::Angle& rot) override;
+    
+    // Setters
+    void bindToTower(Tower* tower);
+    void setUpFlightMode();
+    void setTarget(Enemy* enemy);
+    void setFlightMode(FlightMode* mode) { flightMode = mode; }
+    void setTargetType(ProjectileTargetType targetType) { type = targetType; }
+    void setStopOnFirstCollision(bool stop) { stopOnFirstCollision = stop; }
+    void setPierceThrough(bool pierce) { pierceThrough = pierce; }
+    void setCollisionDistance(float distance) { collisionDistance = distance; }
+    void setRotateToTarget(bool rotate) { rotateToTarget = rotate; }
+};

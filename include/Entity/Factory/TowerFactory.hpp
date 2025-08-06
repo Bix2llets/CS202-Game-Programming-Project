@@ -56,13 +56,6 @@ public:
         Scene& scene, 
         const sf::Vector2f& position = sf::Vector2f(0, 0)
     );
-    
-    /**
-     * @brief Create a TowerBuilder configured from JSON data.
-     * @param config JSON object containing tower configuration.
-     * @return TowerBuilder Configured builder ready to build a tower.
-     */
-    static TowerBuilder builderFromJson(const nlohmann::json& config);
 
 private:
     /**
@@ -120,15 +113,17 @@ private:
      * @brief Parse behaviors from JSON and add them to the builder.
      * @param behaviorsJson JSON object containing behaviors data.
      * @param builder TowerBuilder to configure with behaviors.
+     * @param scene Reference to the game scene for behavior context.
      */
-    static void parseBehaviors(const nlohmann::json& behaviorsJson, TowerBuilder& builder);
+    static void parseBehaviors(const nlohmann::json& behaviorsJson, TowerBuilder& builder, Scene& scene);
     
     /**
      * @brief Parse combat behavior from JSON.
      * @param combatJson JSON object containing combat behavior data.
+     * @param scene Reference to the game scene for behavior context.
      * @return std::unique_ptr<CombatBehavior> Configured combat behavior.
      */
-    static std::unique_ptr<CombatBehavior> parseCombatBehavior(const nlohmann::json& combatJson);
+    static std::unique_ptr<CombatBehavior> parseCombatBehavior(const nlohmann::json& combatJson, Scene& scene);
     
     /**
      * @brief Validate required fields in JSON configuration.

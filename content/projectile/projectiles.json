@@ -1,0 +1,26 @@
+[
+    {
+        "id": "cannon_ball",
+        "texture": {
+            "texture_id": "cannon_ball",
+            "width": 32,
+            "height": 32,
+            "animation_interval": 0.5,
+            "type": "linear",
+            "center_x": 4,
+            "center_y": 4,
+            "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 32,
+                "height": 32
+            }
+        },
+        "targeting": "trajectory",
+        "flight_mode": "linear",
+        "rotate_to_target": true,
+        "stop_on_first_collision": true,
+        "pierce_through_targets": false,
+        "collision_distance": 32
+    }
+]
