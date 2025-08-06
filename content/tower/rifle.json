@@ -63,7 +63,7 @@
           }
         }
       },
-      "icon": "icons/upgrades/speed.png",
+      "icon": "speed_icon",
       "evolve_to": "machinegun"
     },
     "2": {
@@ -93,7 +93,7 @@
           }
         }
       },
-      "icon": "icons/upgrades/range.png",
+      "icon": "range_icon",
       "evolve_to": "sniper"
     },
     "3": {
@@ -123,7 +123,7 @@
           }
         }
       },
-      "icon": "icons/upgrades/power.png",
+      "icon": "power_icon",
       "evolve_to": "railgun"
     }
   },

@@ -30,7 +30,7 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
       isRunning{true},
       map(parameter),
       entityManager{map, *this},
-      menu{budget, *this},
+      menu{budget, this},
       tracker(*this),
       upgradeMenu(*this) {
     MouseState &mouseState = InputManager::getInstance().getMouseState();

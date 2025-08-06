@@ -19,8 +19,8 @@
         "targeting": "trajectory",
         "flight_mode": "linear",
         "rotate_to_target": true,
-        "stop_on_first_collision": true,
-        "pierce_through_targets": false,
-        "collision_distance": 32
+        "stop_on_first_collision": false,
+        "pierce_through_targets": true,
+        "collision_distance": 28
     }
 ]

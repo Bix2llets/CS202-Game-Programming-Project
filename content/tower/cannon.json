@@ -28,11 +28,11 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 80,
+    "damage": 100,
     "fire_rate": 1.5,
-    "range": 420,
+    "range": 240,
     "max_targets": 1,
-    "projectile_speed": 12.0,
+    "projectile_speed": 14.0,
     "projectile_range": 1000
   },
   "upgrades": {
@@ -65,7 +65,7 @@
           }
         }
       },
-      "icon": "icons/upgrades/speed.png",
+      "icon": "speed_icon",
       "evolve_to": "machinegun"
     },
     "2": {
@@ -95,7 +95,7 @@
           }
         }
       },
-      "icon": "icons/upgrades/range.png",
+      "icon": "range_icon",
       "evolve_to": "sniper"
     },
     "3": {
@@ -125,7 +125,7 @@
           }
         }
       },
-      "icon": "icons/upgrades/power.png",
+      "icon": "power_icon",
       "evolve_to": "railgun"
     }
   },
