@@ -31,9 +31,11 @@ namespace GameConstants {
 
     constexpr int CELL_SIZE = 4;
 
-    constexpr int MAP_WIDTH = 300;
-    constexpr int MAP_HEIGHT = 225;
+    constexpr int MAP_WIDTH = 1000;
+    constexpr int MAP_HEIGHT = 900;
 
     constexpr int PATH_THICKNESS = 24;
+
+    constexpr int MENU_X = 1000;
 
 }

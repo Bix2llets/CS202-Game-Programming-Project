@@ -38,7 +38,7 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
     void loadLevelID(const nlohmann::json &jsonfile);
     EntityManager entityManager;  ///< Manages all entities in the level
     std::unique_ptr<EnemyFactory> factory;
-    Terrain map;  // game map for this level
+    // Terrain map;  // game map for this level
     std::vector<std::vector<EnemyGroupInfo>>
         waveInfo;     ///< Information for each wave
     int currentWave;  ///< Index of the current wave
@@ -47,6 +47,9 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
     RadialUpgradeMenu upgradeMenu;
     Currency budget;
     TowerMenu menu;
+
+    std::vector<Waypoint> waypoints;  ///< Waypoints for enemy paths
+    sf::Sprite backgrounds;
 
     public:
     Level(TerrainParameters parameter = TerrainParameters(),

@@ -11,7 +11,7 @@
 #include <string>
 
 #include "Gameplay/Terrain/Terrain.hpp"
-
+#include "Gameplay/Waypoint.hpp"
 class Enemy;
 enum class Difficulty;
 class Path;
@@ -29,7 +29,7 @@ class EnemyFactory {
    private:
     static constexpr float REWARD_BASIC =
         7;         ///< Base reward for defeating a basic enemy
-    Terrain &map;     ///< Reference to the game map for waypoint assignment
+    std::vector<Waypoint> waypoints;     ///< Reference to the game map for waypoint assignment
     Scene &scene;  ///< Reference to the current scene
     float
         rewardMultiplier;  ///< Multiplier for enemy rewards based on difficulty
@@ -44,7 +44,7 @@ class EnemyFactory {
      * @param map Reference to the game map
      * @param scene Reference to the current scene
      */
-    EnemyFactory(Terrain &map, Scene &scene);
+    EnemyFactory(std::vector<Waypoint> waypoints, Scene &scene);
 
     /**
      * @brief Create a basic enemy with specified position, rotation, and lane

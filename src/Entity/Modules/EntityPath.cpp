@@ -35,7 +35,9 @@ void EntityPath::setDistanceFromStart(float distance) {
 }
 
 float EntityPath::getOriginalSpeed() const { return speed; }
-float EntityPath::getActualSpeed() const { return speed * effectMultiplier * terrainMultiplier; }
+float EntityPath::getActualSpeed() const {
+    return speed * effectMultiplier * terrainMultiplier;
+}
 
 void EntityPath::setSpeed(float s) { speed = s; }
 
@@ -46,6 +48,7 @@ void EntityPath::update() {
 
     float remainingTravelDistance =
         getActualSpeed() * GameConstants::TICK_INTERVAL;
+
     while (remainingTravelDistance > 0 &&
            waypointIndex + 1 < waypoints->size()) {
         sf::Vector2f unitVector = (waypoints->at(waypointIndex + 1).position -
@@ -58,18 +61,21 @@ void EntityPath::update() {
             ((*waypoints)[waypointIndex + 1].position - supposedNextPosition);
         sf::Vector2f segmentStartToEnd =
             ((*waypoints)[waypointIndex].position - supposedNextPosition);
-        if ((segmentEndToSupposed).dot(segmentStartToEnd) >= 0) {
+        float distanceToNextWaypoint =
+            (waypoints->at(waypointIndex + 1).position - position).length();
+
+        if (remainingTravelDistance >= distanceToNextWaypoint) {
             waypointIndex++;
-            remainingTravelDistance -=
-                ((*waypoints)[waypointIndex].position - position).length();
+            remainingTravelDistance -= distanceToNextWaypoint;
             position = (*waypoints)[waypointIndex].position;
             terrainMultiplier = (*waypoints)[waypointIndex].speedMultiplier;
         } else {
-            position = supposedNextPosition;
+            position += remainingTravelDistance * unitVector;
             remainingTravelDistance = 0;
         }
     }
-    if (waypointIndex == waypoints->size() - 1) position = waypoints->back().position;
+    if (waypointIndex == waypoints->size() - 1)
+        position = waypoints->back().position;
 }
 
 const std::vector<Waypoint>* EntityPath::getWaypoints() const {
