@@ -196,8 +196,8 @@ void TowerMenu::setTowerButtonDisplay() {
 
         petroleumCostDisplay.setString(std::to_string(petroleumCost));
         scrapCostDisplay.setString(std::to_string(scrapCost));
-        petroleumCostDisplay.setCharacterSize(20);
-        scrapCostDisplay.setCharacterSize(20);
+        petroleumCostDisplay.setCharacterSize(25);
+        scrapCostDisplay.setCharacterSize(25);
         petroleumCostDisplay.setFillColor(sf::Color(22, 50, 60, 255));
         scrapCostDisplay.setFillColor(sf::Color(22, 50, 60, 255));
 
@@ -228,14 +228,6 @@ void TowerMenu::setTowerButtonDisplay() {
             {30, towerSprite.getPosition().y + yOffset + 5});
         scrapIcon.setPosition({15, towerSprite.getPosition().y + yOffset + 5});
 
-        sf::RectangleShape background;
-        background.setSize(sf::Vector2f(buttonRenderTexture.getSize() - sf::Vector2u{4, 4}));
-        background = Aligner::align(background);
-        background.setPosition(static_cast<sf::Vector2f>(buttonRenderTexture.getSize()) / 2.f);
-        background.setOutlineThickness(2);
-        background.setFillColor(sf::Color::Transparent);
-        background.setOutlineColor(sf::Color(0, 0, 0, 255));
-        buttonRenderTexture.draw(background);
         buttonRenderTexture.draw(towerSprite);
         buttonRenderTexture.draw(petroleumCostDisplay);
         buttonRenderTexture.draw(scrapCostDisplay);
@@ -309,6 +301,12 @@ void TowerMenu::registerMessages() {
         Cursor::getInstance().clearCarryingTower();
         isTowerSelected = false;
     });
+    subscribe("discard_placement", [this](std::any sender, std::any data) {
+        if (isTowerSelected == false) return;
+        Cursor::getInstance().removeRenderImage();
+        Cursor::getInstance().clearCarryingTower();
+        isTowerSelected = false;
+    });
 }
 
 bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
@@ -335,6 +333,13 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
         return false;
     }
 
+    if (mouse == Mouse::Right && event == UserEvent::Press) {
+        if (isTowerSelected) {
+            notify("discard_placement");
+            return true;
+        }
+        return false;
+    }
     if (event == UserEvent::Move) {
         for (std::unique_ptr<RectangularButton>& button : towerButtons) {
             if (button->onMouseEvent(Mouse::None, event, worldPosition,

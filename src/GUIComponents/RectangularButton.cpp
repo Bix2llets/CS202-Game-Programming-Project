@@ -26,20 +26,8 @@ void RectangularButton::draw(sf::RenderTarget& target,
 
     fillColor = graphicState.getFillColor();
     textColor = graphicState.getTextColor();
-    if (backgroundSprite) {
-        sf::Sprite renderingSprite = *backgroundSprite;
-        renderingSprite.setColor(fillColor);
-        target.draw(renderingSprite, states);
-    } else {
-        sf::RectangleShape rect;
-        rect.setPosition(geometricInfo.position);
-        rect.setSize(geometricInfo.size);
-        rect.setFillColor(fillColor);
-        rect.setOutlineColor(graphicState.getBorderColor());
-        rect.setOutlineThickness(graphicState.getStyle().getBorderWidth());
 
-        target.draw(rect, states);
-    }
+    target.draw(rect, states);
     // ? Uncomment these lines to see the bounding box for the text of button
     // sf::RectangleShape textBound;
     // textBound.setSize(label->getLocalBounds().size);
@@ -106,6 +94,9 @@ void RectangularButton::unSubscribeMouseAll(MouseState& mouseState) {
 
 void RectangularButton::update() {
     ButtonBase::update();
+    rect.setFillColor(graphicState.getFillColor());
+    rect.setOutlineColor(graphicState.getBorderColor());
+    label->setFillColor(graphicState.getFillColor());
 }
 
 void RectangularButton::setDisplayText(std::string text) {
@@ -115,9 +106,7 @@ void RectangularButton::setDisplayText(std::string text) {
     label->setPosition(geometricInfo.position + geometricInfo.size / 2.f);
 }
 
-void RectangularButton::resetAnimation() {
-    graphicState.resetAnimation();
-}
+void RectangularButton::resetAnimation() { graphicState.resetAnimation(); }
 
 bool RectangularButton::onScrollEvent(float delta,
                                       const sf::Vector2f& worldPosition,
@@ -126,8 +115,11 @@ bool RectangularButton::onScrollEvent(float delta,
 }
 
 bool RectangularButton::contains(const sf::Vector2f& windowPosition) {
-    if (backgroundSprite) {
-        return backgroundSprite->getGlobalBounds().contains(windowPosition);
-    }
-    return geometricInfo.contains(windowPosition);
+    return rect.getGlobalBounds().contains(windowPosition);
+}
+
+sf::Sprite RectangularButton::getBackground() {
+    if (rect.getTexture() == nullptr)
+        return sf::Sprite(GameConstants::BLANK_TEXTURE);
+    return sf::Sprite(*rect.getTexture(), rect.getTextureRect());
 }

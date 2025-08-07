@@ -13,7 +13,6 @@ class ButtonBase : public sf::Drawable, public MouseObserver {
     GUIState graphicState;
     virtual bool contains(const sf::Vector2f &position) = 0;
     
-    
     public:
     ButtonBase();
     ~ButtonBase();

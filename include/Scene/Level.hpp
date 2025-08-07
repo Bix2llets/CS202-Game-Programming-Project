@@ -49,7 +49,7 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
     TowerMenu menu;
 
     public:
-    Level(TerrainParameter parameter = TerrainParameter(),
+    Level(TerrainParameters parameter = TerrainParameters(),
           sf::Vector2f startingPoint = {-1.f, -1.f},
           sf::Vector2f endPoint = {-1.f, -1.f});
 

@@ -9,7 +9,7 @@ class TerrainGenerator {
 public:
     std::vector<int> permutation;
 
-    std::vector<std::vector<float>> getNoiseMap(TerrainParameter parameter);
+    std::vector<std::vector<float>> getNoiseMap(TerrainParameters parameter);
 
     void setResultSize(sf::Vector2i size);
 

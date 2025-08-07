@@ -6,7 +6,7 @@
 #include "Entity/Tower/Upgrades/UpgradeDetails.hpp"
 #include "GUIComponents/Mediator.hpp"
 #include "GUIComponents/UpgradeButton.hpp"
-#include "GUIComponents/SellButton.hpp"
+#include "GUIComponents/CircularButton.hpp"
 class Tower;
 class Level;
 class UpgradeManager;
@@ -17,7 +17,7 @@ class RadialUpgradeMenu : public Mediator, public MouseObserver {
     sf::CircleShape ring;
 
     std::vector<UpgradeButton> upgradeButtons;
-    SellButton sellBtn;
+    CircularButton sellBtn;
     Level& parentLevel;
     UpgradeManager* upgradeManager = nullptr;
     Tower* refTower = nullptr;

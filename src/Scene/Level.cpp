@@ -24,7 +24,7 @@
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
 
-Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
+Level::Level(TerrainParameters parameter, sf::Vector2f startingPoint,
              sf::Vector2f endPoint)
     : currentWave{0},
       isRunning{true},
@@ -38,6 +38,7 @@ Level::Level(TerrainParameter parameter, sf::Vector2f startingPoint,
     subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
     subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
+    subscribeMouse(Mouse::Right, UserEvent::Press, mouseState);
     subscribe("add_currency", [this](std::any sender, std::any data) {
         try {
             Currency currency = std::any_cast<Currency>(data);

@@ -3,6 +3,7 @@
 #include <cmath>
 
 #include "Core/JSONLoader.hpp"
+#include "Core/ResourceManager.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "Scene/Level.hpp"
@@ -15,7 +16,11 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
     ring.setOutlineColor(sf::Color::Black);
     ring = Aligner::align(ring, HorizontalAlignment::Center,
                           VerticalAlignment::Middle);
-    sellBtn.setParentRadialMenu(this);
+    sellBtn.setParentRadialMenu(this)
+        .setRadius(35)
+        .setDisplaySprite(
+            sf::Sprite(*ResourceManager::getInstance().getTexture("sell_icon")))
+        .setStyle("background_basic");
     subscribe("upgrade", [this, &parentLevel](std::any sender, std::any data) {
         try {
             int upgradeID = std::any_cast<int>(data);
@@ -77,8 +82,13 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
         sf::Vector2f displacement = {newRadius + 2, 0};
         displacement = displacement.rotatedBy(angle);
 
-        upgradeButtons[i].setParentRadialMenu(this).setRadius(30).setPosition(
-            position + displacement);
+        upgradeButtons[i]
+            .setParentRadialMenu(this)
+            .setRadius(30)
+            .setPosition(position + displacement)
+            .setStyle(std::string("background_basic"))
+            .setUpgradeManager(*upgradeManager)
+            .setUpgradeID(i + 1);
 
         upgradeButtons[i].setUpgradeManager(*upgradeManager);
         upgradeButtons[i].setUpgradeID(i + 1);
@@ -163,14 +173,14 @@ void RadialUpgradeMenu::update() {
             for (auto& button : upgradeButtons) {
                 button.setIsCapped(true);
             }
-        } 
-        
-        for (int i = 0; i < upgradeManager->getAllUpgradeTypes().size(); i++) {
-            if (upgradeManager->canUpgrade(i + 1, parentLevel.getBudget()))
-                upgradeButtons[i].setCanUpgrade(true);
-            else
-                upgradeButtons[i].setCanUpgrade(false);
         }
+
+    for (int i = 0; i < upgradeManager->getAllUpgradeTypes().size(); i++) {
+        if (upgradeManager->canUpgrade(i + 1, parentLevel.getBudget()))
+            upgradeButtons[i].setCanUpgrade(true);
+        else
+            upgradeButtons[i].setCanUpgrade(false);
+    }
     updatePositions();
     for (auto& button : upgradeButtons) button.update();
     sellBtn.update();

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-struct TerrainParameter {
+struct TerrainParameters {
     int seed = 22071997;
     float gridSize = 150;
     int octaves = 4;

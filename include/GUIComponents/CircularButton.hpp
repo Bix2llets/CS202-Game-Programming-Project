@@ -2,14 +2,17 @@
 
 #include "GUIComponents/ButtonBase.hpp"
 class RadialUpgradeMenu;
-class SellButton : public ButtonBase {
+class CircularButton : public ButtonBase {
     public:
-    SellButton();
-    ~SellButton() override = default;
-    SellButton(const SellButton&) = default;
+    CircularButton();
+    ~CircularButton() override = default;
+    CircularButton(const CircularButton&) = default;
 
-    SellButton& setPosition(const sf::Vector2f& position);
-    SellButton& setParentRadialMenu(RadialUpgradeMenu* radialMenu);
+    virtual CircularButton& setPosition(const sf::Vector2f& position);
+    virtual CircularButton& setParentRadialMenu(RadialUpgradeMenu* radialMenu);
+    virtual CircularButton& setRadius(float radius);
+    virtual CircularButton& setStyle(std::string style);
+    virtual CircularButton& setDisplaySprite(sf::Sprite sprite);
 
     
     void update() override;
@@ -23,7 +26,7 @@ class SellButton : public ButtonBase {
     bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
 
     private:
-    sf::Sprite sellIcon;
+    sf::Sprite displaySprite;
     RadialUpgradeMenu* parentRadialMenu = nullptr;
     sf::Vector2f position;
 };
