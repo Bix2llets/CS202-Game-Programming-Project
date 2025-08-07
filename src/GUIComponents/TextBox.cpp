@@ -55,16 +55,18 @@ TextBox& TextBox::adjust() {
 bool TextBox::onMouseEvent(Mouse button, UserEvent event,
                            const sf::Vector2f& worldPosition,
                            const sf::Vector2f& windowPosition) {
+    sf::FloatRect bound = boundingBox;
+    bound.position.y -= boundingBox.size.y / 2.f;
     if (event == UserEvent::Press && button == Mouse::Left) {
         if (!graphicsState.isPressed() &&
-            boundingBox.contains(windowPosition)) {
+            bound.contains(windowPosition)) {
             graphicsState.updatePressState(true);
             subscribeTextInput(
                 InputManager::getInstance().getTextInputProcessor());
             return true;
         } else {
             if (graphicsState.isPressed() &&
-                !boundingBox.contains(windowPosition)) {
+                !bound.contains(windowPosition)) {
                 graphicsState.updatePressState(false);
                 unsubscribeTextInput(
                     InputManager::getInstance().getTextInputProcessor());
@@ -72,6 +74,7 @@ bool TextBox::onMouseEvent(Mouse button, UserEvent event,
         }
         return false;
     }
+    return false;
 }
 
 bool TextBox::onTextInput(int unicode) {

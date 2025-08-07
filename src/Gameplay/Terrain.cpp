@@ -10,7 +10,7 @@
 #include "Base/Constants.hpp"
 
 #include "Gameplay/Waypoint.hpp"
-Terrain::Terrain(TerrainParameter parameter) {
+Terrain::Terrain(TerrainParameters parameter) {
     TerrainGenerator generator;
     generator.setResultSize(sf::Vector2i(GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT));
     std::vector<std::vector<float>> perlinResult = generator.getNoiseMap(parameter);
@@ -67,7 +67,7 @@ void Terrain::debugRender() {
     Window::getInstance().getRenderWindow().draw(path);
 }
 
-Terrain::Terrain() : Terrain(TerrainParameter()) {}
+Terrain::Terrain() : Terrain(TerrainParameters()) {}
 
 Terrain::Terrain(Terrain&& other) noexcept
     : mapTexture(std::move(other.mapTexture)),

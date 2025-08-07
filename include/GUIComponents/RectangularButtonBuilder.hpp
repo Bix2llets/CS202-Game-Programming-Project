@@ -12,10 +12,8 @@ class RectangularButtonBuilder {
     nlohmann::json styleConfig;
 
     std::string text;
-    sf::Vector2f position;
-    sf::Vector2f size;
     std::string notificationMessage;
-
+    sf::RectangleShape buttonShape;
     Mediator& mediator;
 
     std::function<void(RectangularButton*)> callback;
@@ -37,8 +35,10 @@ class RectangularButtonBuilder {
     RectangularButtonBuilder& loadJson(std::string id);
 
     RectangularButtonBuilder& setCallback(std::function<void(RectangularButton*)> call);
-
+    // * The view port is defaulted to the whole texture, stretched to fit the shape
     RectangularButtonBuilder& setBackground(const sf::Texture* tex);
+
+    RectangularButtonBuilder& setBackgroundViewport(sf::IntRect rect);
 
     std::unique_ptr<RectangularButton> build() ;
 };

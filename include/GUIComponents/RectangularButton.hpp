@@ -6,33 +6,33 @@
 
 #include "Core/MouseObserver.hpp"
 #include "Entity/Modules/Timer.hpp"
+#include "GUIComponents/ButtonBase.hpp"
 #include "GUIComponents/Style.hpp"
 #include "GUIComponents/mediator.hpp"
-#include "GUIComponents/ButtonBase.hpp"
 
 /**
  * @class RectangularButton
  * @brief A clickable UI button that notifies a mediator and supports custom
  * callbacks.
  *
- * The RectangularButton class represents a simple UI button. When clicked, it notifies the
- * associated mediator and can also invoke a user-defined callback. The button
- * can be drawn using SFML.
+ * The RectangularButton class represents a simple UI button. When clicked, it
+ * notifies the associated mediator and can also invoke a user-defined callback.
+ * The button can be drawn using SFML.
  */
 class RectangularButton : public ButtonBase {
     friend class RectangularButtonBuilder;
 
-   protected:
+    protected:
     /**
-     * @brief Constructs a RectangularButton with a label, position, and mediator
-     * reference.
+     * @brief Constructs a RectangularButton with a label, position, and
+     * mediator reference.
      * @param label The text label of the button.
      * @param position The position of the button in the window.
      * @param mediator Reference to the mediator for event notification.
      */
     RectangularButton(Mediator& mediator);
 
-   public:
+    public:
     /**
      * @brief Sets a callback to be called when the button is clicked.
      * @param callback The function to call on click.
@@ -90,11 +90,16 @@ class RectangularButton : public ButtonBase {
     void setDisplayText(std::string text);
     virtual void resetAnimation();
 
-    inline sf::Sprite* getBackground() {return backgroundSprite.get();}
-   protected:
+    sf::Sprite getBackground();
+
+    sf::FloatRect getBounds() const {
+        return rect.getGlobalBounds();
+    }
+
+    protected:
     // * Graphic part
     std::unique_ptr<sf::Text> label;
-    std::unique_ptr<sf::Sprite> backgroundSprite;
+    sf::RectangleShape rect;
 
     sf::FloatRect geometricInfo;
     // * Communication part

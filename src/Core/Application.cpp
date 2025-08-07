@@ -15,6 +15,7 @@
 #include "Scene/Mock/TestScene.hpp"
 #include "Scene/Mock/TowerRotationMockScene.hpp"
 #include "Scene/Setting.hpp"
+#include "Scene/CustomLevelCreation.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
 Application::Application() : isRunning{true} {
@@ -60,6 +61,8 @@ Application::Application() : isRunning{true} {
     SceneManager::getInstance().registerScene<Setting>("Setting");
     SceneManager::getInstance().registerScene<TowerRotationMockScene>(
         "Tower Test");
+    SceneManager::getInstance().registerScene<CustomLevelCreation>(
+        "Custom Creation");
     SceneManager::getInstance().registerScene<TestScene>("Test Scene");
 
     SceneManager::getInstance().changeScene(
@@ -113,6 +116,10 @@ void Application::run() {
                     }
                     if (keyPress->code == sf::Keyboard::Key::F3) {
                         SceneManager::getInstance().changeScene("Test Scene");
+                        continue;
+                    }
+                    if (keyPress->code == sf::Keyboard::Key::F4) {
+                        SceneManager::getInstance().changeScene("Custom Creation");
                         continue;
                     }
                 }

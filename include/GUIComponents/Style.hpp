@@ -25,6 +25,7 @@ struct Style {
     ColorSet click;
     const sf::Font* font;
     std::array<int, 2> padding;
+    int fontSize;
 
     int borderWidth;
     int borderRadius;
@@ -41,6 +42,7 @@ struct Style {
     inline const ColorSet getNormalSet() const {return normal;}
     inline const ColorSet getHoverSet() const {return hover;}
     inline const ColorSet getClickSet() const {return click;}
+    inline const int getFontSize() const { return fontSize; }
     Style() = default;
     void loadJson(const nlohmann::json &file);
 };
