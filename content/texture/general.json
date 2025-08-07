@@ -63,5 +63,9 @@
     {
         "id": "farm",
         "path": "assets/texture/map/farm.png"
+    },
+    {
+        "id": "south_way",
+        "path": "assets/texture/map/south.png"
     }
 ]

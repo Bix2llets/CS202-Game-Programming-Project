@@ -69,7 +69,7 @@ Application::Application() : isRunning{true} {
         "Tower Test");  // Start with the tower test scene
 
     SceneManager::getInstance().loadLevel(
-        "Gameplay", levelFactory.getLevel("preset_level_farm"));
+        "Gameplay", levelFactory.getLevel("preset_level_south"));
 
     SceneManager::getInstance().changeScene("Main menu");
     // sceneManager.changeScene("Setting");
