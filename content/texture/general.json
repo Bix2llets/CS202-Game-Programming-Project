@@ -67,5 +67,9 @@
     {
         "id": "south_way",
         "path": "assets/texture/map/south.png"
+    },
+    {
+        "id": "ship",
+        "path": "assets/texture/map/ship.png"
     }
 ]

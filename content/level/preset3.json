@@ -1,0 +1,52 @@
+{
+    "id": "preset_level_ship",
+    "name": "Ship",
+    "background": "ship",
+    "waypoints": [
+        [0, 281],
+[153, 281],
+[170, 263],
+[168, 246],
+[131, 171],
+[133, 153],
+[158, 108],
+[179, 101],
+[243, 97],
+[227, 155],
+[230, 176],
+[252, 214],
+[268, 226],
+[345, 234],
+[371, 247],
+[378, 267],
+[366, 288],
+[345, 300],
+[300, 307],
+[272, 319],
+[262, 339],
+[262, 352]
+
+    ],
+    "wave": [
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 1,
+                "spawn_delay": 0,
+                "internal_delay": 2
+            },
+            {
+                "id": "basic_enemy",
+                "quantity": 1,
+                "spawn_delay": 10,
+                "internal_delay": 5
+            },
+            {
+                "id": "basic_enemy",
+                "quantity": 1,
+                "spawn_delay": 1,
+                "internal_delay": 0
+            }
+        ]
+    ]
+}
