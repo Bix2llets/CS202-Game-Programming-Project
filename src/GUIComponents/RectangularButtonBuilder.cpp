@@ -10,20 +10,19 @@ RectangularButtonBuilder& RectangularButtonBuilder::setText(const std::string& t
 }
 
 RectangularButtonBuilder& RectangularButtonBuilder::setPosition(const sf::Vector2f position) {
-    this->position = position;
+    buttonShape.setPosition(position);
     return *this;
 }
 
 RectangularButtonBuilder& RectangularButtonBuilder::setSize(const sf::Vector2f size) {
-    this->size = size;
+    buttonShape.setSize(size);
     return *this;
 }
 
 RectangularButtonBuilder& RectangularButtonBuilder::reset() {
     text = "";
     styleConfig = nlohmann::json();
-    position = {0.f, 0.f};
-    size = {0.f, 0.f};
+    buttonShape = sf::RectangleShape();
     notificationMessage = "";
     callback = nullptr;
     tex = nullptr;
@@ -38,18 +37,15 @@ RectangularButtonBuilder& RectangularButtonBuilder::loadJson(std::string id) {
 std::unique_ptr<RectangularButton> RectangularButtonBuilder::build() {
     std::unique_ptr<RectangularButton> result(new RectangularButton(mediator));
 
-    result->geometricInfo = {position, size};
     result->graphicState.loadStyle(styleConfig);
+    int borderWidth = result->graphicState.getStyle().getBorderWidth();
+    result->rect = buttonShape;
+    result->rect.setPosition(result->rect.getPosition() + sf::Vector2f{borderWidth, borderWidth});
+    result->rect.setSize(result->rect.getSize() - sf::Vector2f(borderWidth * 2, borderWidth * 2));
+    result->rect.setOutlineThickness(result->graphicState.getStyle().getBorderWidth());
     result->setOnClick(callback);
     fontName = styleConfig["font"];
-
-    if (tex) {
-        std::unique_ptr<sf::Sprite> sprite = std::make_unique<sf::Sprite>(*tex);
-        // sprite->setOrigin((sprite->getLocalBounds().position + sprite->getLocalBounds().size) / 2.f);
-        sprite->setScale({size.x / sprite->getLocalBounds().size.x, size.y / sprite->getLocalBounds().size.y});
-        sprite->setPosition(position);
-        result->backgroundSprite = std::move(sprite);
-    }
+    
     std::unique_ptr<sf::Text> label = std::make_unique<sf::Text>(
         *ResourceManager::getInstance().getFont(fontName), text, 24);
     Logger::debug(std::format("{} {} {} {}", label->getLocalBounds().position.x,
@@ -58,7 +54,7 @@ std::unique_ptr<RectangularButton> RectangularButtonBuilder::build() {
                               label->getLocalBounds().size.y));
     label->setOrigin(label->getLocalBounds().position +
                      label->getLocalBounds().size / 2.f);
-    label->setPosition(position + size / 2.f);
+    label->setPosition(result->rect.getGlobalBounds().position + result->rect.getGlobalBounds().size / 2.f);
     result->label = std::move(label);
     return std::move(result);
 }
@@ -69,6 +65,11 @@ RectangularButtonBuilder& RectangularButtonBuilder::setCallback(std::function<vo
 }
 
 RectangularButtonBuilder& RectangularButtonBuilder::setBackground(const sf::Texture* tex) {
-    this->tex = tex;
+    buttonShape.setTexture(tex);
+    return *this;
+}
+
+RectangularButtonBuilder& RectangularButtonBuilder::setBackgroundViewport(sf::IntRect rect) {
+    this->buttonShape.setTextureRect(rect);
     return *this;
 }

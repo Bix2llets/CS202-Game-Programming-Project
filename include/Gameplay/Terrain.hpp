@@ -22,7 +22,7 @@ class Terrain {
 
    public:
     Terrain();
-    Terrain(TerrainParameter parameters);
+    Terrain(TerrainParameters parameters);
     Terrain(Terrain&& other) noexcept;
     Terrain& operator=(Terrain&& rhs) noexcept;
     void debugRender();

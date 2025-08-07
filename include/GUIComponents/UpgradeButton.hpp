@@ -6,8 +6,9 @@
 #include "GUIComponents/ButtonBase.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
+#include "GUIComponents/CircularButton.hpp"
 class RadialUpgradeMenu;
-class UpgradeButton : public ButtonBase {
+class UpgradeButton : public CircularButton {
     public:
     UpgradeButton();
     ~UpgradeButton() override = default;
@@ -19,6 +20,7 @@ class UpgradeButton : public ButtonBase {
     UpgradeButton& setUpgradeID(int id);
     UpgradeButton& setCanUpgrade(bool val);
     UpgradeButton& setIsCapped(bool val);
+    UpgradeButton& setStyle(std::string configFile);
     void update() override;
     
     void refreshInfo();
@@ -32,7 +34,7 @@ class UpgradeButton : public ButtonBase {
 
     private:
 
-    const float TAG_OFFSET = 0.85f; 
+    const float TAG_OFFSET = 0.75f; 
     void updatePriceTag();
     void updateSpritePosition();
     int radius;

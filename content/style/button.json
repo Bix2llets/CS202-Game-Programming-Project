@@ -69,21 +69,53 @@
             "normal": {
                 "background": "#FFFFFFFF",
                 "border": "#000000FF",
-                "text": "#FFFFFFFF"
+                "text": "#000000FF"
             },
             "hover": {
                 "background": "#FFFFFF7F",
                 "border": "#0000007F",
-                "text": "#FFFFFF7F"
+                "text": "#0000007F"
             },
             "click": {
                 "background": "#000000FF",
                 "border": "#0000007F",
-                "text": "#FFFFFF7F"
+                "text": "#0000007F"
             }
         },
         "border_radius": 4,
         "border_width": 2,
+        "font": "pixel",
+        "font_size": 24,
+        "padding": [
+            12,
+            24
+        ],
+        "center": {
+            "x": "centering",
+            "y": "centering"
+        }
+    },
+    {
+        "id": "borderless_background_basic",
+        "style": {
+            "normal": {
+                "background": "#FFFFFFFF",
+                "border": "#000000FF",
+                "text": "#000000FF"
+            },
+            "hover": {
+                "background": "#FFFFFF7F",
+                "border": "#0000007F",
+                "text": "#0000007F"
+            },
+            "click": {
+                "background": "#0000007F",
+                "border": "#0000007F",
+                "text": "#0000007F"
+            }
+        },
+        "border_radius": 4,
+        "border_width": 0,
         "font": "pixel",
         "font_size": 24,
         "padding": [

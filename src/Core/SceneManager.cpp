@@ -62,3 +62,12 @@ void SceneManager::loadLevel(std::string ID, std::unique_ptr<Level> level) {
 
     sceneStorage[ID] = std::move(level);
 }
+
+void SceneManager::createLevel(std::string ID, TerrainParameters parameter) {
+    if (currentScene == sceneStorage[ID].get()) {
+        changeScene("Main Menu");
+        Logger::info("Switching to Main Menu before creating a new level");
+    }
+    auto level = std::make_unique<Level>(parameter);
+    loadLevel(ID, std::move(level));   
+}

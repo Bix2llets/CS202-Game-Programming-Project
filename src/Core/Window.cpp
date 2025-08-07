@@ -14,8 +14,8 @@ Window::Window()
                    InputManager::getInstance().getMouseState());
     subscribeMouse(Mouse::Middle, UserEvent::Release,
                    InputManager::getInstance().getMouseState());
-    subscribeMouse(Mouse::Scroll, UserEvent::None,
-                   InputManager::getInstance().getMouseState());
+    // subscribeMouse(Mouse::Scroll, UserEvent::None,
+    //                InputManager::getInstance().getMouseState());
     isMiddlePressed = false;
     // middlePressPosition = {0.f, 0.f};
     previousMiddleMousePosition = {0.f, 0.f};

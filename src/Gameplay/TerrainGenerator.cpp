@@ -9,7 +9,7 @@
 #include "Utility/logger.hpp"
 TerrainGenerator::TerrainGenerator() {};
 
-std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(TerrainParameter parameter) {
+std::vector<std::vector<float>> TerrainGenerator::getNoiseMap(TerrainParameters parameter) {
     
     if (parameter.gridSize == 0) parameter.gridSize = 1;
     Logger::debug(std::format("{} {} {} {} {} {}", parameter.depthFactor, parameter.gridSize, parameter.lacunarity, parameter.octaves, parameter.persistence, parameter.seed));

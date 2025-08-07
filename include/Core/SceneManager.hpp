@@ -63,6 +63,8 @@ class SceneManager {
      */
     void loadLevel(std::string ID, std::unique_ptr<Level> level);
 
+    void createLevel(std::string ID, TerrainParameters parameter = TerrainParameters());
+
 
     static SceneManager& getInstance() {
         static SceneManager instance;

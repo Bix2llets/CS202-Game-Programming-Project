@@ -34,6 +34,7 @@ void Style::loadJson(const nlohmann::json &file) {
     borderWidth = file["border_width"].get<int>();
 
     font = ResourceManager::getInstance().getFont(file["font"].get<std::string>());
+    fontSize = file["font_size"].get<int>();
     padding = file["padding"].get<std::array<int, 2>>();
 
     id = file["id"].get<std::string>();

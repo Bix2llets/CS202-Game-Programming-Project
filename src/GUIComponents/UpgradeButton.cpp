@@ -21,7 +21,6 @@ UpgradeButton::UpgradeButton()
     buttonShape = Aligner::align(buttonShape, HorizontalAlignment::Center,
                                  VerticalAlignment::Middle);
 
-    graphicState.loadStyle(JSONLoader::getInstance().getStyle("upgrade_button"));
     price.setPetroleum(0);
     price.setScraps(0);
 }
@@ -55,8 +54,8 @@ void UpgradeButton::updatePriceTag() {
     petroleumText.setCharacterSize(24);
     scrapText.setCharacterSize(24);
 
-    petroleumText.setFillColor(sf::Color::Black);
-    scrapText.setFillColor(sf::Color::Black);
+    petroleumText.setFillColor(getTextColor());
+    scrapText.setFillColor(getTextColor());
 
     scrapIcon.setScale({0.5f, 0.5f});
     petrolIcon.setScale({0.5f, 0.5f});
@@ -99,9 +98,9 @@ void UpgradeButton::updatePriceTag() {
                                iconTextPadding,
                            scrapIcon.getPosition().y});
     petrolIcon.setPosition(
-        {scrapIcon.getPosition().x, scrapIcon.getPosition().y +
-                                        scrapIcon.getGlobalBounds().size.y / 2 +
-                                        contentPadding + petrolIcon.getGlobalBounds().size.y / 2});
+        {scrapIcon.getPosition().x,
+         scrapIcon.getPosition().y + scrapIcon.getGlobalBounds().size.y / 2 +
+             contentPadding + petrolIcon.getGlobalBounds().size.y / 2});
     petroleumText.setPosition({petrolIcon.getPosition().x +
                                    petrolIcon.getGlobalBounds().size.x / 2 +
                                    iconTextPadding,
@@ -241,7 +240,7 @@ bool UpgradeButton::onScrollEvent(float delta,
 }
 
 UpgradeButton::UpgradeButton(const UpgradeButton& other)
-    : ButtonBase(other),
+    : CircularButton(other),
       radius(other.radius),
       parentRadialMenu(other.parentRadialMenu),
       upgradeID(other.upgradeID),
@@ -304,5 +303,14 @@ sf::Color UpgradeButton::getTextColor() {
 
 UpgradeButton& UpgradeButton::setIsCapped(bool val) {
     isCapped = val;
+    return *this;
+}
+
+UpgradeButton& UpgradeButton::setStyle(std::string configFile) {
+    nlohmann::json styleConfig = JSONLoader::getInstance().getStyle(configFile);
+    graphicState.loadStyle(styleConfig);
+    buttonShape.setFillColor(graphicState.getFillColor());
+    buttonShape.setOutlineColor(graphicState.getBorderColor());
+    buttonShape.setOutlineThickness(graphicState.getStyle().getBorderWidth());
     return *this;
 }
