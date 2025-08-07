@@ -1,8 +1,8 @@
 {
   "id": "sniper",
   "texture": {
-    "width": 128,
-    "height": 128,
+    "width": 64,
+    "height": 64,
     "base": "rifle_base",
     "turret": "rifle_turret",
     "turret_animation": {
@@ -11,13 +11,13 @@
       "height": 32,
       "animation_interval": 0.1,
       "type": "linear",
-      "center_x": 64,
-      "center_y": 64,
+      "center_x": 16,
+      "center_y": 16,
       "viewport" : {
           "x": 0,
           "y": 0,
-          "width": 64,
-          "height": 64
+          "width": 128,
+          "height": 32
       }
     }
   },
@@ -27,7 +27,7 @@
   "stats": {
     "damage": 25,
     "fire_rate": 0.5,
-    "range": 180
+    "range": 18
   },
   "behaviors": {
     "combat": {

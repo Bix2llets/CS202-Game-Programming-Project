@@ -1,9 +1,12 @@
+#include "Scene/CustomLevelCreation.hpp"
+
 #include "COre/MouseState.hpp"
 #include "Core/InputManager.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Core/SceneManager.hpp"
 #include "Core/UserEvent.hpp"
+#include "Core/Window.hpp"
 #include "GUIComponents/RectangularButtonBuilder.hpp"
-#include "Scene/CustomLevelCreation.hpp"
 #include "Utility/Aligner.hpp"
 void CustomLevelCreation::createButtons() {
     RectangularButtonBuilder builder(*this);
@@ -163,6 +166,7 @@ void CustomLevelCreation::createButtons() {
 
 void CustomLevelCreation::draw(sf::RenderTarget& target,
                                sf::RenderStates states) const {
+    Window::getInstance().toggleGUIMode();
     for (const auto& button : incrementButtons) {
         target.draw(*button, states);
     }
@@ -170,12 +174,12 @@ void CustomLevelCreation::draw(sf::RenderTarget& target,
         target.draw(*button, states);
     }
 
-    for (const auto& text: parameterTexts) {
+    for (const auto& text : parameterTexts) {
         target.draw(text, states);
         sf::CircleShape circle(2);
         circle.setFillColor(sf::Color::Red);
         circle.setPosition(text.getPosition());
-        target.draw(circle,states);
+        target.draw(circle, states);
     }
     target.draw(*creationButton, states);
     target.draw(*clearButton, states);
@@ -217,6 +221,17 @@ void CustomLevelCreation::onLoad() {
                    InputManager::getInstance().getMouseState());
     subscribeMouse(Mouse::Left, UserEvent::Release,
                    InputManager::getInstance().getMouseState());
+    for (const auto& button : incrementButtons) {
+        button->update();
+    }
+    for (const auto& button : decrementButtons) {
+        button->resetAnimation();
+    }
+    creationButton->resetAnimation();
+    clearButton->resetAnimation();
+    togglePresetButton->resetAnimation();
+    menuButton->resetAnimation();
+    seedBox.resetAnimation();
 }
 
 void CustomLevelCreation::onUnload() {
@@ -237,36 +252,27 @@ void CustomLevelCreation::onUnload() {
 bool CustomLevelCreation::onMouseEvent(Mouse button, UserEvent event,
                                        const sf::Vector2f& worldPosition,
                                        const sf::Vector2f& windowPosition) {
+    bool isProcessed = false;
     for (const auto& btn : incrementButtons) {
-        if (btn->onMouseEvent(button, event, worldPosition, windowPosition)) {
-            return true;
-        }
+        isProcessed |=
+            btn->onMouseEvent(button, event, worldPosition, windowPosition);
     }
     for (const auto& btn : decrementButtons) {
-        if (btn->onMouseEvent(button, event, worldPosition, windowPosition)) {
-            return true;
-        }
+        isProcessed |=
+            btn->onMouseEvent(button, event, worldPosition, windowPosition);
     }
-    if (creationButton->onMouseEvent(button, event, worldPosition,
-                                     windowPosition)) {
-        return true;
-    }
-    if (clearButton->onMouseEvent(button, event, worldPosition,
-                                  windowPosition)) {
-        return true;
-    }
-    if (togglePresetButton->onMouseEvent(button, event, worldPosition,
-                                         windowPosition)) {
-        return true;
-    }
-    if (menuButton->onMouseEvent(button, event, worldPosition,
-                                 windowPosition)) {
-        return true;
-    }
-    if (seedBox.onMouseEvent(button, event, worldPosition, windowPosition)) {
-        return true;
-    }
-    return false;
+    isProcessed |= creationButton->onMouseEvent(button, event, worldPosition,
+                                                windowPosition);
+
+    isProcessed |=
+        clearButton->onMouseEvent(button, event, worldPosition, windowPosition);
+    isProcessed |= togglePresetButton->onMouseEvent(
+        button, event, worldPosition, windowPosition);
+    isProcessed |=
+        menuButton->onMouseEvent(button, event, worldPosition, windowPosition);
+    isProcessed |=
+        seedBox.onMouseEvent(button, event, worldPosition, windowPosition);
+    return isProcessed;
 }
 
 bool CustomLevelCreation::onScrollEvent(float delta,
@@ -276,7 +282,11 @@ bool CustomLevelCreation::onScrollEvent(float delta,
     return false;
 }
 
-void CustomLevelCreation::subscribeEvents() {}
+void CustomLevelCreation::subscribeEvents() {
+    subscribe("Return to main menu", [this](std::any sender, std::any data) {
+        SceneManager::getInstance().changeScene("Main menu");
+    });
+}
 
 void CustomLevelCreation::createTexts() {
     parameterTexts.clear();

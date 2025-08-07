@@ -35,4 +35,10 @@ class TextBox : public TextInputObserver, public MouseObserver, public sf::Drawa
     inline std::string getText() const {return inputText.getString();}
 
     void update();
+
+    void resetAnimation() {
+        graphicsState.resetAnimation();
+        inputText.setFillColor(graphicsState.getTextColor());
+        inputText.setOutlineColor(graphicsState.getBorderColor());
+    }
 };

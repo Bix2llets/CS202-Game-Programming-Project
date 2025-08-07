@@ -36,5 +36,7 @@ class CustomLevelCreation : public Scene, public MouseObserver {
 
     void onLoad() override;
     void onUnload() override;
+
+    void resetAnimation();
     
 };
