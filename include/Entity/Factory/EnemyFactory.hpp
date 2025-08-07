@@ -10,7 +10,7 @@
 #include <json.hpp>
 #include <string>
 
-#include "Gameplay/Terrain.hpp"
+#include "Gameplay/Terrain/Terrain.hpp"
 
 class Enemy;
 enum class Difficulty;

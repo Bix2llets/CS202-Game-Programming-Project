@@ -129,8 +129,8 @@ void TowerMenu::setTowerButtonDisplay() {
         buttonRenderTexture.clear(sf::Color::Transparent);
 
         sf::Sprite towerSprite = tower->getIcon();
-
-        towerSprite.setPosition(sf::Vector2f{20.f, 20.f});
+        towerSprite = Aligner::align(towerSprite, HorizontalAlignment::Center, VerticalAlignment::Middle);
+        towerSprite.setPosition(sf::Vector2f{40.f, 25.f});
         Logger::debug(std::format("{} {}", towerSprite.getLocalBounds().size.x,
                                   towerSprite.getLocalBounds().size.y));
 

@@ -7,7 +7,7 @@
 
 #include "Core/LevelFactory.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
-#include "Gameplay/Terrain.hpp"
+#include "Gameplay/Terrain/Terrain.hpp"
 /**
  * @class Application
  * @brief Main application class that manages the game loop and core systems.

@@ -20,7 +20,7 @@
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
-#include "Gameplay/TerrainParameter.hpp"
+#include "Gameplay/Terrain/TerrainParameter.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
 
@@ -79,15 +79,12 @@ Level::Level(TerrainParameters parameter, sf::Vector2f startingPoint,
     subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
 
-        
         if (isPlacementValid(worldPosition)) {
             std::unique_ptr<Tower> newTower =
                 std::move(TowerFactory::createFromConfigFile(
-                    Cursor::getInstance().getCarryingTowerID(), 
-                    *this,
-                    worldPosition)
-                );
-            
+                    Cursor::getInstance().getCarryingTowerID(), *this,
+                    worldPosition));
+
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);
             entityManager.addTower(std::move(newTower));
@@ -134,7 +131,7 @@ void Level::update() {
     if (!isRunning) return;
 
     entityManager.update();
-    
+
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
             if (group.quantity == 0) continue;

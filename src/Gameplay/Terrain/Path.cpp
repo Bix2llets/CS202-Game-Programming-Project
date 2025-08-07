@@ -1,4 +1,4 @@
-#include "Gameplay/Path.hpp"
+#include "Gameplay/Terrain/Path.hpp"
 
 #include <cmath>
 #include <memory>

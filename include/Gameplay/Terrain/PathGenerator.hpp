@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 
-#include "Gameplay/Height.hpp"
+#include "Gameplay/Terrain/Height.hpp"
 #include "Gameplay/Waypoint.hpp"
 
 #pragma once

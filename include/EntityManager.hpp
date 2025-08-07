@@ -12,7 +12,7 @@
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Tower/Projectile/Projectile.hpp"
 
-#include "Gameplay/Terrain.hpp"
+#include "Gameplay/Terrain/Terrain.hpp"
 
 class Level;
 /**

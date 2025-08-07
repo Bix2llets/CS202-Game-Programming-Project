@@ -7,7 +7,7 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Enemy/MovingState.hpp"
 #include "Gameplay/Difficulty.hpp"
-#include "Gameplay/Path.hpp"
+#include "Gameplay/Terrain/Path.hpp"
 #include "Scene/Scene.hpp"
 EnemyFactory::EnemyFactory(Terrain &map, Scene &scene)
     : map(map), scene(scene) {
