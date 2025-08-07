@@ -1,8 +1,8 @@
 {
   "id": "cannon",
   "texture": {
-    "width": 128,
-    "height": 128,
+    "width": 64,
+    "height": 64,
     "base": "cannon_base",
     "turret_animation": {
       "texture_id": "cannon_turret",

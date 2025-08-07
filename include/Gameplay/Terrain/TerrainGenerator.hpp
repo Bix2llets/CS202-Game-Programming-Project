@@ -4,7 +4,7 @@
 #include <vector>
 #include <SFML/System/Vector2.hpp> 
 
-#include "Gameplay/TerrainParameter.hpp"
+#include "Gameplay/Terrain/TerrainParameter.hpp"
 class TerrainGenerator {
 public:
     std::vector<int> permutation;

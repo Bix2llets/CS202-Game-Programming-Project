@@ -1,4 +1,4 @@
-#include "Gameplay/TerrainParameter.hpp"
+#include "Gameplay/Terrain/TerrainParameter.hpp"
 #include <utility>
 #include <functional>
 void TerrainParameters::setSeed(std::string hashStr) {

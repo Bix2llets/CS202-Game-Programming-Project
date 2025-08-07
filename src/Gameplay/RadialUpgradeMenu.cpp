@@ -63,7 +63,7 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
     upgradeButtons.resize(upgradeManager->getAllUpgradeTypes().size());
 
     ring.setPosition(position);
-    ring.setRadius(newRadius);
+    ring.setRadius(128);
     ring = Aligner::align(ring, HorizontalAlignment::Center,
                           VerticalAlignment::Middle);
 

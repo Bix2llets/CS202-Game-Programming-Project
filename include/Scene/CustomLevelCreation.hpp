@@ -2,7 +2,7 @@
 
 #include "GUIComponents/RectangularButton.hpp"
 #include "GUIComponents/Textbox.hpp"
-#include "Gameplay/TerrainParameter.hpp"
+#include "Gameplay/Terrain/TerrainParameter.hpp"
 class CustomLevelCreation : public Scene, public MouseObserver {
     private:
     std::vector<std::unique_ptr<RectangularButton>> incrementButtons;
@@ -36,5 +36,7 @@ class CustomLevelCreation : public Scene, public MouseObserver {
 
     void onLoad() override;
     void onUnload() override;
+
+    void resetAnimation();
     
 };

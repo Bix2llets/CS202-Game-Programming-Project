@@ -37,11 +37,10 @@ TowerMenu::TowerMenu(const Currency& currencyRef, Level* level)
     isTowerSelected = false;
 
     position.y = 0;
-    position.x = GameConstants::DEFAULT_WINDOW_WIDTH - buttonGap.x -
-                 borderSize.x * 2.f - buttonSize.x * BUTTON_PER_ROW;
+    position.x = GameConstants::MENU_X;
     baseRectangle.setOrigin({0.f, 0.f});
     baseRectangle.setPosition(position);
-    baseRectangle.setSize({GameConstants::DEFAULT_WINDOW_WIDTH - position.x,
+    baseRectangle.setSize({GameConstants::DEFAULT_WINDOW_WIDTH - GameConstants::MENU_X,
                            GameConstants::DEFAULT_WINDOW_HEIGHT});
     baseRectangle.setFillColor(sf::Color(93, 153, 189, 255));
 
@@ -129,8 +128,8 @@ void TowerMenu::setTowerButtonDisplay() {
         buttonRenderTexture.clear(sf::Color::Transparent);
 
         sf::Sprite towerSprite = tower->getIcon();
-
-        towerSprite.setPosition(sf::Vector2f{20.f, 20.f});
+        towerSprite = Aligner::align(towerSprite, HorizontalAlignment::Center, VerticalAlignment::Middle);
+        towerSprite.setPosition(sf::Vector2f{40.f, 25.f});
         Logger::debug(std::format("{} {}", towerSprite.getLocalBounds().size.x,
                                   towerSprite.getLocalBounds().size.y));
 

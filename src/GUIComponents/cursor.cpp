@@ -12,8 +12,8 @@
 std::unique_ptr<Cursor> Cursor::instance = nullptr;
 Cursor::Cursor()
     : position(0.f, 0.f), renderImage{GameConstants::BLANK_TEXTURE} {
-        setValidPlacement();
-    }
+    setValidPlacement();
+}
 
 Cursor& Cursor::getInstance() {
     static Cursor instance;
@@ -95,12 +95,17 @@ void Cursor::setCarryingTower(std::string id) {
     carryingTowerId = id;
     rangePreview.setRadius(
         JSONLoader::getInstance().getTower(id)["stats"]["range"]);
-    rangePreview.setOrigin({rangePreview.getRadius(), rangePreview.getRadius()});
+    rangePreview.setOrigin(
+        {rangePreview.getRadius(), rangePreview.getRadius()});
     Window::getInstance().toggleUserMode();
-    sf::Vector2f worldPosition = Window::getInstance().getRenderWindow().mapPixelToCoords(sf::Mouse::getPosition(Window::getInstance().getRenderWindow()));
+    sf::Vector2f worldPosition =
+        Window::getInstance().getRenderWindow().mapPixelToCoords(
+            sf::Mouse::getPosition(Window::getInstance().getRenderWindow()));
     rangePreview.setPosition(worldPosition);
-}
 
+    previewTower.resize({32, 32});
+    
+}
 void Cursor::clearCarryingTower() {
     carryingTowerId = "";
     rangePreview.setRadius(0);

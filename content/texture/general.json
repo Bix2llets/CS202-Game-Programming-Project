@@ -9,7 +9,7 @@
     },
     {
         "id": "grass",
-        "path": "assets/texture/grass.png"
+        "path": "assets/texture/Map/grassMap.png"
     },
     {
         "id": "marble",
@@ -55,5 +55,13 @@
     {
         "id": "power_icon",
         "path": "assets/texture/power.png"
+    },
+    {
+        "id:": "grass_map",
+        "path": "assets/texture/Map/grassMap.png"
+    },
+    {
+        "id": "farm",
+        "path": "assets/texture/map/farm.png"
     }
 ]

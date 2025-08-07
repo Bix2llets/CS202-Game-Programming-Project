@@ -7,10 +7,10 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Enemy/MovingState.hpp"
 #include "Gameplay/Difficulty.hpp"
-#include "Gameplay/Path.hpp"
+#include "Gameplay/Terrain/Path.hpp"
 #include "Scene/Scene.hpp"
-EnemyFactory::EnemyFactory(Terrain &map, Scene &scene)
-    : map(map), scene(scene) {
+EnemyFactory::EnemyFactory(std::vector<Waypoint> waypoints, Scene &scene)
+    : waypoints{waypoints}, scene(scene) {
         rewardMultiplier = 1.f;
         speedMultiplier = 1.f;
         healthMultiplier = 1.f;
@@ -54,7 +54,7 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
         throw std::runtime_error("Missing required enemy fields in JSON");
     std::unique_ptr<Enemy> result(new Enemy(scene));
     result->animation.loadJson(enemyFile["sprite"]);
-    result->path.setWaypoints(map.getPath());
+    result->path.setWaypoints(&waypoints);
     result->path.setDistanceFromStart(distance);
     result->path.setSpeed(enemyFile["stats"]["speed"]);
     result->health.setMaxHealth(enemyFile["stats"]["max_health"]);

@@ -8,14 +8,14 @@ Window::Window()
     : window(sf::VideoMode({GameConstants::DEFAULT_WINDOW_WIDTH,
                             GameConstants::DEFAULT_WINDOW_HEIGHT}),
              "Rampart Remain", sf::Style::Close | sf::Style::Titlebar) {
-    subscribeMouse(Mouse::Middle, UserEvent::Press,
-                   InputManager::getInstance().getMouseState());
-    subscribeMouse(Mouse::Middle, UserEvent::Move,
-                   InputManager::getInstance().getMouseState());
-    subscribeMouse(Mouse::Middle, UserEvent::Release,
-                   InputManager::getInstance().getMouseState());
-    subscribeMouse(Mouse::Scroll, UserEvent::None,
-                   InputManager::getInstance().getMouseState());
+    // subscribeMouse(Mouse::Middle, UserEvent::Press,
+    //                InputManager::getInstance().getMouseState());
+    // subscribeMouse(Mouse::Middle, UserEvent::Move,
+    //                InputManager::getInstance().getMouseState());
+    // subscribeMouse(Mouse::Middle, UserEvent::Release,
+    //                InputManager::getInstance().getMouseState());
+    // subscribeMouse(Mouse::Scroll, UserEvent::None,
+    //                InputManager::getInstance().getMouseState());
     isMiddlePressed = false;
     // middlePressPosition = {0.f, 0.f};
     previousMiddleMousePosition = {0.f, 0.f};
@@ -45,8 +45,8 @@ bool Window::onMouseEvent(Mouse mouse, UserEvent event,
     if (mouse == Mouse::Middle && event == UserEvent::Press) {
         if (isMiddlePressed == true) return false;
         isMiddlePressed = true;
-        // middlePressPosition = windowPosition;  // * Can also be world position,
-                                               // should be consistent
+        // middlePressPosition = windowPosition;  // * Can also be world
+        // position, should be consistent
         previousMiddleMousePosition = windowPosition;
         // Logger::debug(std::format("Window pan Set {} {}",
         //                           userView.getCenter().x,
@@ -64,8 +64,8 @@ bool Window::onMouseEvent(Mouse mouse, UserEvent event,
         // clampView();
         window.setView(userView);
         // Logger::debug(std::format("Window pan Moving {} {}", displacement.x,
-                                //   displacement.y));
-            return true;
+        //   displacement.y));
+        return true;
     }
     if (mouse == Mouse::Middle && event == UserEvent::Release) {
         if (!isMiddlePressed) return false;
@@ -73,8 +73,8 @@ bool Window::onMouseEvent(Mouse mouse, UserEvent event,
         // middlePressPosition = {0.f, 0.f};
         previousMiddleMousePosition = {0.f, 0.f};
         // Logger::debug(std::format("Window pan Release {} {}",
-                                //   userView.getCenter().x,
-                                //   userView.getCenter().y));
+        //   userView.getCenter().x,
+        //   userView.getCenter().y));
         window.setMouseCursorGrabbed(false);
         return true;
     }
@@ -108,19 +108,21 @@ void Window::adjustUserView() {
 
 void Window::clampView() {
     static const int ALLOWED_OFFSET = 100;
-    if (userView.getCenter().x - userView.getSize().x < 0 - ALLOWED_OFFSET)
-        userView.setCenter({0 - ALLOWED_OFFSET, userView.getCenter().y});
-    if (userView.getCenter().y - userView.getSize().y < 0 - ALLOWED_OFFSET)
-        userView.setCenter({userView.getCenter().x, 0 - ALLOWED_OFFSET});
+    if (userView.getCenter().x - userView.getSize().x / 2 < 0)
+        userView.setCenter({userView.getSize().x, userView.getCenter().y / 2});
+    if (userView.getCenter().y - userView.getSize().y / 2 < 0)
+        userView.setCenter({userView.getCenter().x, userView.getSize().y / 2});
 
-    if (userView.getCenter().x + userView.getSize().x >
-        GameConstants::DEFAULT_WINDOW_WIDTH + ALLOWED_OFFSET)
+    if (userView.getCenter().x + userView.getSize().x / 2 >
+        GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE)
         userView.setCenter(
-            {GameConstants::DEFAULT_WINDOW_WIDTH + ALLOWED_OFFSET,
+            {GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE -
+                 userView.getSize().x / 2,
              userView.getCenter().y});
-    if (userView.getCenter().y + userView.getSize().y >
-        GameConstants::DEFAULT_WINDOW_HEIGHT + ALLOWED_OFFSET)
+    if (userView.getCenter().y + userView.getSize().y / 2 >
+        GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE)
         userView.setCenter(
             {userView.getCenter().x,
-             GameConstants::DEFAULT_WINDOW_HEIGHT + ALLOWED_OFFSET});
+             GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE -
+                 userView.getSize().y / 2});
 }

@@ -1,4 +1,4 @@
-#include "Gameplay/TerrainGenerator.hpp"
+#include "Gameplay/Terrain/TerrainGenerator.hpp"
 
 #include <algorithm>
 #include <cmath>

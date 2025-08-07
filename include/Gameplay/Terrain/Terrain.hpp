@@ -4,10 +4,10 @@
 #include <memory>
 #include <vector>
 
-#include "Gameplay/Height.hpp"
-#include "Gameplay/Path.hpp"
-#include "Gameplay/PathGenerator.hpp"
-#include "Gameplay/TerrainParameter.hpp"
+#include "Gameplay/Terrain/Height.hpp"
+#include "Gameplay/Terrain/Path.hpp"
+#include "Gameplay/Terrain/PathGenerator.hpp"
+#include "Gameplay/Terrain/TerrainParameter.hpp"
 
 #include "Gameplay/Waypoint.hpp"
 // * Goal for now: Perlin noise generating the height map

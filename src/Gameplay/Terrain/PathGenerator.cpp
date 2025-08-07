@@ -1,4 +1,4 @@
-#include "Gameplay/PathGenerator.hpp"
+#include "Gameplay/Terrain/PathGenerator.hpp"
 
 #include <fstream>
 #include <queue>

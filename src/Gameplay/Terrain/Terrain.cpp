@@ -1,11 +1,11 @@
-#include "Gameplay/terrain.hpp"
+#include "Gameplay/Terrain/terrain.hpp"
 
 #include <math.h>
 
 #include <fstream>
 
 #include "Core/Window.hpp"
-#include "Gameplay/TerrainGenerator.hpp"
+#include "Gameplay/Terrain/TerrainGenerator.hpp"
 #include "Utility/logger.hpp"
 #include "Base/Constants.hpp"
 

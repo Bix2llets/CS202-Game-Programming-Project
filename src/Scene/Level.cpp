@@ -20,7 +20,7 @@
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
-#include "Gameplay/TerrainParameter.hpp"
+#include "Gameplay/Terrain/TerrainParameter.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
 
@@ -28,11 +28,12 @@ Level::Level(TerrainParameters parameter, sf::Vector2f startingPoint,
              sf::Vector2f endPoint)
     : currentWave{0},
       isRunning{true},
-      map(parameter),
-      entityManager{map, *this},
+    //   map(parameter),
+      entityManager{*this},
       menu{budget, this},
       tracker(*this),
-      upgradeMenu(*this) {
+      upgradeMenu(*this),
+      backgrounds(GameConstants::BLANK_TEXTURE) {
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
@@ -79,15 +80,12 @@ Level::Level(TerrainParameters parameter, sf::Vector2f startingPoint,
     subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
 
-        
         if (isPlacementValid(worldPosition)) {
             std::unique_ptr<Tower> newTower =
                 std::move(TowerFactory::createFromConfigFile(
-                    Cursor::getInstance().getCarryingTowerID(), 
-                    *this,
-                    worldPosition)
-                );
-            
+                    Cursor::getInstance().getCarryingTowerID(), *this,
+                    worldPosition));
+
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);
             entityManager.addTower(std::move(newTower));
@@ -134,7 +132,7 @@ void Level::update() {
     if (!isRunning) return;
 
     entityManager.update();
-    
+
     for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
         for (EnemyGroupInfo &group : currentWave) {
             if (group.quantity == 0) continue;
@@ -162,8 +160,8 @@ void Level::update() {
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     // drawBackground(target, state);
     Window::getInstance().toggleUserMode();
-    map.render(state);
-
+    // map.render(state);
+    Window::getInstance().getRenderWindow().draw(backgrounds, state);
     entityManager.render(state);
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.render(state);
@@ -178,9 +176,24 @@ void Level::loadFromJson(const std::string &pathToFile) {
 }
 
 void Level::loadFromJson(const nlohmann::json &jsonFile) {
+    backgrounds = sf::Sprite(
+        *ResourceManager::getInstance().getTexture(jsonFile["background"]));
+
+    sf::Vector2f scale;
+    scale.x = static_cast<float>(GameConstants::MAP_WIDTH) /
+              backgrounds.getLocalBounds().size.x;
+    scale.y = static_cast<float>(GameConstants::MAP_HEIGHT) /
+              backgrounds.getGlobalBounds().size.y;
+    backgrounds.setScale(scale);
+    waypoints.clear();
+    for (const auto point : jsonFile["waypoints"]) {
+        waypoints.emplace_back(
+            Waypoint{sf::Vector2f{point[0].get<float>() * scale.x, point[1].get<float>() * scale.y}, 1.0});
+        Logger::debug(std::format("Waypoint at {}, {}", point[0].get<float>(), point[1].get<float>()));
+    }
     loadWaves(jsonFile);
 
-    factory = std::make_unique<EnemyFactory>(map, *this);
+    factory = std::make_unique<EnemyFactory>(waypoints, *this);
 }
 
 void Level::loadWaves(const nlohmann::json &jsonFile) {
@@ -327,17 +340,17 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
         sf::Vector2f{(float)+towerBaseWidth, (float)-towerBaseHeight} / 2.f;
     sf::Vector2f towerBound[4] = {upperLeft, upperRight, lowerRight, lowerLeft};
 
-    for (float x = upperLeft.x; x <= lowerRight.x;
-         x += GameConstants::CELL_SIZE)
-        for (float y = upperLeft.y; y <= lowerRight.y;
-             y += GameConstants::CELL_SIZE)
-            if (map.getCellType({x, y}) == Height::DeepSea) return false;
+    // for (float x = upperLeft.x; x <= lowerRight.x;
+    //      x += GameConstants::CELL_SIZE)
+    //     for (float y = upperLeft.y; y <= lowerRight.y;
+    //          y += GameConstants::CELL_SIZE)
+    //         if (map.getCellType({x, y}) == Height::DeepSea) return false;
     if (scrapCost > budget.getScraps().value ||
         petroleumCost > budget.getPetroleum().value)
         return false;
     for (auto &tower : entityManager.getTowers())
         if (tower->intersects(towerBound)) return false;
-    std::vector<Waypoint> pathway = *map.getPath();
+    std::vector<Waypoint>& pathway = waypoints;
 
     for (int i = 0; i < pathway.size() - 1; i++) {
         Waypoint current = pathway[i];

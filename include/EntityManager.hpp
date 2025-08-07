@@ -12,7 +12,6 @@
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Tower/Projectile/Projectile.hpp"
 
-#include "Gameplay/Terrain.hpp"
 
 class Level;
 /**
@@ -28,11 +27,10 @@ private:
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Projectile>> projectiles;
 
-    Terrain &terrain;
     Level& level;
 
 public:
-    EntityManager(Terrain &terrain, Level& parentLevel) : terrain{terrain}, level{parentLevel} {}
+    EntityManager(Level& parentLevel) : level{parentLevel} {}
     /**
      * @brief Update all entities
      *

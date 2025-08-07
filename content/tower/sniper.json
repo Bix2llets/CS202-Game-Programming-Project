@@ -1,8 +1,8 @@
 {
   "id": "sniper",
   "texture": {
-    "width": 128,
-    "height": 128,
+    "width": 64,
+    "height": 64,
     "base": "rifle_base",
     "turret_animation": {
       "texture_id": "rifle_turret",
@@ -26,8 +26,7 @@
   "stats": {
     "damage": 80,
     "fire_rate": 0.5,
-    "range": 600,
-    "max_targets": 1
+    "range": 18
   },
   "behaviors": {
     "combat": {
