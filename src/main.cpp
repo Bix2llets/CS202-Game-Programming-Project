@@ -6,8 +6,8 @@
 #include "Core/ResourceManager.hpp"
 
 int main() {
-    // freopen("logs.txt", "w", stdout);
-    // freopen("errors.txt", "w", stderr);
+    freopen("logs.txt", "w", stdout);
+    freopen("errors.txt", "w", stderr);
     
     Logger::success("Program start");
     

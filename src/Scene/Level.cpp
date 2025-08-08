@@ -310,9 +310,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
 bool Level::onMouseEvent(Mouse mouse, UserEvent event,
                          const sf::Vector2f &worldPosition,
                          const sf::Vector2f &windowPosition) {
-    if (isRunning) {
-        ///
-
+    if (overlay) {
         return false;
     }
     if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
