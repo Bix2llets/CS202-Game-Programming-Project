@@ -10,7 +10,7 @@
 
 Projectile::Projectile(Scene& scene, const std::string id)
     : Entity(scene), levelRef(nullptr), id(id), type(ProjectileTargetType::Trajectory),
-      stopOnFirstCollision(false), pierceThrough(false), collisionDistance(5.0f),
+      pierceCount(1), currentPierceCount(0), collisionDistance(5.0f),
       speed(0.0f), velocity(0.0f, 0.0f), flying(true), source(nullptr),
       targetEntity(nullptr), flightMode(nullptr) 
 {
@@ -20,7 +20,7 @@ Projectile::Projectile(Scene& scene, const std::string id)
 Projectile::Projectile(const Projectile& other) 
     : Entity(other.scene), levelRef(other.levelRef), animation(other.animation), // Default construct animation
       id(other.id), type(other.type), rotateToTarget(other.rotateToTarget),
-      stopOnFirstCollision(other.stopOnFirstCollision), pierceThrough(other.pierceThrough),
+      pierceCount(other.pierceCount), currentPierceCount(other.currentPierceCount),
       collisionDistance(other.collisionDistance), speed(other.speed), velocity(other.velocity),
       flying(true), hitEnemies(), 
       targetEntity(nullptr), targetLocation(other.targetLocation), flightMode(other.flightMode),
@@ -28,7 +28,6 @@ Projectile::Projectile(const Projectile& other)
 {
     // Reset flying state and hit enemies for the new projectile instance
     flying = true;
-    // Don't call bindToTower here - it will be called explicitly after construction
 }
 
 void Projectile::update() {
@@ -38,7 +37,7 @@ void Projectile::update() {
     
     if (targetEntity != nullptr) {
         if (!targetEntity->isAlive()) {
-            flying = false; // Stop flying if target is dead
+            stopFlying(); // Stop flying if target is dead
             return;
         }
         
@@ -50,35 +49,41 @@ void Projectile::update() {
         flightMode->update(this);
     }
     
-    if (levelRef) {
-        if (!pierceThrough && !stopOnFirstCollision && targetEntity) {
-            if (targetEntity && isCollidedWith(targetEntity->getPosition())) {
-                hitEnemies.push_back(targetEntity);
-                targetEntity->onHit(source->getStat(TowerStat::DAMAGE));
-                flying = false; // Stop flying after hitting the target
-            }
-        } else {
-            for (auto& enemy : levelRef->getEntityManager().getEnemies()) {
-                if (hasHitEnemy(enemy)) continue; // Skip already hit enemies
-                
-                if (isCollidedWith(enemy->getPosition())) {
-                    hitEnemies.push_back(enemy); // Add to hit list
-                    enemy->onHit(source->getStat(TowerStat::DAMAGE));
-                    
-                    if(stopOnFirstCollision || enemy == targetEntity) {
-                        flying = false; // Stop flying on first collision
-                        break; // Exit loop after hitting first enemy
-                    }
+    if (pierceCount == 0 && targetEntity) {
+        if (targetEntity && isCollidedWith(targetEntity->getPosition())) {
+            hitEnemies.push_back(targetEntity);
+            targetEntity->onHit(source->getStat(TowerStat::DAMAGE));
+            stopFlying(); // Stop flying after hitting the target
+        }
+    } else {
+        for (auto& enemy : levelRef->getEntityManager().getEnemies()) {
+            if (hasHitEnemy(enemy)) continue; // Skip already hit enemies
+            
+            if (isCollidedWith(enemy->getPosition())) {
+                hitEnemies.push_back(enemy); // Add to hit list
+                enemy->onHit(source->getStat(TowerStat::DAMAGE));
+                increaseCurrentPierceCount();
+
+                if(pierceCount - currentPierceCount <= 0 || enemy == targetEntity) {
+                    stopFlying(); // Stop flying after hitting the target or if pierce count is exhausted
+                    break; // Exit loop
                 }
             }
         }
     }
     
     if (isCollidedWith(targetLocation)) {
-        flying = false; // Stop flying if at target location
+        stopFlying(); // Stop flying if at target location
     }
 
     updateSpriteAnimation(); // Update sprite based on animation
+}
+
+void Projectile::stopFlying() {
+    flying = false;
+    hitEnemies.clear(); // Clear hit enemies
+
+    // Summoning Lingering Entity
 }
 
 void Projectile::loadSpriteAnimation(const nlohmann::json& spriteAnimationPath) {
@@ -113,6 +118,7 @@ void Projectile::bindToTower(Tower* tower) {
 
     source = tower;
     speed = tower->getStat(TowerStat::PROJECTILE_SPEED, 1.0f);
+    pierceCount = tower->getStat(TowerStat::PROJECTILE_PIERCE_COUNT, pierceCount);
 }
 
 void Projectile::setUpFlightMode() {
@@ -137,6 +143,10 @@ void Projectile::setTarget(Enemy* enemy) {
         targetLocation = position + direction;
     } else {
         throw std::runtime_error("Invalid projectile target type for setting target");
+    }
+
+    if (flightMode) {
+        flightMode->setUp(this); // Reinitialize flight mode with new target
     }
 }
 

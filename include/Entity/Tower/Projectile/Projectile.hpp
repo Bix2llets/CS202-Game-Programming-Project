@@ -45,8 +45,8 @@ private:
     ProjectileTargetType type; ///< Type of projectile (target entity or location)
 
     bool rotateToTarget; ///< Whether to rotate towards target
-    bool stopOnFirstCollision; ///< Whether the projectile stops on first entity hit (even if it's not the main target)
-    bool pierceThrough; ///< Whether the projectile can deal damage to entities along its path (not just the target)
+    int pierceCount; ///< Number of enemies this projectile can pierce through
+    int currentPierceCount; ///< Current number of pierced enemies
 
     float collisionDistance; ///< Collision distance threshold
     float speed; ///< Movement speed
@@ -105,8 +105,8 @@ private:
 
     ProjectileTargetType getType() const { return type; }
 
-    bool isStopOnFirstCollision() const { return stopOnFirstCollision; }
-    bool isPierceThrough() const { return pierceThrough; }
+    int getPierceCount() const { return pierceCount; }
+    int getCurrentPierceCount() const { return currentPierceCount; }
 
     float getCollisionDistance() const { return collisionDistance; }
     float getSpeed() const { return speed; }
@@ -132,12 +132,14 @@ private:
     
     // Setters
     void bindToTower(Tower* tower);
+    void stopFlying();
     void setUpFlightMode();
     void setTarget(Enemy* enemy);
     void setFlightMode(FlightMode* mode) { flightMode = mode; }
     void setTargetType(ProjectileTargetType targetType) { type = targetType; }
-    void setStopOnFirstCollision(bool stop) { stopOnFirstCollision = stop; }
-    void setPierceThrough(bool pierce) { pierceThrough = pierce; }
+    void setPierceCount(int count) { pierceCount = count; }
+    void setCurrentPierceCount(int count) { currentPierceCount = count; }
+    void increaseCurrentPierceCount() { ++currentPierceCount; }
     void setCollisionDistance(float distance) { collisionDistance = distance; }
     void setRotateToTarget(bool rotate) { rotateToTarget = rotate; }
 };

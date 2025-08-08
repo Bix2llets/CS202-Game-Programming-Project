@@ -36,18 +36,12 @@ std::unique_ptr<Projectile> ProjectileFactory::createFromJson(const nlohmann::js
         }
 
         // Parse and set collision behavior
-        if (config.contains("stop_on_first_collision")) {
-            bool stopOnFirstCollision = config["stop_on_first_collision"].get<bool>();
-            projectile->setStopOnFirstCollision(stopOnFirstCollision);
-            Logger::debug("ProjectileFactory: Set stop_on_first_collision to " + 
-                         std::string(stopOnFirstCollision ? "true" : "false") + " for projectile " + id);
-        }
-
-        if (config.contains("pierce_through_targets")) {
-            bool pierceThrough = config["pierce_through_targets"].get<bool>();
-            projectile->setPierceThrough(pierceThrough);
-            Logger::debug("ProjectileFactory: Set pierce_through_targets to " + 
-                         std::string(pierceThrough ? "true" : "false") + " for projectile " + id);
+        if (config.contains("pierce_through_targets_count")) {
+            int pierceCount = config["pierce_through_targets_count"].get<int>();
+            projectile->setPierceCount(pierceCount);
+            projectile->setCurrentPierceCount(0);
+            Logger::debug("ProjectileFactory: Set pierce_through_targets_count to " + 
+                         std::to_string(pierceCount) + " for projectile " + id);
         }
 
         // Parse and set collision distance

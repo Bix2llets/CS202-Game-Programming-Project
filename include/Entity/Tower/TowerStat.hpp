@@ -47,6 +47,8 @@ public:
     // For Projectile Towers
     static inline const std::string PROJECTILE_SPEED = "projectile_speed";
     static inline const std::string PROJECTILE_RANGE = "projectile_range";
+    static inline const std::string PROJECTILE_PIERCE_COUNT = "projectile_pierce_count";
+    static inline const std::string PROJECTILE_STARTING_DISTANCE = "projectile_starting_distance";
 
     static inline std::string multiplier(const std::string& statName) {
         return statName + "_multiplier";

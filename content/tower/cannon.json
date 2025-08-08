@@ -29,11 +29,13 @@
   },
   "stats": {
     "damage": 100,
-    "fire_rate": 1.5,
-    "range": 240,
+    "fire_rate": 2.5,
+    "range": 360,
     "max_targets": 1,
-    "projectile_speed": 14.0,
-    "projectile_range": 1000
+    "projectile_speed": 18.0,
+    "projectile_range": 800,
+    "projectile_pierce_count": 1,
+    "projectile_starting_distance": 20
   },
   "upgrades": {
     "max_total_upgrades": 5,
