@@ -11,10 +11,10 @@
 #include "Scene/Scene.hpp"
 EnemyFactory::EnemyFactory(std::vector<Waypoint> waypoints, Scene &scene)
     : waypoints{waypoints}, scene(scene) {
-        rewardMultiplier = 1.f;
-        speedMultiplier = 1.f;
-        healthMultiplier = 1.f;
-    }
+    rewardMultiplier = 1.f;
+    speedMultiplier = 1.f;
+    healthMultiplier = 1.f;
+}
 void EnemyFactory::setDifficulty(Difficulty difficulty) {
     switch (difficulty) {
         case Difficulty::Easy: {
@@ -35,13 +35,12 @@ void EnemyFactory::setDifficulty(Difficulty difficulty) {
             healthMultiplier = 1.05f;
             return;
         }
-        
+
         default: {
             rewardMultiplier = 1.f;
             speedMultiplier = 1.f;
             healthMultiplier = 1.f;
             return;
-            
         }
     }
 }
@@ -53,6 +52,9 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
         !enemyFile.contains("type"))
         throw std::runtime_error("Missing required enemy fields in JSON");
     std::unique_ptr<Enemy> result(new Enemy(scene));
+    result->attackDisplayTimer.setTimeInterval(0.5)
+        .setRemainingTime(0)
+        .setTimerMode(TimerMode::Single);
     result->animation.loadJson(enemyFile["sprite"]);
     result->path.setWaypoints(&waypoints);
     result->path.setDistanceFromStart(distance);
@@ -67,9 +69,11 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
         (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);
 
     result->petroleumReward =
-        static_cast<float>(enemyFile["stats"]["reward"]["petroleum"]) * rewardMultiplier;
+        static_cast<float>(enemyFile["stats"]["reward"]["petroleum"]) *
+        rewardMultiplier;
     result->scrapReward =
-        static_cast<float>(enemyFile["stats"]["reward"]["scrap"]) * rewardMultiplier;
+        static_cast<float>(enemyFile["stats"]["reward"]["scrap"]) *
+        rewardMultiplier;
 
     result->name = enemyFile["name"];
     return std::move(result);
