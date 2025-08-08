@@ -1,0 +1,105 @@
+{
+    "id": "preset_level_farm",
+    "name": "Farm",
+    "background": "farm",
+    "waypoints": [
+        [
+            408,
+            124
+        ],
+        [
+            334,
+            124
+        ],
+        [
+            314,
+            117
+        ],
+        [
+            294,
+            66
+        ],
+        [
+            276,
+            48
+        ],
+        [
+            245,
+            49
+        ],
+        [
+            222,
+            74
+        ],
+        [
+            213,
+            113
+        ],
+        [
+            194,
+            123
+        ],
+        [
+            129,
+            127
+        ],
+        [
+            107,
+            140
+        ],
+        [
+            95,
+            165
+        ],
+        [
+            128,
+            194
+        ],
+        [
+            225,
+            184
+        ],
+        [
+            268,
+            200
+        ],
+        [
+            271,
+            234
+        ],
+        [
+            231,
+            257
+        ],
+        [
+            192,
+            267
+        ],
+        [
+            182,
+            353
+        ]
+    ],
+    "wave": [
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 1,
+                "spawn_delay": 0,
+                "internal_delay": 2
+            },
+            {
+                "id": "basic_enemy",
+                "quantity": 1,
+                "spawn_delay": 10,
+                "internal_delay": 5
+            },
+            {
+                "id": "basic_enemy",
+                "quantity": 1,
+                "spawn_delay": 1,
+                "internal_delay": 0
+            }
+        ]
+    ]
+}

@@ -135,7 +135,7 @@
     "combat": {
       "type": "projectile",
       "projectile": "cannon_ball",
-      "targeting": "nearest",
+      "targeting": "farthest",
       "effects": []
     }
   }

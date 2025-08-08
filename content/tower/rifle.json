@@ -130,7 +130,7 @@
   "behaviors": {
     "combat": {
       "type": "instant",
-      "targeting": "nearest",
+      "targeting": "first",
       "effects": []
     }
   }

@@ -7,7 +7,6 @@
 
 #include <SFML/Graphics.hpp>
 #include <string> 
-class RectangularButton; // Forward declaration
 
 /**
  * @class Mediator
