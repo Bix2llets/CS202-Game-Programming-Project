@@ -203,6 +203,11 @@ private:
      */
     const EntityEffect& getEffects() const { return effects; }
 
+    inline bool isFinished() {return path.isFinished();}
+
+    inline float getDistanceFromStart() const {
+        return path.getDistanceFromStart();
+    }
    protected:
     /**
      * @brief Called when the enemy dies.

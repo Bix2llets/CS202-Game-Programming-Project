@@ -13,6 +13,7 @@
 #include "Utility/CollisionChecker.hpp"
 
 #include "Utility/logger.hpp"
+#include "Utility/Scaler.hpp"
 
 Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const sf::Angle& angle)
     : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0),
@@ -159,14 +160,12 @@ void Tower::setRotation(const sf::Angle& rot) { setTurretRotation(rot); }
 void Tower::setBaseRotation(const sf::Angle& rot) {
     baseRotation = rot;
 
-    // Update base sprite rotation if it exists
     base.setRotation(rot);
 }
 
 void Tower::setTurretRotation(const sf::Angle& rot) {
     rotation = rot;  // Update Entity's rotation
 
-    // Update turret sprite rotation if it exists
     sprite.setRotation(rot);
 }
 
@@ -177,19 +176,15 @@ void Tower::pointTurretTowards(const sf::Vector2f& targetPosition) {
 void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
     base = sf::Sprite(texture);
 
-    // Get original texture size
     sf::Vector2u originalSize = texture.getSize();
 
-    // Set origin to center of ORIGINAL texture size (before scaling)
     sf::Vector2f origin(originalSize.x / 2.0f, originalSize.y / 2.0f);
     base.setOrigin(origin);
 
-    // Scale sprite to desired dimensions
     float scaleX = textureWidth / static_cast<float>(originalSize.x);
     float scaleY = textureHeight / static_cast<float>(originalSize.y);
-    base.setScale(sf::Vector2f(scaleX, scaleY));
+    base = Scaler::scaleSprite(base, {textureWidth, textureHeight});
 
-    // Ensure position and rotation are set correctly after scaling
     base.setPosition(position);
     base.setRotation(baseRotation);  // Use the stored base rotation
 }
@@ -239,10 +234,8 @@ void Tower::loadIcon() {
 }
 
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates state) const {
-    // Draw base sprite first (if it exists)
     target.draw(base, state);
 
-    // Draw turret sprite on top (if it exists)
     target.draw(sprite, state);
 }
 
@@ -252,14 +245,13 @@ void Tower::update() {
     timer.update();
     turretAnimation.update();
 
-    // Combat behavior
     if (combatBehaviorPointer) {
         if (timer.isAvailable()) {
             std::vector<Enemy*> targets =
                 levelRef->getEntityManager().getEnemies();
             if (targets.empty()) {
                 return;
-            }  // No targets to engage
+            }
 
             if (!combatBehaviorPointer->engage(targets)) {
                 if (turretAnimation.isRunning()) {

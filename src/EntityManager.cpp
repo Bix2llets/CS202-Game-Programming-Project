@@ -69,7 +69,7 @@ void EntityManager::cleanup() {
         std::remove_if(enemies.begin(), enemies.end(),
                        [this](const std::unique_ptr<Enemy>& enemy) {
                            if (!enemy) return true;
-                           if (!enemy->isAlive()) {
+                           if (!enemy->isAlive() && !enemy->isFinished()) {
                                Logger::debug(std::format(
                                    "Reward: {} {}", enemy->getPetroleumReward(),
                                    enemy->getScrapReward()));

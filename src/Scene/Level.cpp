@@ -23,9 +23,8 @@
 #include "Gameplay/Terrain/TerrainParameter.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
-
-Level::Level(TerrainParameters parameter, sf::Vector2f startingPoint,
-             sf::Vector2f endPoint)
+#include "Scene/Overlays/PauseScreen.hpp"
+Level::Level()
     : currentWave{0},
       isRunning{true},
     //   map(parameter),
@@ -33,6 +32,7 @@ Level::Level(TerrainParameters parameter, sf::Vector2f startingPoint,
       menu{budget, this},
       tracker(*this),
       upgradeMenu(*this),
+      health{200},
       backgrounds(GameConstants::BLANK_TEXTURE) {
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
@@ -121,7 +121,27 @@ Level::Level(TerrainParameters parameter, sf::Vector2f startingPoint,
     subscribe("unfocus_tower", [this](std::any sender, std::any data) {
         upgradeMenu.removeFocus();
     });
+
+    subscribe("enemy_passed", [this](std::any sender, std::any data) {
+        try {
+            
+            Enemy* enemySent = std::any_cast<Enemy*>(sender);
+            health -= enemySent->getHealth();
+            if (health <= 0) {
+                Logger::error("Level failed, health reached zero");
+                isRunning = false;
+            } else {
+                Logger::warning(std::format("Enemy passed, health left: {}", health));
+            }
+        }
+        catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on enemy passed");
+            return;
+        }
+
+    });
 }
+
 
 Level::~Level() {}
 void Level::update() {
@@ -168,7 +188,11 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     }
 
     Window::getInstance().toggleGUIMode();
+
     menu.render(state);
+    if (overlay) {
+        overlay->render();
+    }
 }
 void Level::loadFromJson(const std::string &pathToFile) {
     nlohmann::json jsonFile = nlohmann::json::parse(std::ifstream(pathToFile));
@@ -266,6 +290,13 @@ bool Level::onKeyEvent(Key key, UserEvent event,
                        const sf::Vector2f &windowPosition) {
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
+        if (!isRunning) {
+            overlay = std::make_unique<PauseScreen>();
+        }
+        else
+        {
+            overlay = nullptr;
+        }
         return true;
     }
 
@@ -279,6 +310,11 @@ bool Level::onKeyEvent(Key key, UserEvent event,
 bool Level::onMouseEvent(Mouse mouse, UserEvent event,
                          const sf::Vector2f &worldPosition,
                          const sf::Vector2f &windowPosition) {
+    if (isRunning) {
+        ///
+
+        return false;
+    }
     if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
         return true;
     }

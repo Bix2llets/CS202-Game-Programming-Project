@@ -160,7 +160,7 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
     rangeIndicator.setRadius(refTower->getStat(TowerStat::RANGE));
     rangeIndicator.setOrigin(
         {rangeIndicator.getRadius(), rangeIndicator.getRadius()});
-    rangeIndicator.setPosition(position);
+    rangeIndicator.setPosition(refTower->getPosition());
     rangeIndicator.setFillColor(sf::Color(0, 0, 0, 100));
 
     target.draw(rangeIndicator);
@@ -192,6 +192,20 @@ void RadialUpgradeMenu::updatePositions() {
         Window::getInstance().getRenderWindow().mapCoordsToPixel(
             refTower->getPosition()));
 
+    if (position.x + ring.getRadius() + sellBtn.getRadius() > GameConstants::MENU_X) {
+        position.x = GameConstants::MENU_X - ring.getRadius() - sellBtn.getRadius();
+    }
+
+    if (position.x - ring.getRadius() - sellBtn.getRadius() < 0) {
+        position.x = ring.getRadius() + sellBtn.getRadius();
+    }
+    if (position.y + ring.getRadius() + sellBtn.getRadius() > GameConstants::DEFAULT_WINDOW_HEIGHT) {
+        position.y = GameConstants::DEFAULT_WINDOW_HEIGHT - ring.getRadius() - sellBtn.getRadius();
+    }
+
+    if (position.y - ring.getRadius() - sellBtn.getRadius() < 0) {
+        position.y = ring.getRadius() + sellBtn.getRadius();
+    }
     sf::Angle upgradeDisplayInterval = sf::degrees(360 * 4.f / 6.f);
     sf::Angle startingAngle =
         sf::degrees(0.f) + sf::degrees(60.f) + sf::degrees(90.f);

@@ -350,8 +350,6 @@ std::unique_ptr<CombatBehavior> TowerFactory::parseCombatBehavior(const nlohmann
 
         fireMode = projectileFireMode;
     } else {
-        // For other fire mode types, do nothing yet as requested
-        // std::cout << "TowerFactory: Fire mode type '" << fireType << "' not yet implemented. Skipping combat behavior." << std::endl;
         return nullptr;
     }
     
@@ -375,7 +373,5 @@ std::unique_ptr<CombatBehavior> TowerFactory::parseCombatBehavior(const nlohmann
     }
     
 
-    // Create and return combat behavior
-    // Note: CombatBehavior constructor takes ownership of the pointers
     return std::make_unique<CombatBehavior>(nullptr, targetSelector, fireMode);
 }

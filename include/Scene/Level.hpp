@@ -23,6 +23,7 @@
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Scene.hpp"
 #include "Gameplay/RadialUpgradeMenu.hpp"
+#include "Scene/Overlays/Overlay.hpp"
 /**
  * @class Level
  * @brief Scene representing a gameplay level, with map, entities, and wave
@@ -34,27 +35,27 @@
  */
 class Level : public Scene, public KeyboardObserver, public MouseObserver {
     private:
-    std::string levelID;  ///< Unique identifier for the level
+    std::string levelID;  
     void loadLevelID(const nlohmann::json &jsonfile);
-    EntityManager entityManager;  ///< Manages all entities in the level
+    EntityManager entityManager;  
     std::unique_ptr<EnemyFactory> factory;
     // Terrain map;  // game map for this level
     std::vector<std::vector<EnemyGroupInfo>>
-        waveInfo;     ///< Information for each wave
-    int currentWave;  ///< Index of the current wave
+        waveInfo;     
+    int currentWave;  
     bool isRunning;
-    Tracker tracker;  ///< Tracks gameplay statistics for this level
+    Tracker tracker;  
     RadialUpgradeMenu upgradeMenu;
     Currency budget;
     TowerMenu menu;
 
-    std::vector<Waypoint> waypoints;  ///< Waypoints for enemy paths
+    std::unique_ptr<Overlay> overlay;
+    std::vector<Waypoint> waypoints;  
     sf::Sprite backgrounds;
 
+    int health;
     public:
-    Level(TerrainParameters parameter = TerrainParameters(),
-          sf::Vector2f startingPoint = {-1.f, -1.f},
-          sf::Vector2f endPoint = {-1.f, -1.f});
+    Level();
 
     ~Level();
     /**

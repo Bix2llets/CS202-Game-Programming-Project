@@ -29,7 +29,7 @@
   },
   "stats": {
     "damage": 100,
-    "fire_rate": 1.5,
+    "fire_rate": 0.5,
     "range": 240,
     "max_targets": 1,
     "projectile_speed": 14.0,
@@ -133,7 +133,7 @@
     "combat": {
       "type": "projectile",
       "projectile": "cannon_ball",
-      "targeting": "nearest",
+      "targeting": "farthest",
       "effects": []
     }
   }

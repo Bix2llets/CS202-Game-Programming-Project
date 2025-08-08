@@ -25,6 +25,9 @@ class CircularButton : public ButtonBase {
     bool onMouseEvent(Mouse button, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
     bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
 
+    inline int getRadius() const {
+        return buttonShape.getRadius();
+    }
     private:
     sf::Sprite displaySprite;
     RadialUpgradeMenu* parentRadialMenu = nullptr;
