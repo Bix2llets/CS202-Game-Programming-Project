@@ -22,7 +22,7 @@ private:
     sf::RectangleShape baseRectangle;
 
     const sf::Vector2f buttonGap = {5, 5};
-    const sf::Vector2f buttonSize = {170, 40};
+    const sf::Vector2f buttonSize = {170, 60};
     const sf::Vector2f borderSize = {10, 10};
     const int BUTTON_PER_ROW = 1;
 
