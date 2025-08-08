@@ -6,7 +6,7 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
-#include "Entity/Tower/TowerStat.hpp"
+#include "Entity/Modules/EntityStat.hpp"
 #include "Gameplay/Currency.hpp"
 
 TowerRotationMockScene::TowerRotationMockScene()

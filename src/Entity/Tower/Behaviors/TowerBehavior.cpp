@@ -1,6 +1,6 @@
 #include "Entity/Tower/Behaviors/TowerBehavior.hpp"
 #include "Entity/Tower/Tower.hpp"
-#include "Entity/Tower/TowerStat.hpp"
+#include "Entity/Modules/EntityStat.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 
 int CombatBehavior::engage(const std::vector<Enemy*>& enemies) const {

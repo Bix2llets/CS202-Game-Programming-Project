@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <string>
 #include "Gameplay/Currency.hpp"
-#include "Entity/Tower/TowerStat.hpp"
+#include "Entity/Modules/EntityStat.hpp"
 
 /**
  * @struct UpgradeDetails
@@ -19,7 +19,7 @@
  */
 struct UpgradeDetails {
     Currency cost;        ///< Cost in game currencies (scrap, petroleum)
-    TowerStat bonusStats; ///< Bonus stats provided by this upgrade level
+    EntityStat bonusStats; ///< Bonus stats provided by this upgrade level
 
     /**
      * @brief Default constructor.
@@ -31,7 +31,7 @@ struct UpgradeDetails {
      * @param upgradeCost The currency cost for this upgrade level.
      * @param stats The bonus stats provided by this upgrade level.
      */
-    UpgradeDetails(const Currency& upgradeCost, const TowerStat& stats)
+    UpgradeDetails(const Currency& upgradeCost, const EntityStat& stats)
         : cost(upgradeCost), bonusStats(stats) {}
 
     /**
@@ -57,7 +57,7 @@ struct UpgradeDetails {
      * @brief Get the bonus stats object.
      * @return Reference to the bonus stats TowerStat object.
      */
-    const TowerStat& getBonusStats() const {
+    const EntityStat& getBonusStats() const {
         return bonusStats;
     }
 
@@ -65,7 +65,7 @@ struct UpgradeDetails {
      * @brief Get the bonus stats object (non-const).
      * @return Reference to the bonus stats TowerStat object.
      */
-    TowerStat& getBonusStats() {
+    EntityStat& getBonusStats() {
         return bonusStats;
     }
 };

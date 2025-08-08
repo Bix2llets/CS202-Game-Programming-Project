@@ -53,6 +53,7 @@ void JSONLoader::loadAll() {
     enemies.clear();
     levels.clear();
     projectiles.clear();
+    areaEffects.clear();
     towers.clear();
     textures.clear();
     fonts.clear();
@@ -62,16 +63,17 @@ void JSONLoader::loadAll() {
 
     const std::vector<std::string> roots = {"content", "mod"};
     const std::vector<std::pair<
-        std::string, std::unordered_map<std::string, nlohmann::json>*>>
+    std::string, std::unordered_map<std::string, nlohmann::json>*>>
         types = {{"enemy", &enemies},
-                 {"level", &levels},
-                 {"projectile", &projectiles},
-                 {"tower", &towers},
-                 {"texture", &textures},
-                 {"font", &fonts},
-                 {"sound", &sounds},
-                 {"music", &musics},
-                 {"style", &styles}};
+                {"level", &levels},
+                {"projectile", &projectiles},
+                {"area_effect", &areaEffects},
+                {"tower", &towers},
+                {"texture", &textures},
+                {"font", &fonts},
+                {"sound", &sounds},
+                {"music", &musics},
+                {"style", &styles}};
     for (const auto& root : roots) {
         for (const auto& [type, mapPtr] : types) {
             std::string dir = root + "/" + type;
@@ -134,6 +136,13 @@ const nlohmann::json& JSONLoader::getProjectile(const std::string& id) const {
     return it->second;
 }
 
+const nlohmann::json& JSONLoader::getAreaEffect(const std::string& id) const {
+    auto it = areaEffects.find(id);
+    if (it == areaEffects.end())
+        throw std::out_of_range("AreaEffect ID not found: " + id);
+    return it->second;
+}
+
 const nlohmann::json& JSONLoader::getTower(const std::string& id) const {
     auto it = towers.find(id);
     if (it == towers.end())
@@ -176,6 +185,11 @@ JSONLoader::getAllLevels() const {
 const std::unordered_map<std::string, nlohmann::json>&
 JSONLoader::getAllProjectiles() const {
     return projectiles;
+}
+
+const std::unordered_map<std::string, nlohmann::json>&
+JSONLoader::getAllAreaEffects() const {
+    return areaEffects;
 }
 
 const std::unordered_map<std::string, nlohmann::json>&

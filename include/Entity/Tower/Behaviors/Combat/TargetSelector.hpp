@@ -89,4 +89,30 @@ public:
    std::vector<Enemy*> selectTarget(const Tower* tower, const std::vector<Enemy*>& enemies, int maxTargets = 1) const override;
 };
 
+class FirstTargetSelector : public TargetSelector {
+public:
+    /**
+     * @brief Select the first enemy in the line (aka the nearest to the end of the path). 
+     *
+     * @param tower The combat tower selecting the targets
+     * @param enemies List of available enemy targets
+     * @param maxTargets Maximum number of targets to select (default = 1)
+     * @return std::vector<Enemy*> The first enemy (up to maxTargets)
+     */
+    std::vector<Enemy*> selectTarget(const Tower* tower, const std::vector<Enemy*>& enemies, int maxTargets = 1) const override;
+};
+
+class LastTargetSelector : public TargetSelector {
+public:
+    /**
+     * @brief Select the last enemy in the line (aka the farthest from the end of the path).
+     *
+     * @param tower The combat tower selecting the targets
+     * @param enemies List of available enemy targets
+     * @param maxTargets Maximum number of targets to select (default = 1)
+     * @return std::vector<Enemy*> The last enemy (up to maxTargets)
+     */
+    std::vector<Enemy*> selectTarget(const Tower* tower, const std::vector<Enemy*>& enemies, int maxTargets = 1) const override;
+};
+
 }  // namespace Combat

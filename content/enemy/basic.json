@@ -7,7 +7,7 @@
         "heal_amount": 1,
         "heal_interval": 0.5,
         "resistance": 20,
-        "speed": 100,
+        "speed": 80,
         "reward": {
             "petroleum": 0,
             "scrap": 9

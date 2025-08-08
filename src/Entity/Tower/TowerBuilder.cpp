@@ -91,7 +91,7 @@ TowerBuilder& TowerBuilder::setTurretAnimationPath(const nlohmann::json& jsonFil
     return *this;
 }
 
-TowerBuilder& TowerBuilder::setStats(std::unique_ptr<TowerStat> stats) {
+TowerBuilder& TowerBuilder::setStats(std::unique_ptr<EntityStat> stats) {
     this->stats = std::move(stats);
     return *this;
 }

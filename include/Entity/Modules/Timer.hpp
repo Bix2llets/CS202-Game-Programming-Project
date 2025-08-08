@@ -86,6 +86,8 @@ class Timer {
      */
     Timer& setTimerMode(TimerMode mode);
     Timer& setRemainingTime(float remaining);
+    
+    Timer& increaseAvailable();
 
     inline float getCompletionPercentage() const {
         return 1 - remainingTime / timeInterval;
@@ -100,4 +102,5 @@ class Timer {
     inline float getInterval() const {return timeInterval;}
 
     inline bool isRunning() {return running;}
+
 };

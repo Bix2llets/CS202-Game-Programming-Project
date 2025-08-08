@@ -4,23 +4,20 @@
 #include <string>
 #include <vector>
 
-class TowerStat {
-private:
-    std::unordered_map<std::string, float> stats;
+namespace GeneralStat {
+    static inline const std::string WIDTH = "texture_width";
+    static inline const std::string HEIGHT = "texture_height";
+}
 
-public:
-    // Constructor
-    TowerStat() = default;
-    
-    // Copy constructor
-    TowerStat(const TowerStat& other) = default;
-    
-    // Assignment operator
-    TowerStat& operator=(const TowerStat& other) = default;
-    
-    // Destructor (non-virtual since class won't be inherited)
-    ~TowerStat() = default;
+namespace AreaEffectStat {
+    static inline const std::string RADIUS = "radius";
+    static inline const std::string DAMAGE = "damage";
+    static inline const std::string DURATION = "duration";
+    static inline const std::string REPEAT_INTERVAL = "repeating_per_interval";
+    static inline const std::string REPEAT_TIMES = "repeating_times";
+}
 
+namespace TowerStat {
     // Static string constants
     static inline const std::string RANGE = "range";
     static inline const std::string DAMAGE = "damage";
@@ -47,6 +44,36 @@ public:
     // For Projectile Towers
     static inline const std::string PROJECTILE_SPEED = "projectile_speed";
     static inline const std::string PROJECTILE_RANGE = "projectile_range";
+    static inline const std::string PROJECTILE_PIERCE_COUNT = "projectile_pierce_count";
+    static inline const std::string PROJECTILE_STARTING_DISTANCE = "projectile_starting_distance";
+}
+
+namespace EnemyStat {
+    static inline const std::string HEALTH = "health";
+    static inline const std::string SPEED = "speed";
+    static inline const std::string ARMOR = "armor";
+
+    static inline const std::string RESISTANCE = "resistance";
+    static inline const std::string FIRE_RESISTANCE = "fire_resistance";
+    static inline const std::string REGENERATION = "regeneration";
+}
+
+class EntityStat {
+private:
+    std::unordered_map<std::string, float> stats;
+
+public:
+    // Constructor
+    EntityStat() = default;
+    
+    // Copy constructor
+    EntityStat(const EntityStat& other) = default;
+    
+    // Assignment operator
+    EntityStat& operator=(const EntityStat& other) = default;
+    
+    // Destructor (non-virtual since class won't be inherited)
+    ~EntityStat() = default;
 
     static inline std::string multiplier(const std::string& statName) {
         return statName + "_multiplier";
@@ -146,11 +173,11 @@ public:
     }
 
     /**
-     * @brief Add another TowerStat's values to this one.
-     * @param other The TowerStat to add.
-     * @return Reference to this TowerStat.
+     * @brief Add another EntityStat's values to this one.
+     * @param other The EntityStat to add.
+     * @return Reference to this EntityStat.
      */
-    TowerStat& operator+=(const TowerStat& other) {
+    EntityStat& operator+=(const EntityStat& other) {
         for (const auto& [statName, value] : other.stats) {
             addStat(statName, value);
         }
@@ -158,11 +185,11 @@ public:
     }
 
     /**
-     * @brief Subtract another TowerStat's values from this one.
-     * @param other The TowerStat to subtract.
-     * @return Reference to this TowerStat.
+     * @brief Subtract another EntityStat's values from this one.
+     * @param other The EntityStat to subtract.
+     * @return Reference to this EntityStat.
      */
-    TowerStat& operator-=(const TowerStat& other) {
+    EntityStat& operator-=(const EntityStat& other) {
         for (const auto& [statName, value] : other.stats) {
             addStat(statName, -value);
         }
@@ -170,42 +197,42 @@ public:
     }
 
     /**
-     * @brief Add two TowerStat objects.
-     * @param other The TowerStat to add.
-     * @return New TowerStat with combined values.
+     * @brief Add two EntityStat objects.
+     * @param other The EntityStat to add.
+     * @return New EntityStat with combined values.
      */
-    TowerStat operator+(const TowerStat& other) const {
-        TowerStat result = *this;
+    EntityStat operator+(const EntityStat& other) const {
+        EntityStat result = *this;
         result += other;
         return result;
     }
 
     /**
-     * @brief Subtract two TowerStat objects.
-     * @param other The TowerStat to subtract.
-     * @return New TowerStat with subtracted values.
+     * @brief Subtract two EntityStat objects.
+     * @param other The EntityStat to subtract.
+     * @return New EntityStat with subtracted values.
      */
-    TowerStat operator-(const TowerStat& other) const {
-        TowerStat result = *this;
+    EntityStat operator-(const EntityStat& other) const {
+        EntityStat result = *this;
         result -= other;
         return result;
     }
 
     /**
      * @brief Equality operator.
-     * @param other The TowerStat to compare with.
-     * @return True if both TowerStat objects have the same stats.
+     * @param other The EntityStat to compare with.
+     * @return True if both EntityStat objects have the same stats.
      */
-    bool operator==(const TowerStat& other) const {
+    bool operator==(const EntityStat& other) const {
         return stats == other.stats;
     }
 
     /**
      * @brief Inequality operator.
-     * @param other The TowerStat to compare with.
-     * @return True if TowerStat objects have different stats.
+     * @param other The EntityStat to compare with.
+     * @return True if EntityStat objects have different stats.
      */
-    bool operator!=(const TowerStat& other) const {
+    bool operator!=(const EntityStat& other) const {
         return !(*this == other);
     }
 };

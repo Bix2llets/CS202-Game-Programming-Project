@@ -1,0 +1,30 @@
+[
+    {
+        "id": "explosion",
+        "texture": {
+            "texture_id": "area_effect_explosion",
+            "width": 32,
+            "height": 32,
+            "animation_interval": 0.05,
+            "type": "linear",
+            "center_x": 16,
+            "center_y": 16,
+            "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 128,
+                "height": 32
+            }
+        },
+        "stats": {
+            "texture_width": 128,
+            "texture_height": 128,
+            "radius": 64,
+            "damage": 20,
+            "duration": 0.15,
+            "repeating_per_interval": 1.5,
+            "repeating_times": 1
+        },
+        "damage_type": "physical"
+    }
+]

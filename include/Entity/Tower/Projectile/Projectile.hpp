@@ -14,6 +14,7 @@ class Enemy;
 class Tower;
 class Scene;
 class Level;
+class AreaEffect;
 class FlightMode;
 
 // Need full definition for member variable
@@ -45,8 +46,8 @@ private:
     ProjectileTargetType type; ///< Type of projectile (target entity or location)
 
     bool rotateToTarget; ///< Whether to rotate towards target
-    bool stopOnFirstCollision; ///< Whether the projectile stops on first entity hit (even if it's not the main target)
-    bool pierceThrough; ///< Whether the projectile can deal damage to entities along its path (not just the target)
+    int pierceCount; ///< Number of enemies this projectile can pierce through
+    int currentPierceCount; ///< Current number of pierced enemies
 
     float collisionDistance; ///< Collision distance threshold
     float speed; ///< Movement speed
@@ -62,6 +63,8 @@ private:
 
     FlightMode* flightMode; ///< Flying behavior mode for the projectile
 
+    AreaEffect* areaEffect; ///< Area effect when the projectile hits
+
     /**
      * @brief Construct a new Projectile object (private, for factory use).
      * @param scene Reference to the scene this projectile belongs to.
@@ -70,7 +73,10 @@ private:
     friend class FlightMode; ///< Allow FlightMode to access private members
     friend class LinearFlightMode; ///< Allow LinearFlightMode to access private members
     
-    public:
+    inline bool hasHitEnemy(Enemy* enemy) const;
+    inline bool isCollidedWith(sf::Vector2f position) const;
+
+public:
     Projectile(Scene& scene, const std::string id);
 
     Projectile(const Projectile& other); ///< Copy constructor (deep copy).
@@ -105,8 +111,8 @@ private:
 
     ProjectileTargetType getType() const { return type; }
 
-    bool isStopOnFirstCollision() const { return stopOnFirstCollision; }
-    bool isPierceThrough() const { return pierceThrough; }
+    int getPierceCount() const { return pierceCount; }
+    int getCurrentPierceCount() const { return currentPierceCount; }
 
     float getCollisionDistance() const { return collisionDistance; }
     float getSpeed() const { return speed; }
@@ -122,22 +128,20 @@ private:
 
     FlightMode* getFlightMode() const { return flightMode; }
 
-
-    inline bool hasHitEnemy(Enemy* enemy) const;
-    inline bool isCollidedWith(sf::Vector2f position) const;
-
     // Override Entity pure virtual methods
     void setPosition(const sf::Vector2f& pos) override;
     void setRotation(const sf::Angle& rot) override;
     
     // Setters
     void bindToTower(Tower* tower);
+    void stopFlying();
     void setUpFlightMode();
     void setTarget(Enemy* enemy);
     void setFlightMode(FlightMode* mode) { flightMode = mode; }
     void setTargetType(ProjectileTargetType targetType) { type = targetType; }
-    void setStopOnFirstCollision(bool stop) { stopOnFirstCollision = stop; }
-    void setPierceThrough(bool pierce) { pierceThrough = pierce; }
+    void setPierceCount(int count) { pierceCount = count; }
+    void setCurrentPierceCount(int count) { currentPierceCount = count; }
+    void increaseCurrentPierceCount() { ++currentPierceCount; }
     void setCollisionDistance(float distance) { collisionDistance = distance; }
     void setRotateToTarget(bool rotate) { rotateToTarget = rotate; }
 };

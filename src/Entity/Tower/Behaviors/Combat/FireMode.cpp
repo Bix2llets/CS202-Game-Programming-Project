@@ -65,39 +65,32 @@ int ProjectileFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
             return 0;
         }
         
-        // Clone the projectile template to create a new projectile instance
-        auto firedProjectile = std::make_unique<Projectile>(*projectile);
-        
-        // Configure projectile with tower and target information
-        firedProjectile->setPosition(tower->getPosition());
+        int totalFired = 0;
+        for (Enemy* enemy : target) {
+            if (!enemy) continue; // Skip null enemies
+            
+            // Clone the projectile template to create a new projectile instance
+            auto firedProjectile = std::make_unique<Projectile>(*projectile);
+            
+            sf::Vector2f startingOffset = (enemy->getPosition() - tower->getPosition()).normalized() *
+                                      tower->getStat(TowerStat::PROJECTILE_STARTING_DISTANCE, 0.0f);
+            firedProjectile->setPosition(tower->getPosition() + startingOffset);
 
-        // Bind projectile to tower (sets up damage, speed, etc.)
-        firedProjectile->bindToTower(tower);
-        
-        // Set target (first enemy in the target vector)
-        if (!target.empty() && target[0] != nullptr) {
-            firedProjectile->setTarget(target[0]);
-            Logger::debug("ProjectileFireMode: Set projectile target to enemy at position (" + 
-                         std::to_string(target[0]->getPosition().x) + ", " + 
-                         std::to_string(target[0]->getPosition().y) + ")");
+            firedProjectile->bindToTower(tower); // Bind projectile to tower (sets up damage, speed, etc.)
+            firedProjectile->setTarget(enemy); // Set the target enemy for the projectile
+            
+            level->getEntityManager().addProjectile(std::move(firedProjectile)); // Add projectile to the level's entity manager
+            
+            float fireRate = tower->getStat(TowerStat::FIRE_RATE, 1.0f); // Default 1.0 shots per second
+            float interval = 1.0f / fireRate; // Convert fire rate to interval (seconds between shots)
+            
+            tower->getTimer().reset(); // Reset the timer to start the cooldown
+            
+            totalFired++;
         }
 
-        firedProjectile->setUpFlightMode(); // Set up flight mode for the projectile
-        
-        // Add projectile to the level's entity manager
-        level->getEntityManager().addProjectile(std::move(firedProjectile));
-        
-        // Update tower timer based on fire rate
-        float fireRate = tower->getStat(TowerStat::FIRE_RATE, 1.0f); // Default 1.0 shots per second
-        float interval = 1.0f / fireRate; // Convert fire rate to interval (seconds between shots)
-        
-        // Update tower timer directly
-        tower->getTimer().reset(); // Reset the timer to start the cooldown
-        
-        Logger::debug("ProjectileFireMode: Successfully fired projectile from tower");
-        
-        return 1; // Return number of projectiles fired
-        
+        return totalFired; // Return number of projectiles fired
+
     } catch (const std::exception& e) {
         Logger::error("ProjectileFireMode: Failed to fire projectile - " + std::string(e.what()));
         return 0;

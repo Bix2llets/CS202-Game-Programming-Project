@@ -28,9 +28,9 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 10,
-    "fire_rate": 6.0,
-    "range": 300,
+    "damage": 12,
+    "fire_rate": 3.0,
+    "range": 240,
     "max_targets": 1
   },
   "upgrades": {
@@ -45,21 +45,21 @@
           "scrap": 50,
           "petroleum": 0,
           "bonus_stats": {
-            "fire_rate": 0.1
+            "fire_rate": 0.25
           }
         },
         "2": {
           "scrap": 75,
           "petroleum": 25,
           "bonus_stats": {
-            "fire_rate": 0.1
+            "fire_rate": 0.25
           }
         },
         "3": {
           "scrap": 150,
           "petroleum": 50,
           "bonus_stats": {
-            "fire_rate": 0.1
+            "fire_rate": 0.4
           }
         }
       },
@@ -89,7 +89,7 @@
           "scrap": 150,
           "petroleum": 50,
           "bonus_stats": {
-            "range": 20
+            "range": 40
           }
         }
       },
@@ -119,7 +119,7 @@
           "scrap": 150,
           "petroleum": 50,
           "bonus_stats": {
-            "damage": 1
+            "damage": 2
           }
         }
       },

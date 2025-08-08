@@ -7,8 +7,8 @@
             "height": 32,
             "animation_interval": 0.5,
             "type": "linear",
-            "center_x": 4,
-            "center_y": 4,
+            "center_x": 16,
+            "center_y": 16,
             "viewport": {
                 "x": 0,
                 "y": 0,
@@ -19,8 +19,7 @@
         "targeting": "trajectory",
         "flight_mode": "linear",
         "rotate_to_target": true,
-        "stop_on_first_collision": false,
-        "pierce_through_targets": true,
-        "collision_distance": 28
+        "pierce_through_targets_count": 3,
+        "collision_distance": 22
     }
 ]
