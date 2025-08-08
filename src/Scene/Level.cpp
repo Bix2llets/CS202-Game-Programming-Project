@@ -292,6 +292,10 @@ bool Level::onKeyEvent(Key key, UserEvent event,
         isRunning = !isRunning;
         if (!isRunning) {
             overlay = std::make_unique<PauseScreen>();
+            Cursor::getInstance().clearCarryingTower();
+            Cursor::getInstance().removeRenderImage();
+            EnemyPanel::getInstance().clearEnemy();
+            upgradeMenu.removeFocus();
         }
         else
         {
@@ -310,7 +314,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
 bool Level::onMouseEvent(Mouse mouse, UserEvent event,
                          const sf::Vector2f &worldPosition,
                          const sf::Vector2f &windowPosition) {
-    if (isRunning) {
+    if (overlay) {
         ///
 
         return false;

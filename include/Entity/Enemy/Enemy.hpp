@@ -52,6 +52,8 @@ private:
     Health health;  ///< Health component
     EntityEffect effects;  ///< Effect management component
     Timer healTimer;
+
+    Timer attackDisplayTimer;
     float healAmount;
 
     std::unique_ptr<EnemyState> currentState;  ///< Current AI state

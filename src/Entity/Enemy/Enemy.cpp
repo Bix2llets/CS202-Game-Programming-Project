@@ -9,6 +9,8 @@
 #include "Entity/Modules/Effects/Effect.hpp"
 
 #include "GUIComponents/EnemyPanel.hpp"
+#include "Utility/lerp.hpp"
+#include "Utility/aligner.hpp"
 
 // Deep-copying copy constructor
 Enemy::Enemy(const Enemy &other)
@@ -103,8 +105,11 @@ void Enemy::update() {
     move();
     animation.update();
     healTimer.update();
+    attackDisplayTimer.update();
 
+    sf::Color red = sf::Color::Red;
     sprite = changeSpriteContent(sprite, animation.getCurrentSprite());
+    sprite.setColor(ColorMixer::perceptualLerp(red, sf::Color::White, attackDisplayTimer.getCompletionPercentage()));
     sprite.setRotation(path.angleByVertical());
     while (healTimer.isAvailable()) {
         healTimer.use();
@@ -148,6 +153,7 @@ void Enemy::onHit(int damage, DamageType damageType) {
     damageModifier = damageModifier * effects.getDamageModifier(); 
     
     int finalDamage = static_cast<int>(damage * damageModifier);
+    if (finalDamage > 0) attackDisplayTimer.reset();
     health.setHealth(health.getHealth() - finalDamage);
     
     // If enemy dies, change to dying state
