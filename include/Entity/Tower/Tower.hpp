@@ -28,7 +28,7 @@ enum class BehaviorType;
 #include "Entity/Entity.hpp"
 #include "Entity/Modules/SpriteAnimation.hpp"
 #include "Entity/Modules/Timer.hpp"
-#include "Entity/Tower/TowerStat.hpp"
+#include "Entity/Modules/EntityStat.hpp"
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Gameplay/Currency.hpp"
@@ -49,7 +49,7 @@ class Tower : public Entity {
 
     private:
     Timer timer;  ///< Timer for tower actions
-    std::unique_ptr<TowerStat>
+    std::unique_ptr<EntityStat>
         stats;  ///< Pointer to tower statistics/attributes
     std::unique_ptr<CombatBehavior> combatBehaviorPointer;
     std::unique_ptr<ResourceBehavior> resourceBehaviorPointer;
@@ -352,13 +352,13 @@ class Tower : public Entity {
      * @brief Get the tower's statistics.
      * @return Pointer to the tower statistics.
      */
-    const TowerStat* getStats() const;
+    const EntityStat* getStats() const;
 
     /**
      * @brief Get the tower's statistics (non-const).
      * @return Pointer to the tower statistics.
      */
-    TowerStat* getStats();
+    EntityStat* getStats();
 
     /**
      * @brief Get a specific statistic value (with upgrade bonuses) by name.
@@ -440,7 +440,7 @@ class Tower : public Entity {
      * @brief Initialize tower statistics.
      * @param newStats Unique pointer to new tower statistics.
      */
-    void setStats(std::unique_ptr<TowerStat> newStats);
+    void setStats(std::unique_ptr<EntityStat> newStats);
 
     bool contains(sf::Vector2f position);
     bool intersects(sf::Vector2f points[4]);

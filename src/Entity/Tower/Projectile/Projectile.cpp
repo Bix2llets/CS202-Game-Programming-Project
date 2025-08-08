@@ -3,8 +3,11 @@
 #include "Entity/Tower/Projectile/FlightMode.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Tower/Tower.hpp"
+#include "Entity/AreaEffect/AreaEffect.hpp"
 #include "Scene/Level.hpp"
 #include "Entity/Modules/SpriteAnimation.hpp"
+#include "Entity/AreaEffect/AreaEffect.hpp"
+#include "Entity/Factory/AreaEffectFactory.hpp"
 
 #include "Utility/logger.hpp"
 
@@ -83,7 +86,9 @@ void Projectile::stopFlying() {
     flying = false;
     hitEnemies.clear(); // Clear hit enemies
 
-    // Summoning Lingering Entity
+    std::unique_ptr<AreaEffect> areaEffect = AreaEffectFactory::createFromConfigFile("explosion", *levelRef);
+    areaEffect->setPosition(position);
+    levelRef->getEntityManager().addAreaEffect(std::move(areaEffect));
 }
 
 void Projectile::loadSpriteAnimation(const nlohmann::json& spriteAnimationPath) {

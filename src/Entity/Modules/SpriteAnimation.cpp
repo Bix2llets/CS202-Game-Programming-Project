@@ -1,5 +1,4 @@
 #include "Entity/Modules/SpriteAnimation.hpp"
-#include "Entity/Tower/Tower.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Utility/logger.hpp"
 #include <stdexcept>
@@ -258,13 +257,8 @@ void SpriteAnimation::setCurrentFrame(int frame) {
     currentFrame = frame;
 }
 
-void SpriteAnimation::updateSpriteSize(Tower* tower) {
-    if (tower) {
-        for (sf::Sprite& sprite : sprites) {
-            sprite.setScale({tower->getTextureWidth() / width,
-                            tower->getTextureHeight() / height});
-        }
-    } else {
-        Logger::warning("SpriteAnimation::updateSpriteSize: Tower pointer is null, cannot update sprite size");
+void SpriteAnimation::updateSpriteSize(float newWidth, float newHeight) {
+    for (sf::Sprite& sprite : sprites) {
+        sprite.setScale({newWidth / width, newHeight / height});
     }
 }

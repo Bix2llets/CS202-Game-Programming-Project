@@ -29,6 +29,13 @@ void EntityManager::update() {
         }
     }
 
+        // Update area effects
+        for (auto& effect : areaEffects) {
+            if (effect && effect->isActive()) {
+                effect->update();
+            }
+        }
+
     // Clean up dead entities
     cleanup();
 }
@@ -38,6 +45,13 @@ void EntityManager::render(sf::RenderStates state) const {
     for (const auto& tower : towers) {
         if (tower) {
             Window::getInstance().getRenderWindow().draw(*tower, state);
+        }
+    }
+
+    // Render area effects (draw below enemies for ground feel)
+    for (const auto& effect : areaEffects) {
+        if (effect) {
+            Window::getInstance().getRenderWindow().draw(*effect, state);
         }
     }
 
@@ -88,6 +102,14 @@ void EntityManager::cleanup() {
                            return !projectile || !projectile->isFlying();
                        }),
         projectiles.end());
+
+    // Remove expired area effects
+    areaEffects.erase(
+        std::remove_if(areaEffects.begin(), areaEffects.end(),
+                        [](const std::unique_ptr<AreaEffect>& effect) {
+                            return !effect || !effect->isActive();
+                        }),
+        areaEffects.end());
 }
 
 void EntityManager::addTower(std::unique_ptr<Tower> tower) {
@@ -107,6 +129,12 @@ void EntityManager::addProjectile(std::unique_ptr<Projectile> projectile) {
         projectiles.push_back(std::move(projectile));
     }
 }
+
+    void EntityManager::addAreaEffect(std::unique_ptr<AreaEffect> effect) {
+        if (effect) {
+            areaEffects.push_back(std::move(effect));
+        }
+    }
 
 std::vector<Enemy*> EntityManager::getEnemies() {
     std::vector<Enemy*> enemyPtrs;
@@ -128,14 +156,25 @@ std::vector<Tower*> EntityManager::getTowers() {
     return towerPtrs;
 }
 
+    std::vector<AreaEffect*> EntityManager::getAreaEffects() {
+        std::vector<AreaEffect*> effectPtrs;
+        for (auto& e : areaEffects) {
+            if (e && e->isActive()) {
+                effectPtrs.push_back(e.get());
+            }
+        }
+        return effectPtrs;
+    }
+
 void EntityManager::clear() {
     towers.clear();
     enemies.clear();
     projectiles.clear();
+    areaEffects.clear();
 }
 
 size_t EntityManager::getTotalEntityCount() const {
-    return towers.size() + enemies.size() + projectiles.size();
+    return towers.size() + enemies.size() + projectiles.size() + areaEffects.size();
 }
 
 bool EntityManager::onMouseEvent(Mouse button, UserEvent event,

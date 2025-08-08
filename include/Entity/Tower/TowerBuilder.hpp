@@ -12,7 +12,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Entity/Tower/Tower.hpp"
-#include "Entity/Tower/TowerStat.hpp"
+#include "Entity/Modules/EntityStat.hpp"
 #include "Entity/Tower/Behaviors/TowerBehavior.hpp"
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
@@ -50,7 +50,7 @@ private:
     float textureHeight;
     
     // Complex components
-    std::unique_ptr<TowerStat> stats;
+    std::unique_ptr<EntityStat> stats;
     std::vector<std::unique_ptr<TowerBehavior>> behaviors;
     
     // Upgrade system
@@ -172,7 +172,7 @@ public:
      * @param stats Unique pointer to tower statistics.
      * @return TowerBuilder& Reference to this builder for chaining.
      */
-    TowerBuilder& setStats(std::unique_ptr<TowerStat> stats);
+    TowerBuilder& setStats(std::unique_ptr<EntityStat> stats);
     
     /**
      * @brief Add a behavior to the tower.

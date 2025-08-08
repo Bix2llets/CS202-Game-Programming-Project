@@ -56,8 +56,8 @@ float UpgradeManager::getTotalStatBonus(const std::string& statName) const {
     return totalBonus;
 }
 
-TowerStat UpgradeManager::getAllUpgradeBonuses() const {
-    TowerStat totalBonuses;
+EntityStat UpgradeManager::getAllUpgradeBonuses() const {
+    EntityStat totalBonuses;
 
     for (const auto& [typeId, currentLevel] : currentLevels) {
         auto upgradeTypeIt = upgradeTypes.find(typeId);

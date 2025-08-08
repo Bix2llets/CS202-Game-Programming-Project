@@ -68,9 +68,9 @@ private:
     /**
      * @brief Parse stats information from JSON.
      * @param statsJson JSON object containing stats data.
-     * @return std::unique_ptr<TowerStat> Parsed tower statistics.
+     * @return std::unique_ptr<EntityStat> Parsed tower statistics.
      */
-    static std::unique_ptr<TowerStat> parseStats(const nlohmann::json& statsJson);
+    static std::unique_ptr<EntityStat> parseStats(const nlohmann::json& statsJson);
     
     /**
      * @brief Parse texture paths and dimensions from JSON.

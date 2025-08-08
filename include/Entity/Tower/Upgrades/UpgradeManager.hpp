@@ -126,7 +126,7 @@ public:
      * @brief Get a TowerStat object with all cumulative bonuses from upgrades.
      * @return TowerStat object containing all upgrade bonuses.
      */
-    TowerStat getAllUpgradeBonuses() const;
+    EntityStat getAllUpgradeBonuses() const;
 
     /**
      * @brief Check if an upgrade type can be upgraded.

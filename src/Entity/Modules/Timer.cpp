@@ -74,3 +74,8 @@ Timer& Timer::resume() {
     running = true;
     return *this;
 }
+
+Timer& Timer::increaseAvailable() {
+    available++;
+    return *this;
+}

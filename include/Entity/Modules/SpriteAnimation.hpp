@@ -137,5 +137,5 @@ public:
      * @brief Updates the sprite size based on the tower's size.
      * @param tower Pointer to the Tower object.
      */
-    void updateSpriteSize(Tower* tower);
+    void updateSpriteSize(float newWidth, float newHeight);
 };

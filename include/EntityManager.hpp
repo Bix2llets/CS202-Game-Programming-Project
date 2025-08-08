@@ -11,6 +11,7 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Tower/Projectile/Projectile.hpp"
+#include "Entity/AreaEffect/AreaEffect.hpp"
 
 
 class Level;
@@ -26,6 +27,7 @@ private:
     std::vector<std::unique_ptr<Tower>> towers;
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Projectile>> projectiles;
+    std::vector<std::unique_ptr<AreaEffect>> areaEffects;
 
     Level& level;
 
@@ -72,6 +74,13 @@ public:
     void addProjectile(std::unique_ptr<Projectile> projectile);
 
     /**
+     * @brief Add an area effect to the game
+     *
+     * @param effect AreaEffect to add
+     */
+    void addAreaEffect(std::unique_ptr<AreaEffect> effect);
+
+    /**
      * @brief Get all enemies (for tower targeting)
      *
      * @return std::vector<Enemy*> Vector of enemy pointers
@@ -84,6 +93,11 @@ public:
      * @return std::vector<Tower*> Vector of tower pointers
      */
     std::vector<Tower *> getTowers();
+
+    /**
+     * @brief Get all active area effects
+     */
+    std::vector<AreaEffect*> getAreaEffects();
 
     /**
      * @brief Clear all entities

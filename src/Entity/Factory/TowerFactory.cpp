@@ -6,7 +6,7 @@
 #include <memory>
 
 
-#include "Entity/Tower/TowerStat.hpp"
+#include "Entity/Modules/EntityStat.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Entity/Tower/Upgrades/UpgradeDetails.hpp"
 #include "Entity/Tower/Behaviors/TowerBehavior.hpp"
@@ -120,9 +120,9 @@ Currency TowerFactory::parseCost(const nlohmann::json& costJson) {
     return Currency(scraps, petroleum);
 }
 
-std::unique_ptr<TowerStat> TowerFactory::parseStats(
+std::unique_ptr<EntityStat> TowerFactory::parseStats(
     const nlohmann::json& statsJson) {
-    auto stats = std::make_unique<TowerStat>();
+    auto stats = std::make_unique<EntityStat>();
 
     // Parse all stats from the JSON
     for (auto it = statsJson.begin(); it != statsJson.end(); ++it) {
@@ -290,7 +290,7 @@ UpgradeDetails TowerFactory::parseUpgradeDetails(const nlohmann::json& detailsJs
     }
     
     // Parse bonus stats
-    TowerStat bonusStats;
+    EntityStat bonusStats;
     if (detailsJson.contains("bonus_stats")) {
         const auto& bonusJson = detailsJson["bonus_stats"];
         for (auto it = bonusJson.begin(); it != bonusJson.end(); ++it) {

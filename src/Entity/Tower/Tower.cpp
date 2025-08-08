@@ -69,9 +69,9 @@ void Tower::removeBehavior(BehaviorType type) {
     }
 }
 
-const TowerStat* Tower::getStats() const { return stats.get(); }
+const EntityStat* Tower::getStats() const { return stats.get(); }
 
-TowerStat* Tower::getStats() { return stats.get(); }
+EntityStat* Tower::getStats() { return stats.get(); }
 
 float Tower::getStat(const std::string& statName, float defaultValue) const {
     // Get base stat with any multipliers
@@ -140,7 +140,7 @@ void Tower::addUpgradeType(int typeId,
     }
 }
 
-void Tower::setStats(std::unique_ptr<TowerStat> newStats) {
+void Tower::setStats(std::unique_ptr<EntityStat> newStats) {
     stats = std::move(newStats);
 }
 
@@ -191,7 +191,7 @@ void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
 
 void Tower::loadTurretSpriteAnimation(const nlohmann::json& turretAnimationPath) {
     turretAnimation.loadJson(turretAnimationPath);
-    turretAnimation.updateSpriteSize(this);
+    turretAnimation.updateSpriteSize(textureWidth, textureHeight);
     turretAnimation.setCurrentFrame(turretAnimation.getFrameCount() - 1);
     
     updateSpriteTurretAnimation();

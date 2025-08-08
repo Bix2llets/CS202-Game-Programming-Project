@@ -14,6 +14,7 @@ class Enemy;
 class Tower;
 class Scene;
 class Level;
+class AreaEffect;
 class FlightMode;
 
 // Need full definition for member variable
@@ -62,6 +63,8 @@ private:
 
     FlightMode* flightMode; ///< Flying behavior mode for the projectile
 
+    AreaEffect* areaEffect; ///< Area effect when the projectile hits
+
     /**
      * @brief Construct a new Projectile object (private, for factory use).
      * @param scene Reference to the scene this projectile belongs to.
@@ -70,7 +73,10 @@ private:
     friend class FlightMode; ///< Allow FlightMode to access private members
     friend class LinearFlightMode; ///< Allow LinearFlightMode to access private members
     
-    public:
+    inline bool hasHitEnemy(Enemy* enemy) const;
+    inline bool isCollidedWith(sf::Vector2f position) const;
+
+public:
     Projectile(Scene& scene, const std::string id);
 
     Projectile(const Projectile& other); ///< Copy constructor (deep copy).
@@ -121,10 +127,6 @@ private:
     sf::Vector2f getTargetLocation() const { return targetLocation; }
 
     FlightMode* getFlightMode() const { return flightMode; }
-
-
-    inline bool hasHitEnemy(Enemy* enemy) const;
-    inline bool isCollidedWith(sf::Vector2f position) const;
 
     // Override Entity pure virtual methods
     void setPosition(const sf::Vector2f& pos) override;
