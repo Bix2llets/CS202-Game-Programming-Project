@@ -220,9 +220,9 @@ void TowerMenu::setTowerButtonDisplay() {
                 .setPosition({buttonPosition})
                 .setSize(static_cast<sf::Vector2f>(buttonSize))
                 .setCallback(
-                    [this, towerSprite, towerName](RectangularButton* button) {
+                    [this, towerName](RectangularButton* button) {
                         Logger::debug("Button presseed");
-                        notify("tower_button_pressed", towerName, towerSprite);
+                        notify("tower_button_pressed", button, towerName);
                     })
                 .build();
         renderTexes.push_back(std::move(buttonRenderTexture));
@@ -244,9 +244,9 @@ void TowerMenu::onUnload() {
 }
 
 void TowerMenu::registerMessages() {
-    subscribe("tower_button_pressed", [this](std::any id, std::any sprite) {
-        sf::Sprite buttonBackground = std::any_cast<sf::Sprite>(sprite);
+    subscribe("tower_button_pressed", [this](std::any sender, std::any id) {
         std::string towerId = std::any_cast<std::string>(id);
+        sf::Sprite buttonBackground = towerList[towerId]->getIcon();
         Cursor::getInstance().setRenderImage(buttonBackground);
         Cursor::getInstance().setCarryingTower(towerId);
         isTowerSelected = true;

@@ -9,6 +9,7 @@
 #include "Core/Window.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
 #include "Utility/Logger.hpp"
+#include "Utility/aligner.hpp"
 std::unique_ptr<Cursor> Cursor::instance = nullptr;
 Cursor::Cursor()
     : position(0.f, 0.f), renderImage{GameConstants::BLANK_TEXTURE} {
@@ -31,8 +32,9 @@ const sf::Vector2f& Cursor::getPosition() const { return position; }
 void Cursor::setRenderImage(sf::Sprite sprite) {
     renderImage = sprite;
     displaying = true;
-    sprite.setPosition(position);
-    // ! Assume there is a way to construct tower from its id
+    renderImage.setPosition(position);
+    renderImage = Aligner::align(
+        renderImage, HorizontalAlignment::Center, VerticalAlignment::Middle);
 }
 
 void Cursor::removeRenderImage() {
@@ -67,7 +69,7 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         // Assuming previewTower uses its own color, we can use a shader or
         // blend mode for transparency. If previewTower does not support color
         // via states, this will only affect blending.
-        Window::getInstance().toggleUserMode();
+        Window::getInstance().toggleGUIMode();
         target.draw(rangePreview);
         target.draw(renderImage, previewStates);
 
@@ -82,8 +84,8 @@ bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
                           const sf::Vector2f& windowPosition) {
     if (event == UserEvent::Move) {
         position = windowPosition;
-        renderImage.setPosition(position);
-        rangePreview.setPosition(position);
+        renderImage.setPosition(windowPosition);
+        rangePreview.setPosition(windowPosition);
         // Logger::debug("processing moues movent in cursor");
 
         return true;
