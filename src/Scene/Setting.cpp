@@ -98,7 +98,7 @@ void Setting::createButtons() {
                       .setPosition({350.f, 400.f})
                       .setSize(buttonSize)
                       .setCallback([this](RectangularButton* button) {
-                          notify("Resolution2");
+                        //   notify("Resolution2");
                       })
                       .setText("Res2")
                       .loadJson("basic_button")
@@ -108,7 +108,7 @@ void Setting::createButtons() {
                       .setPosition({500.f, 400.f})
                       .setSize(buttonSize)
                       .setCallback([this](RectangularButton* button) {
-                          notify("Resolution3");
+                        //   notify("Resolution3");
                       })
                       .setText("Res3")
                       .loadJson("basic_button")

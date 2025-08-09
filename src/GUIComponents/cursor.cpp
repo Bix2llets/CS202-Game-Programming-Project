@@ -82,8 +82,8 @@ bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
                           const sf::Vector2f& windowPosition) {
     if (event == UserEvent::Move) {
         position = windowPosition;
-        renderImage.setPosition(worldPosition);
-        rangePreview.setPosition(worldPosition);
+        renderImage.setPosition(position);
+        rangePreview.setPosition(position);
         // Logger::debug("processing moues movent in cursor");
 
         return true;

@@ -289,8 +289,21 @@ void Level::onLoad() {
     entityManager.subscribeKeyboard(
         Key::F, UserEvent::Press,
         InputManager::getInstance().getKeyboardState());
-    // TODO: Register enemies and towers on left click, open side menu showing
-    // stats
+
+    subscribeMouse(Mouse::Left, UserEvent::Press,
+                   InputManager::getInstance().getMouseState());
+    subscribeMouse(Mouse::Left, UserEvent::Release,
+                   InputManager::getInstance().getMouseState());
+
+    subscribeMouse(Mouse::Left, UserEvent::Move,
+                   InputManager::getInstance().getMouseState());
+
+    subscribeMouse(Mouse::None, UserEvent::Move,
+                   InputManager::getInstance().getMouseState());
+    subscribeMouse(Mouse::Right, UserEvent::Move,
+                   InputManager::getInstance().getMouseState());
+    subscribeMouse(Mouse::Middle, UserEvent::Move,
+                   InputManager::getInstance().getMouseState());
 }
 
 void Level::onUnload() {

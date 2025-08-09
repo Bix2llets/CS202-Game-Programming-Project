@@ -9,6 +9,7 @@
 #include "Scene/Level.hpp"
 #include "Utility/Aligner.hpp"
 #include "Utility/Logger.hpp"
+#include "Utility/Scaler.hpp"
 RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
     : parentLevel{parentLevel} {
     ring.setFillColor(sf::Color(0, 0, 0, 0));
@@ -56,7 +57,8 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
 
 void RadialUpgradeMenu::setFocus(Tower* tower) {
     refTower = tower;
-    position = tower->getPosition();
+    Window::getInstance().toggleGUIMode();
+    position = static_cast<sf::Vector2f>(Window::getInstance().getRenderWindow().mapCoordsToPixel(tower->getPosition()));
     upgradeManager = tower->getUpgradeManager();
     displaying = true;
     nlohmann::json towerInfo =
