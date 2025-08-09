@@ -24,6 +24,7 @@
 #include "Scene/Scene.hpp"
 #include "Gameplay/RadialUpgradeMenu.hpp"
 #include "Scene/Overlays/Overlay.hpp"
+#include "Gameplay/TowerInfoPanel.hpp"
 /**
  * @class Level
  * @brief Scene representing a gameplay level, with map, entities, and wave
@@ -48,7 +49,7 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
     RadialUpgradeMenu upgradeMenu;
     Currency budget;
     TowerMenu menu;
-
+    TowerInfoPanel infoPanel;
     std::unique_ptr<Overlay> overlay;
     std::vector<Waypoint> waypoints;  
     sf::Sprite backgrounds;

@@ -46,6 +46,12 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
                 e.what()));
         }
     });
+    subscribe("show_upgrade_preview", [this](std::any sender, std::any data) {
+        this->parentLevel.notify("show_upgrade_preview", *this, data);
+    });
+    subscribe("hide_upgrade_preview", [this](std::any sender, std::any data) {
+        this->parentLevel.notify("hide_upgrade_preview", *this);
+    });
 }
 
 void RadialUpgradeMenu::setFocus(Tower* tower) {
@@ -84,7 +90,7 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
 
         upgradeButtons[i]
             .setParentRadialMenu(this)
-            .setRadius(30)
+            .setRadius(36)
             .setPosition(position + displacement)
             .setStyle(std::string("background_basic"))
             .setUpgradeManager(*upgradeManager)
@@ -192,15 +198,19 @@ void RadialUpgradeMenu::updatePositions() {
         Window::getInstance().getRenderWindow().mapCoordsToPixel(
             refTower->getPosition()));
 
-    if (position.x + ring.getRadius() + sellBtn.getRadius() > GameConstants::MENU_X) {
-        position.x = GameConstants::MENU_X - ring.getRadius() - sellBtn.getRadius();
+    if (position.x + ring.getRadius() + sellBtn.getRadius() >
+        GameConstants::MENU_X) {
+        position.x =
+            GameConstants::MENU_X - ring.getRadius() - sellBtn.getRadius();
     }
 
     if (position.x - ring.getRadius() - sellBtn.getRadius() < 0) {
         position.x = ring.getRadius() + sellBtn.getRadius();
     }
-    if (position.y + ring.getRadius() + sellBtn.getRadius() > GameConstants::DEFAULT_WINDOW_HEIGHT) {
-        position.y = GameConstants::DEFAULT_WINDOW_HEIGHT - ring.getRadius() - sellBtn.getRadius();
+    if (position.y + ring.getRadius() + sellBtn.getRadius() >
+        GameConstants::DEFAULT_WINDOW_HEIGHT) {
+        position.y = GameConstants::DEFAULT_WINDOW_HEIGHT - ring.getRadius() -
+                     sellBtn.getRadius();
     }
 
     if (position.y - ring.getRadius() - sellBtn.getRadius() < 0) {

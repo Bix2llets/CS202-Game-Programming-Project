@@ -219,15 +219,35 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
             graphicState.updatePressState(false);
             if (contains(windowPosition) && canUpgrade) {
                 parentRadialMenu->notify("upgrade", *this, upgradeID);
+                if (upgrades->isTotalUpgradeLimitReached()) {
+                    parentRadialMenu->notify("show_upgrade_preview", *this,
+                                             nullptr);
+                } else
+                    parentRadialMenu->notify(
+                        "show_upgrade_preview", *this,
+                        upgrades->getNextUpgradeDetail(upgradeID));
                 refreshInfo();
             }
             return false;
         }
     } else if (event == UserEvent::Move) {
-        if (contains(windowPosition)) {
+        if (!graphicState.isHovered() && contains(windowPosition)) {
             graphicState.updateHoverState(true);
-        } else {
+            if (parentRadialMenu) {
+                if (upgrades->isTotalUpgradeLimitReached()) {
+                    parentRadialMenu->notify("show_upgrade_preview", *this,
+                                             nullptr);
+                } else {
+                    parentRadialMenu->notify(
+                        "show_upgrade_preview", *this,
+                        upgrades->getNextUpgradeDetail(upgradeID));
+                }
+            }
+        } else if (graphicState.isHovered() && !contains(windowPosition)) {
             graphicState.updateHoverState(false);
+            if (parentRadialMenu) {
+                parentRadialMenu->notify("hide_upgrade_preview", *this);
+            }
         }
     }
     return false;

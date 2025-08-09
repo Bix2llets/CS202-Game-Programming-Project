@@ -21,7 +21,9 @@ TowerInfoPanel::TowerInfoPanel()
       damageIcon{*ResourceManager::getInstance().getTexture("power_icon")},
       fireRateIcon{*ResourceManager::getInstance().getTexture("speed_icon")},
       maxTargetsIcon{*ResourceManager::getInstance().getTexture("sell_icon")},
-      towerName(*ResourceManager::getInstance().getFont("pixel")) {
+      towerName(*ResourceManager::getInstance().getFont("pixel")),
+      upgradeTitle(*ResourceManager::getInstance().getFont("pixel")),
+      towerSprite(GameConstants::BLANK_TEXTURE) {
     rangeIcon = Aligner::align(rangeIcon, HorizontalAlignment::Center,
                                VerticalAlignment::Middle);
     damageIcon = Aligner::align(damageIcon, HorizontalAlignment::Center,
@@ -43,14 +45,14 @@ TowerInfoPanel::TowerInfoPanel()
     fireRateIcon.setScale({0.5f, 0.5f});
     maxTargetsIcon.setScale({0.5f, 0.5f});
 
-    background.setPosition({GameConstants::MENU_X, 0});
+    background.setPosition({GameConstants::MENU_X, 120});
     background.setSize(
         {GameConstants::DEFAULT_WINDOW_WIDTH - GameConstants::MENU_X,
          GameConstants::DEFAULT_WINDOW_HEIGHT});
 
     background.setFillColor(sf::Color(93, 153, 189, 255));
-    background.setOutlineColor(sf::Color(0x9F9491FF));
-    background.setOutlineThickness(4);
+    // background.setOutlineColor(sf::Color(0x9F9491FF));
+    // background.setOutlineThickness(4);
 
     damageIcon.setPosition(
         {background.getPosition().x + 20, background.getPosition().y + 120});
@@ -88,9 +90,20 @@ TowerInfoPanel::TowerInfoPanel()
                      maxTargetsIcon.getGlobalBounds().size.y / 2.f});
     towerName.setCharacterSize(30);
     towerName.setFillColor(sf::Color::Black);
+
+    upgradeTitle.setString("Upgrade");
+    upgradeTitle.setCharacterSize(30);
+    upgradeTitle.setFillColor(sf::Color::Black);
+    upgradeTitle = Aligner::align(upgradeTitle);
+    upgradeTitle.setPosition(
+        {background.getPosition().x + background.getSize().x / 2.f,
+         background.getPosition().y + 250});
+
+    previewClosingTimer.setRemainingTime(0.25f).setTimeInterval(0.25f).setTimerMode(
+        TimerMode::Single);
 }
 
-void TowerInfoPanel::render(sf::RenderStates state) {
+void TowerInfoPanel::render(sf::RenderStates state) const {
     if (!referencingTower) return;
     sf::RenderWindow& window = Window::getInstance().getRenderWindow();
     window.draw(background, state);
@@ -103,7 +116,29 @@ void TowerInfoPanel::render(sf::RenderStates state) {
     window.draw(fireRate, state);
     window.draw(maxTargets, state);
 
-    sf::Sprite towerSprite = referencingTower->getIcon();
+    window.draw(towerSprite, state);
+    window.draw(towerName, state);
+    window.draw(upgradeTitle);
+
+    if (currentUpgradeDetail) {
+        for (const auto& text : upgradeContents) {
+            window.draw(text, state);
+        }
+    }
+
+    // Render the tower information panel
+    // This is a placeholder for actual rendering logic
+    // You can use sf::Text, sf::Sprite, etc. to display tower information
+}
+
+void TowerInfoPanel::setFocus(Tower* tower) {
+    referencingTower = tower;
+
+    const UpgradeManager* upgradeManager =
+        referencingTower->getUpgradeManager();
+    if (upgradeManager && !upgradeManager->isTotalUpgradeLimitReached()) {
+    }
+    towerSprite = referencingTower->getIcon();
     towerSprite = Aligner::align(towerSprite, HorizontalAlignment::Center,
                                  VerticalAlignment::Middle);
 
@@ -116,19 +151,7 @@ void TowerInfoPanel::render(sf::RenderStates state) {
     towerName.setPosition(
         towerSprite.getPosition() -
         sf::Vector2f{0, towerSprite.getGlobalBounds().size.y / 2.f - 20});
-    window.draw(towerSprite, state);
-    window.draw(towerName, state);
-
-    // Render the tower information panel
-    // This is a placeholder for actual rendering logic
-    // You can use sf::Text, sf::Sprite, etc. to display tower information
-}
-
-void TowerInfoPanel::setFocus(Tower* tower) {
-    referencingTower = tower;
-
     update();
-    // Additional logic to update the panel with tower information
 }
 
 void TowerInfoPanel::deFocus() {
@@ -138,7 +161,7 @@ void TowerInfoPanel::deFocus() {
 
 void TowerInfoPanel::update() {
     if (!referencingTower) return;
-
+    this->previewClosingTimer.update();
     float rangeValue = referencingTower->getStat(TowerStat::RANGE);
     float damageValue = referencingTower->getStat(TowerStat::DAMAGE);
     float fireRateValue = referencingTower->getStat(TowerStat::FIRE_RATE);
@@ -156,6 +179,60 @@ void TowerInfoPanel::update() {
                               VerticalAlignment::Middle);
     maxTargets = Aligner::align(maxTargets, HorizontalAlignment::Left,
                                 VerticalAlignment::Middle);
-    // Update the panel with the current state of the tower
-    // This could include updating text, sprites, etc.
+}
+
+
+void TowerInfoPanel::displayUpgrade(const UpgradeDetails* detail) {
+    if (!detail) {
+        upgradeContents.clear();
+        currentUpgradeDetail = nullptr;
+        return;
+    }
+    currentUpgradeDetail = detail;
+    upgradeContents.clear();
+
+    const auto& upgrades = currentUpgradeDetail->bonusStats.getAllStats();
+    upgradeContents.resize(upgrades.size(), sf::Text(*ResourceManager::getInstance().getFont("pixel")));
+    int index = 0;
+    for (const auto& upgrade : upgrades) {
+        std::string upgradeName = upgrade.first;
+        for (int i = 0; i < upgradeName.size(); i++) {
+            if (upgradeName[i] == '_') {
+                upgradeName[i] = ' ';
+                continue;
+            }
+            if (i == 0) {
+                upgradeName[i] = toupper(upgradeName[i]);
+                continue;
+            }
+            if (upgradeName[i - 1] == ' ') {
+                upgradeName[i] = toupper(upgradeName[i]);
+                continue;
+            }
+        }
+        float currentStat = referencingTower->getStat(upgrade.first);
+        float nextStat = currentStat + upgrade.second;
+        upgradeContents[index].setString(std::format("{}:\n{:.2f} -> {:.2f}", upgradeName, currentStat, nextStat));
+        upgradeContents[index].setCharacterSize(24);
+        if (upgrade.second > 0) {
+            upgradeContents[index].setFillColor(sf::Color::Green);
+        } else {
+            upgradeContents[index].setFillColor(sf::Color::Red);
+        }
+
+        upgradeContents[index] = Aligner::align(upgradeContents[index],
+                                                 HorizontalAlignment::Left,
+                                                 VerticalAlignment::Middle);
+        upgradeContents[index].setPosition(
+            {background.getPosition().x + 20,
+                upgradeTitle.getPosition().y + 50 + index * 30});
+    }
+    this->previewClosingTimer.reset();
+}
+
+void TowerInfoPanel::clearDisplayUpgrade() {
+    if (!previewClosingTimer.isAvailable()) return;
+    if (!currentUpgradeDetail) return;
+    currentUpgradeDetail = nullptr;
+    upgradeContents.clear();
 }

@@ -60,7 +60,15 @@ void TowerMenu::update() {
 }
 void TowerMenu::render(sf::RenderStates state) const {
     sf::RenderWindow& window = Window::getInstance().getRenderWindow();
+
+    sf::RectangleShape shadow = baseRectangle;
+    shadow.move({-5, -5});
+    shadow.setSize(baseRectangle.getSize() + sf::Vector2f{5, 5});
+    shadow.setFillColor(sf::Color(0, 0, 0, 50));
+    window.draw(shadow, state);
+
     window.draw(baseRectangle, state);
+    
 
     window.draw(scrapDisplay, state);
     window.draw(petroleumDisplay, state);
@@ -137,8 +145,6 @@ void TowerMenu::setTowerButtonDisplay() {
         Logger::debug(std::format("{} {}", towerSprite.getLocalBounds().size.x,
                                   towerSprite.getLocalBounds().size.y));
 
-        towerSprite.setOrigin(towerSprite.getLocalBounds().position +
-                              towerSprite.getLocalBounds().size / 2.f);
 
         int scrapCost = tower->getCost().getScraps().value;
         int petroleumCost = tower->getCost().getPetroleum().value;

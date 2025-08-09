@@ -111,7 +111,7 @@ Level::Level()
         try {
             Tower *tower = std::any_cast<Tower *>(sender);
             upgradeMenu.setFocus(tower);
-            TowerInfoPanel::getInstance().setFocus(tower);
+            infoPanel.setFocus(tower);
         } catch (std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on focus tower");
             return;
@@ -120,7 +120,7 @@ Level::Level()
 
     subscribe("unfocus_tower", [this](std::any sender, std::any data) {
         upgradeMenu.removeFocus();
-        TowerInfoPanel::getInstance().deFocus();
+        infoPanel.deFocus();
     });
 
     subscribe("enemy_passed", [this](std::any sender, std::any data) {
@@ -139,6 +139,24 @@ Level::Level()
             return;
         }
     });
+
+    subscribe("show_upgrade_preview", [this](std::any sender, std::any data) {
+        try {
+            if (data.type() == typeid(std::nullptr_t)) {
+                infoPanel.clearDisplayUpgrade();
+                return;
+            }
+            const UpgradeDetails *upgradeDetail =
+                std::any_cast<const UpgradeDetails *>(data);
+            infoPanel.displayUpgrade(upgradeDetail);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on show upgrade preview");
+        }
+    });
+
+    subscribe("hide_upgrade_preview", [this](std::any sender, std::any data) {
+        infoPanel.clearDisplayUpgrade();
+    });
 }
 
 Level::~Level() {}
@@ -147,14 +165,14 @@ void Level::update() {
         overlay->update();
         return;
     }
-    
+
     menu.update();
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.update();
     }
 
-    if (TowerInfoPanel::getInstance().isDisplaying()) {
-        TowerInfoPanel::getInstance().update();
+    if (infoPanel.isDisplaying()) {
+        infoPanel.update();
     }
 
     entityManager.update();
@@ -194,11 +212,10 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     }
 
     Window::getInstance().toggleGUIMode();
+    menu.render(state);
 
-    if (TowerInfoPanel::getInstance().isDisplaying()) {
-        TowerInfoPanel::getInstance().render();
-    } else {
-        menu.render(state);
+    if (infoPanel.isDisplaying()) {
+        infoPanel.render();
     }
     if (overlay) {
         overlay->render();
@@ -328,9 +345,11 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
     if (overlay) {
         return false;
     }
-    if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
-        return true;
-    }
+
+    if (!infoPanel.isDisplaying())
+        if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
+            return true;
+        }
 
     if (Cursor::getInstance().isDisplaying()) {
         if (isPlacementValid(worldPosition)) {

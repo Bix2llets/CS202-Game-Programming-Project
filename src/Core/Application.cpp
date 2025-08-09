@@ -18,6 +18,7 @@
 #include "Scene/CustomLevelCreation.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
+#include "Gameplay/TowerInfoPanel.hpp"
 Application::Application() : isRunning{true} {
     if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
