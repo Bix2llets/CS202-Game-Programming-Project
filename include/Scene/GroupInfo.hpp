@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-
+#include "Entity/Modules/Timer.hpp"
 /**
  * @struct GroupInfo
  * @brief Represents information about a group of enemies to be spawned in the game.
@@ -26,11 +26,6 @@
 struct EnemyGroupInfo {
     std::string id;
     int quantity;
-    float spawnDelay;
-    float internalDelay;
-
-    float spawnDelayTimer;
-    float internalDelayTimer;
-
-    int laneID;
+    Timer initialDelay;
+    Timer spawnDelay;
 };

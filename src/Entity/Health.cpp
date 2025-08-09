@@ -4,26 +4,30 @@ void Health::clampHealth() {
     if (currentHealth < 0) currentHealth = 0;
     if (currentHealth > maxHealth) currentHealth = maxHealth;
 }
-void Health::takeDamage(float amount) {
+Health& Health::takeDamage(float amount) {
     currentHealth -= amount;
     clampHealth();
+    return *this;
 }
 
-void Health::heal(float amount) {
+Health& Health::heal(float amount) {
     currentHealth += amount;
     clampHealth();
+    return *this;
 }
 
 float Health::getHealthToMaxHealthRatio() { return currentHealth / maxHealth; }
 
-void Health::setHealth(float amount) {
+Health& Health::setHealth(float amount) {
     currentHealth = amount;
     clampHealth();
+    return *this;
 }
 
-void Health::setMaxHealth(float amount) {
+Health& Health::setMaxHealth(float amount) {
     maxHealth = amount;
     if (maxHealth < 0) maxHealth = 0;
+    return *this;
 }
 
 float Health::getMaxHealth() const { return maxHealth; }

@@ -25,6 +25,7 @@
 #include "Gameplay/RadialUpgradeMenu.hpp"
 #include "Scene/Overlays/Overlay.hpp"
 #include "Gameplay/TowerInfoPanel.hpp"
+#include "Scene/WaveManager.hpp"
 /**
  * @class Level
  * @brief Scene representing a gameplay level, with map, entities, and wave
@@ -37,7 +38,6 @@
 class Level : public Scene, public KeyboardObserver, public MouseObserver {
     private:
     std::string levelID;  
-    void loadLevelID(const nlohmann::json &jsonfile);
     EntityManager entityManager;  
     std::unique_ptr<EnemyFactory> factory;
     // Terrain map;  // game map for this level
@@ -54,7 +54,8 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
     std::vector<Waypoint> waypoints;  
     sf::Sprite backgrounds;
 
-    int health;
+    Health health;
+    WaveManager waveManager;
     public:
     Level();
 

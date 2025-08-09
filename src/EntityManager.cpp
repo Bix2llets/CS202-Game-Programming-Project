@@ -29,12 +29,12 @@ void EntityManager::update() {
         }
     }
 
-        // Update area effects
-        for (auto& effect : areaEffects) {
-            if (effect && effect->isActive()) {
-                effect->update();
-            }
+    // Update area effects
+    for (auto& effect : areaEffects) {
+        if (effect && effect->isActive()) {
+            effect->update();
         }
+    }
 
     // Clean up dead entities
     cleanup();
@@ -79,21 +79,24 @@ void EntityManager::cleanup() {
                  towers.end());
 
     // Remove dead enemies
-    enemies.erase(
-        std::remove_if(enemies.begin(), enemies.end(),
-                       [this](const std::unique_ptr<Enemy>& enemy) {
-                           if (!enemy) return true;
-                           if (!enemy->isAlive() && !enemy->isFinished()) {
-                               Logger::debug(std::format(
-                                   "Reward: {} {}", enemy->getPetroleumReward(),
-                                   enemy->getScrapReward()));
-                               level.notify("add_currency", *enemy,
-                                            Currency(enemy->getScrapReward(), enemy->getPetroleumReward()));
-                               return true;
-                           }
-                           return false;
-                       }),
-        enemies.end());
+
+    auto enemyCleanup = [this](const std::unique_ptr<Enemy>& enemy) {
+        if (!enemy || !enemy->isAlive()) {
+            if (enemy && !enemy->isFinished()) {
+                level.notify("add_currency", *enemy,
+                             Currency(enemy->getScrapReward(),
+                                      enemy->getPetroleumReward()));
+                return true;  // Remove this enemy
+            }
+            if (enemy && enemy->isFinished()) {
+                level.notify("enemy_passed", enemy.get());
+            }
+            return true;
+        }
+        return false;  // Keep this enemy
+    };
+    enemies.erase(std::remove_if(enemies.begin(), enemies.end(), enemyCleanup),
+                  enemies.end());
 
     // Remove dead projectiles
     projectiles.erase(
@@ -106,9 +109,9 @@ void EntityManager::cleanup() {
     // Remove expired area effects
     areaEffects.erase(
         std::remove_if(areaEffects.begin(), areaEffects.end(),
-                        [](const std::unique_ptr<AreaEffect>& effect) {
-                            return !effect || !effect->isActive();
-                        }),
+                       [](const std::unique_ptr<AreaEffect>& effect) {
+                           return !effect || !effect->isActive();
+                       }),
         areaEffects.end());
 }
 
@@ -130,11 +133,11 @@ void EntityManager::addProjectile(std::unique_ptr<Projectile> projectile) {
     }
 }
 
-    void EntityManager::addAreaEffect(std::unique_ptr<AreaEffect> effect) {
-        if (effect) {
-            areaEffects.push_back(std::move(effect));
-        }
+void EntityManager::addAreaEffect(std::unique_ptr<AreaEffect> effect) {
+    if (effect) {
+        areaEffects.push_back(std::move(effect));
     }
+}
 
 std::vector<Enemy*> EntityManager::getEnemies() {
     std::vector<Enemy*> enemyPtrs;
@@ -156,15 +159,15 @@ std::vector<Tower*> EntityManager::getTowers() {
     return towerPtrs;
 }
 
-    std::vector<AreaEffect*> EntityManager::getAreaEffects() {
-        std::vector<AreaEffect*> effectPtrs;
-        for (auto& e : areaEffects) {
-            if (e && e->isActive()) {
-                effectPtrs.push_back(e.get());
-            }
+std::vector<AreaEffect*> EntityManager::getAreaEffects() {
+    std::vector<AreaEffect*> effectPtrs;
+    for (auto& e : areaEffects) {
+        if (e && e->isActive()) {
+            effectPtrs.push_back(e.get());
         }
-        return effectPtrs;
     }
+    return effectPtrs;
+}
 
 void EntityManager::clear() {
     towers.clear();
@@ -174,7 +177,8 @@ void EntityManager::clear() {
 }
 
 size_t EntityManager::getTotalEntityCount() const {
-    return towers.size() + enemies.size() + projectiles.size() + areaEffects.size();
+    return towers.size() + enemies.size() + projectiles.size() +
+           areaEffects.size();
 }
 
 bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
