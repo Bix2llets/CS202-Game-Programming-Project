@@ -99,7 +99,7 @@ UpgradeResult Tower::upgrade(int upgradeTypeId)
     }
 
     if (levelRef) {
-        levelRef->notify("sell_tower", this, upgradeManager->getNextUpgradeDetail(upgradeTypeId)->cost);
+        // levelRef->notify("sell_tower", this, upgradeManager->getNextUpgradeDetail(upgradeTypeId)->cost);
         upgradeManager->upgrade(upgradeTypeId);
         return UpgradeResult::Success;
     }

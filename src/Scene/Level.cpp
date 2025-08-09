@@ -21,13 +21,14 @@
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Terrain/TerrainParameter.hpp"
+#include "Gameplay/TowerInfoPanel.hpp"
+#include "Scene/Overlays/PauseScreen.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
-#include "Scene/Overlays/PauseScreen.hpp"
 Level::Level()
     : currentWave{0},
       isRunning{true},
-    //   map(parameter),
+      //   map(parameter),
       entityManager{*this},
       menu{budget, this},
       tracker(*this),
@@ -99,9 +100,7 @@ Level::Level()
             Currency amount = tower->getTotalCost();
             amount = amount * 0.6f;
             budget += amount;
-            entityManager.removeTower(tower);
-
-            upgradeMenu.removeFocus();
+            notify("unfocus_tower");
         } catch (std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on sell tower");
             return;
@@ -112,6 +111,7 @@ Level::Level()
         try {
             Tower *tower = std::any_cast<Tower *>(sender);
             upgradeMenu.setFocus(tower);
+            TowerInfoPanel::getInstance().setFocus(tower);
         } catch (std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on focus tower");
             return;
@@ -120,36 +120,42 @@ Level::Level()
 
     subscribe("unfocus_tower", [this](std::any sender, std::any data) {
         upgradeMenu.removeFocus();
+        TowerInfoPanel::getInstance().deFocus();
     });
 
     subscribe("enemy_passed", [this](std::any sender, std::any data) {
         try {
-            
-            Enemy* enemySent = std::any_cast<Enemy*>(sender);
+            Enemy *enemySent = std::any_cast<Enemy *>(sender);
             health -= enemySent->getHealth();
             if (health <= 0) {
                 Logger::error("Level failed, health reached zero");
                 isRunning = false;
             } else {
-                Logger::warning(std::format("Enemy passed, health left: {}", health));
+                Logger::warning(
+                    std::format("Enemy passed, health left: {}", health));
             }
-        }
-        catch (std::bad_any_cast &e) {
+        } catch (std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on enemy passed");
             return;
         }
-
     });
 }
 
-
 Level::~Level() {}
 void Level::update() {
+    if (overlay) {
+        overlay->update();
+        return;
+    }
+    
     menu.update();
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.update();
     }
-    if (!isRunning) return;
+
+    if (TowerInfoPanel::getInstance().isDisplaying()) {
+        TowerInfoPanel::getInstance().update();
+    }
 
     entityManager.update();
 
@@ -189,7 +195,11 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
 
     Window::getInstance().toggleGUIMode();
 
-    menu.render(state);
+    if (TowerInfoPanel::getInstance().isDisplaying()) {
+        TowerInfoPanel::getInstance().render();
+    } else {
+        menu.render(state);
+    }
     if (overlay) {
         overlay->render();
     }
@@ -212,8 +222,11 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     waypoints.clear();
     for (const auto point : jsonFile["waypoints"]) {
         waypoints.emplace_back(
-            Waypoint{sf::Vector2f{point[0].get<float>() * scale.x, point[1].get<float>() * scale.y}, 1.0});
-        Logger::debug(std::format("Waypoint at {}, {}", point[0].get<float>(), point[1].get<float>()));
+            Waypoint{sf::Vector2f{point[0].get<float>() * scale.x,
+                                  point[1].get<float>() * scale.y},
+                     1.0});
+        Logger::debug(std::format("Waypoint at {}, {}", point[0].get<float>(),
+                                  point[1].get<float>()));
     }
     loadWaves(jsonFile);
 
@@ -296,9 +309,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
             Cursor::getInstance().removeRenderImage();
             EnemyPanel::getInstance().clearEnemy();
             upgradeMenu.removeFocus();
-        }
-        else
-        {
+        } else {
             overlay = nullptr;
         }
         return true;
@@ -388,7 +399,7 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
         return false;
     for (auto &tower : entityManager.getTowers())
         if (tower->intersects(towerBound)) return false;
-    std::vector<Waypoint>& pathway = waypoints;
+    std::vector<Waypoint> &pathway = waypoints;
 
     for (int i = 0; i < pathway.size() - 1; i++) {
         Waypoint current = pathway[i];

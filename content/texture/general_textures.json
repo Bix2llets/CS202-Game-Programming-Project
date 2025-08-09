@@ -42,7 +42,7 @@
     },
     {
         "id": "sell_icon",
-        "path": "assets/texture/sell_icon.png"
+        "path": "assets/texture/coin.png"
     },
     {
         "id": "speed_icon",

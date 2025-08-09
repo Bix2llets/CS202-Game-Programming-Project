@@ -14,6 +14,13 @@ PauseScreen::PauseScreen() {
         Window::getInstance().getRenderWindow().getSize()));
     darkOverlay.setFillColor(sf::Color(0, 0, 0, 150));
     darkOverlay.setPosition({0, 0});
+    background.setPosition(
+        {Window::getInstance().getRenderWindow().getSize().x / 2.f,
+         Window::getInstance().getRenderWindow().getSize().y / 2.f});
+    background = Aligner::align(background, HorizontalAlignment::Center,
+                                VerticalAlignment::Middle);
+
+    
     title.setFont(*ResourceManager::getInstance().getFont("pixel"));
     title.setCharacterSize(50);
     title.setFillColor(sf::Color::White);
@@ -33,6 +40,10 @@ void PauseScreen::render() {
     sf::RenderWindow& window = Window::getInstance().getRenderWindow();
     window.draw(darkOverlay);
     window.draw(background);
+    sf::Text backText(title);
+    backText.move({-5, -5});
+    backText.setFillColor(sf::Color::Black);
+    window.draw(backText);
     window.draw(title);
 
     // Render buttons if any
