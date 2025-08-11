@@ -101,17 +101,17 @@
             "normal": {
                 "background": "#FFFFFFFF",
                 "border": "#000000FF",
-                "text": "#000000FF"
+                "text": "#FEE7B7FF"
             },
             "hover": {
                 "background": "#FFFFFF7F",
                 "border": "#0000007F",
-                "text": "#0000007F"
+                "text": "#FEE7B77F"
             },
             "click": {
                 "background": "#0000007F",
                 "border": "#0000007F",
-                "text": "#0000007F"
+                "text": "#FEE7B77F"
             }
         },
         "border_radius": 4,

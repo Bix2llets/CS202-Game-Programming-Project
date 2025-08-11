@@ -16,6 +16,8 @@ class RectangularButtonBuilder {
     sf::RectangleShape buttonShape;
     Mediator& mediator;
 
+    int textSize = 24;
+
     std::function<void(RectangularButton*)> callback;
 
     std::string fontName;
@@ -39,6 +41,9 @@ class RectangularButtonBuilder {
     RectangularButtonBuilder& setBackground(const sf::Texture* tex);
 
     RectangularButtonBuilder& setBackgroundViewport(sf::IntRect rect);
+
+    RectangularButtonBuilder& setTextSize(int size);
+
 
     std::unique_ptr<RectangularButton> build() ;
 };

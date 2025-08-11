@@ -153,6 +153,7 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
      * @brief Loads the level ID from the provided JSON file.
      * @param jsonfile The JSON object containing the level ID.
      */
+    void subscribeCallbacks();
 
     public:
     bool onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
