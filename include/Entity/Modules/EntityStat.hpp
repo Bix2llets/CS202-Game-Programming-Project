@@ -9,6 +9,25 @@ namespace GeneralStat {
     static inline const std::string HEIGHT = "texture_height";
 }
 
+namespace EffectStat {
+    static inline const std::string BURN_LEVEL = "burn_level";
+    static inline const std::string BURN_DURATION = "burn_duration";
+    static inline const std::string NAPALM_BURN_LEVEL = "napalm_burn_level";
+    static inline const std::string NAPALM_BURN_DURATION = "napalm_burn_duration";
+    static inline const std::string REGENERATION_LEVEL = "regeneration_level";
+    static inline const std::string REGENERATION_DURATION = "regeneration_duration";
+    static inline const std::string VULNERABLE_LEVEL = "vulnerable_level";
+    static inline const std::string VULNERABLE_DURATION = "vulnerable_duration";
+    static inline const std::string RESISTANCE_LEVEL = "resistance_level";
+    static inline const std::string RESISTANCE_DURATION = "resistance_duration";
+    static inline const std::string FIRE_RESISTANCE_LEVEL = "fire_resistance_level";
+    static inline const std::string FIRE_RESISTANCE_DURATION = "fire_resistance_duration";
+    static inline const std::string SLOW_LEVEL = "slow_level";
+    static inline const std::string SLOW_DURATION = "slow_duration";
+    static inline const std::string ENERGIZED_LEVEL = "energized_level";
+    static inline const std::string ENERGIZED_DURATION = "energized_duration";
+}
+
 namespace AreaEffectStat {
     static inline const std::string RADIUS = "radius";
     static inline const std::string DAMAGE = "damage";

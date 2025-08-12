@@ -162,6 +162,17 @@ void Enemy::onHit(int damage, DamageType damageType) {
     }
 }
 
+void Enemy::onHitAndApplyEffects(const EffectID effectId, const EntityStat& damagerStats) {
+    applyEffect(EffectType::Burn, effectId, damagerStats.getStat(EffectStat::BURN_LEVEL), damagerStats.getStat(EffectStat::BURN_DURATION));
+    applyEffect(EffectType::NapalmBurn, effectId, damagerStats.getStat(EffectStat::NAPALM_BURN_LEVEL), damagerStats.getStat(EffectStat::NAPALM_BURN_DURATION));
+    applyEffect(EffectType::Regeneration, effectId, damagerStats.getStat(EffectStat::REGENERATION_LEVEL), damagerStats.getStat(EffectStat::REGENERATION_DURATION));
+    applyEffect(EffectType::Vulnerable, effectId, damagerStats.getStat(EffectStat::VULNERABLE_LEVEL), damagerStats.getStat(EffectStat::VULNERABLE_DURATION));
+    applyEffect(EffectType::Resistance, effectId, damagerStats.getStat(EffectStat::RESISTANCE_LEVEL), damagerStats.getStat(EffectStat::RESISTANCE_DURATION));
+    applyEffect(EffectType::FireResistance, effectId, damagerStats.getStat(EffectStat::FIRE_RESISTANCE_LEVEL), damagerStats.getStat(EffectStat::FIRE_RESISTANCE_DURATION));
+    applyEffect(EffectType::Slow, effectId, damagerStats.getStat(EffectStat::SLOW_LEVEL), damagerStats.getStat(EffectStat::SLOW_DURATION));
+    applyEffect(EffectType::Energized, effectId, damagerStats.getStat(EffectStat::ENERGIZED_LEVEL), damagerStats.getStat(EffectStat::ENERGIZED_DURATION));
+}
+
 void Enemy::onDeath() {
     // Additional death handling could go here
     // e.g., play death sound, spawn particles, award points
@@ -192,6 +203,7 @@ Enemy::~Enemy() {
 }
 
 void Enemy::applyEffect(EffectType type, EffectID id, int level, float duration) {
+    if(level <= 0 || duration <= 0) return;
     auto effect = std::make_unique<Effect>(type, id, level, duration);
     effects.addEffect(std::move(effect));
 }

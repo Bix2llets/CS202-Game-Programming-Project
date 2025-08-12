@@ -31,7 +31,11 @@
     "damage": 12,
     "fire_rate": 3.0,
     "range": 240,
-    "max_targets": 1
+    "max_targets": 1,
+    "effect_slow_level": 5,
+    "effect_slow_duration": 5,
+    "effect_burn_level": 5,
+    "effect_burn_duration": 5
   },
   "upgrades": {
     "max_total_upgrades": 5,

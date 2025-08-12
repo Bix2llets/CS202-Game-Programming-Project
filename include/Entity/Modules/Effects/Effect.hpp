@@ -32,7 +32,7 @@ enum class EffectType {
  * Effects with the same ID will override each other while preserving tick timing.
  * Can be generated from tower IDs, spell IDs, or other source identifiers.
  */
-using EffectID = std::uint32_t;
+using EffectID = std::uint64_t;
 
 /**
  * @class Effect
