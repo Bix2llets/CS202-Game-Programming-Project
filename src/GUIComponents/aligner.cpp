@@ -1,6 +1,6 @@
 #include "Utility/aligner.hpp"
 
-sf::Text Aligner::align(sf::Text text, HorizontalAlignment hAlign,
+sf::Text& Aligner::align(sf::Text& text, HorizontalAlignment hAlign,
                         VerticalAlignment vAlign) {
     sf::FloatRect bounds = text.getLocalBounds();
     sf::Vector2f origin = bounds.position;
@@ -19,9 +19,10 @@ sf::Text Aligner::align(sf::Text text, HorizontalAlignment hAlign,
 
     text.setOrigin(origin);
     return text;
+
 }
 
-sf::Sprite Aligner::align(sf::Sprite sprite, HorizontalAlignment hAlign,
+sf::Sprite& Aligner::align(sf::Sprite& sprite, HorizontalAlignment hAlign,
                         VerticalAlignment vAlign) {
     sf::FloatRect bounds = sprite.getLocalBounds();
     sf::Vector2f origin = bounds.position;
@@ -42,7 +43,7 @@ sf::Sprite Aligner::align(sf::Sprite sprite, HorizontalAlignment hAlign,
     return sprite;
 }
 
-sf::RectangleShape Aligner::align(sf::RectangleShape shape,
+sf::RectangleShape& Aligner::align(sf::RectangleShape& shape,
                                  HorizontalAlignment hAlign,
                                  VerticalAlignment vAlign) {
     sf::FloatRect bounds = shape.getLocalBounds();
@@ -64,7 +65,7 @@ sf::RectangleShape Aligner::align(sf::RectangleShape shape,
     return shape;
 }
 
-sf::CircleShape Aligner::align(sf::CircleShape shape,
+sf::CircleShape& Aligner::align(sf::CircleShape& shape,
                                  HorizontalAlignment hAlign,
                                  VerticalAlignment vAlign) {
     sf::FloatRect bounds = shape.getLocalBounds();

@@ -71,6 +71,8 @@ class RectangularButton : public ButtonBase {
      */
     sf::Vector2f getPosition() const;
 
+    sf::Vector2f getSize() const;
+
     /**
      * @brief Called when a mouse button is pressed.
      * @param button The button that is pressed

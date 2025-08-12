@@ -20,8 +20,10 @@
  */
 class MainMenu : public Scene {
    protected:
-   std::unique_ptr<RectangularButton> testBtn;
-    std::unique_ptr<RectangularButton> settingBtn;
+   std::unique_ptr<RectangularButton> playButton;
+    std::unique_ptr<RectangularButton> settingButton;
+    std::unique_ptr<sf::Sprite> title;
+    std::unique_ptr<sf::Sprite> background;
     void testSceneSwitching();
 
    public:

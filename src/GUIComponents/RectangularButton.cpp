@@ -45,7 +45,7 @@ void RectangularButton::draw(sf::RenderTarget& target,
 std::string RectangularButton::getLabel() const { return label->getString(); }
 
 sf::Vector2f RectangularButton::getPosition() const {
-    return geometricInfo.position;
+    return rect.getGlobalBounds().position;
 }
 
 bool RectangularButton::onMouseEvent(Mouse button, UserEvent event,
@@ -126,4 +126,8 @@ sf::Sprite RectangularButton::getBackground() {
 
 void RectangularButton::setBackground(const sf::Texture* tex) {
     rect.setTexture(tex);
+}
+
+sf::Vector2f RectangularButton::getSize() const {
+    return rect.getSize();
 }

@@ -12,6 +12,7 @@
 #include "Core/JSONLoader.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Core/SceneManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Enemy/Enemy.hpp"
@@ -25,8 +26,6 @@
 #include "Scene/Overlays/PauseScreen.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
-
-#include "Core/SceneManager.hpp"
 Level::Level()
     : currentWave{0},
       running{true},
@@ -131,12 +130,11 @@ void Level::onLoad() {
                       InputManager::getInstance().getKeyboardState());
     subscribeKeyboard(Key::G, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(
-        Key::D, UserEvent::Press,
-        InputManager::getInstance().getKeyboardState());
-    entityManager.subscribeKeyboard(
-        Key::F, UserEvent::Press,
-        InputManager::getInstance().getKeyboardState());
+
+    subscribeKeyboard(Key::D, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    subscribeKeyboard(Key::F, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
 
     subscribeMouse(Mouse::Left, UserEvent::Press,
                    InputManager::getInstance().getMouseState());
@@ -155,6 +153,15 @@ void Level::onLoad() {
 }
 
 void Level::onUnload() {
+    unSubscribeKeyboard(Key::Space, UserEvent::Press,
+                        InputManager::getInstance().getKeyboardState());
+    unSubscribeKeyboard(Key::G, UserEvent::Press,
+                        InputManager::getInstance().getKeyboardState());
+
+    unSubscribeKeyboard(Key::D, UserEvent::Press,
+                        InputManager::getInstance().getKeyboardState());
+    unSubscribeKeyboard(Key::F, UserEvent::Press,
+                        InputManager::getInstance().getKeyboardState());
     // TODO: Unregister enemies and towers on left click, close side menu
     EnemyPanel::getInstance().clearEnemy();
     Cursor::getInstance().clearCarryingTower();
@@ -420,19 +427,17 @@ void Level::subscribeCallbacks() {
         infoPanel.clearDisplayUpgrade();
     });
 
-    subscribe("spawn_enemy",
-              [this](std::any sender, std::any data) {
-                  try {
-                      std::string enemyID = std::any_cast<std::string>(data);
-                      entityManager.addEnemy(factory->createEnemy(enemyID, 0));
-                      Logger::info(std::format("Spawning enemy: {}", enemyID));
-                  } catch (std::bad_any_cast &e) {
-                      Logger::error("spawn_enemy: Received illegal signal " +
-                                    std::string(e.what()));
-                      return;
-                  }
-              }
-    );
+    subscribe("spawn_enemy", [this](std::any sender, std::any data) {
+        try {
+            std::string enemyID = std::any_cast<std::string>(data);
+            entityManager.addEnemy(factory->createEnemy(enemyID, 0));
+            Logger::info(std::format("Spawning enemy: {}", enemyID));
+        } catch (std::bad_any_cast &e) {
+            Logger::error("spawn_enemy: Received illegal signal " +
+                          std::string(e.what()));
+            return;
+        }
+    });
     subscribe("resume_game", [this](std::any sender, std::any data) {
         running = true;
         overlay = nullptr;
