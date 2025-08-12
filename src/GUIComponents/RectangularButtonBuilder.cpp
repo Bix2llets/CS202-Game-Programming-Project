@@ -48,7 +48,7 @@ std::unique_ptr<RectangularButton> RectangularButtonBuilder::build() {
     fontName = styleConfig["font"];
     
     std::unique_ptr<sf::Text> label = std::make_unique<sf::Text>(
-        *ResourceManager::getInstance().getFont(fontName), text, 24);
+        *ResourceManager::getInstance().getFont(fontName), text, textSize);
     Logger::debug(std::format("{} {} {} {}", label->getLocalBounds().position.x,
                               label->getLocalBounds().position.y,
                               label->getLocalBounds().size.x,

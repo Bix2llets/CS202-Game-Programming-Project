@@ -45,7 +45,8 @@ TowerMenu::TowerMenu(const Currency& currencyRef, Level* level)
     baseRectangle.setSize(
         {GameConstants::DEFAULT_WINDOW_WIDTH - GameConstants::MENU_X,
          GameConstants::DEFAULT_WINDOW_HEIGHT});
-    baseRectangle.setFillColor(sf::Color(93, 153, 189, 255));
+    baseRectangle.setFillColor(sf::Color::White);
+    // baseRectangle.setTexture(ResourceManager::getInstance().getTexture("tower_menu_background"));
 
     setResourceDisplay();
     setTowerButtonDisplay();
@@ -121,7 +122,7 @@ void TowerMenu::setResourceDisplay() {
 
 void TowerMenu::setTowerButtonDisplay() {
     // const sf::Vector2f buttonSize = {80, 120};
-    const std::string buttonStyleID = "background_basic";
+    const std::string buttonStyleID = "borderless_background_basic";
     // * Index is the size of the vector pre-push_back
 
     RectangularButtonBuilder builder(*this);
@@ -155,10 +156,10 @@ void TowerMenu::setTowerButtonDisplay() {
 
         petroleumCostDisplay.setString(std::to_string(petroleumCost));
         scrapCostDisplay.setString(std::to_string(scrapCost));
-        petroleumCostDisplay.setCharacterSize(25);
-        scrapCostDisplay.setCharacterSize(25);
-        petroleumCostDisplay.setFillColor(sf::Color(22, 50, 60, 255));
-        scrapCostDisplay.setFillColor(sf::Color(22, 50, 60, 255));
+        petroleumCostDisplay.setCharacterSize(20);
+        scrapCostDisplay.setCharacterSize(20);
+        petroleumCostDisplay.setFillColor(sf::Color(0x332B21FF));
+        scrapCostDisplay.setFillColor(sf::Color(0x332B21FF));
 
         sf::Sprite scrapIcon(
             *ResourceManager::getInstance().getTexture("scrap"));
@@ -182,17 +183,19 @@ void TowerMenu::setTowerButtonDisplay() {
         int yOffset = 35;
         petroleumCostDisplay.setPosition(
             {towerSprite.getPosition().x + 70,
-             towerSprite.getPosition().y - buttonSize.y / 4.f});
+             towerSprite.getPosition().y - buttonSize.y / 5.f});
         petroleumIcon.setPosition(
             {towerSprite.getPosition().x + 45,
-             towerSprite.getPosition().y - buttonSize.y / 4.f});
+             towerSprite.getPosition().y - buttonSize.y / 5.f});
         scrapCostDisplay.setPosition(
             {towerSprite.getPosition().x + 70,
-             towerSprite.getPosition().y + buttonSize.y / 4.f});
+             towerSprite.getPosition().y + buttonSize.y / 5.f});
         scrapIcon.setPosition(
             {towerSprite.getPosition().x + 45,
-             towerSprite.getPosition().y + buttonSize.y / 4.f});
-
+             towerSprite.getPosition().y + buttonSize.y / 5.f});
+        sf::Sprite background(*ResourceManager::getInstance().getTexture("tower_menu_background"));
+        Scaler::scaleSprite(background, static_cast<sf::Vector2f>(buttonRenderTexture.getSize()));
+        buttonRenderTexture.draw(background);
         buttonRenderTexture.draw(towerSprite);
         buttonRenderTexture.draw(petroleumCostDisplay);
         buttonRenderTexture.draw(scrapCostDisplay);

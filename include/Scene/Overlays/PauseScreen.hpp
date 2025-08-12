@@ -5,7 +5,7 @@ class PauseScreen : public Overlay, public MouseObserver {
    private:
     void constructButtons();
 
-    std::unique_ptr<RectangularButton> resumeButton, quitButton, restartButton;
+    std::unique_ptr<RectangularButton> soundButton, musicButton;
    public:
     PauseScreen(Mediator& mediator);
     ~PauseScreen();

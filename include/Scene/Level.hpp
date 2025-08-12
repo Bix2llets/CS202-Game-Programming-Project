@@ -15,16 +15,16 @@
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
 #include "Gameplay/Currency.hpp"
+#include "Gameplay/RadialUpgradeMenu.hpp"
 #include "Gameplay/Terrain/Path.hpp"
 #include "Gameplay/Terrain/Terrain.hpp"
+#include "Gameplay/TowerInfoPanel.hpp"
 #include "Gameplay/TowerMenu.hpp"
 #include "Gameplay/Tracker.hpp"
 #include "Gameplay/Waypoint.hpp"
 #include "Scene/GroupInfo.hpp"
-#include "Scene/Scene.hpp"
-#include "Gameplay/RadialUpgradeMenu.hpp"
 #include "Scene/Overlays/Overlay.hpp"
-#include "Gameplay/TowerInfoPanel.hpp"
+#include "Scene/Scene.hpp"
 #include "Scene/WaveManager.hpp"
 /**
  * @class Level
@@ -37,25 +37,25 @@
  */
 class Level : public Scene, public KeyboardObserver, public MouseObserver {
     private:
-    std::string levelID;  
-    EntityManager entityManager;  
+    std::string levelID;
+    EntityManager entityManager;
     std::unique_ptr<EnemyFactory> factory;
     // Terrain map;  // game map for this level
-    std::vector<std::vector<EnemyGroupInfo>>
-        waveInfo;     
-    int currentWave;  
-    bool isRunning;
-    Tracker tracker;  
+    std::vector<std::vector<EnemyGroupInfo>> waveInfo;
+    int currentWave;
+    bool running;
+    Tracker tracker;
     RadialUpgradeMenu upgradeMenu;
     Currency budget;
     TowerMenu menu;
     TowerInfoPanel infoPanel;
     std::unique_ptr<Overlay> overlay;
-    std::vector<Waypoint> waypoints;  
+    std::vector<Waypoint> waypoints;
     sf::Sprite backgrounds;
 
     Health health;
     WaveManager waveManager;
+
     public:
     Level();
 
@@ -164,6 +164,8 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
 
     bool onScrollEvent(float delta, const sf::Vector2f &worldPosition,
                        const sf::Vector2f &windowPosition) override;
+
+    inline bool isRunning() { return running; }
 
     private:
     bool isPlacementValid(sf::Vector2f worldPosition);

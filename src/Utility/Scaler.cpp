@@ -27,7 +27,7 @@ float Scaler::getYScreenRatio() {
                Window::getInstance().getRenderWindow().getSize().y);
 }
 
-sf::Sprite Scaler::scaleSprite(sf::Sprite sprite, sf::Vector2f desiredSize) {
+sf::Sprite& Scaler::scaleSprite(sf::Sprite& sprite, sf::Vector2f desiredSize) {
     auto bounds = sprite.getLocalBounds();
     float xScale = desiredSize.x / bounds.size.x;
     float yScale = desiredSize.y / bounds.size.y;

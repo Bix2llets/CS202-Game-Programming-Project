@@ -26,7 +26,6 @@ Application::Application() : isRunning{true} {
         Logger::error("Window not intitialized");
     Window::getInstance().getRenderWindow().setFramerateLimit(60);
     Window::getInstance().getRenderWindow().setMouseCursorVisible(false);
-    Window::getInstance().getRenderWindow().setPosition({0, 0});
     JSONLoader::getInstance().loadAll();
 
     Cursor::getInstance().subscribeMouse(

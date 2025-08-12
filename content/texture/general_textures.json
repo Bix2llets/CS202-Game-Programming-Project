@@ -80,5 +80,41 @@
     {
         "id": "pause_background",
         "path": "assets/texture/PauseBackground.png"
+    },
+    {
+        "id": "close_button",
+        "path": "assets/texture/button/CloseMenu.png"
+    },
+    {
+        "id": "sound_normal",
+        "path": "assets/texture/button/sound.png"
+    },
+    {
+        "id": "sound_mute",
+        "path": "assets/texture/button/MutedSound.png"
+    },
+    {
+        "id": "music_normal",
+        "path": "assets/texture/button/music.png"
+    },
+    {
+        "id": "music_mute",
+        "path": "assets/texture/button/MutedMusic.png"
+    }, 
+    {
+        "id": "menu_button",
+        "path": "assets/texture/button/MenuBackground.png"
+    }, 
+    {
+        "id": "menu_title",
+        "path": "assets/texture/logo.png"
+    },
+    {
+        "id": "menu_background",
+        "path": "assets/texture/background.png"
+    },
+    {
+        "id": "tower_menu_background",
+        "path": "assets/texture/button/towermenubackground.png"
     }
 ]

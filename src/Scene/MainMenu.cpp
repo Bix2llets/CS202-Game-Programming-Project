@@ -3,33 +3,62 @@
 #include "Core/InputManager.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/SceneManager.hpp"
-#include "GUIComponents/RectangularButtonBuilder.hpp"
-#include "Utility/logger.hpp"
 #include "Core/Window.hpp"
-MainMenu::MainMenu()
-    : Scene() {
+#include "GUIComponents/RectangularButtonBuilder.hpp"
+#include "Utility/Scaler.hpp"
+#include "Utility/aligner.hpp"
+#include "Utility/logger.hpp"
+MainMenu::MainMenu() : Scene() {
     RectangularButtonBuilder builder(*this);
-    testBtn = builder.reset()
-                  .setPosition({120.f, 100.f})
-                  .setSize({120.f, 50.f})
-                  .setText("Gameplay")
-                  .loadJson("basic_button")
-                  .setCallback([this](RectangularButton *button) {
-                      Logger::debug("Turning to gameplay");
-                      notify("Gameplay");
-                  })
-                  .build();
-    settingBtn = builder.reset()
-                     .setPosition({300.f, 100.f})
-                     .setSize({50.f, 50.f})
-                     .setText("To setting")
-                     .loadJson("background_basic")
+    playButton = builder.reset()
+                     .setPosition({GameConstants::DEFAULT_WINDOW_WIDTH / 2.f -
+                                       275.f / 2.f,
+                                   GameConstants::DEFAULT_WINDOW_HEIGHT / 2.f})
+                     .setSize({275.f, 125.f})
+                     .setText("Gameplay")
+                     .loadJson("borderless_background_mainmenu")
                      .setCallback([this](RectangularButton *button) {
-                         Logger::debug("Setting button pressed");
-                         notify("Setting");
+                         Logger::debug("Turning to gameplay");
+                         notify("Gameplay");
                      })
-                     .setBackground(ResourceManager::getInstance().getTexture("button_base"))
+                     .setBackground(ResourceManager::getInstance().getTexture(
+                         "menu_button"))
+                     .setTextSize(48)
                      .build();
+    settingButton =
+        builder.reset()
+            .setPosition(playButton->getPosition() +
+                         sf::Vector2f{65.f / 2.f, 75.f} +
+                         sf::Vector2f{0.f, playButton->getSize().y})
+            .setSize({220.f, 100.f})
+            .setText("Setting")
+            .loadJson("borderless_background_mainmenu")
+            .setCallback([this](RectangularButton *button) {
+                Logger::debug("Setting button pressed");
+                notify("Setting");
+            })
+            .setBackground(
+                ResourceManager::getInstance().getTexture("menu_button"))
+            .setTextSize(36)
+            .build();
+
+    title = std::make_unique<sf::Sprite>(
+        *ResourceManager::getInstance().getTexture("menu_title"));
+
+    title->setScale({1.5f, 1.5f});
+    title->setPosition({GameConstants::DEFAULT_WINDOW_WIDTH / 2.f,
+                        title->getGlobalBounds().size.y / 2.f + 15.f});
+
+    background = std::make_unique<sf::Sprite>(
+        *ResourceManager::getInstance().getTexture("menu_background"));
+    background->setScale({1.f, 1.f});
+    background->setPosition({0.f, 0.f});
+
+    Scaler::scaleSprite(*background,
+                        sf::Vector2f{GameConstants::DEFAULT_WINDOW_WIDTH,
+                                     GameConstants::DEFAULT_WINDOW_HEIGHT});
+
+    Aligner::align(*title, HorizontalAlignment::Center, VerticalAlignment::Middle);
     Logger::debug("Main menu created");
 
     subscribe("Setting", [this](std::any, std::any) {
@@ -42,13 +71,15 @@ MainMenu::MainMenu()
 
 void MainMenu::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     Window::getInstance().toggleGUIMode();
-    target.draw(*testBtn, state);
-    target.draw(*settingBtn, state);
+    target.draw(*background, state);
+    target.draw(*title, state);
+    target.draw(*playButton, state);
+    target.draw(*settingButton, state);
 }
 
 void MainMenu::update() {
-    testBtn->update();
-    settingBtn->update();
+    playButton->update();
+    settingButton->update();
 }
 
 void MainMenu::testSceneSwitching() {
@@ -57,14 +88,16 @@ void MainMenu::testSceneSwitching() {
 }
 
 void MainMenu::onLoad() {
-    testBtn->subscribeMouseAll(InputManager::getInstance().getMouseState());
-    settingBtn->subscribeMouseAll(InputManager::getInstance().getMouseState());
+    playButton->subscribeMouseAll(InputManager::getInstance().getMouseState());
+    settingButton->subscribeMouseAll(
+        InputManager::getInstance().getMouseState());
 };
 
 void MainMenu::onUnload() {
-    testBtn->unSubscribeMouseAll(InputManager::getInstance().getMouseState());
-    settingBtn->unSubscribeMouseAll(
+    playButton->unSubscribeMouseAll(
         InputManager::getInstance().getMouseState());
-    testBtn->resetAnimation();
-    settingBtn->resetAnimation();
+    settingButton->unSubscribeMouseAll(
+        InputManager::getInstance().getMouseState());
+    playButton->resetAnimation();
+    settingButton->resetAnimation();
 };
