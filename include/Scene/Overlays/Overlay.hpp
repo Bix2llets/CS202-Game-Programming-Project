@@ -4,19 +4,19 @@
 
 #include "GUIComponents/RectangularButton.hpp"
 #include "Core/ResourceManager.hpp"
+#include <memory>
 // Do nothing on its own.
 class Overlay : public Mediator {
     protected:
     sf::RectangleShape
-        background;    ///< Background sprite for the game over screen
+        background;    ///< Background sprite for the game 
     sf::RectangleShape darkOverlay;
     sf::Text title;    ///< Title text for the game over screen
-    sf::Text message;  ///< Message text for the game over screen
-    std::vector<RectangularButton> buttons;
+    std::vector<std::unique_ptr<RectangularButton>> buttons;
+    Mediator& parentScene;
 
     public:
-    Overlay() : title(*ResourceManager::getInstance().getFont("pixel")),
-                message(*ResourceManager::getInstance().getFont("pixel")) {}
+    Overlay(Mediator& mediator) : title(*ResourceManager::getInstance().getFont("pixel")), parentScene{mediator} {}
     virtual ~Overlay() = default;
 
     virtual void update() = 0;

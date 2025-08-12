@@ -71,5 +71,14 @@
     {
         "id": "ship",
         "path": "assets/texture/map/ship.png"
+    },
+    {
+        "id": "button_wooden",
+        "path": "assets/texture/Button/SettingButton.png"
+    },
+
+    {
+        "id": "pause_background",
+        "path": "assets/texture/PauseBackground.png"
     }
 ]

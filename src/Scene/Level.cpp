@@ -25,6 +25,8 @@
 #include "Scene/Overlays/PauseScreen.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
+
+#include "Core/SceneManager.hpp"
 Level::Level()
     : currentWave{0},
       isRunning{true},
@@ -33,136 +35,22 @@ Level::Level()
       menu{budget, this},
       tracker(*this),
       upgradeMenu(*this),
-      health{200},
-      backgrounds(GameConstants::BLANK_TEXTURE) {
+      backgrounds(GameConstants::BLANK_TEXTURE),
+      waveManager{*this} {
+    health.setMaxHealth(200).setHealth(200);
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
     subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
     subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
     subscribeMouse(Mouse::Right, UserEvent::Press, mouseState);
-    subscribe("add_currency", [this](std::any sender, std::any data) {
-        try {
-            Currency currency = std::any_cast<Currency>(data);
-            budget += currency;
-            Window::getInstance().toggleUserMode();
-
-            if (Cursor::getInstance().isDisplaying())
-                if (isPlacementValid(
-                        Window::getInstance()
-                            .getRenderWindow()
-                            .mapPixelToCoords(static_cast<sf::Vector2i>(
-                                Cursor::getInstance().getPosition())))) {
-                    Cursor::getInstance().setValidPlacement();
-                }
-
-        } catch (const std::bad_any_cast &e) {
-            Logger::error("Sent illegal signal on adding petroleum");
-        }
-    });
-    subscribe("subtract_currency", [this](std::any sender, std::any data) {
-        try {
-            Currency currency = std::any_cast<Currency>(data);
-            budget -= currency;
-            Window::getInstance().toggleUserMode();
-            if (Cursor::getInstance().isDisplaying())
-                if (isPlacementValid(
-                        Window::getInstance()
-                            .getRenderWindow()
-                            .mapPixelToCoords(static_cast<sf::Vector2i>(
-                                Cursor::getInstance().getPosition())))) {
-                    Cursor::getInstance().setValidPlacement();
-                }
-
-        } catch (const std::bad_any_cast &e) {
-            Logger::error("Sent illegal signal on subtracting budget");
-        }
-    });
-    subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
-        sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
-
-        if (isPlacementValid(worldPosition)) {
-            std::unique_ptr<Tower> newTower =
-                std::move(TowerFactory::createFromConfigFile(
-                    Cursor::getInstance().getCarryingTowerID(), *this,
-                    worldPosition));
-
-            budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
-            budget.subtractScraps(newTower->getCost().getScraps().value);
-            entityManager.addTower(std::move(newTower));
-        }
-    });
-
-    subscribe("sell_tower", [this](std::any sender, std::any data) {
-        try {
-            Tower *tower = std::any_cast<Tower *>(sender);
-
-            Currency amount = tower->getTotalCost();
-            amount = amount * 0.6f;
-            budget += amount;
-            notify("unfocus_tower");
-        } catch (std::bad_any_cast &e) {
-            Logger::error("Sent illegal signal on sell tower");
-            return;
-        }
-    });
-
-    subscribe("focus_tower", [this](std::any sender, std::any data) {
-        try {
-            Tower *tower = std::any_cast<Tower *>(sender);
-            upgradeMenu.setFocus(tower);
-            infoPanel.setFocus(tower);
-        } catch (std::bad_any_cast &e) {
-            Logger::error("Sent illegal signal on focus tower");
-            return;
-        }
-    });
-
-    subscribe("unfocus_tower", [this](std::any sender, std::any data) {
-        upgradeMenu.removeFocus();
-        infoPanel.deFocus();
-    });
-
-    subscribe("enemy_passed", [this](std::any sender, std::any data) {
-        try {
-            Enemy *enemySent = std::any_cast<Enemy *>(sender);
-            health -= enemySent->getHealth();
-            if (health <= 0) {
-                Logger::error("Level failed, health reached zero");
-                isRunning = false;
-            } else {
-                Logger::warning(
-                    std::format("Enemy passed, health left: {}", health));
-            }
-        } catch (std::bad_any_cast &e) {
-            Logger::error("Sent illegal signal on enemy passed");
-            return;
-        }
-    });
-
-    subscribe("show_upgrade_preview", [this](std::any sender, std::any data) {
-        try {
-            if (data.type() == typeid(std::nullptr_t)) {
-                infoPanel.clearDisplayUpgrade();
-                return;
-            }
-            const UpgradeDetails *upgradeDetail =
-                std::any_cast<const UpgradeDetails *>(data);
-            infoPanel.displayUpgrade(upgradeDetail);
-        } catch (std::bad_any_cast &e) {
-            Logger::error("Sent illegal signal on show upgrade preview");
-        }
-    });
-
-    subscribe("hide_upgrade_preview", [this](std::any sender, std::any data) {
-        infoPanel.clearDisplayUpgrade();
-    });
+    subscribeCallbacks();
 }
 
 Level::~Level() {}
 void Level::update() {
-    if (overlay) {
-        overlay->update();
+    if (overlay || !isRunning) {
+        if (overlay) overlay->update();
         return;
     }
 
@@ -176,29 +64,7 @@ void Level::update() {
     }
 
     entityManager.update();
-
-    for (std::vector<EnemyGroupInfo> &currentWave : waveInfo) {
-        for (EnemyGroupInfo &group : currentWave) {
-            if (group.quantity == 0) continue;
-            if (group.spawnDelayTimer > 0.f) {
-                group.spawnDelayTimer -= GameConstants::TICK_INTERVAL;
-                if (group.spawnDelayTimer < 0.f) {
-                    group.internalDelayTimer -= std::abs(group.spawnDelayTimer);
-                    group.spawnDelayTimer = 0.f;
-                }
-            } else {
-                group.internalDelayTimer -= GameConstants::TICK_INTERVAL;
-                while (group.internalDelayTimer <= 0 && group.quantity) {
-                    // ! Placeholder. Put enemy factory here
-                    entityManager.addEnemy(factory->createEnemy(group.id, 0));
-                    Logger::info(std::format("Spawning {}", group.id));
-                    group.internalDelayTimer += group.internalDelay;
-                    group.quantity--;
-                }
-                if (group.quantity == 0) group.internalDelayTimer = 0.f;
-            }
-        }
-    }
+    waveManager.update();
 }
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
@@ -257,25 +123,7 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
         Logger::error("Not an array");
         return;
     }
-
-    for (auto waveIt = waveConfiguration.begin();
-         waveIt != waveConfiguration.end(); ++waveIt) {
-        std::vector<EnemyGroupInfo> enemyGroups;
-        for (auto groupIt = waveIt->begin(); groupIt != waveIt->end();
-             ++groupIt) {
-            EnemyGroupInfo groupInfo;
-            groupInfo.id = (*groupIt)["id"];
-            groupInfo.quantity = (*groupIt)["quantity"];
-            groupInfo.spawnDelay = (*groupIt)["spawn_delay"];
-            groupInfo.internalDelay = (*groupIt)["internal_delay"];
-
-            groupInfo.spawnDelayTimer = groupInfo.spawnDelay;
-            groupInfo.internalDelayTimer = groupInfo.internalDelay;
-
-            enemyGroups.push_back(groupInfo);
-        }
-        waveInfo.push_back(enemyGroups);
-    }
+    waveManager.loadJSON(jsonFile);
 }
 
 void Level::onLoad() {
@@ -334,7 +182,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
     if (key == Key::Space && event == UserEvent::Press) {
         isRunning = !isRunning;
         if (!isRunning) {
-            overlay = std::make_unique<PauseScreen>();
+            overlay = std::make_unique<PauseScreen>(*this);
             Cursor::getInstance().clearCarryingTower();
             Cursor::getInstance().removeRenderImage();
             EnemyPanel::getInstance().clearEnemy();
@@ -451,4 +299,151 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
             return false;
     };
     return true;
+}
+
+void Level::subscribeCallbacks() {
+    subscribe("add_currency", [this](std::any sender, std::any data) {
+        try {
+            Currency currency = std::any_cast<Currency>(data);
+            budget += currency;
+            Window::getInstance().toggleUserMode();
+
+            if (Cursor::getInstance().isDisplaying())
+                if (isPlacementValid(
+                        Window::getInstance()
+                            .getRenderWindow()
+                            .mapPixelToCoords(static_cast<sf::Vector2i>(
+                                Cursor::getInstance().getPosition())))) {
+                    Cursor::getInstance().setValidPlacement();
+                }
+
+        } catch (const std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on adding petroleum");
+        }
+    });
+    subscribe("subtract_currency", [this](std::any sender, std::any data) {
+        try {
+            Currency currency = std::any_cast<Currency>(data);
+            budget -= currency;
+            Window::getInstance().toggleUserMode();
+            if (Cursor::getInstance().isDisplaying())
+                if (isPlacementValid(
+                        Window::getInstance()
+                            .getRenderWindow()
+                            .mapPixelToCoords(static_cast<sf::Vector2i>(
+                                Cursor::getInstance().getPosition())))) {
+                    Cursor::getInstance().setValidPlacement();
+                }
+
+        } catch (const std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on subtracting budget");
+        }
+    });
+    subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
+        sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
+
+        if (isPlacementValid(worldPosition)) {
+            std::unique_ptr<Tower> newTower =
+                std::move(TowerFactory::createFromConfigFile(
+                    Cursor::getInstance().getCarryingTowerID(), *this,
+                    worldPosition));
+
+            budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
+            budget.subtractScraps(newTower->getCost().getScraps().value);
+            entityManager.addTower(std::move(newTower));
+        }
+    });
+
+    subscribe("sell_tower", [this](std::any sender, std::any data) {
+        try {
+            Tower *tower = std::any_cast<Tower *>(sender);
+
+            Currency amount = tower->getTotalCost();
+            amount = amount * 0.6f;
+            budget += amount;
+            notify("unfocus_tower");
+            entityManager.removeTower(tower);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on sell tower");
+            return;
+        }
+    });
+
+    subscribe("focus_tower", [this](std::any sender, std::any data) {
+        try {
+            Tower *tower = std::any_cast<Tower *>(sender);
+            upgradeMenu.setFocus(tower);
+            infoPanel.setFocus(tower);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on focus tower");
+            return;
+        }
+    });
+
+    subscribe("unfocus_tower", [this](std::any sender, std::any data) {
+        upgradeMenu.removeFocus();
+        infoPanel.deFocus();
+    });
+
+    subscribe("enemy_passed", [this](std::any sender, std::any data) {
+        try {
+            Enemy *enemySent = std::any_cast<Enemy *>(sender);
+            health.takeDamage(enemySent->getHealth());
+            if (health.getHealth() == 0) {
+                Logger::error("Level failed, health reached zero");
+                isRunning = false;
+            } else {
+                Logger::warning(std::format("Enemy passed, health left: {}",
+                                            health.getHealth()));
+            }
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on enemy passed");
+            return;
+        }
+    });
+
+    subscribe("show_upgrade_preview", [this](std::any sender, std::any data) {
+        try {
+            if (data.type() == typeid(std::nullptr_t)) {
+                infoPanel.clearDisplayUpgrade();
+                return;
+            }
+            const UpgradeDetails *upgradeDetail =
+                std::any_cast<const UpgradeDetails *>(data);
+            infoPanel.displayUpgrade(upgradeDetail);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on show upgrade preview");
+        }
+    });
+
+    subscribe("hide_upgrade_preview", [this](std::any sender, std::any data) {
+        infoPanel.clearDisplayUpgrade();
+    });
+
+    subscribe("spawn_enemy",
+              [this](std::any sender, std::any data) {
+                  try {
+                      std::string enemyID = std::any_cast<std::string>(data);
+                      entityManager.addEnemy(factory->createEnemy(enemyID, 0));
+                      Logger::info(std::format("Spawning enemy: {}", enemyID));
+                  } catch (std::bad_any_cast &e) {
+                      Logger::error("spawn_enemy: Received illegal signal " +
+                                    std::string(e.what()));
+                      return;
+                  }
+              }
+    );
+    subscribe("resume_game", [this](std::any sender, std::any data) {
+        isRunning = true;
+        overlay = nullptr;
+        Cursor::getInstance().clearCarryingTower();
+        Cursor::getInstance().removeRenderImage();
+        EnemyPanel::getInstance().clearEnemy();
+        upgradeMenu.removeFocus();
+    });
+
+    subscribe("quit_level", [this](std::any sender, std::any data) {
+        SceneManager::getInstance().changeScene("Main menu");
+        notify("resume_game");
+    });
 }

@@ -28,13 +28,13 @@ class Health {
      * @brief Reduces health by the specified amount.
      * @param amount Amount of damage to apply.
      */
-    void takeDamage(float amount);
+    Health& takeDamage(float amount);
 
     /**
      * @brief Increases health by the specified amount, up to maxHealth.
      * @param amount Amount of health to restore.
      */
-    void heal(float amount);
+    Health& heal(float amount);
 
     /**
      * @brief Returns the ratio of current health to max health (0.0 to 1.0).
@@ -46,7 +46,7 @@ class Health {
      * @brief Sets the current health value.
      * @param amount New health value.
      */
-    void setHealth(float amount);
+    Health& setHealth(float amount);
 
     /**
      * @brief Gets the current health value.
@@ -58,7 +58,7 @@ class Health {
      * @brief Sets the maximum health value.
      * @param amount New maximum health value.
      */
-    void setMaxHealth(float amount);
+    Health& setMaxHealth(float amount);
 
     /**
      * @brief Gets the maximum health value.

@@ -26,6 +26,7 @@ RectangularButtonBuilder& RectangularButtonBuilder::reset() {
     notificationMessage = "";
     callback = nullptr;
     tex = nullptr;
+    textSize = 24;
     return *this;
 }
 
@@ -71,5 +72,10 @@ RectangularButtonBuilder& RectangularButtonBuilder::setBackground(const sf::Text
 
 RectangularButtonBuilder& RectangularButtonBuilder::setBackgroundViewport(sf::IntRect rect) {
     this->buttonShape.setTextureRect(rect);
+    return *this;
+}
+
+RectangularButtonBuilder& RectangularButtonBuilder::setTextSize(int size) {
+    textSize = size;
     return *this;
 }
