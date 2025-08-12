@@ -46,7 +46,7 @@ TowerMenu::TowerMenu(const Currency& currencyRef, Level* level)
         {GameConstants::DEFAULT_WINDOW_WIDTH - GameConstants::MENU_X,
          GameConstants::DEFAULT_WINDOW_HEIGHT});
     baseRectangle.setFillColor(sf::Color::White);
-    // baseRectangle.setTexture(ResourceManager::getInstance().getTexture("tower_menu_background"));
+    baseRectangle.setTexture(ResourceManager::getInstance().getTexture("sidebar_background"));
 
     setResourceDisplay();
     setTowerButtonDisplay();
@@ -118,6 +118,9 @@ void TowerMenu::setResourceDisplay() {
 
     petroleumDisplay.setFillColor(sf::Color::White);
     scrapDisplay.setFillColor(sf::Color::White);
+
+    petrolIcon.setScale({0.75f, 0.75f});
+    scrapIcon.setScale({0.75f, 0.75f});
 }
 
 void TowerMenu::setTowerButtonDisplay() {
@@ -156,8 +159,8 @@ void TowerMenu::setTowerButtonDisplay() {
 
         petroleumCostDisplay.setString(std::to_string(petroleumCost));
         scrapCostDisplay.setString(std::to_string(scrapCost));
-        petroleumCostDisplay.setCharacterSize(20);
-        scrapCostDisplay.setCharacterSize(20);
+        petroleumCostDisplay.setCharacterSize(24);
+        scrapCostDisplay.setCharacterSize(24);
         petroleumCostDisplay.setFillColor(sf::Color(0x332B21FF));
         scrapCostDisplay.setFillColor(sf::Color(0x332B21FF));
 
