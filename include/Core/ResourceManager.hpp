@@ -29,6 +29,8 @@ class ResourceManager {
     int soundVolume;
     int musicVolume;
 
+    bool allowSound = true;
+    bool allowMusic = true;
     /**
      * @brief Removes finished sounds from the playingSounds list.
      *
@@ -235,7 +237,12 @@ class ResourceManager {
      */
     void stopMusic(std::string id);
 
+    void toggleMusic();
+    void toggleSound();
 
+
+    inline bool isSoundEnabled() const { return allowSound; }
+    inline bool isMusicEnabled() const { return allowMusic; }
     static ResourceManager& getInstance() {
         static ResourceManager result;
         return result;

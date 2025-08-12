@@ -123,3 +123,7 @@ sf::Sprite RectangularButton::getBackground() {
         return sf::Sprite(GameConstants::BLANK_TEXTURE);
     return sf::Sprite(*rect.getTexture(), rect.getTextureRect());
 }
+
+void RectangularButton::setBackground(const sf::Texture* tex) {
+    rect.setTexture(tex);
+}

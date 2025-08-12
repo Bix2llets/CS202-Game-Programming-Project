@@ -76,8 +76,10 @@ void PauseScreen::constructButtons() {
     sf::Vector2f size = background.getGlobalBounds().size;
 
     float navigationButtonY = topLeftCorner.y + size.y - 100;
+    float controlButtonY = topLeftCorner.y + size.y - 230;
     buttons.push_back(std::move(
-        builder.setText("Resume")
+        builder.reset()
+            .setText("Resume")
             .setPosition({topLeftCorner.x + size.x / 2 + 10, navigationButtonY})
             .setSize({200, 50})
             .setCallback([this](RectangularButton* button) {
@@ -90,7 +92,8 @@ void PauseScreen::constructButtons() {
             .build()));
 
     buttons.push_back(std::move(
-        builder.setText("Quit")
+        builder.reset()
+            .setText("Quit")
             .setPosition(
                 {topLeftCorner.x + size.x / 2 - 10 - 200, navigationButtonY})
             .setSize({200, 50})
@@ -101,6 +104,61 @@ void PauseScreen::constructButtons() {
                 ResourceManager::getInstance().getTexture("button_wooden"))
             .loadJson("borderless_background_basic")
             .setTextSize(30)
+            .build()));
+    buttons.push_back(std::move(
+        builder.reset()
+            .setPosition({topLeftCorner.x + size.x - 60, topLeftCorner.y + 20})
+            .setSize({40, 40})
+            .setBackground(
+                ResourceManager::getInstance().getTexture("close_button"))
+            .setCallback([this](RectangularButton* button) {
+                parentScene.notify("resume_game");
+            })
+            .loadJson("borderless_background_basic")
+            .build()));
+
+    buttons.push_back(std::move(
+        builder.reset()
+            .setSize({120, 120})
+            .setPosition(
+                {topLeftCorner.x + size.x / 2 - 150 - 20, controlButtonY})
+            .setBackground(
+                ResourceManager::getInstance().getTexture("sound_normal"))
+            .loadJson("borderless_background_basic")
+            .setCallback([this](RectangularButton* button) {
+                parentScene.notify("toggle_sound");
+                if (ResourceManager::getInstance().isSoundEnabled()) {
+                    button->setBackground(
+                        ResourceManager::getInstance().getTexture(
+                            "sound_normal"));
+                } else {
+                    button->setBackground(
+                        ResourceManager::getInstance().getTexture(
+                            "sound_mute"));
+                }
+            })
+            .build()));
+
+    buttons.push_back(std::move(
+        builder.reset()
+            .setSize({120, 120})
+            .setPosition(
+                {topLeftCorner.x + size.x / 2 + 20 + 15 + 15, controlButtonY})
+            .setBackground(
+                ResourceManager::getInstance().getTexture("music_normal"))
+            .loadJson("borderless_background_basic")
+            .setCallback([this](RectangularButton* button) {
+                parentScene.notify("toggle_music");
+                if (ResourceManager::getInstance().isMusicEnabled()) {
+                    button->setBackground(
+                        ResourceManager::getInstance().getTexture(
+                            "music_normal"));
+                } else {
+                    button->setBackground(
+                        ResourceManager::getInstance().getTexture(
+                            "music_mute"));
+                }
+            })
             .build()));
 }
 

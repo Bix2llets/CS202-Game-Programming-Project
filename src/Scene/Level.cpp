@@ -29,7 +29,7 @@
 #include "Core/SceneManager.hpp"
 Level::Level()
     : currentWave{0},
-      isRunning{true},
+      running{true},
       //   map(parameter),
       entityManager{*this},
       menu{budget, this},
@@ -49,7 +49,7 @@ Level::Level()
 
 Level::~Level() {}
 void Level::update() {
-    if (overlay || !isRunning) {
+    if (overlay || !running) {
         if (overlay) overlay->update();
         return;
     }
@@ -180,8 +180,8 @@ bool Level::onKeyEvent(Key key, UserEvent event,
                        const sf::Vector2f &worldPosition,
                        const sf::Vector2f &windowPosition) {
     if (key == Key::Space && event == UserEvent::Press) {
-        isRunning = !isRunning;
-        if (!isRunning) {
+        running = !running;
+        if (!running) {
             overlay = std::make_unique<PauseScreen>(*this);
             Cursor::getInstance().clearCarryingTower();
             Cursor::getInstance().removeRenderImage();
@@ -391,7 +391,7 @@ void Level::subscribeCallbacks() {
             health.takeDamage(enemySent->getHealth());
             if (health.getHealth() == 0) {
                 Logger::error("Level failed, health reached zero");
-                isRunning = false;
+                running = false;
             } else {
                 Logger::warning(std::format("Enemy passed, health left: {}",
                                             health.getHealth()));
@@ -434,7 +434,7 @@ void Level::subscribeCallbacks() {
               }
     );
     subscribe("resume_game", [this](std::any sender, std::any data) {
-        isRunning = true;
+        running = true;
         overlay = nullptr;
         Cursor::getInstance().clearCarryingTower();
         Cursor::getInstance().removeRenderImage();
@@ -445,5 +445,12 @@ void Level::subscribeCallbacks() {
     subscribe("quit_level", [this](std::any sender, std::any data) {
         SceneManager::getInstance().changeScene("Main menu");
         notify("resume_game");
+    });
+
+    subscribe("toggle_sound", [this](std::any sender, std::any data) {
+        ResourceManager::getInstance().toggleSound();
+    });
+    subscribe("toggle_music", [this](std::any sender, std::any data) {
+        ResourceManager::getInstance().toggleMusic();
     });
 }

@@ -188,3 +188,19 @@ void ResourceManager::validateJson(const nlohmann::json &jsonFile) {
         throw std::invalid_argument(
             "JSON file must contain 'ID' and 'path' fields.");
 }
+
+void ResourceManager::toggleMusic() {
+    allowMusic = !allowMusic;
+
+    for (auto& [id, music] : musics) {
+        music->setVolume(allowMusic * musicVolume);
+    }
+}
+
+
+void ResourceManager::toggleSound() {
+    allowSound = !allowSound;
+    for (std::unique_ptr<sf::Sound>& sound: playingSounds) {
+        sound->setVolume(allowMusic * musicVolume);
+    }
+}

@@ -80,5 +80,26 @@
     {
         "id": "pause_background",
         "path": "assets/texture/PauseBackground.png"
+    },
+    {
+        "id": "close_button",
+        "path": "assets/texture/button/CloseMenu.png"
+    },
+    {
+        "id": "sound_normal",
+        "path": "assets/texture/button/sound.png"
+    },
+    {
+        "id": "sound_mute",
+        "path": "assets/texture/button/MutedSound.png"
+    },
+    {
+        "id": "music_normal",
+        "path": "assets/texture/button/music.png"
+    },
+    {
+        "id": "music_mute",
+        "path": "assets/texture/button/MutedMusic.png"
     }
+
 ]
