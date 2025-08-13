@@ -4,9 +4,10 @@
 
 #include "GUIComponents/RectangularButton.hpp"
 #include "Core/ResourceManager.hpp"
+#include "Core/MouseObserver.hpp"
 #include <memory>
 // Do nothing on its own.
-class Overlay : public Mediator {
+class Overlay : public Mediator, public MouseObserver {
     protected:
     sf::RectangleShape
         background;    ///< Background sprite for the game 
@@ -20,5 +21,5 @@ class Overlay : public Mediator {
     virtual ~Overlay() = default;
 
     virtual void update() = 0;
-    virtual void render() = 0;
+    virtual void render() const = 0;
 };

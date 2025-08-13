@@ -4,6 +4,7 @@
  */
 #pragma once
 #include <map>
+#include <queue>
 
 #include "Core/ResourceManager.hpp"
 #include "Scene/Level.hpp"
@@ -15,19 +16,29 @@
  * @brief Manages switching, updating, and rendering game scenes.
  */
 class SceneManager {
-   private:
+    private:
+    enum class QueueType {
+        Load, 
+        Unload, 
+        UpdateLevel
+    };
+    struct SceneInfo {
+        std::string id;
+        QueueType type;
+    };
     Scene *currentScene;  ///< Pointer to the current active scene.
-    std::unordered_map<std::string, std::unique_ptr<Scene>> sceneStorage;  ///< Storage for all registered scenes.
+    std::unordered_map<std::string, std::unique_ptr<Scene>>
+        sceneStorage;  ///< Storage for all registered scenes.
     SceneManager() : currentScene{nullptr} {};
     SceneManager(const SceneManager &rhs) = delete;
-    SceneManager& operator=(const SceneManager &rhs) = delete;
+    SceneManager &operator=(const SceneManager &rhs) = delete;
+
     public:
     template <typename SceneType>
     void registerScene(const std::string &sceneName) {
         try {
             if (sceneStorage.find(sceneName) == sceneStorage.end()) {
-                sceneStorage[sceneName] =
-                    std::make_unique<SceneType>();
+                sceneStorage[sceneName] = std::make_unique<SceneType>();
             } else {
                 Logger::error(
                     "Name conflict: Inserting a duplicate scene label");
@@ -47,7 +58,7 @@ class SceneManager {
      * @brief Gets a const reference to the current scene pointer.
      * @return Const reference to the current scene pointer.
      */
-    const Scene* getCurrentScene() { return currentScene; };
+    const Scene *getCurrentScene() { return currentScene; };
     /**
      * @brief Renders the current scene.
      */
@@ -65,12 +76,12 @@ class SceneManager {
 
     void createLevel(std::string ID);
 
-
-    static SceneManager& getInstance() {
+    static SceneManager &getInstance() {
         static SceneManager instance;
         return instance;
     }
-   private:
+
+    private:
     /**
      * @brief Checks if the current scene pointer is null and throws if so.
      */

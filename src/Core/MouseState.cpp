@@ -153,3 +153,16 @@ void MouseState::processMouseScroll(const std::optional<sf::Event> &event) {
     for (MouseObserver* observer: observerList) 
         observer->onScrollEvent(mouseScroll->delta, worldPosition, windowPosition);
 }
+
+void MouseState::updateMousePosition(const sf::Vector2f &newWindowPosition) {
+    // Update the mouse position in the window coordinates
+    Window::getInstance().toggleUserMode();
+    sf::Vector2f worldPosition = Window::getInstance().getRenderWindow().mapPixelToCoords(
+        static_cast<sf::Vector2i>(newWindowPosition));
+    
+    // Notify all observers of the mouse movement
+    std::list<MouseObserver*> observerList = subscriberList[Mouse::None][UserEvent::Move];
+    for (MouseObserver* observer : observerList) {
+        observer->onMouseEvent(Mouse::None, UserEvent::Move, worldPosition, newWindowPosition);
+    }
+}

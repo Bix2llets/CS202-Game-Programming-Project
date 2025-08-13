@@ -28,7 +28,7 @@ MainMenu::MainMenu() : Scene() {
     settingButton =
         builder.reset()
             .setPosition(playButton->getPosition() +
-                         sf::Vector2f{65.f / 2.f, 75.f} +
+                         sf::Vector2f{65.f / 2.f, 40.f} +
                          sf::Vector2f{0.f, playButton->getSize().y})
             .setSize({220.f, 100.f})
             .setText("Setting")
@@ -42,6 +42,21 @@ MainMenu::MainMenu() : Scene() {
             .setTextSize(36)
             .build();
 
+    exitButton = builder.reset()
+                .setPosition(settingButton->getPosition() +
+                             sf::Vector2f{0.f, settingButton->getSize().y} +
+                             sf::Vector2f{22.f, 40.f})
+                .setSize({176, 80})
+                .setText("Exit")
+                .loadJson("borderless_background_mainmenu")
+                .setCallback([this](RectangularButton *button) {
+                    Logger::debug("Exit button pressed");
+                    notify("Exit");
+                })
+                .setBackground(ResourceManager::getInstance().getTexture(
+                    "menu_button"))
+                .setTextSize(30)
+                .build();
     title = std::make_unique<sf::Sprite>(
         *ResourceManager::getInstance().getTexture("menu_title"));
 
@@ -75,11 +90,13 @@ void MainMenu::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     target.draw(*title, state);
     target.draw(*playButton, state);
     target.draw(*settingButton, state);
+    target.draw(*exitButton, state);
 }
 
 void MainMenu::update() {
     playButton->update();
     settingButton->update();
+    exitButton->update();
 }
 
 void MainMenu::testSceneSwitching() {
@@ -91,6 +108,8 @@ void MainMenu::onLoad() {
     playButton->subscribeMouseAll(InputManager::getInstance().getMouseState());
     settingButton->subscribeMouseAll(
         InputManager::getInstance().getMouseState());
+    exitButton->subscribeMouseAll(
+        InputManager::getInstance().getMouseState());
 };
 
 void MainMenu::onUnload() {
@@ -100,4 +119,7 @@ void MainMenu::onUnload() {
         InputManager::getInstance().getMouseState());
     playButton->resetAnimation();
     settingButton->resetAnimation();
+    exitButton->unSubscribeMouseAll(
+        InputManager::getInstance().getMouseState());
+    exitButton->resetAnimation();
 };

@@ -170,7 +170,7 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
         {rangeIndicator.getRadius(), rangeIndicator.getRadius()});
     rangeIndicator.setPosition(refTower->getPosition());
     rangeIndicator.setFillColor(sf::Color(0, 0, 0, 100));
-
+    Window::getInstance().toggleUserMode();
     target.draw(rangeIndicator);
 }
 

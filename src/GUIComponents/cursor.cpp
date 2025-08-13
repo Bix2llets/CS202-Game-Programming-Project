@@ -69,7 +69,7 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         // Assuming previewTower uses its own color, we can use a shader or
         // blend mode for transparency. If previewTower does not support color
         // via states, this will only affect blending.
-        Window::getInstance().toggleGUIMode();
+        Window::getInstance().toggleUserMode();
         target.draw(rangePreview);
         target.draw(renderImage, previewStates);
 
@@ -84,8 +84,8 @@ bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
                           const sf::Vector2f& windowPosition) {
     if (event == UserEvent::Move) {
         position = windowPosition;
-        renderImage.setPosition(windowPosition);
-        rangePreview.setPosition(windowPosition);
+        renderImage.setPosition(worldPosition);
+        rangePreview.setPosition(worldPosition);
         // Logger::debug("processing moues movent in cursor");
 
         return true;

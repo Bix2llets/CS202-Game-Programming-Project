@@ -256,27 +256,31 @@ void TowerMenu::registerMessages() {
         Cursor::getInstance().setRenderImage(buttonBackground);
         Cursor::getInstance().setCarryingTower(towerId);
         isTowerSelected = true;
+        level->notify("show_path");
     });
     subscribe("press_inside", [this](std::any, std::any) {
         if (isTowerSelected == false) return;
         Cursor::getInstance().removeRenderImage();
         Cursor::getInstance().clearCarryingTower();
         isTowerSelected = false;
+        level->notify("hide_path");
     });
     subscribe("press_outside", [this](std::any sender, std::any data) {
         if (isTowerSelected == false) return;
         sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
         level->notify("place_tower_cursor", 0, worldPosition);
-
+        
         Cursor::getInstance().removeRenderImage();
         Cursor::getInstance().clearCarryingTower();
         isTowerSelected = false;
+        level->notify("hide_path");
     });
     subscribe("discard_placement", [this](std::any sender, std::any data) {
         if (isTowerSelected == false) return;
         Cursor::getInstance().removeRenderImage();
         Cursor::getInstance().clearCarryingTower();
         isTowerSelected = false;
+        level->notify("hide_path");
     });
 }
 

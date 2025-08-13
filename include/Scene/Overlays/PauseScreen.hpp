@@ -1,7 +1,7 @@
 #include "Overlay.hpp"
 
 #include "Core/MouseObserver.hpp"
-class PauseScreen : public Overlay, public MouseObserver {
+class PauseScreen : public Overlay {
    private:
     void constructButtons();
 
@@ -18,7 +18,7 @@ class PauseScreen : public Overlay, public MouseObserver {
     /**
      * @brief Renders the pause screen.
      */
-    void render() override;
+    void render() const override;
 
     bool onMouseEvent(Mouse mouse, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
     bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override {
