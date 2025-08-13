@@ -69,8 +69,8 @@ void Projectile::update() {
     if (pierceCount == 0 && targetEntity) {
         if (targetEntity && isCollidedWith(targetEntity->getPosition())) {
             hitEnemies.push_back(targetEntity);
-            targetEntity->onHit(source->getStat(TowerStat::DAMAGE));
-            targetEntity->applyEffects(source->getUniqueId(), *source->getStats());
+            targetEntity->onHit(stats.getStat(TowerStat::DAMAGE));
+            targetEntity->applyEffects(sourceId, stats);
             stopFlying(); // Stop flying after hitting the target
         }
     } else {
@@ -79,8 +79,8 @@ void Projectile::update() {
             
             if (isCollidedWith(enemy->getPosition())) {
                 hitEnemies.push_back(enemy); // Add to hit list
-                enemy->onHit(source->getStat(TowerStat::DAMAGE));
-                enemy->applyEffects(source->getUniqueId(), *source->getStats());
+                enemy->onHit(stats.getStat(TowerStat::DAMAGE));
+                enemy->applyEffects(sourceId, stats);
                 increaseCurrentPierceCount();
 
                 if(pierceCount - currentPierceCount <= 0 || enemy == targetEntity) {
@@ -102,8 +102,9 @@ void Projectile::stopFlying() {
     flying = false;
     hitEnemies.clear(); // Clear hit enemies
 
-    std::unique_ptr<AreaEffect> areaEffect = AreaEffectFactory::createFromConfigFile("explosion", *levelRef);
+    std::unique_ptr<AreaEffect> areaEffect = AreaEffectFactory::createFromConfigFile("explosion", *levelRef, sourceId);
     areaEffect->setPosition(position);
+    areaEffect->setUp(&stats); // Set up area effect with projectile stats
     levelRef->getEntityManager().addAreaEffect(std::move(areaEffect));
 }
 
@@ -138,8 +139,10 @@ void Projectile::bindToTower(Tower* tower) {
     }
 
     source = tower;
-    speed = tower->getStat(TowerStat::PROJECTILE_SPEED, 1.0f);
-    pierceCount = tower->getStat(TowerStat::PROJECTILE_PIERCE_COUNT, pierceCount);
+    sourceId = tower->getUniqueId();
+    stats = *tower->getStats();
+    speed = stats.getStat(TowerStat::PROJECTILE_SPEED, 1.0f);
+    pierceCount = stats.getStat(TowerStat::PROJECTILE_PIERCE_COUNT, pierceCount);
 }
 
 void Projectile::setUpFlightMode() {
@@ -160,7 +163,7 @@ void Projectile::setTarget(Enemy* enemy) {
         if(enemy) targetLocation = enemy->getPosition();
 
         sf::Vector2f direction = (targetLocation - position).normalized();
-        direction *= source->getStat(TowerStat::PROJECTILE_RANGE, 300.0f);
+        direction *= stats.getStat(TowerStat::PROJECTILE_RANGE, 300.0f);
         targetLocation = position + direction;
     } else {
         throw std::runtime_error("Invalid projectile target type for setting target");

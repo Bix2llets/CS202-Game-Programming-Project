@@ -9,7 +9,7 @@
 #include "Entity/Enemy/Enemy.hpp"
 #include "Utility/logger.hpp"
 
-AreaEffect::AreaEffect(Scene& scene) : Entity(scene) {
+AreaEffect::AreaEffect(Scene& scene, uint64_t sourceId) : Entity(scene), sourceId(sourceId) {
     levelRef = dynamic_cast<Level*>(&scene);
     // Assign uniqueId only after levelRef is determined
     if (levelRef) {
@@ -35,8 +35,8 @@ void AreaEffect::applyTickEffect() {
     for (auto* enemy : levelRef->getEntityManager().getEnemies()) {
         if (!enemy || !enemy->isAlive()) continue;
         if (isCollidedWith(enemy->getPosition())) {
-            enemy->onHit(stat.getStat(TowerStat::DAMAGE), type);
-            enemy->applyEffects(uniqueId, stat);
+            enemy->onHit(stats.getStat(TowerStat::DAMAGE), type);
+            enemy->applyEffects(uniqueId, stats);
         }
     }
 }
@@ -49,7 +49,7 @@ void AreaEffect::updateSpriteAnimation() {
 
 void AreaEffect::loadSpriteAnimation(const nlohmann::json& animationPath) {
     animation.loadJson(animationPath);
-    animation.updateSpriteSize(stat.getStat(GeneralStat::WIDTH), stat.getStat(GeneralStat::HEIGHT));
+    animation.updateSpriteSize(stats.getStat(GeneralStat::WIDTH), stats.getStat(GeneralStat::HEIGHT));
 
     updateSpriteAnimation();
 }
@@ -82,13 +82,13 @@ void AreaEffect::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(sprite, state);
 }
 
-void AreaEffect::setUp() {
+void AreaEffect::setUp(EntityStat* newStat) {
     currentRepeats = 0;
     active = true;
-    maxRepeats = static_cast<int>(stat.getStat(AreaEffectStat::REPEAT_TIMES));
+    maxRepeats = static_cast<int>(stats.getStat(AreaEffectStat::REPEAT_TIMES));
 
-    const float duration = stat.getStat(AreaEffectStat::DURATION);
-    const float repeatInterval = stat.getStat(AreaEffectStat::REPEAT_INTERVAL);
+    const float duration = stats.getStat(AreaEffectStat::DURATION);
+    const float repeatInterval = stats.getStat(AreaEffectStat::REPEAT_INTERVAL);
 
     // Configure life timer as single-shot with proper remaining time
     lifeTimer
@@ -105,7 +105,7 @@ void AreaEffect::setUp() {
         .increaseAvailable()
         .resume();
 
-    radius = stat.getStat(AreaEffectStat::RADIUS);
+    radius = stats.getStat(AreaEffectStat::RADIUS);
 }
 
 bool AreaEffect::isCollidedWith(const sf::Vector2f position) const {

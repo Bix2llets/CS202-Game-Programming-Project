@@ -25,7 +25,7 @@ public:
 	 * @return std::unique_ptr<AreaEffect>
 	 */
 	static std::unique_ptr<AreaEffect> createFromConfigFile(
-		const std::string& jsonID, Scene& scene);
+		const std::string& jsonID, Scene& scene, uint64_t sourceId);
 
 	/**
 	 * @brief Create an AreaEffect directly from JSON configuration.
@@ -34,7 +34,7 @@ public:
 	 * @return std::unique_ptr<AreaEffect>
 	 */
 	static std::unique_ptr<AreaEffect> createFromJson(
-		const nlohmann::json& config, Scene& scene);
+		const nlohmann::json& config, Scene& scene, uint64_t sourceId);
 
 private:
 	static void validateConfig(const nlohmann::json& config);

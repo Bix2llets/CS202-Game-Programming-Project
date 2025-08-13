@@ -37,7 +37,8 @@ private:
 
     bool active;            // Whether the effect is still active
 
-    EntityStat stat;    // Entity statistics
+    uint64_t sourceId;
+    EntityStat stats;    // Entity statistics
 
     SpriteAnimation animation; // Animation for the area effect
 
@@ -47,7 +48,7 @@ private:
     bool isCollidedWith(const sf::Vector2f position) const;
 
 public:
-    AreaEffect(Scene& scene);
+    AreaEffect(Scene& scene, uint64_t sourceId);
 
     ~AreaEffect() override = default;
 
@@ -62,7 +63,7 @@ public:
     float getRemainingLifetime() const { return lifeTimer.getRemainingTime(); }
 
     // Tuning
-    void setUp();
+    void setUp(EntityStat* newStat = nullptr);
 
     void setRadius(float r) { radius = r; }
     float getRadius() const { return radius; }
@@ -73,8 +74,8 @@ public:
     int getCurrentRepeats() const { return currentRepeats; }
     void setCurrentRepeats(int count) { currentRepeats = count; }
     void increaseCurrentRepeats() { ++currentRepeats; }
-    EntityStat& getStats() { return stat; }
-    void setStats(const EntityStat& newStats) { stat = newStats; }
+    EntityStat& getStats() { return stats; }
+    void setStats(const EntityStat& newStats) { stats = newStats; }
 
     // Visuals
     void updateSpriteAnimation();

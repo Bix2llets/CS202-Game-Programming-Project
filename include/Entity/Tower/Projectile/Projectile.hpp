@@ -8,6 +8,7 @@
 
 #include "Entity/Entity.hpp"
 #include "Entity/AreaEffect/AreaEffect.hpp"
+#include "Entity/Modules/EntityStat.hpp"
 #include <memory>
 
 // Forward declarations
@@ -17,7 +18,6 @@ class Scene;
 class Level;
 class FlightMode;
 
-// Need full definition for member variable
 #include "Entity/Modules/SpriteAnimation.hpp"
 
 /**
@@ -57,7 +57,9 @@ private:
     std::vector<Enemy*> hitEnemies; ///< Enemies hit by this projectile
     
     Tower* source; ///< Tower that fired this projectile
-    
+    uint16_t sourceId; ///< ID of the source tower
+    EntityStat stats; ///< Stats of the source tower
+
     Enemy* targetEntity; ///< Target entity (if any)
     sf::Vector2f targetLocation; ///< Target location
 

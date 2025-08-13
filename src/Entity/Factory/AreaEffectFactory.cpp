@@ -9,20 +9,20 @@
 #include "Utility/logger.hpp"
 
 std::unique_ptr<AreaEffect> AreaEffectFactory::createFromConfigFile(
-    const std::string& jsonID, Scene& scene) {
+    const std::string& jsonID, Scene& scene, uint64_t sourceId) {
     nlohmann::json config = JSONLoader::getInstance().getAreaEffect(jsonID);
-    return createFromJson(config, scene);
+    return createFromJson(config, scene, sourceId);
 }
 
 std::unique_ptr<AreaEffect> AreaEffectFactory::createFromJson(
-    const nlohmann::json& config, Scene& scene) {
+    const nlohmann::json& config, Scene& scene, uint64_t sourceId) {
     try {
         validateConfig(config);
 
         const std::string id = config["id"].get<std::string>();
         Logger::info("AreaEffectFactory: Creating area-effect with ID: " + id);
 
-        auto effect = std::make_unique<AreaEffect>(scene);
+        auto effect = std::make_unique<AreaEffect>(scene, sourceId);
 
         // Stats block
         if (config.contains("stats")) {

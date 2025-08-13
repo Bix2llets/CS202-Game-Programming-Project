@@ -242,7 +242,6 @@ void Tower::loadIcon() {
 
 void Tower::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(base, state);
-
     target.draw(sprite, state);
 }
 
