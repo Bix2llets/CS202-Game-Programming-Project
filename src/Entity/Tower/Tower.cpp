@@ -188,9 +188,6 @@ void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
 
     sf::Vector2f origin(originalSize.x / 2.0f, originalSize.y / 2.0f);
     base.setOrigin(origin);
-
-    float scaleX = textureWidth / static_cast<float>(originalSize.x);
-    float scaleY = textureHeight / static_cast<float>(originalSize.y);
     base = Scaler::scaleSprite(base, {textureWidth, textureHeight});
 
     base.setPosition(position);
@@ -223,8 +220,10 @@ void Tower::loadIcon() {
     sf::Sprite turretClone = turretAnimation.getCurrentSprite();
 
     // Reset the scale to 1:1 for the icon
-    baseClone.setScale(sf::Vector2f(1.0f, 1.0f));
-    turretClone.setScale(sf::Vector2f(1.0f, 1.0f));
+    // baseClone.setScale(sf::Vector2f(1.0f, 1.0f));
+    // turretClone.setScale(sf::Vector2f(1.0f, 1.0f));
+    baseClone = Scaler::scaleSprite(baseClone, {32.0f, 32.0f});
+    turretClone = Scaler::scaleSprite(turretClone, {32.0f, 32.0f});
 
     // baseClone.setOrigin(baseClone.getLocalBounds().position + baseClone.getLocalBounds().size / 2.f);
 

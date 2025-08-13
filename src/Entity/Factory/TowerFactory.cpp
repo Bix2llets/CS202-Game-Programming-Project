@@ -366,6 +366,10 @@ std::unique_ptr<CombatBehavior> TowerFactory::parseCombatBehavior(const nlohmann
         targetSelector = new Combat::LowestHealthTargetSelector();
     } else if (targeting == "highest" || targeting == "highest_health" || targeting == "strongest") {
         targetSelector = new Combat::HighestHealthTargetSelector();
+    } else if (targeting == "first" || targeting == "nearest_to_end") {
+        targetSelector = new Combat::FirstTargetSelector();
+    } else if (targeting == "last" || targeting == "farthest_from_end" || targeting == "furthest_from_end") {
+        targetSelector = new Combat::LastTargetSelector();
     } else {
         // For other targeting strategies, default to nearest for now
         Logger::warning("TowerFactory: Targeting strategy '" + targeting + "' not found. Using nearest targeting.");

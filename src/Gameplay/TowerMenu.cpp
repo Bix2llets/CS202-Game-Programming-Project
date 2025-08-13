@@ -252,8 +252,10 @@ void TowerMenu::onUnload() {
 void TowerMenu::registerMessages() {
     subscribe("tower_button_pressed", [this](std::any sender, std::any id) {
         std::string towerId = std::any_cast<std::string>(id);
-        sf::Sprite buttonBackground = towerList[towerId]->getIcon();
-        Cursor::getInstance().setRenderImage(buttonBackground);
+        
+        sf::Sprite iconScaled = towerList[towerId]->getIcon();
+        iconScaled = Scaler::scaleSprite(iconScaled, {towerList[towerId]->getTextureWidth() * 2, towerList[towerId]->getTextureHeight() * 2});
+        Cursor::getInstance().setRenderImage(iconScaled);
         Cursor::getInstance().setCarryingTower(towerId);
         isTowerSelected = true;
         level->notify("show_path");
