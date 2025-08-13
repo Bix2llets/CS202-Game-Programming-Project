@@ -35,7 +35,8 @@ Level::Level()
       tracker(*this),
       upgradeMenu(*this),
       backgrounds(GameConstants::BLANK_TEXTURE),
-      waveManager{*this} {
+      waveManager{*this},
+      randomManager() {
     health.setMaxHealth(200).setHealth(200);
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);

@@ -41,6 +41,20 @@ private:
     static const char* getLevelName(LogLevel level);
     static const char* RESET_COLOR;
     
+    static bool isLogOn;
+    static bool isTraceOn;
+    static bool isDebugOn;
+    static bool isInfoOn;
+    static bool isSuccessOn;
+    static bool isWarningOn;
+    static bool isErrorOn;
+    static bool isCriticalOn;
+    static bool isExceptionOn;
+    static bool isNetworkOn;
+    static bool isPerformanceOn;
+    static bool isMemoryOn;
+    static bool isSecurityOn;
+
 public:
     static void log(LogLevel level, const std::string& message);
     
@@ -56,7 +70,21 @@ public:
     static void performance(const std::string& message);
     static void memory(const std::string& message);
     static void security(const std::string& message);
-    
+
+    static void setLogState(bool enabled);
+    static void setTraceState(bool enabled);
+    static void setDebugState(bool enabled);
+    static void setInfoState(bool enabled);
+    static void setSuccessState(bool enabled);
+    static void setWarningState(bool enabled);
+    static void setErrorState(bool enabled);
+    static void setCriticalState(bool enabled);
+    static void setExceptionState(bool enabled);
+    static void setNetworkState(bool enabled);
+    static void setPerformanceState(bool enabled);
+    static void setMemoryState(bool enabled);
+    static void setSecurityState(bool enabled);
+
     template<typename... Args>
     static void logf(LogLevel level, const std::string& format, Args... args) {
         std::ostringstream oss;

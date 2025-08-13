@@ -12,6 +12,8 @@
 #include <optional>
 #include "Base/Constants.hpp"
 
+#include <cstdint>
+
 class Scene;
 
 /**
@@ -22,6 +24,7 @@ class Scene;
  */
 class Entity : public sf::Drawable {
 protected:
+    int64_t uniqueId; ///< Unique identifier for the entity
     sf::Vector2f position; ///< Position of the entity in world coordinates
     sf::Angle rotation;     ///< Rotation of the entity
     sf::Sprite sprite; ///< Optional sprite for rendering
@@ -32,9 +35,13 @@ public:
      * @brief Construct a new Entity object.
      * @param scene Reference to the scene this entity belongs to.
      */
-    Entity(Scene &scene, const sf::Texture& texture) : scene(scene), sprite(texture) {}
+    Entity(Scene &scene, const sf::Texture& texture) : scene(scene), sprite(texture) {
+        uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    }
 
-    Entity(Scene &scene) : scene(scene), sprite(GameConstants::BLANK_TEXTURE) {}
+    Entity(Scene &scene) : scene(scene), sprite(GameConstants::BLANK_TEXTURE) {
+        uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    }
 
     /**
      * @brief Virtual destructor for safe polymorphic destruction.
@@ -85,4 +92,6 @@ public:
     void loadSpriteTexture(const sf::Texture& texture);
 
     bool contains(sf::Vector2f position);
+
+    int64_t getUniqueId() const { return uniqueId; }
 };

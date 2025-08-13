@@ -9,17 +9,14 @@
 
 EntityEffect::EntityEffect(const EntityEffect& other) {
     activeEffects.reserve(other.activeEffects.size());
-    effectIDMap.clear();
     
-    for (size_t i = 0; i < other.activeEffects.size(); ++i) {
-        const auto& effect = other.activeEffects[i];
+    for (const auto& effect : other.activeEffects) {
         auto newEffect = std::make_unique<Effect>(
             effect->getType(), 
             effect->getID(), 
             effect->getLevel(), 
             effect->getDuration()
         );
-        effectIDMap[newEffect->getID()] = i;
         activeEffects.push_back(std::move(newEffect));
     }
 }
@@ -27,18 +24,15 @@ EntityEffect::EntityEffect(const EntityEffect& other) {
 EntityEffect& EntityEffect::operator=(const EntityEffect& other) {
     if (this != &other) {
         activeEffects.clear();
-        effectIDMap.clear();
         
         activeEffects.reserve(other.activeEffects.size());
-        for (size_t i = 0; i < other.activeEffects.size(); ++i) {
-            const auto& effect = other.activeEffects[i];
+        for (const auto& effect : other.activeEffects) {
             auto newEffect = std::make_unique<Effect>(
                 effect->getType(), 
                 effect->getID(), 
                 effect->getLevel(), 
                 effect->getDuration()
             );
-            effectIDMap[newEffect->getID()] = i;
             activeEffects.push_back(std::move(newEffect));
         }
     }
@@ -47,69 +41,51 @@ EntityEffect& EntityEffect::operator=(const EntityEffect& other) {
 
 void EntityEffect::addEffect(std::unique_ptr<Effect> effect) {
     EffectID id = effect->getID();
+    EffectType type = effect->getType();
     
-    // Check if effect with same ID already exists
-    auto it = effectIDMap.find(id);
-    if (it != effectIDMap.end()) {
-        // Refresh existing effect (preserves tick timer)
-        size_t index = it->second;
-        activeEffects[index]->refresh(effect->getLevel(), effect->getDuration());
-    } else {
-        // Add new effect
-        size_t index = activeEffects.size();
-        effectIDMap[id] = index;
-        activeEffects.push_back(std::move(effect));
+    // Check if effect with same ID and EffectType already exists
+    for (auto& existingEffect : activeEffects) {
+        if (existingEffect->getID() == id && existingEffect->getType() == type) {
+            // Refresh existing effect (preserves tick timer)
+            existingEffect->refresh(effect->getLevel(), effect->getDuration());
+            return;
+        }
     }
+    
+    // Add new effect to the end of the list
+    activeEffects.push_back(std::move(effect));
 }
 
 void EntityEffect::removeEffect(EffectID id) {
-    auto it = effectIDMap.find(id);
-    if (it != effectIDMap.end()) {
-        size_t index = it->second;
-        
-        // Remove from vector
-        activeEffects.erase(activeEffects.begin() + index);
-        effectIDMap.erase(it);
-        
-        // Update indices in map for effects after the removed one
-        for (auto& pair : effectIDMap) {
-            if (pair.second > index) {
-                pair.second--;
-            }
-        }
-    }
+    activeEffects.erase(
+        std::remove_if(activeEffects.begin(), activeEffects.end(),
+            [id](const std::unique_ptr<Effect>& effect) {
+                return effect->getID() == id;
+            }),
+        activeEffects.end()
+    );
 }
 
 void EntityEffect::removeEffectsByType(EffectType type) {
-    // Collect IDs to remove to avoid iterator invalidation
-    std::vector<EffectID> idsToRemove;
-    for (const auto& effect : activeEffects) {
-        if (effect->getType() == type) {
-            idsToRemove.push_back(effect->getID());
-        }
-    }
-    
-    // Remove all effects of this type
-    for (EffectID id : idsToRemove) {
-        removeEffect(id);
-    }
+    activeEffects.erase(
+        std::remove_if(activeEffects.begin(), activeEffects.end(),
+            [type](const std::unique_ptr<Effect>& effect) {
+                return effect->getType() == type;
+            }),
+        activeEffects.end()
+    );
 }
 
 void EntityEffect::update() {
-    // Update all effects and collect expired ones
-    std::vector<EffectID> expiredIDs;
-    
-    for (const auto& effect : activeEffects) {
-        effect->update();
-        if (effect->isExpired()) {
-            expiredIDs.push_back(effect->getID());
-        }
-    }
-    
     // Remove expired effects
-    for (EffectID id : expiredIDs) {
-        removeEffect(id);
-    }
+    activeEffects.erase(
+        std::remove_if(activeEffects.begin(), activeEffects.end(),
+            [](std::unique_ptr<Effect>& effect) {
+                effect->update();
+                return effect->isExpired();
+            }),
+        activeEffects.end()
+    );
 }
 
 float EntityEffect::getDamageModifier() const {
@@ -205,7 +181,12 @@ float EntityEffect::getRegenerationHeal() const {
 }
 
 bool EntityEffect::hasEffect(EffectID id) const {
-    return effectIDMap.find(id) != effectIDMap.end();
+    for (const auto& effect : activeEffects) {
+        if (effect->getID() == id) {
+            return true;
+        }
+    }
+    return false;
 }
 
 bool EntityEffect::hasEffectType(EffectType type) const {
@@ -218,9 +199,10 @@ bool EntityEffect::hasEffectType(EffectType type) const {
 }
 
 Effect* EntityEffect::getEffect(EffectID id) const {
-    auto it = effectIDMap.find(id);
-    if (it != effectIDMap.end()) {
-        return activeEffects[it->second].get();
+    for (const auto& effect : activeEffects) {
+        if (effect->getID() == id) {
+            return effect.get();
+        }
     }
     return nullptr;
 }
@@ -252,5 +234,4 @@ size_t EntityEffect::getEffectCount() const {
 
 void EntityEffect::clearAllEffects() {
     activeEffects.clear();
-    effectIDMap.clear();
 }

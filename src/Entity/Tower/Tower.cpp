@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>  // Include for debug output
 #include <stdexcept>
+#include <cstdint>
 
 #include "Base/Constants.hpp"
 #include "Entity/Enemy/Enemy.hpp"
@@ -25,6 +26,13 @@ Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const
     setPosition(pos);
     setRotation(angle);
     levelRef = dynamic_cast<Level*>(&scene);
+    // Assign uniqueId only after levelRef is determined
+    if (levelRef) {
+        uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
+    } else {
+        // Fallback: use address-based id when outside a Level context
+        uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    }
     timer.resume();
 }
 

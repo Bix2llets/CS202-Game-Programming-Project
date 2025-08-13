@@ -58,7 +58,7 @@ public:
      * @param level Intensity/power of the effect.
      * @param duration Duration of the effect in seconds.
      */
-    Effect(EffectType type, EffectID id, int level, float duration);
+    Effect(EffectType type, int level, float duration, EffectID id);
 
     /**
      * @brief Update the effect timers.

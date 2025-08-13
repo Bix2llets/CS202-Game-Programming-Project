@@ -1,6 +1,8 @@
 #include "Entity/AreaEffect/AreaEffect.hpp"
 
 #include <algorithm>
+// For fallback unique id when not in a Level
+#include <cstdint>
 
 #include "Scene/Level.hpp"
 #include "EntityManager.hpp"
@@ -9,6 +11,12 @@
 
 AreaEffect::AreaEffect(Scene& scene) : Entity(scene) {
     levelRef = dynamic_cast<Level*>(&scene);
+    // Assign uniqueId only after levelRef is determined
+    if (levelRef) {
+        uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
+    } else {
+        uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    }
 }
 
 void AreaEffect::setPosition(const sf::Vector2f& pos) {
@@ -28,6 +36,7 @@ void AreaEffect::applyTickEffect() {
         if (!enemy || !enemy->isAlive()) continue;
         if (isCollidedWith(enemy->getPosition())) {
             enemy->onHit(stat.getStat(TowerStat::DAMAGE), type);
+            enemy->applyEffects(uniqueId, stat);
         }
     }
 }

@@ -21,8 +21,10 @@ public:
 	// Return a random unsigned 64-bit raw value (full engine output).
 	std::uint64_t nextU64() { return m_engine(); }
 
-	// Return a random long long in [0, max].
-	long long nextLongLong() { return uniformInt<long long>(std::numeric_limits<long long>::min(), std::numeric_limits<long long>::max()); }
+	// Return a random long long in [min, max].
+	long long nextLongLong(int min, int max = std::numeric_limits<long long>::max()) { 
+		return uniformInt<long long>(min, max);
+	}
 
 	// Return a random int in [min, max] (defaults to full positive 32-bit range).
 	int nextInt(int min = 0, int max = std::numeric_limits<int>::max()) {

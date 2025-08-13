@@ -10,7 +10,6 @@
 
 #include <memory>
 #include <vector>
-#include <unordered_map>
 
 #include "Effect.hpp"
 
@@ -20,12 +19,11 @@
  *
  * This class handles adding, removing, and updating effects, as well as
  * calculating cumulative modifiers from all active effects. Effects with
- * the same ID will override each other while preserving tick timing.
+ * the same ID and EffectType will override each other while preserving tick timing.
  */
 class EntityEffect {
 private:
     std::vector<std::unique_ptr<Effect>> activeEffects;  ///< Collection of active effects
-    std::unordered_map<EffectID, size_t> effectIDMap;    ///< Maps effect IDs to indices
 
 public:
     /**
@@ -53,8 +51,9 @@ public:
 
     /**
      * @brief Add a new effect to the entity.
-     * If an effect with the same ID already exists, it will be refreshed
+     * If an effect with the same ID and EffectType already exists, it will be refreshed
      * with the new level and duration while preserving tick timing.
+     * Otherwise, the effect will be added to the end of the activeEffects list.
      * @param effect Effect to add (ownership is transferred).
      */
     void addEffect(std::unique_ptr<Effect> effect);

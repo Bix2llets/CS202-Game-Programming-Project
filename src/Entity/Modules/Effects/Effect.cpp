@@ -5,7 +5,7 @@
 
 #include "Entity/Modules/Effects/Effect.hpp"
 
-Effect::Effect(EffectType type, EffectID id, int level, float duration) 
+Effect::Effect(EffectType type, int level, float duration, EffectID id) 
     : type(type), id(id), level(level) {
     
     // Set up duration timer (Single mode for effect expiration)
@@ -35,6 +35,7 @@ bool Effect::shouldTick() const {
 void Effect::resetTickTimer() {
     if (isPeriodic()) {
         tickTimer.use();
+        tickTimer.reset();
     }
 }
 
@@ -64,5 +65,4 @@ void Effect::refresh(int newLevel, float newDuration) {
     level = newLevel;
     // Reset duration timer but keep tick timer state
     timer = Timer(newDuration, TimerMode::Single);
-    // tickTimer remains unchanged - preserves tick timing!
 }
