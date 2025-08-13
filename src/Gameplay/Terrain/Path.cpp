@@ -150,8 +150,8 @@ sf::RenderTexture Path::getPathTexture() const {
         }
     }
     for (int i = 0; i < pathway.getVertexCount(); i++) {
-        pathway[i].color = sf::Color::Blue;
-        pathway[i].color.a = 100;
+        pathway[i].color = sf::Color::Red;
+        pathway[i].color.a = 63;
     }
     sf::RenderStates state;
     state.blendMode = sf::BlendNone;

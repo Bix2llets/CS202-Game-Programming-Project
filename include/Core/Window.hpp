@@ -26,6 +26,7 @@ class Window : public MouseObserver {
     Window& operator=(const Window&) = delete;
 
     sf::View userView;
+    sf::Vector2f levelSize;
     bool isLocked;
 
     bool isMiddlePressed = false;
@@ -47,4 +48,6 @@ class Window : public MouseObserver {
     void adjustUserView();
 
     void clampView();
+
+    void setLevelSize(sf::Vector2f size); 
 };

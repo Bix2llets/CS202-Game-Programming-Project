@@ -55,7 +55,7 @@ TowerInfoPanel::TowerInfoPanel()
     // background.setOutlineThickness(4);
 
     damageIcon.setPosition(
-        {background.getPosition().x + 20, background.getPosition().y + 120});
+        {background.getPosition().x + 20, background.getPosition().y + 150});
 
     rangeIcon.setPosition(damageIcon.getPosition() +
                           sf::Vector2f{0, (damageIcon.getGlobalBounds().size.y +
@@ -97,7 +97,7 @@ TowerInfoPanel::TowerInfoPanel()
     upgradeTitle = Aligner::align(upgradeTitle);
     upgradeTitle.setPosition(
         {background.getPosition().x + background.getSize().x / 2.f,
-         background.getPosition().y + 250});
+         background.getPosition().y + 300});
 
     previewClosingTimer.setRemainingTime(0.25f).setTimeInterval(0.25f).setTimerMode(
         TimerMode::Single);

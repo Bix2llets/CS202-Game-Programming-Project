@@ -8,18 +8,19 @@ Window::Window()
     : window(sf::VideoMode({GameConstants::DEFAULT_WINDOW_WIDTH,
                             GameConstants::DEFAULT_WINDOW_HEIGHT}),
              "Rampart Remain", sf::Style::Close | sf::Style::Titlebar) {
-    // subscribeMouse(Mouse::Middle, UserEvent::Press,
-    //                InputManager::getInstance().getMouseState());
-    // subscribeMouse(Mouse::Middle, UserEvent::Move,
-    //                InputManager::getInstance().getMouseState());
-    // subscribeMouse(Mouse::Middle, UserEvent::Release,
-    //                InputManager::getInstance().getMouseState());
-    // subscribeMouse(Mouse::Scroll, UserEvent::None,
-    //                InputManager::getInstance().getMouseState());
+    subscribeMouse(Mouse::Middle, UserEvent::Press,
+                   InputManager::getInstance().getMouseState());
+    subscribeMouse(Mouse::Middle, UserEvent::Move,
+                   InputManager::getInstance().getMouseState());
+    subscribeMouse(Mouse::Middle, UserEvent::Release,
+                   InputManager::getInstance().getMouseState());
+    subscribeMouse(Mouse::Scroll, UserEvent::None,
+                   InputManager::getInstance().getMouseState());
     isMiddlePressed = false;
     // middlePressPosition = {0.f, 0.f};
     previousMiddleMousePosition = {0.f, 0.f};
-
+    levelSize =
+        sf::Vector2f{GameConstants::MAP_WIDTH, GameConstants::MAP_HEIGHT};
     adjustUserView();
 }
 Window& Window::getInstance() {
@@ -61,7 +62,7 @@ bool Window::onMouseEvent(Mouse mouse, UserEvent event,
             windowPosition - previousMiddleMousePosition;
         previousMiddleMousePosition = windowPosition;
         userView.move(-displacement);
-        // clampView();
+        clampView();
         window.setView(userView);
         // Logger::debug(std::format("Window pan Moving {} {}", displacement.x,
         //   displacement.y));
@@ -94,35 +95,60 @@ bool Window::onScrollEvent(float delta, const sf::Vector2f& worldPosition,
     userView.setSize(userView.getSize() * (1 + delta * ZOOM_FACTOR));
     userView.move((userView.getCenter() - worldPosition) * delta * ZOOM_FACTOR);
     window.setView(userView);
+    clampView();
+    // adjustUserView();
+
+    InputManager::getInstance().getMouseState().updateMousePosition(
+        windowPosition);
     return true;
 }
 
 void Window::adjustUserView() {
-    auto winSize = window.getSize();
+    sf::Vector2f winSize = sf::Vector2f{GameConstants::DEFAULT_WINDOW_WIDTH,
+                                        GameConstants::DEFAULT_WINDOW_HEIGHT};
     float aspect = static_cast<float>(winSize.x) / winSize.y;
     float viewHeight = winSize.y;
-    float viewWidth = viewHeight * aspect;
+    float viewWidth = std::min(viewHeight * aspect, winSize.x);
+    viewHeight = viewWidth / aspect;
     userView.setSize({viewWidth, viewHeight});
     userView.setCenter({viewWidth / 2.f, viewHeight / 2.f});
 }
-
 void Window::clampView() {
-    static const int ALLOWED_OFFSET = 100;
-    if (userView.getCenter().x - userView.getSize().x / 2 < 0)
-        userView.setCenter({userView.getSize().x, userView.getCenter().y / 2});
-    if (userView.getCenter().y - userView.getSize().y / 2 < 0)
-        userView.setCenter({userView.getCenter().x, userView.getSize().y / 2});
+    static const float MENU_WIDTH_PIXELS = 200.f;
 
-    if (userView.getCenter().x + userView.getSize().x / 2 >
-        GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE)
-        userView.setCenter(
-            {GameConstants::MAP_WIDTH * GameConstants::CELL_SIZE -
-                 userView.getSize().x / 2,
-             userView.getCenter().y});
-    if (userView.getCenter().y + userView.getSize().y / 2 >
-        GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE)
-        userView.setCenter(
-            {userView.getCenter().x,
-             GameConstants::MAP_HEIGHT * GameConstants::CELL_SIZE -
-                 userView.getSize().y / 2});
+    float mapRight  = levelSize.x;
+    float mapBottom = levelSize.y;
+
+    sf::Vector2f viewSize   = userView.getSize();  // world coords
+    sf::Vector2f viewCenter = userView.getCenter();
+
+    float aspect = static_cast<float>(GameConstants::DEFAULT_WINDOW_WIDTH) / GameConstants::DEFAULT_WINDOW_HEIGHT;
+    float viewHeight = viewSize.y;
+    float viewWidth = std::min(viewHeight * aspect, levelSize.x);
+    viewHeight = viewWidth / aspect;
+
+    viewSize = {viewWidth, viewHeight};
+    float zoomFactor = viewSize.x / GameConstants::DEFAULT_WINDOW_WIDTH;
+    float menuWorldWidth = MENU_WIDTH_PIXELS * zoomFactor;
+
+    // Horizontal clamp
+    float minX = viewSize.x / 2.f;
+    float maxX = mapRight - viewSize.x / 2.f + menuWorldWidth;
+
+    viewCenter.x = std::clamp(viewCenter.x, minX, maxX);
+
+    // Vertical clamp
+    float minY = viewSize.y / 2.f;
+    float maxY = mapBottom - viewSize.y / 2.f;
+    viewCenter.y = std::clamp(viewCenter.y, minY, maxY);
+
+    userView.setCenter(viewCenter);
+    userView.setSize(viewSize);
+}
+
+
+void Window::setLevelSize(sf::Vector2f size) {
+    levelSize = size;
+    clampView();
+    adjustUserView();
 }

@@ -54,9 +54,9 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
     TowerMenu menu;
     TowerInfoPanel infoPanel;
     std::unique_ptr<Overlay> overlay;
-    std::vector<Waypoint> waypoints;
+    Path path;
     sf::Sprite backgrounds;
-
+    bool renderPath = false;
     Health health;
     WaveManager waveManager;
 

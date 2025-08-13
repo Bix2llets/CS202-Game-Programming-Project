@@ -37,12 +37,6 @@ PauseScreen::PauseScreen(Mediator& mediator) : Overlay(mediator) {
         {background.getPosition().x,
          background.getPosition().y - background.getSize().y / 2});
 
-    subscribeMouse(Mouse::Left, UserEvent::Press,
-                   InputManager::getInstance().getMouseState());
-    subscribeMouse(Mouse::None, UserEvent::Move,
-                   InputManager::getInstance().getMouseState());
-    subscribeMouse(Mouse::Left, UserEvent::Release,
-                   InputManager::getInstance().getMouseState());
     constructButtons();
 }
 
@@ -53,7 +47,7 @@ void PauseScreen::update() {
     }
 }
 
-void PauseScreen::render() {
+void PauseScreen::render() const {
     sf::RenderWindow& window = Window::getInstance().getRenderWindow();
     window.draw(darkOverlay);
     window.draw(background);
@@ -177,12 +171,6 @@ bool PauseScreen::onMouseEvent(Mouse mouse, UserEvent event,
 
 PauseScreen::~PauseScreen() {
     // Clean up resources if necessary
-    unSubscribeMouse(Mouse::Left, UserEvent::Press,
-                     InputManager::getInstance().getMouseState());
-    unSubscribeMouse(Mouse::None, UserEvent::Move,
-                     InputManager::getInstance().getMouseState());
-    unSubscribeMouse(Mouse::Left, UserEvent::Release,
-                     InputManager::getInstance().getMouseState());
 
     buttons.clear();
 }

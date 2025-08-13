@@ -8,7 +8,7 @@ void SceneManager::changeScene(const std::string &sceneName) {
         return;
     }
     if (currentScene) currentScene->onUnload();
-    currentScene = sceneStorage[sceneName].get();
+     currentScene = sceneStorage[sceneName].get();
     if (currentScene) currentScene->onLoad();
 }
 
@@ -55,10 +55,6 @@ void SceneManager::checkNullptr() {
 }
 
 void SceneManager::loadLevel(std::string ID, std::unique_ptr<Level> level) {
-    if (sceneStorage.find(ID) != sceneStorage.end()) {
-        Logger::error("Level ID conflict");
-        return;
-    }
 
     sceneStorage[ID] = std::move(level);
 }

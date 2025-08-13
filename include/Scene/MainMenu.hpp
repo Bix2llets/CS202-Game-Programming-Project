@@ -19,14 +19,15 @@
  * @brief Scene representing the main menu, with UI buttons and event handling.
  */
 class MainMenu : public Scene {
-   protected:
-   std::unique_ptr<RectangularButton> playButton;
+    protected:
+    std::unique_ptr<RectangularButton> playButton;
     std::unique_ptr<RectangularButton> settingButton;
+    std::unique_ptr<RectangularButton> exitButton;
     std::unique_ptr<sf::Sprite> title;
     std::unique_ptr<sf::Sprite> background;
     void testSceneSwitching();
 
-   public:
+    public:
     MainMenu();
 
     /**

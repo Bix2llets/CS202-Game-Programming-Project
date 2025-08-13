@@ -10,6 +10,7 @@
 #include "Base/Constants.hpp"
 #include "Core/InputManager.hpp"
 #include "Core/JSONLoader.hpp"
+#include "Core/LevelFactory.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/SceneManager.hpp"
@@ -23,6 +24,7 @@
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Terrain/TerrainParameter.hpp"
 #include "Gameplay/TowerInfoPanel.hpp"
+#include "Scene/Overlays/GameoverScreen.hpp"
 #include "Scene/Overlays/PauseScreen.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
@@ -47,7 +49,7 @@ Level::Level()
     subscribeCallbacks();
 }
 
-Level::~Level() {}
+Level::~Level() { onUnload(); }
 void Level::update() {
     if (overlay || !running) {
         if (overlay) overlay->update();
@@ -76,6 +78,8 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.render(state);
     }
+    if (renderPath) 
+        path.draw(target, state);
 
     Window::getInstance().toggleGUIMode();
     menu.render(state);
@@ -95,14 +99,18 @@ void Level::loadFromJson(const std::string &pathToFile) {
 void Level::loadFromJson(const nlohmann::json &jsonFile) {
     backgrounds = sf::Sprite(
         *ResourceManager::getInstance().getTexture(jsonFile["background"]));
-
+    levelID = jsonFile["id"];
     sf::Vector2f scale;
-    scale.x = static_cast<float>(GameConstants::MAP_WIDTH) /
+    // scale.x = static_cast<float>(GameConstants::MAP_WIDTH) /
+    //           backgrounds.getLocalBounds().size.x;
+    // scale.y = static_cast<float>(GameConstants::MAP_HEIGHT) /
+    //           backgrounds.getGlobalBounds().size.y;
+    scale.x = jsonFile["size"]["x"].get<float>() /
               backgrounds.getLocalBounds().size.x;
-    scale.y = static_cast<float>(GameConstants::MAP_HEIGHT) /
-              backgrounds.getGlobalBounds().size.y;
+    scale.y = jsonFile["size"]["y"].get<float>() /
+              backgrounds.getLocalBounds().size.y;
     backgrounds.setScale(scale);
-    waypoints.clear();
+    std::vector<Waypoint> waypoints;
     for (const auto point : jsonFile["waypoints"]) {
         waypoints.emplace_back(
             Waypoint{sf::Vector2f{point[0].get<float>() * scale.x,
@@ -111,6 +119,7 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
         Logger::debug(std::format("Waypoint at {}, {}", point[0].get<float>(),
                                   point[1].get<float>()));
     }
+    path.loadWaypoints(waypoints);
     loadWaves(jsonFile);
 
     factory = std::make_unique<EnemyFactory>(waypoints, *this);
@@ -151,6 +160,8 @@ void Level::onLoad() {
                    InputManager::getInstance().getMouseState());
     subscribeMouse(Mouse::Middle, UserEvent::Move,
                    InputManager::getInstance().getMouseState());
+    Window::getInstance().setLevelSize(
+        sf::Vector2f{backgrounds.getGlobalBounds().size});
 }
 
 void Level::onUnload() {
@@ -190,7 +201,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
     if (key == Key::Space && event == UserEvent::Press) {
         running = !running;
         if (!running) {
-            overlay = std::make_unique<PauseScreen>(*this);
+            overlay = std::make_unique<GameoverScreen>(*this);
             Cursor::getInstance().clearCarryingTower();
             Cursor::getInstance().removeRenderImage();
             EnemyPanel::getInstance().clearEnemy();
@@ -212,7 +223,8 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
                          const sf::Vector2f &worldPosition,
                          const sf::Vector2f &windowPosition) {
     if (overlay) {
-        return false;
+        return overlay->onMouseEvent(mouse, event, worldPosition,
+                                     windowPosition);
     }
 
     if (!infoPanel.isDisplaying())
@@ -287,7 +299,7 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
         return false;
     for (auto &tower : entityManager.getTowers())
         if (tower->intersects(towerBound)) return false;
-    std::vector<Waypoint> &pathway = waypoints;
+    const std::vector<Waypoint> &pathway = path.getWaypoints();
 
     for (int i = 0; i < pathway.size() - 1; i++) {
         Waypoint current = pathway[i];
@@ -458,5 +470,28 @@ void Level::subscribeCallbacks() {
     });
     subscribe("toggle_music", [this](std::any sender, std::any data) {
         ResourceManager::getInstance().toggleMusic();
+    });
+
+    subscribe("restart_level", [this](std::any sender, std::any data) {
+        LevelFactory factory;
+        for (const auto &[id, levelID] :
+             JSONLoader::getInstance().getAllLevels()) {
+            factory.loadConfig(levelID);
+        }
+        overlay.reset();
+        overlay = nullptr;
+        SceneManager::getInstance().changeScene("Main menu");
+        SceneManager::getInstance().loadLevel("Gameplay",
+                                              factory.getLevel(levelID));
+        SceneManager::getInstance().changeScene("Gameplay");
+        // notify("resume_game");
+    });
+
+    subscribe("show_path", [this](std::any sender, std::any data) {
+        renderPath = true;
+    });
+
+    subscribe("hide_path", [this](std::any sender, std::any data) {
+        renderPath = false;
     });
 }

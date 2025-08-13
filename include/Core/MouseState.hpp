@@ -83,6 +83,8 @@ class MouseState {
      */
     void clearSubscriber(Mouse button, UserEvent event);
 
+    void updateMousePosition(const sf::Vector2f &newWindowPosition);
+
    private:
 
     void processMousePress(const std::optional<sf::Event> &event);

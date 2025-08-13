@@ -2,6 +2,10 @@
     "id": "preset_level_ship",
     "name": "Ship",
     "background": "ship",
+    "size": {
+        "x": 1200,
+        "y": 900
+    },
     "waypoints": [
         [0, 281],
 [153, 281],
