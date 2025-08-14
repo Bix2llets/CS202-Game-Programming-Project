@@ -61,11 +61,15 @@ void Logger::log(LogLevel level, const std::string& message) {
     auto now = std::chrono::system_clock::now();
     auto time_t = std::chrono::system_clock::to_time_t(now);
     auto tm = *std::localtime(&time_t);
-    
-    std::cout << getColorCode(level) 
-              << "[" << std::put_time(&tm, "%Y-%m-%d %H:%M:%S") << "] "
+
+    // Get milliseconds part
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+
+    std::cout << getColorCode(level)
+              << "[" << std::put_time(&tm, "%Y-%m-%d %H:%M:%S")
+              << "." << std::setfill('0') << std::setw(3) << ms.count() << "] "
               << "[" << getLevelName(level) << "] "
-              << message 
+              << message
               << RESET_COLOR << std::endl;
 }
 

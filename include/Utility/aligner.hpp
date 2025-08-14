@@ -1,10 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "GUIComponents/alignment.hpp"
 
-enum class HorizontalAlignment { Left, Center, Right };
-
-enum class VerticalAlignment { Top, Middle, Bottom };
 class Aligner {
     public:
     static sf::Text& align(

@@ -58,7 +58,9 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
 void RadialUpgradeMenu::setFocus(Tower* tower) {
     refTower = tower;
     Window::getInstance().toggleGUIMode();
-    position = static_cast<sf::Vector2f>(Window::getInstance().getRenderWindow().mapCoordsToPixel(tower->getPosition()));
+    position = static_cast<sf::Vector2f>(
+        Window::getInstance().getRenderWindow().mapCoordsToPixel(
+            tower->getPosition()));
     upgradeManager = tower->getUpgradeManager();
     displaying = true;
     nlohmann::json towerInfo =
@@ -175,13 +177,13 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
 }
 
 void RadialUpgradeMenu::update() {
-    if (upgradeManager)
+    if (!upgradeManager) return;
 
-        if (upgradeManager->isTotalUpgradeLimitReached()) {
-            for (auto& button : upgradeButtons) {
-                button.setIsCapped(true);
-            }
+    if (upgradeManager->isTotalUpgradeLimitReached()) {
+        for (auto& button : upgradeButtons) {
+            button.setIsCapped(true);
         }
+    }
 
     for (int i = 0; i < upgradeManager->getAllUpgradeTypes().size(); i++) {
         if (upgradeManager->canUpgrade(i + 1, parentLevel.getBudget()))

@@ -3,7 +3,7 @@
     "name": "Ship",
     "background": "ship",
     "size": {
-        "x": 1200,
+        "x": 1000,
         "y": 900
     },
     "waypoints": [

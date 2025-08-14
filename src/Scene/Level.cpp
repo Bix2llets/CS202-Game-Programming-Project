@@ -38,21 +38,20 @@ Level::Level()
       upgradeMenu(*this),
       backgrounds(GameConstants::BLANK_TEXTURE),
       waveManager{*this},
+      overlay{nullptr},
       randomManager() {
     health.setMaxHealth(200).setHealth(200);
     MouseState &mouseState = InputManager::getInstance().getMouseState();
-    subscribeMouse(Mouse::Left, UserEvent::Press, mouseState);
-    subscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
-    subscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
-    subscribeMouse(Mouse::None, UserEvent::Move, mouseState);
-    subscribeMouse(Mouse::Right, UserEvent::Press, mouseState);
     subscribeCallbacks();
 }
 
-Level::~Level() { onUnload(); }
+Level::~Level() {
+    onUnload();
+    overlay.reset(nullptr);
+}
 void Level::update() {
-    if (overlay || !running) {
-        if (overlay) overlay->update();
+    if (overlay) {
+        overlay->update();
         return;
     }
 
@@ -78,8 +77,7 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.render(state);
     }
-    if (renderPath) 
-        path.draw(target, state);
+    if (renderPath) path.draw(target, state);
 
     Window::getInstance().toggleGUIMode();
     menu.render(state);
@@ -116,12 +114,13 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
             Waypoint{sf::Vector2f{point[0].get<float>() * scale.x,
                                   point[1].get<float>() * scale.y},
                      1.0});
-        Logger::debug(std::format("Waypoint at {}, {}", point[0].get<float>(),
-                                  point[1].get<float>()));
+        // Logger::debug(std::format("Waypoint at {}, {}",
+        // point[0].get<float>(),
+        //                           point[1].get<float>()));
     }
     path.loadWaypoints(waypoints);
     loadWaves(jsonFile);
-
+    Logger::success("Loaded waypoints");
     factory = std::make_unique<EnemyFactory>(waypoints, *this);
 }
 
@@ -162,6 +161,7 @@ void Level::onLoad() {
                    InputManager::getInstance().getMouseState());
     Window::getInstance().setLevelSize(
         sf::Vector2f{backgrounds.getGlobalBounds().size});
+    Logger::debug(std::format("Level onLoad done on ", (void *)this));
 }
 
 void Level::onUnload() {
@@ -185,6 +185,11 @@ void Level::onUnload() {
     unSubscribeMouse(Mouse::Left, UserEvent::Release, mouseState);
     unSubscribeMouse(Mouse::Left, UserEvent::Move, mouseState);
     unSubscribeMouse(Mouse::None, UserEvent::Move, mouseState);
+    unSubscribeMouse(Mouse::Right, UserEvent::Move,
+                     InputManager::getInstance().getMouseState());
+    unSubscribeMouse(Mouse::Middle, UserEvent::Move,
+                     InputManager::getInstance().getMouseState());
+    Logger::debug(std::format("Level onUnLoad done on ", (void *)this));
 }
 
 bool Level::isWaveFinished() {
@@ -199,8 +204,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
                        const sf::Vector2f &worldPosition,
                        const sf::Vector2f &windowPosition) {
     if (key == Key::Space && event == UserEvent::Press) {
-        running = !running;
-        if (!running) {
+        if (!overlay) {
             overlay = std::make_unique<GameoverScreen>(*this);
             Cursor::getInstance().clearCarryingTower();
             Cursor::getInstance().removeRenderImage();
@@ -222,7 +226,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
 bool Level::onMouseEvent(Mouse mouse, UserEvent event,
                          const sf::Vector2f &worldPosition,
                          const sf::Vector2f &windowPosition) {
-    if (overlay) {
+    if (overlay.get()) {
         return overlay->onMouseEvent(mouse, event, worldPosition,
                                      windowPosition);
     }
@@ -410,8 +414,9 @@ void Level::subscribeCallbacks() {
             Enemy *enemySent = std::any_cast<Enemy *>(sender);
             health.takeDamage(enemySent->getHealth());
             if (health.getHealth() == 0) {
+                menu.update();
                 Logger::error("Level failed, health reached zero");
-                running = false;
+                overlay = std::make_unique<GameoverScreen>(*this);
             } else {
                 Logger::warning(std::format("Enemy passed, health left: {}",
                                             health.getHealth()));
@@ -444,7 +449,7 @@ void Level::subscribeCallbacks() {
         try {
             std::string enemyID = std::any_cast<std::string>(data);
             entityManager.addEnemy(factory->createEnemy(enemyID, 0));
-            Logger::info(std::format("Spawning enemy: {}", enemyID));
+            // Logger::info(std::format("Spawning enemy: {}", enemyID));
         } catch (std::bad_any_cast &e) {
             Logger::error("spawn_enemy: Received illegal signal " +
                           std::string(e.what()));
@@ -452,7 +457,6 @@ void Level::subscribeCallbacks() {
         }
     });
     subscribe("resume_game", [this](std::any sender, std::any data) {
-        running = true;
         overlay = nullptr;
         Cursor::getInstance().clearCarryingTower();
         Cursor::getInstance().removeRenderImage();
@@ -461,7 +465,7 @@ void Level::subscribeCallbacks() {
     });
 
     subscribe("quit_level", [this](std::any sender, std::any data) {
-        SceneManager::getInstance().changeScene("Main menu");
+        SceneManager::getInstance().enqueueSceneChange("Main menu");
         notify("resume_game");
     });
 
@@ -473,25 +477,14 @@ void Level::subscribeCallbacks() {
     });
 
     subscribe("restart_level", [this](std::any sender, std::any data) {
-        LevelFactory factory;
-        for (const auto &[id, levelID] :
-             JSONLoader::getInstance().getAllLevels()) {
-            factory.loadConfig(levelID);
-        }
-        overlay.reset();
-        overlay = nullptr;
-        SceneManager::getInstance().changeScene("Main menu");
-        SceneManager::getInstance().loadLevel("Gameplay",
-                                              factory.getLevel(levelID));
-        SceneManager::getInstance().changeScene("Gameplay");
-        // notify("resume_game");
+        SceneManager::getInstance().enqueueSceneAdd(
+            "Gameplay", LevelFactory::getInstance().getLevel(levelID));
+        SceneManager::getInstance().enqueueSceneChange("Gameplay");
     });
 
-    subscribe("show_path", [this](std::any sender, std::any data) {
-        renderPath = true;
-    });
+    subscribe("show_path",
+              [this](std::any sender, std::any data) { renderPath = true; });
 
-    subscribe("hide_path", [this](std::any sender, std::any data) {
-        renderPath = false;
-    });
+    subscribe("hide_path",
+              [this](std::any sender, std::any data) { renderPath = false; });
 }

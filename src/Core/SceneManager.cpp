@@ -1,16 +1,7 @@
 #include "Core/SceneManager.hpp"
-#include "Utility/logger.hpp"
-#include "Core/Window.hpp"
 
-void SceneManager::changeScene(const std::string &sceneName) {
-    if (sceneStorage.find(sceneName) == sceneStorage.end()) {
-        Logger::error("Switching to non-existent scene");
-        return;
-    }
-    if (currentScene) currentScene->onUnload();
-     currentScene = sceneStorage[sceneName].get();
-    if (currentScene) currentScene->onLoad();
-}
+#include "Core/Window.hpp"
+#include "Utility/logger.hpp"
 
 void SceneManager::render() {
     try {
@@ -30,40 +21,89 @@ void SceneManager::update() {
     }
 }
 
-// void SceneManager::handleEvent(std::optional<sf::Event> &event) {
-//     try {
-//         checkNullptr();
-//         currentScene->handleEvent(event);
-//     }
-//     catch(GameException exception) {
-//         Logger::critical("Handling event on a non-existent scene");
-//     }
-// }
-
-// void SceneManager::handleInput() {
-//     try {
-//         checkNullptr();
-//         currentScene->handleInput();
-//     }
-//     catch(GameException exception) {
-//         Logger::critical("Handling input on a non-existent scene");
-//     }
-// }
 
 void SceneManager::checkNullptr() {
     if (currentScene == nullptr) throw GameException("Error: nullptr access");
 }
 
-void SceneManager::loadLevel(std::string ID, std::unique_ptr<Level> level) {
-
-    sceneStorage[ID] = std::move(level);
+void SceneManager::enqueueSceneAdd(const std::string &id,
+                                   std::unique_ptr<Scene> scene) {
+    sceneAddList.push({id, std::move(scene)});
+    Logger::debug("Scene added to queue: " + id);
 }
 
-void SceneManager::createLevel(std::string ID) {
-    if (currentScene == sceneStorage[ID].get()) {
-        changeScene("Main Menu");
-        Logger::info("Switching to Main Menu before creating a new level");
+void SceneManager::enqueueSceneChange(const std::string &sceneName) {
+    sceneChangeList.push(sceneName);
+    Logger::debug("Scene change requested: " + sceneName);
+}
+
+void SceneManager::setLevel(std::unique_ptr<Scene> scene) {
+    if (dynamic_cast<Level *>(scene.get()) == nullptr) {
+        throw std::runtime_error(
+            "Cannot add non-Level scene with this method, use enqueueSceneAdd "
+            "instead");
     }
-    auto level = std::make_unique<Level>();
-    loadLevel(ID, std::move(level));   
+    currentBuffer = 1 - currentBuffer;
+    levelBuffer[currentBuffer] = std::move(scene);
+    Logger::debug(
+        "Level set to buffer " + std::to_string(currentBuffer));
+}
+
+void SceneManager::switchToLevel() {
+    if (currentScene) currentScene->onUnload();
+    currentScene = levelBuffer[currentBuffer].get();
+    if (currentScene) {
+        currentScene->onLoad();
+        Logger::info("Switched to level in buffer " + std::to_string(currentBuffer));
+    } else {
+        Logger::error("Failed to load level from buffer");
+    }
+}
+
+void SceneManager::updateSceneChange() {
+    // Logger::info("Updating scene changes...");
+    while (sceneAddList.size()) {
+        auto sceneInfo = std::move(sceneAddList.front());
+        sceneAddList.pop();
+        if (dynamic_cast<Level *>(sceneInfo.nextScene.get())) {
+            setLevel(std::move(sceneInfo.nextScene));
+            continue;
+        }
+        if (sceneStorage[sceneInfo.id]) sceneStorage[sceneInfo.id]->onUnload();
+        bool shouldRefresh = false;
+        if (currentScene == sceneStorage[sceneInfo.id].get()) {
+            shouldRefresh = true;
+        }
+        sceneStorage[sceneInfo.id].reset(sceneInfo.nextScene.release());
+        // sceneStorage[sceneInfo.id] = std::move(sceneInfo.nextScene);
+        if (shouldRefresh) {
+            currentScene = sceneStorage[sceneInfo.id].get();
+            if (currentScene)
+                currentScene->onLoad();
+            else
+                Logger::error("Failed to load scene: " + sceneInfo.id);
+        }
+        Logger::info("Scene added: " + sceneInfo.id);
+    }
+
+    while (sceneChangeList.size()) {
+        auto sceneName = sceneChangeList.front();
+        sceneChangeList.pop();
+        if (sceneName == "Gameplay") {
+            switchToLevel();
+            continue;
+        }
+        if (sceneStorage.find(sceneName) == sceneStorage.end()) {
+            Logger::error("Scene change failed: " + sceneName);
+            continue;
+        }
+        if (currentScene) currentScene->onUnload();
+        currentScene = sceneStorage[sceneName].get();
+        if (currentScene)
+            currentScene->onLoad();
+        else
+            Logger::error("Failed to load scene: " + sceneName);
+        Logger::info("Scene changed to: " + sceneName);
+    }
+    // Logger::info("Scene changes updated.");
 }

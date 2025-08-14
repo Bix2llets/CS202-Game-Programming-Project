@@ -49,10 +49,10 @@ std::unique_ptr<RectangularButton> RectangularButtonBuilder::build() {
     
     std::unique_ptr<sf::Text> label = std::make_unique<sf::Text>(
         *ResourceManager::getInstance().getFont(fontName), text, textSize);
-    Logger::debug(std::format("{} {} {} {}", label->getLocalBounds().position.x,
-                              label->getLocalBounds().position.y,
-                              label->getLocalBounds().size.x,
-                              label->getLocalBounds().size.y));
+    // Logger::debug(std::format("{} {} {} {}", label->getLocalBounds().position.x,
+    //                           label->getLocalBounds().position.y,
+    //                           label->getLocalBounds().size.x,
+    //                           label->getLocalBounds().size.y));
     label->setOrigin(label->getLocalBounds().position +
                      label->getLocalBounds().size / 2.f);
     label->setPosition(result->rect.getGlobalBounds().position + result->rect.getGlobalBounds().size / 2.f);

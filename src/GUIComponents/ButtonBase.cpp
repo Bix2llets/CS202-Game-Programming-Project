@@ -7,7 +7,7 @@
 ButtonBase::ButtonBase() {}
 
 ButtonBase::~ButtonBase() {
-    // Destructor implementation if needed
+    
 }
 
 void ButtonBase::update() { graphicState.update(); }

@@ -8,11 +8,14 @@
 #include "Base/Constants.hpp"
 #include "Core/MouseObserver.hpp"
 #include "Core/Window.hpp"
-#include "Utility/SignalMap.hpp"
 #include "Utility/Scaler.hpp"
+#include "Utility/SignalMap.hpp"
 #include "Utility/logger.hpp"
 void MouseState::addSubscriber(Mouse button, UserEvent event,
                                MouseObserver* subscriber) {
+    if (button == Mouse::Left && event == UserEvent::Press) {
+        int throwaway = 0;
+    }
     if (std::find(subscriberList[button][event].begin(),
                   subscriberList[button][event].end(),
                   subscriber) == subscriberList[button][event].end()) {
@@ -70,18 +73,27 @@ void MouseState::processMousePress(const std::optional<sf::Event>& event) {
             window.mapPixelToCoords(mouseClickEvent->position);
         windowPosition = Scaler::screenScale(windowPosition);
         worldPosition = Scaler::screenScale(worldPosition);
-        // Logger::info(std::format("{} {} {} {}", windowPosition.x,
-        //                          windowPosition.y, worldPosition.x,
-        //                          worldPosition.y));
+        Logger::info(std::format("Mouse click event: {} {} {} {}", windowPosition.x,
+                                 windowPosition.y, worldPosition.x,
+                                 worldPosition.y));
 
         Mouse pressedButton =
             SignalMap::mapSfmlMouseButton(mouseClickEvent->button);
 
         std::list<MouseObserver*> observerList =
             subscriberList[pressedButton][UserEvent::Press];
-        for (MouseObserver* observer : observerList)
+        Logger::trace(
+            std::format("MouseState: Dispatching to {} observers for button {}",
+                        observerList.size(), static_cast<int>(pressedButton)));
+        for (MouseObserver* observer : observerList) {
             observer->onMouseEvent(pressedButton, UserEvent::Press,
                                    worldPosition, windowPosition);
+            Logger::trace(
+                std::format("MouseState: Dispatched to {} at world position({}, {}) and window position({}, {}) ",
+                                (void*)observer,
+                            worldPosition.x, worldPosition.y, windowPosition.x,
+                            windowPosition.y));
+        }
         return;
     }
 };
@@ -93,7 +105,8 @@ void MouseState::processMouseRelease(const std::optional<sf::Event>& event) {
         sf::Vector2f windowPosition =
             static_cast<sf::Vector2f>(mouseReleaseEvent->position);
         sf::Vector2f worldPosition =
-            Window::getInstance().getRenderWindow().mapPixelToCoords(mouseReleaseEvent->position);
+            Window::getInstance().getRenderWindow().mapPixelToCoords(
+                mouseReleaseEvent->position);
         windowPosition = Scaler::screenScale(windowPosition);
         worldPosition = Scaler::screenScale(worldPosition);
         // Logger::info(std::format("{} {} {} {}", windowPosition.x,
@@ -117,7 +130,8 @@ void MouseState::processMouseMovement(const std::optional<sf::Event>& event) {
     sf::Vector2f windowPosition =
         static_cast<sf::Vector2f>(mouseMovement->position);
     sf::Vector2f worldPosition =
-        Window::getInstance().getRenderWindow().mapPixelToCoords(mouseMovement->position);
+        Window::getInstance().getRenderWindow().mapPixelToCoords(
+            mouseMovement->position);
     windowPosition = Scaler::screenScale(windowPosition);
     worldPosition = Scaler::screenScale(worldPosition);
 
@@ -139,30 +153,38 @@ void MouseState::processMouseMovement(const std::optional<sf::Event>& event) {
                                windowPosition);
 }
 
-void MouseState::processMouseScroll(const std::optional<sf::Event> &event) {
+void MouseState::processMouseScroll(const std::optional<sf::Event>& event) {
     const auto mouseScroll = event->getIf<sf::Event::MouseWheelScrolled>();
 
     if (!mouseScroll) return;
-    sf::Vector2f windowPosition = static_cast<sf::Vector2f>(mouseScroll->position);
-    sf::Vector2f worldPosition = Window::getInstance().getRenderWindow().mapPixelToCoords(mouseScroll->position);
+    sf::Vector2f windowPosition =
+        static_cast<sf::Vector2f>(mouseScroll->position);
+    sf::Vector2f worldPosition =
+        Window::getInstance().getRenderWindow().mapPixelToCoords(
+            mouseScroll->position);
 
     windowPosition = Scaler::screenScale(windowPosition);
     worldPosition = Scaler::screenScale(worldPosition);
 
-    std::list<MouseObserver*> observerList = subscriberList[Mouse::Scroll][UserEvent::None];
-    for (MouseObserver* observer: observerList) 
-        observer->onScrollEvent(mouseScroll->delta, worldPosition, windowPosition);
+    std::list<MouseObserver*> observerList =
+        subscriberList[Mouse::Scroll][UserEvent::None];
+    for (MouseObserver* observer : observerList)
+        observer->onScrollEvent(mouseScroll->delta, worldPosition,
+                                windowPosition);
 }
 
-void MouseState::updateMousePosition(const sf::Vector2f &newWindowPosition) {
+void MouseState::updateMousePosition(const sf::Vector2f& newWindowPosition) {
     // Update the mouse position in the window coordinates
     Window::getInstance().toggleUserMode();
-    sf::Vector2f worldPosition = Window::getInstance().getRenderWindow().mapPixelToCoords(
-        static_cast<sf::Vector2i>(newWindowPosition));
-    
+    sf::Vector2f worldPosition =
+        Window::getInstance().getRenderWindow().mapPixelToCoords(
+            static_cast<sf::Vector2i>(newWindowPosition));
+
     // Notify all observers of the mouse movement
-    std::list<MouseObserver*> observerList = subscriberList[Mouse::None][UserEvent::Move];
+    std::list<MouseObserver*> observerList =
+        subscriberList[Mouse::None][UserEvent::Move];
     for (MouseObserver* observer : observerList) {
-        observer->onMouseEvent(Mouse::None, UserEvent::Move, worldPosition, newWindowPosition);
+        observer->onMouseEvent(Mouse::None, UserEvent::Move, worldPosition,
+                               newWindowPosition);
     }
 }

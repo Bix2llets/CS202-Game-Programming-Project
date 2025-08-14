@@ -120,5 +120,9 @@
     {
         "id": "sidebar_background",
         "path": "assets/texture/button/sidebar.png"
+    },
+    {
+        "id": "tower_info_background",
+        "path": "assets/texture/button/towerinfobackground.png"
     }
 ]

@@ -37,9 +37,18 @@ class LevelFactory {
      */
     std::unordered_map<std::string, nlohmann::json> levelConfiguration;
 
-   public:
+   private:
     LevelFactory() = default;
+    LevelFactory(const LevelFactory &rhs) = delete;
+    LevelFactory &operator=(const LevelFactory &rhs) = delete;
 
+    public:
+    LevelFactory(LevelFactory &&rhs) = default;
+    LevelFactory &operator=(LevelFactory &&rhs) = default;
+    static LevelFactory& getInstance() {
+        static LevelFactory instance;
+        return instance;
+    }
     /**
      * @brief Loads a single scene configuration from a JSON object.
      *        Prints an error if the input is not a JSON object.

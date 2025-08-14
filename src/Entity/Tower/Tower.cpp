@@ -210,7 +210,7 @@ void Tower::updateSpriteTurretAnimation() {
 
 void Tower::loadIcon() {
     if(iconRenderTexture.resize(static_cast<sf::Vector2u>(sf::Vector2f{textureWidth, textureHeight}))) {
-        Logger::success("Base plate resized successfully");
+        // Logger::success("Base plate resized successfully");
     } else {
         Logger::error("Failed to resize base plate");
     }

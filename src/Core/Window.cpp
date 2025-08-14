@@ -124,7 +124,7 @@ void Window::clampView() {
 
     float aspect = static_cast<float>(GameConstants::DEFAULT_WINDOW_WIDTH) / GameConstants::DEFAULT_WINDOW_HEIGHT;
     float viewHeight = viewSize.y;
-    float viewWidth = std::min(viewHeight * aspect, levelSize.x);
+    float viewWidth = std::min(viewHeight * aspect, static_cast<float>(GameConstants::DEFAULT_WINDOW_WIDTH));
     viewHeight = viewWidth / aspect;
 
     viewSize = {viewWidth, viewHeight};
