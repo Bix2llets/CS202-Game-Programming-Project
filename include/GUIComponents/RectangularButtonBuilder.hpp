@@ -6,6 +6,7 @@
 #include "Core/JSONLoader.hpp"
 #include "GUIComponents/RectangularButton.hpp"
 #include "GUIComponents/Style.hpp"
+#include "GUIComponents/alignment.hpp"
 // RectangularButtonBuilder: Implements the builder pattern for Button GUI components.
 class RectangularButtonBuilder {
    private:
@@ -43,6 +44,11 @@ class RectangularButtonBuilder {
     RectangularButtonBuilder& setBackgroundViewport(sf::IntRect rect);
 
     RectangularButtonBuilder& setTextSize(int size);
+
+    RectangularButtonBuilder& setHorizontalAlignment(HorizontalAlignment alignment) {
+        styleConfig["horizontalAlignment"] = alignment;
+        return *this;
+    }
 
 
     std::unique_ptr<RectangularButton> build() ;

@@ -138,6 +138,8 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
      */
     inline bool isFinished() { return currentWave == waveInfo.size() - 1; }
 
+    inline int getRemainingHealth() const { return health.getHealth(); }
+
     private:
     /**
      * @brief Loads waypoints from the provided JSON file.

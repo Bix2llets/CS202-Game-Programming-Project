@@ -413,6 +413,7 @@ void Level::subscribeCallbacks() {
             Enemy *enemySent = std::any_cast<Enemy *>(sender);
             health.takeDamage(enemySent->getHealth());
             if (health.getHealth() == 0) {
+                menu.update();
                 Logger::error("Level failed, health reached zero");
                 overlay = std::make_unique<GameoverScreen>(*this);
             } else {

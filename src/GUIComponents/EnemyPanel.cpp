@@ -8,6 +8,7 @@
 #include "Utility/logger.hpp"
 
 #include "Core/Window.hpp"
+#include "Utility/Scaler.hpp"
 EnemyPanel& EnemyPanel::getInstance() {
     static EnemyPanel instance;
     return instance;
@@ -28,8 +29,10 @@ EnemyPanel::EnemyPanel()
     enemyBackdrop.setOrigin(
         {enemyBackdrop.getRadius(), enemyBackdrop.getRadius()});
 
-    healthIcon.setScale({0.25f, 0.25f});
-    speedIcon.setScale({0.25f, 0.25f});
+    Scaler::scaleSprite(healthIcon, {16.f, 16.f});
+    Scaler::scaleSprite(speedIcon, {16.f, 16.f});
+    // healthIcon.setScale({0.25f, 0.25f});
+    // speedIcon.setScale({0.25f, 0.25f});
 
     health.setFillColor(sf::Color::Black);
     speed.setFillColor(sf::Color::Black);

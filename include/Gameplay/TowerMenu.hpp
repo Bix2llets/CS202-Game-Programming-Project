@@ -7,7 +7,7 @@
 #include "GUIComponents/Mediator.hpp"
 #include "GUIComponents/RectangularButton.hpp"
 #include "Gameplay/Currency.hpp"
-
+#include "Entity/Health.hpp"
 class TowerMenu : public Mediator , public MouseObserver  {
 private:
     std::map<std::string, std::unique_ptr<Tower>> towerList;
@@ -26,12 +26,13 @@ private:
     const sf::Vector2f borderSize = {10, 10};
     const int BUTTON_PER_ROW = 1;
 
-    const Currency& budgetRef;
     sf::Text petroleumDisplay;
     sf::Text scrapDisplay;
+    sf::Text healthDisplay;
 
     sf::Sprite scrapIcon;
     sf::Sprite petrolIcon;
+    sf::Sprite healthIcon;
 
     bool isTowerSelected;
 
