@@ -183,7 +183,7 @@ void Setting::setupHandlers() {
     });
     subscribe("Main menu", [this](std::any, std::any) {
         using namespace GameConstants;
-        SceneManager::getInstance().changeScene("Main menu");
+        SceneManager::getInstance().enqueueSceneChange("Main menu");
     });
 }
 

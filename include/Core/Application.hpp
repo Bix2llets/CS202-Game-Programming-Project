@@ -5,7 +5,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
-#include "Core/LevelFactory.hpp"
 #include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Gameplay/Terrain/Terrain.hpp"
 /**
@@ -14,8 +13,6 @@
  */
 class Application {
    private:
-    SoundClickTrigger testTrigger;  ///< Test trigger for sound on click.
-    LevelFactory levelFactory;
     bool isRunning;  ///< Indicates if the application is running.
    public:
     /**

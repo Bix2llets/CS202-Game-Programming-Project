@@ -15,10 +15,8 @@
 #include "Scene/Mock/TestScene.hpp"
 #include "Scene/Mock/TowerRotationMockScene.hpp"
 #include "Scene/Setting.hpp"
-#include "Scene/CustomLevelCreation.hpp"
-#include "TestMockClasses/SoundClickTrigger.hpp"
 #include "Utility/logger.hpp"
-#include "Gameplay/TowerInfoPanel.hpp"
+#include "Core/LevelFactory.hpp"
 Application::Application() : isRunning{true} {
     if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
@@ -54,25 +52,23 @@ Application::Application() : isRunning{true} {
         ResourceManager::getInstance().loadFont(fontFile);
 
     for (auto [id, levelFile] : JSONLoader::getInstance().getAllLevels())
-        levelFactory.loadConfig(levelFile);
+        LevelFactory::getInstance().loadConfig(levelFile);
 
     Logger::success("Resource loading");
-    SceneManager::getInstance().registerScene<MainMenu>("Main menu");
-    SceneManager::getInstance().registerScene<Setting>("Setting");
-    SceneManager::getInstance().registerScene<TowerRotationMockScene>(
-        "Tower Test");
-    SceneManager::getInstance().registerScene<CustomLevelCreation>(
-        "Custom Creation");
-    SceneManager::getInstance().registerScene<TestScene>("Test Scene");
+    SceneManager::getInstance().enqueueSceneAdd("Main menu", std::make_unique<MainMenu>());
+     SceneManager::getInstance().enqueueSceneAdd("Setting", std::make_unique<Setting>());
+    SceneManager::getInstance().enqueueSceneAdd(
+        "Tower Test", std::make_unique<TowerRotationMockScene>());
 
-    SceneManager::getInstance().changeScene(
-        "Tower Test");  // Start with the tower test scene
+    // SceneManager::getInstance().enqueueSceneChange(
+    //     "Tower Test");  // Start with the tower test scene
 
-    SceneManager::getInstance().loadLevel(
-        "Gameplay", levelFactory.getLevel("preset_level_ship"));
+    SceneManager::getInstance().enqueueSceneAdd(
+        "Gameplay", LevelFactory::getInstance().getLevel("preset_level_ship"));
 
-    SceneManager::getInstance().changeScene("Main menu");
-    // sceneManager.changeScene("Setting");
+    SceneManager::getInstance().enqueueSceneChange("Main menu");
+    SceneManager::getInstance().enqueueSceneChange("Gameplay");
+    // sceneManager.enqueueSceneChange("Setting");
 }
 
 Application::~Application() {
@@ -96,6 +92,7 @@ void Application::run() {
     while (isRunning) {
         frameCount++;
         Window::getInstance().toggleUserMode();
+        SceneManager::getInstance().updateSceneChange();
         while (auto event =
                    Window::getInstance().getRenderWindow().pollEvent()) {
             if (event->is<sf::Event::Closed>()) {
@@ -107,19 +104,19 @@ void Application::run() {
                 auto keyPress = event->getIf<sf::Event::KeyPressed>();
                 if (keyPress) {
                     if (keyPress->code == sf::Keyboard::Key::F1) {
-                        SceneManager::getInstance().changeScene("Main menu");
+                        SceneManager::getInstance().enqueueSceneChange("Main menu");
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F2) {
-                        SceneManager::getInstance().changeScene("Tower Test");
+                        SceneManager::getInstance().enqueueSceneChange("Tower Test");
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F3) {
-                        SceneManager::getInstance().changeScene("Test Scene");
+                        SceneManager::getInstance().enqueueSceneChange("Test Scene");
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F4) {
-                        SceneManager::getInstance().changeScene("Custom Creation");
+                        SceneManager::getInstance().enqueueSceneChange("Custom Creation");
                         continue;
                     }
                 }

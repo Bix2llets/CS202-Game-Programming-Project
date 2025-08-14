@@ -77,10 +77,10 @@ MainMenu::MainMenu() : Scene() {
     Logger::debug("Main menu created");
 
     subscribe("Setting", [this](std::any, std::any) {
-        SceneManager::getInstance().changeScene("Setting");
+        SceneManager::getInstance().enqueueSceneChange("Setting");
     });
     subscribe("Gameplay", [this](std::any, std::any) {
-        SceneManager::getInstance().changeScene("Gameplay");
+        SceneManager::getInstance().enqueueSceneChange("Gameplay");
     });
 }
 
@@ -101,7 +101,7 @@ void MainMenu::update() {
 
 void MainMenu::testSceneSwitching() {
     Logger::debug("Scene switch initiated");
-    SceneManager::getInstance().changeScene("Gameplay");
+    SceneManager::getInstance().enqueueSceneChange("Gameplay");
 }
 
 void MainMenu::onLoad() {

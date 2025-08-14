@@ -6,6 +6,7 @@
 #include "Core/ResourceManager.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Scene/Scene.hpp"
+#include "Utility/logger.hpp"
 
 TowerBuilder::TowerBuilder()
     : scene(nullptr),
@@ -86,7 +87,8 @@ TowerBuilder& TowerBuilder::setBaseTexturePath(const std::string& texturePath) {
     return *this;
 }
 
-TowerBuilder& TowerBuilder::setTurretAnimationPath(const nlohmann::json& jsonFile) {
+TowerBuilder& TowerBuilder::setTurretAnimationPath(
+    const nlohmann::json& jsonFile) {
     this->turretAnimationPath = jsonFile;
     return *this;
 }
@@ -163,7 +165,7 @@ std::unique_ptr<Tower> TowerBuilder::build() {
     tower->description = description;
     tower->buildable = buildable;
     tower->cost = cost;
-    tower->totalCost = cost; 
+    tower->totalCost = cost;
 
     // Set timer interval
     tower->timer.setTimeInterval(timerInterval)
@@ -267,10 +269,11 @@ void TowerBuilder::validate() const {
         // Warn if max total upgrades is higher than what's possible (not an
         // error, just a warning)
         if (maxTotalUpgrades > totalPossibleUpgrades) {
-            std::cout << "TowerBuilder Warning: Max total upgrades ("
-                      << maxTotalUpgrades
-                      << ") is higher than total possible upgrades ("
-                      << totalPossibleUpgrades << ")." << std::endl;
+            // if (false) std::cout << "TowerBuilder Warning: Max total upgrades
+            // ("
+            //           << maxTotalUpgrades
+            //           << ") is higher than total possible upgrades ("
+            //           << totalPossibleUpgrades << ")." << std::endl;
         }
     }
 
@@ -286,46 +289,59 @@ void TowerBuilder::validate() const {
 void TowerBuilder::loadTextures(Tower& tower) const {
     // Load textures using the new Scene texture methods
     if (!baseTextureId.empty()) {
-        std::cout << "TowerBuilder: Loading base texture from: "
-                  << baseTextureId << std::endl;
+        if (false)
+            std::cout << "TowerBuilder: Loading base texture from: "
+                      << baseTextureId << std::endl;
 
         try {
-            const sf::Texture* baseTexture = ResourceManager::getInstance().getTexture(baseTextureId);
+            const sf::Texture* baseTexture =
+                ResourceManager::getInstance().getTexture(baseTextureId);
             if (baseTexture) {
                 tower.loadBaseSpriteTexture(*baseTexture);
-                std::cout << "TowerBuilder: Successfully loaded base texture"
-                          << std::endl;
+                if (false)
+                    std::cout
+                        << "TowerBuilder: Successfully loaded base texture"
+                        << std::endl;
             } else {
-                std::cout << "TowerBuilder: Failed to get base texture from "
-                             "ResourceManager"
-                          << std::endl;
+                if (false)
+                    std::cout
+                        << "TowerBuilder: Failed to get base texture from "
+                           "ResourceManager"
+                        << std::endl;
             }
         } catch (const std::exception& e) {
-            std::cout << "TowerBuilder: Error loading base texture: "
-                      << e.what() << std::endl;
+            if (false)
+                std::cout << "TowerBuilder: Error loading base texture: "
+                          << e.what() << std::endl;
         }
     }
 
-    if(turretAnimationPath != nullptr) {
-        std::cout << "TowerBuilder: Loading turret animation from: "
-                  << turretAnimationPath.dump() << std::endl;
+    if (turretAnimationPath != nullptr) {
+        if (false)
+            std::cout << "TowerBuilder: Loading turret animation from: "
+                      << turretAnimationPath.dump() << std::endl;
 
         try {
             tower.loadTurretSpriteAnimation(turretAnimationPath);
-            std::cout << "TowerBuilder: Successfully loaded turret animation"
-                      << std::endl;
+            if (false)
+                std::cout
+                    << "TowerBuilder: Successfully loaded turret animation"
+                    << std::endl;
         } catch (const std::exception& e) {
-            std::cout << "TowerBuilder: Error loading turret animation: "
-                      << e.what() << std::endl;
+            if (false)
+                std::cout << "TowerBuilder: Error loading turret animation: "
+                          << e.what() << std::endl;
         }
     }
-    
+
     // Load the icon after both base and turret textures are loaded
-    std::cout << "TowerBuilder: Loading combined icon sprite" << std::endl;
+    // if (false) std::cout << "TowerBuilder: Loading combined icon sprite" <<
+    // std::endl;
     try {
         tower.loadIcon();
-        std::cout << "TowerBuilder: Successfully loaded icon sprite" << std::endl;
+        // Logger::success("TowerBuilder: Successfully loaded icon sprite");
     } catch (const std::exception& e) {
-        std::cout << "TowerBuilder: Error loading icon sprite: " << e.what() << std::endl;
+        Logger::error("TowerBuilder: Error loading icon sprite: " +
+                      std::string(e.what()));
     }
 }

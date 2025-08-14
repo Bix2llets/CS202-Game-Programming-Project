@@ -159,10 +159,10 @@ void TowerFactory::parseTextures(const nlohmann::json& textureJson,
 
     // Log texture information for debugging
     if (!baseTextureId.empty()) {
-        Logger::debug("TowerFactory: Base texture path: " + baseTextureId);
+        // Logger::debug("TowerFactory: Base texture path: " + baseTextureId);
     }
 
-    Logger::debug("TowerFactory: Texture dimensions: " + std::to_string(width) + "x" + std::to_string(height));
+    // Logger::debug("TowerFactory: Texture dimensions: " + std::to_string(width) + "x" + std::to_string(height));
 }
 
 void TowerFactory::validateConfig(const nlohmann::json& config) {
@@ -339,7 +339,7 @@ std::unique_ptr<CombatBehavior> TowerFactory::parseCombatBehavior(const nlohmann
         Combat::ProjectileFireMode* projectileFireMode = new Combat::ProjectileFireMode();
         
         if (!combatJson.contains("projectile")) {
-            Logger::warning("TowerFactory: Fire mode type 'projectile' requires a 'projectile' field. Skipping combat behavior.");
+            // Logger::warning("TowerFactory: Fire mode type 'projectile' requires a 'projectile' field. Skipping combat behavior.");
             delete projectileFireMode; // Clean up if not used
             return nullptr;
         }

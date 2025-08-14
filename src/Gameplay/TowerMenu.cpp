@@ -30,9 +30,9 @@ TowerMenu::TowerMenu(const Currency& currencyRef, Level* level)
 
         if (tower->isBuildable()) {
             towerList[entry.first] = std::move(tower);
-            Logger::debug(
-                std::format("Tower {} is added to towerList, new size: {}",
-                            entry.first, towerList.size()));
+            // Logger::debug(
+            //     std::format("Tower {} is added to towerList, new size: {}",
+            //                 entry.first, towerList.size()));
         }
     }
 
@@ -131,14 +131,14 @@ void TowerMenu::setTowerButtonDisplay() {
     RectangularButtonBuilder builder(*this);
 
     for (const auto& [towerName, tower] : towerList) {
-        Logger::debug(std::format("Adding tower button for {}", towerName));
+        // Logger::debug(std::format("Adding tower button for {}", towerName));
 
         // * Cosmetic towers
         sf::RenderTexture buttonRenderTexture;
         if (buttonRenderTexture.resize(static_cast<sf::Vector2u>(buttonSize))) {
-            Logger::debug("Resized successfully");
+            // Logger::debug("Resized successfully");
         } else {
-            Logger::error("Resized failed");
+            // Logger::error("Resized failed");
         }
         buttonRenderTexture.clear(sf::Color::Transparent);
 
@@ -146,8 +146,8 @@ void TowerMenu::setTowerButtonDisplay() {
         towerSprite = Aligner::align(towerSprite, HorizontalAlignment::Center,
                                      VerticalAlignment::Middle);
         towerSprite.setPosition(sf::Vector2f{40.f, buttonSize.y / 2.f});
-        Logger::debug(std::format("{} {}", towerSprite.getLocalBounds().size.x,
-                                  towerSprite.getLocalBounds().size.y));
+        // Logger::debug(std::format("{} {}", towerSprite.getLocalBounds().size.x,
+        //                           towerSprite.getLocalBounds().size.y));
 
 
         int scrapCost = tower->getCost().getScraps().value;
@@ -227,7 +227,7 @@ void TowerMenu::setTowerButtonDisplay() {
                 .setSize(static_cast<sf::Vector2f>(buttonSize))
                 .setCallback(
                     [this, towerName](RectangularButton* button) {
-                        Logger::debug("Button presseed");
+                        // Logger::debug("Button presseed");
                         notify("tower_button_pressed", button, towerName);
                     })
                 .build();

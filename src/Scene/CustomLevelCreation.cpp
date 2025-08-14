@@ -284,7 +284,7 @@ bool CustomLevelCreation::onScrollEvent(float delta,
 
 void CustomLevelCreation::subscribeEvents() {
     subscribe("Return to main menu", [this](std::any sender, std::any data) {
-        SceneManager::getInstance().changeScene("Main menu");
+        SceneManager::getInstance().enqueueSceneChange("Main menu");
     });
 }
 

@@ -47,7 +47,7 @@ std::unique_ptr<AreaEffect> AreaEffectFactory::createFromJson(
         // Setup timers and derived fields
         effect->setUp();
 
-        Logger::success("AreaEffectFactory: Successfully created area-effect " + id);
+        // Logger::success("AreaEffectFactory: Successfully created area-effect " + id);
         return effect;
     } catch (const nlohmann::json::exception& e) {
         Logger::error("AreaEffectFactory: JSON parsing error - " + std::string(e.what()));

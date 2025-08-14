@@ -50,7 +50,9 @@ TowerInfoPanel::TowerInfoPanel()
         {GameConstants::DEFAULT_WINDOW_WIDTH - GameConstants::MENU_X,
          GameConstants::DEFAULT_WINDOW_HEIGHT});
 
-    background.setFillColor(sf::Color(93, 153, 189, 255));
+    background.setTexture(
+        ResourceManager::getInstance().getTexture("tower_info_background"));
+    background.setFillColor(sf::Color::White);
     // background.setOutlineColor(sf::Color(0x9F9491FF));
     // background.setOutlineThickness(4);
 
@@ -144,7 +146,7 @@ void TowerInfoPanel::setFocus(Tower* tower) {
 
     towerSprite.setPosition(
         {background.getPosition().x + background.getSize().x / 2.f,
-         background.getPosition().y + 60});
+         background.getPosition().y + 80});
     towerSprite.setScale({2.f, 2.f});
     towerName.setString(referencingTower->getName());
     towerName = Aligner::align(towerName);

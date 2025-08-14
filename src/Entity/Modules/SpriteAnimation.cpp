@@ -217,7 +217,7 @@ void SpriteAnimation::loadJson(const nlohmann::json& jsonFile) {
             .setTimerMode(TimerMode::Continuous)
             .setRemainingTime(animation_interval);
 
-        Logger::info("SpriteAnimation::loadJson: Successfully loaded animation with " + std::to_string(sprites.size()) + " frames");
+        // Logger::info("SpriteAnimation::loadJson: Successfully loaded animation with " + std::to_string(sprites.size()) + " frames");
 
     } catch (const nlohmann::json::exception& e) {
         Logger::error("SpriteAnimation::loadJson: JSON parsing error - " + std::string(e.what()));
