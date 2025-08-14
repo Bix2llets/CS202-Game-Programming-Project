@@ -35,21 +35,15 @@
         [
             {
                 "id": "basic_enemy",
-                "quantity": 100,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            },
-            {
-                "id": "basic_enemy",
-                "quantity": 100,
-                "spawn_delay": 10,
+                "quantity": 10,
+                "spawn_delay": 1,
                 "internal_delay": 2
             },
             {
-                "id": "basic_enemy",
-                "quantity": 1000,
-                "spawn_delay": 1,
-                "internal_delay": 4
+                "id": "fat",
+                "quantity": 100,
+                "spawn_delay": 0,
+                "internal_delay": 2
             }
         ]
     ]
