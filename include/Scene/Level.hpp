@@ -60,6 +60,8 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
     Health health;
     WaveManager waveManager;
 
+    std::unique_ptr<RectangularButton> pauseButton;
+    std::unique_ptr<RectangularButton> nextWaveButton;
     public:
     Level();
 
