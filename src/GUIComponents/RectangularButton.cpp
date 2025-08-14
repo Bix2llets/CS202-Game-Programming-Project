@@ -8,7 +8,10 @@
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "Utility/lerp.hpp"
-RectangularButton::RectangularButton(Mediator& mediator) : mediator(mediator) {}
+#include "Utility/aligner.hpp"
+RectangularButton::RectangularButton(Mediator& mediator) : mediator(mediator) {
+    overlayColor = sf::Color::Transparent;
+}
 
 void RectangularButton::setOnClick(
     const std::function<void(RectangularButton*)>& callback) {
@@ -28,6 +31,14 @@ void RectangularButton::draw(sf::RenderTarget& target,
     textColor = graphicState.getTextColor();
 
     target.draw(rect, states);
+
+    sf::RectangleShape overlayRect;
+    overlayRect.setSize(rect.getSize() + sf::Vector2f{rect.getOutlineThickness() * 2.f,
+                                          rect.getOutlineThickness() * 2.f});
+
+    overlayRect.setPosition(rect.getPosition());
+    Aligner::align(overlayRect, HorizontalAlignment::Left, VerticalAlignment::Top);
+    overlayRect.setFillColor(overlayColor);
     // ? Uncomment these lines to see the bounding box for the text of button
     // sf::RectangleShape textBound;
     // textBound.setSize(label->getLocalBounds().size);
@@ -40,6 +51,7 @@ void RectangularButton::draw(sf::RenderTarget& target,
     // target.draw(textBound, states);
     label->setFillColor(textColor);
     target.draw(*label, states);
+    target.draw(overlayRect);
 }
 
 std::string RectangularButton::getLabel() const { return label->getString(); }
@@ -130,4 +142,12 @@ void RectangularButton::setBackground(const sf::Texture* tex) {
 
 sf::Vector2f RectangularButton::getSize() const {
     return rect.getSize();
+}
+
+void RectangularButton::setOverlayColor(const sf::Color& color) {
+    overlayColor = color;
+}
+
+void RectangularButton::removeOverlayColor() {
+    overlayColor = sf::Color::Transparent;
 }

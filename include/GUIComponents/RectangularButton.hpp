@@ -92,6 +92,9 @@ class RectangularButton : public ButtonBase {
     void setDisplayText(std::string text);
     virtual void resetAnimation();
 
+    void setOverlayColor(const sf::Color& color);
+    void removeOverlayColor();
+
     sf::Sprite getBackground();
     void setBackground(const sf::Texture* tex);
     sf::FloatRect getBounds() const {
@@ -110,4 +113,5 @@ class RectangularButton : public ButtonBase {
 
     bool contains(const sf::Vector2f& windowPosition);
     sf::Vector2f position;
+    sf::Color overlayColor;
 };

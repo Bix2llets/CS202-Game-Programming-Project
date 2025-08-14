@@ -17,9 +17,11 @@
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Enemy/Enemy.hpp"
+#include "Entity/Enemy/EnemySpawnInfo.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
 #include "Entity/Factory/StaticEntityFactory.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
+#include "GUIComponents/RectangularButtonBuilder.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
 #include "Gameplay/Terrain/TerrainParameter.hpp"
@@ -28,8 +30,6 @@
 #include "Scene/Overlays/PauseScreen.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
-
-#include "Entity/Enemy/EnemySpawnInfo.hpp"
 Level::Level()
     : currentWave{0},
       running{true},
@@ -53,6 +53,30 @@ Level::Level()
     }
 
     MouseState &mouseState = InputManager::getInstance().getMouseState();
+    RectangularButtonBuilder builder(*this);
+    pauseButton = builder.reset()
+                      .setSize(sf::Vector2f{50, 50})
+                      .setPosition(sf::Vector2f{
+                          GameConstants::MENU_X - 50 - 10,
+                          GameConstants::DEFAULT_WINDOW_HEIGHT - 50 - 10})
+                      .setCallback([this](RectangularButton *button) {
+                          notify("pause_game");
+                      })
+                      .setText("Pause")
+                      .loadJson("borderless_background_basic")
+                      .build();
+
+    nextWaveButton = builder.reset()
+                         .setSize(sf::Vector2f{50, 50})
+                         .setPosition(sf::Vector2f{
+                             GameConstants::MENU_X - 50 - 10,
+                             GameConstants::DEFAULT_WINDOW_HEIGHT - 100 - 10})
+                         .setCallback([this](RectangularButton *button) {
+                             notify("next_wave");
+                         })
+                         .setText("Next Wave")
+                         .loadJson("borderless_background_basic")
+                         .build();
     subscribeCallbacks();
 }
 
@@ -67,6 +91,9 @@ void Level::update() {
     }
 
     menu.update();
+    pauseButton->update();
+    nextWaveButton->update();
+
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.update();
     }
@@ -92,6 +119,8 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
 
     Window::getInstance().toggleGUIMode();
     menu.render(state);
+    target.draw(*pauseButton);
+    target.draw(*nextWaveButton);
 
     if (infoPanel.isDisplaying()) {
         infoPanel.render();
@@ -121,10 +150,21 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     backgrounds.setScale(scale);
     std::vector<Waypoint> waypoints;
     for (const auto point : jsonFile["waypoints"]) {
-        waypoints.emplace_back(
-            Waypoint{sf::Vector2f{point[0].get<float>() * scale.x,
-                                  point[1].get<float>() * scale.y},
-                     1.0});
+        {
+            if (point.is_array() && point.size() == 3) {
+                waypoints.emplace_back(
+                    Waypoint{sf::Vector2f{point[0].get<float>() * scale.x,
+                                          point[1].get<float>() * scale.y},
+                             point[2].get<float>()});
+            } else if (point.is_array() && point.size() == 2) {
+                waypoints.emplace_back(
+                    Waypoint{sf::Vector2f{point[0].get<float>() * scale.x,
+                                          point[1].get<float>() * scale.y},
+                             1.0});
+            } else {
+                Logger::error("Invalid waypoint format in JSON");
+            }
+        }
         // Logger::debug(std::format("Waypoint at {}, {}",
         // point[0].get<float>(),
         //                           point[1].get<float>()));
@@ -247,6 +287,15 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
                                      windowPosition);
     }
 
+    if (pauseButton->onMouseEvent(mouse, event, worldPosition,
+                                  windowPosition)) {
+        return true;
+    }
+
+    if (nextWaveButton->onMouseEvent(mouse, event, worldPosition,
+                                     windowPosition)) {
+        return true;
+    }
     if (!infoPanel.isDisplaying())
         if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
             return true;
@@ -464,13 +513,21 @@ void Level::subscribeCallbacks() {
     subscribe("spawn_enemy", [this](std::any sender, std::any data) {
         try {
             EnemySpawnInfo spawnInfo = std::any_cast<EnemySpawnInfo>(data);
-            entityManager.addEnemy(factory->createEnemy(spawnInfo.enemyID, 0, spawnInfo.difficultyModifier));
+            entityManager.addEnemy(factory->createEnemy(
+                spawnInfo.enemyID, 0, spawnInfo.difficultyModifier));
             // Logger::info(std::format("Spawning enemy: {}", enemyID));
         } catch (std::bad_any_cast &e) {
             Logger::error("spawn_enemy: Received illegal signal " +
                           std::string(e.what()));
             return;
         }
+    });
+    subscribe("pause_game", [this](std::any sender, std::any data) {
+        overlay = std::make_unique<PauseScreen>(*this);
+        Cursor::getInstance().clearCarryingTower();
+        Cursor::getInstance().removeRenderImage();
+        EnemyPanel::getInstance().clearEnemy();
+        upgradeMenu.removeFocus();
     });
     subscribe("resume_game", [this](std::any sender, std::any data) {
         overlay = nullptr;
@@ -503,4 +560,10 @@ void Level::subscribeCallbacks() {
 
     subscribe("hide_path",
               [this](std::any sender, std::any data) { renderPath = false; });
+
+    subscribe("next_wave", [this](std::any sender, std::any data) {
+        if (waveManager.isCurrentWaveFinish()) {
+            waveManager.nextWave();
+        }
+    });
 }
