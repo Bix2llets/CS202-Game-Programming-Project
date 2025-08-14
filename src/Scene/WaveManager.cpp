@@ -75,10 +75,16 @@ void WaveManager::setWave(int ID) {
     };
     currentWave = ID;
     localDifficulty = float(ID) / 10;
+
+    float waveDifficulty;
+    if (getCurrentWave() % 5 == 0) 
+        waveDifficulty = localDifficulty * 2;
+    else
+        waveDifficulty = localDifficulty;
     for (auto &group : waveInfo[currentWave]) {
         group.initialDelay.reset();
         group.spawnDelay.reset();
-        processingHordes.push_back({std::move(group), localDifficulty});
+        processingHordes.push_back({std::move(group), waveDifficulty});
     }
 }
 
