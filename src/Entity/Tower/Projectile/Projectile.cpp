@@ -10,6 +10,8 @@
 #include "Entity/Factory/AreaEffectFactory.hpp"
 
 #include "Utility/logger.hpp"
+// For fallback unique id when not in a Level
+#include <cstdint>
 
 Projectile::Projectile(Scene& scene, const std::string id)
     : Entity(scene), levelRef(nullptr), id(id), type(ProjectileTargetType::Trajectory),
@@ -18,6 +20,12 @@ Projectile::Projectile(Scene& scene, const std::string id)
       targetEntity(nullptr), flightMode(nullptr) 
 {
     levelRef = dynamic_cast<Level*>(&scene);
+    // Assign uniqueId only after levelRef is determined
+    if (levelRef) {
+        uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
+    } else {
+        uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    }
 }
 
 Projectile::Projectile(const Projectile& other) 
@@ -31,6 +39,12 @@ Projectile::Projectile(const Projectile& other)
 {
     // Reset flying state and hit enemies for the new projectile instance
     flying = true;
+    // After copying, assign a fresh uniqueId in the context of the new scene/level
+    if (levelRef) {
+        uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
+    } else {
+        uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    }
 }
 
 void Projectile::update() {
@@ -56,6 +70,7 @@ void Projectile::update() {
         if (targetEntity && isCollidedWith(targetEntity->getPosition())) {
             hitEnemies.push_back(targetEntity);
             targetEntity->onHit(source->getStat(TowerStat::DAMAGE));
+            targetEntity->applyEffects(source->getUniqueId(), *source->getStats());
             stopFlying(); // Stop flying after hitting the target
         }
     } else {
@@ -65,6 +80,7 @@ void Projectile::update() {
             if (isCollidedWith(enemy->getPosition())) {
                 hitEnemies.push_back(enemy); // Add to hit list
                 enemy->onHit(source->getStat(TowerStat::DAMAGE));
+                enemy->applyEffects(source->getUniqueId(), *source->getStats());
                 increaseCurrentPierceCount();
 
                 if(pierceCount - currentPierceCount <= 0 || enemy == targetEntity) {

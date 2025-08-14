@@ -23,6 +23,7 @@ int InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     for (Enemy* enemy : target) {
         if (enemy) {
             enemy->onHit(damage);
+            enemy->applyEffects(tower->getUniqueId(), *tower->getStats());
         }
     }
     

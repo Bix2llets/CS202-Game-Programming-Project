@@ -38,7 +38,8 @@ Level::Level()
       upgradeMenu(*this),
       backgrounds(GameConstants::BLANK_TEXTURE),
       waveManager{*this},
-      overlay{nullptr} {
+      overlay{nullptr},
+      randomManager() {
     health.setMaxHealth(200).setHealth(200);
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeCallbacks();

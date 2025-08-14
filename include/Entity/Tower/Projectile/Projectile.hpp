@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Entity/Entity.hpp"
+#include "Entity/AreaEffect/AreaEffect.hpp"
 #include <memory>
 
 // Forward declarations
@@ -14,7 +15,6 @@ class Enemy;
 class Tower;
 class Scene;
 class Level;
-class AreaEffect;
 class FlightMode;
 
 // Need full definition for member variable
@@ -63,7 +63,7 @@ private:
 
     FlightMode* flightMode; ///< Flying behavior mode for the projectile
 
-    AreaEffect* areaEffect; ///< Area effect when the projectile hits
+    std::unique_ptr<AreaEffect> areaEffect; ///< Area effect when the projectile hits
 
     /**
      * @brief Construct a new Projectile object (private, for factory use).

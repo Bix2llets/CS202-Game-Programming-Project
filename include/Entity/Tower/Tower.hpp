@@ -56,8 +56,7 @@ class Tower : public Entity {
     std::unique_ptr<GlowingBehavior> glowingBehaviorPointer;
     std::unique_ptr<UpgradeManager>
         upgradeManager;  ///< Manager for tower upgrades
-    Level* levelRef =
-        nullptr;  ///< Reference to Level if scene is a Level, else nullptr
+    Level* levelRef = nullptr;  ///< Reference to Level if scene is a Level, else nullptr
 
     // Tower identity and properties
     std::string id;           ///< Unique identifier for the tower type

@@ -1,0 +1,199 @@
+[32m[2025-08-13 00:06:54] [SUCCESS] Program start[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Window initialization success[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Added mouse subscriber [Address: 0x7ff668951288][0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Added mouse subscriber [Address: 0x7ff668951288][0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Added mouse subscriber [Address: 0x7ff668951288][0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Added mouse subscriber [Address: 0x7ff668951288][0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: cannon_turret from assets/texture/towers/cannon_turret.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: cannon_base from assets/texture/towers/cannon_base.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: cannon_ball from assets/texture/projectiles/cannon_ball.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: tower_menu_background from assets/texture/button/towermenubackground.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: movement_speed from assets/texture/movement.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: menu_title from assets/texture/logo.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: next from assets/texture/next.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: button_base from assets/texture/buttonBase.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: south_way from assets/texture/map/south.png[0m
+[31m[2025-08-13 00:06:54] [ERROR] Failed to load texture from path: assets/texture/Map/grassMap.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: tower_selection_base from assets/texture/TowerSelectionPanel.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: scrap from assets/texture/scrap.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: basic_enemy from assets/texture/enemy/coin-Sheet.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: rifle_turret from assets/texture/towers/rifle_turret.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: farm from assets/texture/map/farm.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: ship from assets/texture/map/ship.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: petroleum from assets/texture/petroleum.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: prev from assets/texture/prev.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: rifle_base from assets/texture/towers/rifle_base.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: range_icon from assets/texture/range.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: marble from assets/texture/marble.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: sell_icon from assets/texture/coin.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: speed_icon from assets/texture/speed.png[0m
+[32m[2025-08-13 00:06:54] [SUCCESS] Successfully loaded texture: power_icon from assets/texture/power.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: button_wooden from assets/texture/Button/SettingButton.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: sound_normal from assets/texture/button/sound.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: close_button from assets/texture/button/CloseMenu.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: sound_mute from assets/texture/button/MutedSound.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: menu_background from assets/texture/background.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: heart from assets/texture/heart.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: area_effect_explosion from assets/texture/area_effects/area_effect_explosion.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: pause_background from assets/texture/PauseBackground.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: music_normal from assets/texture/button/music.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: music_mute from assets/texture/button/MutedMusic.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded texture: menu_button from assets/texture/button/MenuBackground.png[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded font: pixel from assets/fonts/PixelGame.otf[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Successfully loaded font: league_spartan from assets/fonts/League_Spartan/static/LeagueSpartan-Regular.ttf[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Resource loading[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 2 19 170 25[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 14 97 19[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Main menu created[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 8 88 16[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 8 80 16[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 8 96 16[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 8 88 16[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 8 37 16[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 8 43 16[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 8 43 16[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 8 106 16[0m
+Tower will be positioned at: 600, 450
+[36m[2025-08-13 00:06:55] [DEBUG] TowerFactory: Base texture path: rifle_base[0m
+[36m[2025-08-13 00:06:55] [DEBUG] TowerFactory: Texture dimensions: 64.000000x64.000000[0m
+[33m[2025-08-13 00:06:55] [WARNING] TowerFactory: Targeting strategy 'first' not found. Using nearest targeting.[0m
+TowerBuilder: Loading base texture from: rifle_base
+TowerBuilder: Successfully loaded base texture
+TowerBuilder: Loading turret animation from: {"animation_interval":0.05,"center_x":16,"center_y":16,"height":32,"texture_id":"rifle_turret","type":"linear","viewport":{"height":32,"width":128,"x":0,"y":0},"width":32}
+[34m[2025-08-13 00:06:55] [INFO] SpriteAnimation::loadJson: Successfully loaded animation with 4 frames[0m
+TowerBuilder: Successfully loaded turret animation
+TowerBuilder: Loading combined icon sprite
+[32m[2025-08-13 00:06:55] [SUCCESS] Base plate resized successfully[0m
+TowerBuilder: Successfully loaded icon sprite
+Successfully created tower from JSON: Rifle Tower
+Tower stats - Damage: 0, Range: 240, Fire Rate: 6
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 9 64 13[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 9 165 15[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 1 9 111 15[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 9 45 13[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Constructed TestScene[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216ff6bf538][0m
+[36m[2025-08-13 00:06:55] [DEBUG] TowerFactory: Base texture path: rifle_base[0m
+[36m[2025-08-13 00:06:55] [DEBUG] TowerFactory: Texture dimensions: 64.000000x64.000000[0m
+TowerBuilder: Loading base texture from: rifle_base
+TowerBuilder: Successfully loaded base texture
+TowerBuilder: Loading turret animation from: {"animation_interval":0.05,"center_x":16,"center_y":16,"height":32,"texture_id":"rifle_turret","type":"linear","viewport":{"height":32,"width":128,"x":0,"y":0},"width":32}
+[34m[2025-08-13 00:06:55] [INFO] SpriteAnimation::loadJson: Successfully loaded animation with 4 frames[0m
+TowerBuilder: Successfully loaded turret animation
+TowerBuilder: Loading combined icon sprite
+[32m[2025-08-13 00:06:55] [SUCCESS] Base plate resized successfully[0m
+TowerBuilder: Successfully loaded icon sprite
+[36m[2025-08-13 00:06:55] [DEBUG] TowerFactory: Base texture path: rifle_base[0m
+[36m[2025-08-13 00:06:55] [DEBUG] TowerFactory: Texture dimensions: 64.000000x64.000000[0m
+[33m[2025-08-13 00:06:55] [WARNING] TowerFactory: Targeting strategy 'first' not found. Using nearest targeting.[0m
+TowerBuilder: Loading base texture from: rifle_base
+TowerBuilder: Successfully loaded base texture
+TowerBuilder: Loading turret animation from: {"animation_interval":0.05,"center_x":16,"center_y":16,"height":32,"texture_id":"rifle_turret","type":"linear","viewport":{"height":32,"width":128,"x":0,"y":0},"width":32}
+[34m[2025-08-13 00:06:55] [INFO] SpriteAnimation::loadJson: Successfully loaded animation with 4 frames[0m
+TowerBuilder: Successfully loaded turret animation
+TowerBuilder: Loading combined icon sprite
+[32m[2025-08-13 00:06:55] [SUCCESS] Base plate resized successfully[0m
+TowerBuilder: Successfully loaded icon sprite
+[36m[2025-08-13 00:06:55] [DEBUG] Tower rifle is added to towerList, new size: 1[0m
+[36m[2025-08-13 00:06:55] [DEBUG] TowerFactory: Base texture path: cannon_base[0m
+[36m[2025-08-13 00:06:55] [DEBUG] TowerFactory: Texture dimensions: 64.000000x64.000000[0m
+[36m[2025-08-13 00:06:55] [DEBUG] ProjectileFactory: Configuration validation passed[0m
+[34m[2025-08-13 00:06:55] [INFO] ProjectileFactory: Creating projectile with ID: cannon_ball[0m
+[36m[2025-08-13 00:06:55] [DEBUG] ProjectileFactory: Set targeting type for projectile cannon_ball[0m
+[36m[2025-08-13 00:06:55] [DEBUG] ProjectileFactory: Set pierce_through_targets_count to 3 for projectile cannon_ball[0m
+[36m[2025-08-13 00:06:55] [DEBUG] ProjectileFactory: Set collision distance to 22.000000 for projectile cannon_ball[0m
+[36m[2025-08-13 00:06:55] [DEBUG] ProjectileFactory: Set rotate_to_target to true for projectile cannon_ball[0m
+[34m[2025-08-13 00:06:55] [INFO] SpriteAnimation::loadJson: Successfully loaded animation with 1 frames[0m
+[36m[2025-08-13 00:06:55] [DEBUG] ProjectileFactory: Successfully loaded sprite animation for projectile[0m
+[36m[2025-08-13 00:06:55] [DEBUG] ProjectileFactory: Creating LinearFlightMode[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] ProjectileFactory: Successfully created projectile cannon_ball[0m
+TowerBuilder: Loading base texture from: cannon_base
+TowerBuilder: Successfully loaded base texture
+TowerBuilder: Loading turret animation from: {"animation_interval":0.05,"center_x":16,"center_y":16,"height":32,"texture_id":"cannon_turret","type":"linear","viewport":{"height":32,"width":96,"x":0,"y":0},"width":32}
+[34m[2025-08-13 00:06:55] [INFO] SpriteAnimation::loadJson: Successfully loaded animation with 3 frames[0m
+TowerBuilder: Successfully loaded turret animation
+TowerBuilder: Loading combined icon sprite
+[32m[2025-08-13 00:06:55] [SUCCESS] Base plate resized successfully[0m
+TowerBuilder: Successfully loaded icon sprite
+[36m[2025-08-13 00:06:55] [DEBUG] Tower cannon is added to towerList, new size: 2[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Adding tower button for cannon[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Resized successfully[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 64 64[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Adding tower button for rifle[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Resized successfully[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 64 64[0m
+[36m[2025-08-13 00:06:55] [DEBUG] 0 0 0 0[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x21680bbed28][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x21680bbed28][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x21680bbed28][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x21680bbed28][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x21680bbed28][0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 0, 281[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 153, 281[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 170, 263[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 168, 246[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 131, 171[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 133, 153[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 158, 108[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 179, 101[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 243, 97[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 227, 155[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 230, 176[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 252, 214[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 268, 226[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 345, 234[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 371, 247[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 378, 267[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 366, 288[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 345, 300[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 300, 307[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 272, 319[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 262, 339[0m
+[36m[2025-08-13 00:06:55] [DEBUG] Waypoint at 262, 352[0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:06:55] [SUCCESS] Added mouse subscriber [Address: 0x216808f4598][0m
+[36m[2025-08-13 00:13:17] [DEBUG] Turning to gameplay[0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216f7cc31d8][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216808f4598][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Remove success  [Address: 0x216808f4598][0m
+[31m[2025-08-13 00:13:17] [ERROR] Adding existing mouse subscriber [Address: 0x21680bbed28][0m
+[31m[2025-08-13 00:13:17] [ERROR] Adding existing mouse subscriber [Address: 0x21680bbed28][0m
+[31m[2025-08-13 00:13:17] [ERROR] Adding existing mouse subscriber [Address: 0x21680bbed28][0m
+[31m[2025-08-13 00:13:17] [ERROR] Adding existing mouse subscriber [Address: 0x21680bbed28][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Added mouse subscriber [Address: 0x21680bbed28][0m
+[32m[2025-08-13 00:13:17] [SUCCESS] Added mouse subscriber [Address: 0x21680bbed28][0m
+[34m[2025-08-13 00:13:18] [INFO] SpriteAnimation::loadJson: Successfully loaded animation with 8 frames[0m
+[36m[2025-08-13 00:13:18] [DEBUG] 22[0m
+[34m[2025-08-13 00:13:18] [INFO] Spawning enemy: basic_enemy[0m
+[32m[2025-08-13 00:13:19] [SUCCESS] Program exit success[0m
+[32m[2025-08-13 00:13:19] [SUCCESS] Application exit success[0m

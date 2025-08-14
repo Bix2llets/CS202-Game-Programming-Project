@@ -20,6 +20,7 @@
 #include "Entity/Modules/Timer.hpp"
 #include "Entity/Modules/Effects/EntityEffect.hpp"
 #include "Gameplay/Waypoint.hpp"
+#include "Entity/Modules/EntityStat.hpp"
 
 class Path;
 class EnemyFactory;
@@ -119,6 +120,12 @@ private:
     void onHit(int damage, DamageType damageType = DamageType::Physical) override;
 
     /**
+     * @brief Handle damage and apply effects to this enemy based on the damager's stats.
+     * @param damagerStats 
+     */
+    void applyEffects(const EffectID effectId, const EntityStat& damagerStats);
+
+    /**
      * @brief Heal the enemy by a specified amount.
      * @param healAmount Amount of health to restore.
      */
@@ -197,7 +204,7 @@ private:
      * @param level Intensity/power of the effect.
      * @param duration Duration of the effect in seconds.
      */
-    void applyEffect(EffectType type, EffectID id, int level, float duration);
+    void applyEffect(EffectType type, int level, float duration, EffectID id);
 
     /**
      * @brief Get the effects manager for this enemy.

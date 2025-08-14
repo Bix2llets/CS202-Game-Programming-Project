@@ -26,6 +26,8 @@
 #include "Scene/Overlays/Overlay.hpp"
 #include "Scene/Scene.hpp"
 #include "Scene/WaveManager.hpp"
+#include "Gameplay/Randomness/RandomManager.hpp"
+
 /**
  * @class Level
  * @brief Scene representing a gameplay level, with map, entities, and wave
@@ -38,6 +40,8 @@
 class Level : public Scene, public KeyboardObserver, public MouseObserver {
     private:
     std::string levelID;
+    // RandomManager must be constructed before members that may use it during Level construction
+    RandomManager randomManager;
     EntityManager entityManager;
     std::unique_ptr<EnemyFactory> factory;
     // Terrain map;  // game map for this level
@@ -101,6 +105,27 @@ class Level : public Scene, public KeyboardObserver, public MouseObserver {
      * @return Const reference to the level's tracker.
      */
     const Tracker &getTracker() const { return tracker; }
+
+    /**
+     * @brief Gets the random manager for this level.
+     * @return Reference to the level's random manager.
+     */
+    RandomManager &getRandomManager() { return randomManager; }
+
+    /**
+     * @brief Get the Random Manager object
+     * @return const RandomManager& 
+     */
+    const RandomManager &getRandomManager() const { return randomManager; }
+
+    /**
+     * @brief Get the Random object
+     * @param type 
+     * @return Random& 
+     */
+    Random& getRandom(RandomType type) {
+        return randomManager.get(type);
+    }
 
     /**
      * @brief Gets the entity manager for this level.
