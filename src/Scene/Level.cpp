@@ -28,6 +28,8 @@
 #include "Scene/Overlays/PauseScreen.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
+
+#include "Entity/Enemy/EnemySpawnInfo.hpp"
 Level::Level()
     : currentWave{0},
       running{true},
@@ -144,7 +146,8 @@ void Level::onLoad() {
                       InputManager::getInstance().getKeyboardState());
     subscribeKeyboard(Key::F, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
-
+    subscribeKeyboard(Key::N, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
     subscribeMouse(Mouse::Left, UserEvent::Press,
                    InputManager::getInstance().getMouseState());
     subscribeMouse(Mouse::Left, UserEvent::Release,
@@ -217,7 +220,11 @@ bool Level::onKeyEvent(Key key, UserEvent event,
     }
 
     if (key == Key::G && event == UserEvent::Press) {
-        notify("add_currency", 0, Currency(10, 10));
+        notify("add_currency", 0, Currency(100, 100));
+        return true;
+    }
+    if (key == Key::N && event == UserEvent::Press) {
+        waveManager.nextWave();
         return true;
     }
     return false;
@@ -447,8 +454,8 @@ void Level::subscribeCallbacks() {
 
     subscribe("spawn_enemy", [this](std::any sender, std::any data) {
         try {
-            std::string enemyID = std::any_cast<std::string>(data);
-            entityManager.addEnemy(factory->createEnemy(enemyID, 0));
+            EnemySpawnInfo spawnInfo = std::any_cast<EnemySpawnInfo>(data);
+            entityManager.addEnemy(factory->createEnemy(spawnInfo.enemyID, 0, spawnInfo.difficultyModifier));
             // Logger::info(std::format("Spawning enemy: {}", enemyID));
         } catch (std::bad_any_cast &e) {
             Logger::error("spawn_enemy: Received illegal signal " +

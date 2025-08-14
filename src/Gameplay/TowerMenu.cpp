@@ -118,21 +118,21 @@ void TowerMenu::setResourceDisplay() {
 
     scrapIcon.setPosition(
         position +
-        sf::Vector2f{borderSize.x + scrapIcon.getGlobalBounds().size.x / 2, 40});
+        sf::Vector2f{borderSize.x + 10 + scrapIcon.getGlobalBounds().size.x / 2, 40});
     scrapDisplay.setPosition(
         scrapIcon.getPosition() +
         sf::Vector2f{scrapIcon.getGlobalBounds().size.x / 2.f, 0.f} +
         sf::Vector2f{10, 0});
     petrolIcon.setPosition(
         position +
-        sf::Vector2f{borderSize.x + petrolIcon.getGlobalBounds().size.x / 2,
+        sf::Vector2f{borderSize.x + 10 + petrolIcon.getGlobalBounds().size.x / 2,
                      80});
     petroleumDisplay.setPosition(
         petrolIcon.getPosition() +
         sf::Vector2f{petrolIcon.getGlobalBounds().size.x / 2.f, 0.f} +
         sf::Vector2f{10, 0});
     healthIcon.setPosition(position +
-                           sf::Vector2f{borderSize.x + healthIcon.getGlobalBounds().size.x / 2, 120});
+                           sf::Vector2f{borderSize.x + 10 + healthIcon.getGlobalBounds().size.x / 2, 120});
     healthDisplay.setPosition(
         healthIcon.getPosition() +
         sf::Vector2f{healthIcon.getGlobalBounds().size.x / 2.f, 0.f} +

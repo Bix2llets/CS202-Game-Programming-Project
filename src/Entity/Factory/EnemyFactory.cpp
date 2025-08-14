@@ -46,7 +46,7 @@ void EnemyFactory::setDifficulty(Difficulty difficulty) {
 }
 
 std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
-                                                 float distance) {
+                                                 float distance, float localDifficulty) {
     nlohmann::json enemyFile = (JSONLoader::getInstance().getEnemy(id));
     if (!enemyFile.contains("sprite") || !enemyFile.contains("stats") ||
         !enemyFile.contains("type"))
@@ -58,13 +58,13 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
     result->animation.loadJson(enemyFile["sprite"]);
     result->path.setWaypoints(&waypoints);
     result->path.setDistanceFromStart(distance);
-    result->path.setSpeed(enemyFile["stats"]["speed"]);
-    result->health.setMaxHealth(enemyFile["stats"]["max_health"]);
+    result->path.setSpeed(enemyFile["stats"]["speed"].get<float>() * (1 + localDifficulty / 10));
+    result->health.setMaxHealth(enemyFile["stats"]["max_health"].get<float>() * (1 + localDifficulty));
     result->health.setHealth(result->health.getMaxHealth());
     result->healTimer.setTimeInterval(enemyFile["stats"]["heal_interval"])
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(enemyFile["stats"]["heal_interval"]);
-    result->healAmount = enemyFile["stats"]["heal_amount"];
+    result->healAmount = enemyFile["stats"]["heal_amount"].get<float>() * (1 + localDifficulty / 10);
     result->enemyType =
         (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);
 

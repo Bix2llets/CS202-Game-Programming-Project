@@ -3,7 +3,12 @@
 #include "Core/JSONLoader.hpp"
 #include "Scene/Level.hpp"
 #include "Utility/logger.hpp"
-WaveManager::WaveManager(Level& parentLevel) : parentLevel{parentLevel} {}
+
+#include "Entity/Enemy/EnemySpawnInfo.hpp"
+WaveManager::WaveManager(Level& parentLevel) : parentLevel{parentLevel} {
+    localDifficulty = 0.f;
+    currentWave = -1;
+}
 
 void WaveManager::loadJSON(std::string jsonFileID) {
     nlohmann::json file = JSONLoader::getInstance().getLevel(jsonFileID);
@@ -42,22 +47,52 @@ void WaveManager::loadJSON(nlohmann::json jsonFile) {
 }
 
 void WaveManager::update() {
-    for (auto& groups: waveInfo) {
-        for (auto& horde: groups) {
-            horde.initialDelay.update();
-            horde.spawnDelay.update();
+    for (auto info = processingHordes.begin(); info != processingHordes.end(); info++) {
+        EnemyGroupInfo* horde = &info->first;
 
-            if (!horde.initialDelay.isAvailable()) continue;
-            while(horde.spawnDelay.isAvailable() && horde.quantity) {
-                horde.spawnDelay.use();
-                parentLevel.notify("spawn_enemy", *this, horde.id);
-                horde.quantity--;
-            }
-            if (horde.quantity == 0) {
-                horde.spawnDelay.pause();
-                horde.spawnDelay.reset();
-            }
+        horde->initialDelay.update();
+        horde->spawnDelay.update();
+
+        if (!horde->initialDelay.isAvailable()) continue;
+        while (horde->spawnDelay.isAvailable() && horde->quantity) {
+            horde->spawnDelay.use();
+            parentLevel.notify("spawn_enemy", *this, EnemySpawnInfo(horde->id, info->second));
+            horde->quantity--;
         }
-            
+        if (horde->quantity == 0) {
+            horde->spawnDelay.pause();
+            horde->spawnDelay.reset();
+            processingHordes.erase(info);
+        }
+        
+    }
+}
+
+void WaveManager::setWave(int ID) {
+    if (ID < 0 || ID >= waveInfo.size()) {
+        Logger::error("Invalid wave ID: " + std::to_string(ID));
+        return;
+    };
+    currentWave = ID;
+    localDifficulty = float(ID) / 10;
+
+    float waveDifficulty;
+    if (getCurrentWave() % 5 == 0) 
+        waveDifficulty = localDifficulty * 2;
+    else
+        waveDifficulty = localDifficulty;
+    for (auto &group : waveInfo[currentWave]) {
+        group.initialDelay.reset();
+        group.spawnDelay.reset();
+        processingHordes.push_back({std::move(group), waveDifficulty});
+    }
+}
+
+void WaveManager::nextWave() {
+    if (currentWave + 1 < waveInfo.size()) {
+        setWave(currentWave + 1);
+    } else {
+        Logger::info("No more waves available, all waves completed.");
+        parentLevel.notify("all_waves_completed", *this, currentWave);
     }
 }

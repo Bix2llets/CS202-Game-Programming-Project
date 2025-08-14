@@ -53,7 +53,7 @@ class EnemyFactory {
      * @param laneID Path/lane identifier
      * @return Enemy instance
      */
-    std::unique_ptr<Enemy> createEnemy(const std::string &ID, float distance);
+    std::unique_ptr<Enemy> createEnemy(const std::string &ID, float distance, float localDifficulty = 0.f);
 
     /**
      * @brief Load enemy configuration from a nlohmann::json object.
