@@ -13,6 +13,7 @@
 #include "Scene/Level.hpp"
 
 StaticEntity::StaticEntity(Scene& scene) : Entity(scene) {
+    levelRef = dynamic_cast<Level*>(&scene);
 }
 
 void StaticEntity::update() {
@@ -61,6 +62,6 @@ void StaticEntity::loadSpriteTexture(const sf::Texture& texture) {
     sprite.setRotation(rotation);
 }
 
-// sf::FloatRect StaticEntity::getBounds() const {
-//     return sf::FloatRect(position.x, position.y, textureWidth, textureHeight);
-// }
+sf::FloatRect StaticEntity::getBounds() const {
+    return sprite.getGlobalBounds();
+}

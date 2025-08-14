@@ -1,0 +1,128 @@
+{
+    "id": "preset_level_serpent_pass",
+    "name": "Serpent's Pass",
+    "background": "serpent_pass",
+    "size": {
+        "x": 1000,
+        "y": 900
+    },
+    "waypoints": [
+        [-24, 30],
+        [0, 30],
+        [14, 26],
+        [25, 24],
+        [36, 24],
+        [42, 26],
+        [46, 29],
+        [49, 33],
+        [50, 38],
+        [50, 45],
+        [45, 55],
+        [42, 63],
+        [42, 73],
+        [44, 82],
+        [50, 89],
+        [54, 92],
+        [59, 94],
+        [66, 93],
+        [73, 89],
+        [80, 84],
+        [89, 85],
+        [100, 93],
+        [111, 103],
+        [138, 106],
+        [156, 103],
+        [164, 93],
+        [161, 83],
+        [149, 74],
+        [117, 54],
+        [110, 39],
+        [113, 31],
+        [132, 26],
+        [155, 27],
+        [199, 35],
+        [220, 35]
+    ],
+    "wave": [
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ],
+        [
+            {
+                "id": "basic_enemy",
+                "quantity": 10,
+                "spawn_delay": 0,
+                "internal_delay": 1
+            }
+        ]
+    ]
+}

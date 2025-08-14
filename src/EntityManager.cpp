@@ -7,6 +7,7 @@
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Scene/Level.hpp"
+
 void EntityManager::update() {
     // Update towers
     for (auto& tower : towers) {
@@ -41,6 +42,13 @@ void EntityManager::update() {
 }
 
 void EntityManager::render(sf::RenderStates state) const {
+    // Render static entities
+    for (const auto& entity : staticEntities) {
+        if (entity) {
+            Window::getInstance().getRenderWindow().draw(*entity, state);
+        }
+    }
+
     // Render towers
     for (const auto& tower : towers) {
         if (tower) {
@@ -77,6 +85,13 @@ void EntityManager::cleanup() {
                                     return !tower;
                                 }),
                  towers.end());
+
+    staticEntities.erase(
+        std::remove_if(staticEntities.begin(), staticEntities.end(),
+                       [](const std::unique_ptr<StaticEntity>& entity) {
+                           return !entity;
+                       }),
+        staticEntities.end());
 
     // Remove dead enemies
 
@@ -139,6 +154,12 @@ void EntityManager::addAreaEffect(std::unique_ptr<AreaEffect> effect) {
     }
 }
 
+void EntityManager::addStaticEntity(std::unique_ptr<StaticEntity> staticEntity) {
+    if (staticEntity) {
+        staticEntities.push_back(std::move(staticEntity));
+    }
+}
+
 std::vector<Enemy*> EntityManager::getEnemies() {
     std::vector<Enemy*> enemyPtrs;
     for (auto& enemy : enemies) {
@@ -167,6 +188,16 @@ std::vector<AreaEffect*> EntityManager::getAreaEffects() {
         }
     }
     return effectPtrs;
+}
+
+std::vector<StaticEntity*> EntityManager::getStaticEntities() {
+    std::vector<StaticEntity*> staticEntityPtrs;
+    for (auto& staticEntity : staticEntities) {
+        if (staticEntity) {
+            staticEntityPtrs.push_back(staticEntity.get());
+        }
+    }
+    return staticEntityPtrs;
 }
 
 void EntityManager::clear() {

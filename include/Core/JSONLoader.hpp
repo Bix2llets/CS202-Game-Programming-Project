@@ -88,6 +88,14 @@ public:
     const nlohmann::json& getTower(const std::string& id) const;
 
     /**
+     * @brief Retrieve a JSON object by ID for the static_entity type.
+     * @param id The unique ID of the static-entity object.
+     * @return Reference to the JSON object if found, otherwise throws or
+     * returns a null reference.
+     */
+    const nlohmann::json& getStaticEntity(const std::string& id) const;
+
+    /**
      * @brief Retrieve a JSON object by ID for the music type.
      * @param id The unique ID of the music object.
      * @return Reference to the JSON object if found, otherwise throws or
@@ -143,21 +151,25 @@ public:
      * @brief Retrieve all loaded projectile objects.
      * @return Const reference to the map of projectile ID to JSON object.
      */
-    const std::unordered_map<std::string, nlohmann::json>& getAllProjectiles()
-        const;
+    const std::unordered_map<std::string, nlohmann::json>& getAllProjectiles() const;
 
     /**
      * @brief Retrieve all loaded area-effect objects.
      * @return Const reference to the map of area-effect ID to JSON object.
      */
-    const std::unordered_map<std::string, nlohmann::json>& getAllAreaEffects()
-        const;
+    const std::unordered_map<std::string, nlohmann::json>& getAllAreaEffects() const;
 
     /**
      * @brief Retrieve all loaded tower objects.
      * @return Const reference to the map of tower ID to JSON object.
      */
     const std::unordered_map<std::string, nlohmann::json>& getAllTowers() const;
+
+    /**
+     * @brief Retrieve all loaded static-entity objects.
+     * @return Const reference to the map of static-entity ID to JSON object.
+     */
+    const std::unordered_map<std::string, nlohmann::json>& getAllStaticEntities() const;
 
     /**
      * @brief Retrieve all loaded music objects.
@@ -211,6 +223,8 @@ public:
         areaEffects;  ///< Area-effect objects by ID
     std::unordered_map<std::string, nlohmann::json>
         towers;  ///< Tower objects by ID
+    std::unordered_map<std::string, nlohmann::json>
+        staticEntities;  ///< Static entity objects by ID
     std::unordered_map<std::string, nlohmann::json>
         textures;  ///< Texture objects by ID
     std::unordered_map<std::string, nlohmann::json>

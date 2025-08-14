@@ -12,6 +12,7 @@
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Tower/Projectile/Projectile.hpp"
 #include "Entity/AreaEffect/AreaEffect.hpp"
+#include "Entity/StaticEntity/StaticEntity.hpp"
 
 
 class Level;
@@ -28,6 +29,7 @@ private:
     std::vector<std::unique_ptr<Enemy>> enemies;
     std::vector<std::unique_ptr<Projectile>> projectiles;
     std::vector<std::unique_ptr<AreaEffect>> areaEffects;
+    std::vector<std::unique_ptr<StaticEntity>> staticEntities;
 
     Level& level;
 
@@ -81,6 +83,13 @@ public:
     void addAreaEffect(std::unique_ptr<AreaEffect> effect);
 
     /**
+     * @brief Add a static entity to the game
+     *
+     * @param staticEntity StaticEntity to add
+     */
+    void addStaticEntity(std::unique_ptr<StaticEntity> staticEntity);
+
+    /**
      * @brief Get all enemies (for tower targeting)
      *
      * @return std::vector<Enemy*> Vector of enemy pointers
@@ -96,8 +105,16 @@ public:
 
     /**
      * @brief Get all active area effects
+     *
+     * @return std::vector<AreaEffect*> Vector of area effect pointers
      */
     std::vector<AreaEffect*> getAreaEffects();
+
+    /** @brief Get all static entities
+     * 
+    * @return std::vector<StaticEntity*> Vector of static entity pointers
+    */
+    std::vector<StaticEntity *> getStaticEntities();
 
     /**
      * @brief Clear all entities

@@ -1,0 +1,22 @@
+[
+    {
+        "id": "rock_big_1",
+        "path": "assets/texture/static_entity/rock_big_1.png"
+    },
+    {
+        "id": "rock_big_2",
+        "path": "assets/texture/static_entity/rock_big_2.png"
+    },
+    {
+        "id": "rock_big_3",
+        "path": "assets/texture/static_entity/rock_big_3.png"
+    },
+    {
+        "id": "rock_medium_1",
+        "path": "assets/texture/static_entity/rock_medium_1.png"
+    },
+    {
+        "id": "rock_medium_2",
+        "path": "assets/texture/static_entity/rock_medium_2.png"
+    }
+]

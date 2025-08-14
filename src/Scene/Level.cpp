@@ -18,7 +18,7 @@
 #include "Core/Window.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
-#include "Entity/Factory/TowerFactory.hpp"  // For testing purposes
+#include "Entity/Factory/StaticEntityFactory.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Gameplay/Difficulty.hpp"
@@ -43,6 +43,15 @@ Level::Level()
       overlay{nullptr},
       randomManager() {
     health.setMaxHealth(200).setHealth(200);
+
+    std::vector<std::unique_ptr<StaticEntity>> staticEntities;
+    staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile("rock_big_1", *this, sf::Vector2f(365, 310))));
+    // staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile("big_rock_2", *this, sf::Vector2f(100, 100))));
+
+    for (auto& entity : staticEntities) {
+        entityManager.addStaticEntity(std::move(entity));
+    }
+
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     subscribeCallbacks();
 }

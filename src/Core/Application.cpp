@@ -64,10 +64,10 @@ Application::Application() : isRunning{true} {
     //     "Tower Test");  // Start with the tower test scene
 
     SceneManager::getInstance().enqueueSceneAdd(
-        "Gameplay", LevelFactory::getInstance().getLevel("preset_level_ship"));
+        "Gameplay", LevelFactory::getInstance().getLevel("preset_level_serpent_pass"));
 
     SceneManager::getInstance().enqueueSceneChange("Main menu");
-    SceneManager::getInstance().enqueueSceneChange("Gameplay");
+    // SceneManager::getInstance().enqueueSceneChange("Gameplay");
     // sceneManager.enqueueSceneChange("Setting");
 }
 

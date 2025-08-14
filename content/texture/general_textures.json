@@ -73,6 +73,10 @@
         "path": "assets/texture/map/ship.png"
     },
     {
+        "id": "serpent_pass",
+        "path": "assets/texture/map/serpent_pass.png"
+    },
+    {
         "id": "button_wooden",
         "path": "assets/texture/Button/SettingButton.png"
     },

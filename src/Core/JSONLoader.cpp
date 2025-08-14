@@ -69,6 +69,7 @@ void JSONLoader::loadAll() {
                 {"projectile", &projectiles},
                 {"area_effect", &areaEffects},
                 {"tower", &towers},
+                {"static_entity", &staticEntities},
                 {"texture", &textures},
                 {"font", &fonts},
                 {"sound", &sounds},
@@ -149,6 +150,14 @@ const nlohmann::json& JSONLoader::getTower(const std::string& id) const {
         throw std::out_of_range("Tower ID not found: " + id);
     return it->second;
 }
+
+const nlohmann::json& JSONLoader::getStaticEntity(const std::string& id) const {
+    auto it = staticEntities.find(id);
+    if (it == staticEntities.end())
+        throw std::out_of_range("StaticEntity ID not found: " + id);
+    return it->second;
+}
+
 const nlohmann::json& JSONLoader::getEnemy(const std::string& id) const {
     auto it = enemies.find(id);
     if (it == enemies.end())
@@ -195,6 +204,11 @@ JSONLoader::getAllAreaEffects() const {
 const std::unordered_map<std::string, nlohmann::json>&
 JSONLoader::getAllTowers() const {
     return towers;
+}
+
+const std::unordered_map<std::string, nlohmann::json>&
+JSONLoader::getAllStaticEntities() const {
+    return staticEntities;
 }
 
 const std::unordered_map<std::string, nlohmann::json>&

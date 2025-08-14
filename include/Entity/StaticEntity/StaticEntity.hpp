@@ -23,10 +23,15 @@ class Level;
  */
 class StaticEntity : public Entity {
 private:
+    std::string id;
+    std::string name;
+
     Level* levelRef;
     float textureWidth;  ///< Width of the entity's texture
     float textureHeight; ///< Height of the entity's texture
     Currency removeCost; ///< Cost required to remove this entity
+
+    friend class StaticEntityFactory;
 
 public:
     /**
@@ -114,9 +119,20 @@ public:
      */
     bool canBeRemoved(const Currency& availableCurrency) const;
 
+    bool remove(Currency& availableCurrency) {
+        if (canBeRemoved(availableCurrency)) {
+            availableCurrency -= removeCost;
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @brief Get the bounds of this entity.
      * @return sf::FloatRect The bounding rectangle of the entity.
      */
     sf::FloatRect getBounds() const;
+
+    std::string getId() const { return id; }
+    std::string getName() const { return name; }
 };
