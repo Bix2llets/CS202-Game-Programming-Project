@@ -12,12 +12,20 @@
 #include "Core/Window.hpp"
 #include "GUIComponents/RectangularButton.hpp"
 #include "GUIComponents/RectangularButtonBuilder.hpp"
-Setting::Setting() {
+#include "Utility/aligner.hpp"
+
+Setting::Setting() : musicVolumeDisplay(*ResourceManager::getInstance().getFont("text")),
+                     soundVolumeDisplay(*ResourceManager::getInstance().getFont("text")) {
     createButtons();
     setupButtonMessages();
     setupHandlers();
 
     setupComponentVector();
+
+    musicVolumeDisplay.setCharacterSize(24);
+    soundVolumeDisplay.setCharacterSize(24);
+    musicVolumeDisplay.setFillColor(sf::Color::Black);
+    soundVolumeDisplay.setFillColor(sf::Color::Black);
 }
 
 void Setting::onLoad() {
@@ -35,93 +43,92 @@ void Setting::onUnload() {
 
 void Setting::update() {
     for (auto& button : alwaysShownElements) button->update();
+    soundVolumeDisplay.setString(
+        std::format("Sound Volume: {}", ResourceManager::getInstance().getSoundVolume()));
+
+    musicVolumeDisplay.setString(
+        std::format("Music Volume: {}", ResourceManager::getInstance().getMusicVolume()));
+
+    Aligner::align(musicVolumeDisplay);
+    Aligner::align(soundVolumeDisplay); 
+
+    musicVolumeDisplay.setPosition({
+        (musicVolumeDecrement->getPosition().x + musicVolumeDecrement->getSize().x + musicVolumeIncrement->getPosition().x) / 2.f,
+        (musicVolumeDecrement->getPosition().y + musicVolumeDecrement->getSize().y / 2.f)
+    });
+    soundVolumeDisplay.setPosition({
+        (soundVolumeDecrement->getPosition().x + soundVolumeDecrement->getSize().x + soundVolumeIncrement->getPosition().x) / 2.f,
+        (soundVolumeDecrement->getPosition().y + soundVolumeDecrement->getSize().y / 2.f)
+    });
 }
 
 void Setting::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     Window::getInstance().toggleGUIMode();
     for (auto& button : alwaysShownElements) target.draw(*button, states);
+    target.draw(musicVolumeDisplay, states);
+    target.draw(soundVolumeDisplay, states);
 }
 
 void Setting::createButtons() {
-    const sf::Vector2f buttonSize = {120, 50};
+    const sf::Vector2f buttonSize = {60, 60};
     RectangularButtonBuilder builder(*this);
     musicVolumeDecrement = builder.reset()
-                               .setPosition({220.f, 20.f})
+                               .setPosition({100.f, 170.f})
                                .setSize(buttonSize)
                                .setCallback([this](RectangularButton* button) {
                                    notify("Music Decrease");
                                })
-                               .setText("MusicDec")
-                               .loadJson("basic_button")
+                               .loadJson("borderless_background_basic")
+                               .setBackground(
+                                   ResourceManager::getInstance().getTexture(
+                                       "minus_button"))
                                .build();
 
     musicVolumeIncrement = builder.reset()
-                               .setPosition({370.f, 20.f})
+                               .setPosition({600.f, 170.f})
                                .setSize(buttonSize)
                                .setCallback([this](RectangularButton* button) {
                                    notify("Music Increase");
                                })
-                               .setText("MusicInc")
-                               .loadJson("basic_button")
+                               .loadJson("borderless_background_basic")
+                               .setBackground(
+                                   ResourceManager::getInstance().getTexture(
+                                       "plus_button"))
                                .build();
     soundVolumeDecrement = builder.reset()
-                               .setPosition({220.f, 220.f})
+                               .setPosition({100.f, 370.f})
                                .setSize(buttonSize)
                                .setCallback([this](RectangularButton* button) {
                                    notify("Sound Decrease");
                                })
-                               .setText("SoundDec")
-                               .loadJson("basic_button")
+                               .loadJson("borderless_background_basic")
+                               .setBackground(
+                                   ResourceManager::getInstance().getTexture(
+                                       "minus_button"))
                                .build();
 
     soundVolumeIncrement = builder.reset()
-                               .setPosition({370.f, 220.f})
+                               .setPosition({600.f, 370.f})
                                .setSize(buttonSize)
                                .setCallback([this](RectangularButton* button) {
                                    notify("Sound Increase");
                                })
-                               .setText("SoundInc")
-                               .loadJson("basic_button")
+                               .loadJson("borderless_background_basic")
+                               .setBackground(
+                                   ResourceManager::getInstance().getTexture(
+                                       "plus_button"))
                                .build();
 
-    resolution1 = builder.reset()
-                      .setPosition({200.f, 400.f})
-                      .setSize(buttonSize)
-                      .setCallback([this](RectangularButton* button) {
-                          notify("Resolution1");
-                      })
-                      .setText("Res1")
-                      .loadJson("lerp_testing")
-                      .build();
-
-    resolution2 = builder.reset()
-                      .setPosition({350.f, 400.f})
-                      .setSize(buttonSize)
-                      .setCallback([this](RectangularButton* button) {
-                        //   notify("Resolution2");
-                      })
-                      .setText("Res2")
-                      .loadJson("basic_button")
-                      .build();
-
-    resolution3 = builder.reset()
-                      .setPosition({500.f, 400.f})
-                      .setSize(buttonSize)
-                      .setCallback([this](RectangularButton* button) {
-                        //   notify("Resolution3");
-                      })
-                      .setText("Res3")
-                      .loadJson("basic_button")
-                      .build();
 
     backButton = builder.reset()
-                     .setPosition({50.f, 50.f})
-                     .setSize(buttonSize)
+                     .setPosition({100.f, 50.f})
+                     .setSize({132.f, 60.f})
                      .setCallback([this](RectangularButton* button) {
                          notify("Main menu");
                      })
-                     .setText("Main menu")
-                     .loadJson("basic_button")
+                     .loadJson("borderless_background_basic")
+                     .setBackground(
+                         ResourceManager::getInstance().getTexture("back_button"))
                      .build();
 }
 
@@ -139,12 +146,12 @@ void Setting::setupButtonMessages() {
 void Setting::setupHandlers() {
     subscribe("Music Decrease", [this](std::any sender, std::any data) {
         int musicVolume = ResourceManager::getInstance().getMusicVolume();
-        ResourceManager::getInstance().setMusicVolume(musicVolume + 10);
+        ResourceManager::getInstance().setMusicVolume(musicVolume - 10);
         Logger::debug("Music Volume Decrease Triggered");
     });
     subscribe("Music Increase", [this](std::any sender, std::any data) {
         int musicVolume = ResourceManager::getInstance().getMusicVolume();
-        ResourceManager::getInstance().setMusicVolume(musicVolume - 10);
+        ResourceManager::getInstance().setMusicVolume(musicVolume + 10);
         Logger::debug("Music Volume Increase Triggered");
     });
     subscribe("Sound Decrease", [this](std::any sender, std::any data) {
@@ -154,7 +161,7 @@ void Setting::setupHandlers() {
     });
     subscribe("Sound Increase", [this](std::any sender, std::any data) {
         int soundVolume = ResourceManager::getInstance().getSoundVolume();
-        ResourceManager::getInstance().setSoundVolume(soundVolume - 10);
+        ResourceManager::getInstance().setSoundVolume(soundVolume + 10);
         Logger::debug("Sound Volume Increase Triggered");
     });
 
@@ -188,12 +195,9 @@ void Setting::setupHandlers() {
 }
 
 void Setting::setupComponentVector() {
-    alwaysShownElements.push_back(std::move(musicVolumeDecrement));
-    alwaysShownElements.push_back(std::move(musicVolumeIncrement));
-    alwaysShownElements.push_back(std::move(soundVolumeDecrement));
-    alwaysShownElements.push_back(std::move(soundVolumeIncrement));
-    alwaysShownElements.push_back(std::move(resolution1));
-    alwaysShownElements.push_back(std::move(resolution2));
-    alwaysShownElements.push_back(std::move(resolution3));
-    alwaysShownElements.push_back(std::move(backButton));
+    alwaysShownElements.push_back(musicVolumeDecrement.get());
+    alwaysShownElements.push_back(musicVolumeIncrement.get());
+    alwaysShownElements.push_back(soundVolumeDecrement.get());
+    alwaysShownElements.push_back(soundVolumeIncrement.get());
+    alwaysShownElements.push_back(backButton.get());
 }

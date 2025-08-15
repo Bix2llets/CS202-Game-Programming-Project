@@ -20,12 +20,11 @@ class Setting : public Scene {
     std::unique_ptr<RectangularButton> soundVolumeIncrement;
     std::unique_ptr<RectangularButton> soundVolumeDecrement;
 
-    std::unique_ptr<RectangularButton> resolution1;
-    std::unique_ptr<RectangularButton> resolution2;
-    std::unique_ptr<RectangularButton> resolution3;
     std::unique_ptr<RectangularButton> backButton;
+    sf::Text musicVolumeDisplay;
+    sf::Text soundVolumeDisplay;
 
-    std::vector<std::unique_ptr<RectangularButton>> alwaysShownElements;
+    std::vector<RectangularButton*> alwaysShownElements;
 
     void createButtons();
     void setupHandlers();

@@ -136,5 +136,13 @@
     {
         "id": "preview_background",
         "path": "assets/texture/button/previewbackground.png"
+    },
+    {
+        "id": "plus_button",
+        "path": "assets/texture/button/plusButton2.png"
+    },
+    {
+        "id": "minus_button",
+        "path": "assets/texture/button/minusButton2.png"
     }
 ]
