@@ -18,36 +18,43 @@ LevelSelection::LevelSelection() {
 void LevelSelection::createButtons() {
     RectangularButtonBuilder builder(*this);
     int index = 0;
-    for (nlohmann::json levelConfig :
+    for (auto [key, levelConfig] :
          JSONLoader::getInstance().getAllLevels()) {
         std::string levelID;
         if (levelConfig.contains("id"))
             levelID = levelConfig["id"];
         else
             levelID = "default_level";
-        auto button = builder.reset()
-                          .setText(levelConfig.contains("name")
-                                       ? levelConfig["name"]
-                                       : "")
-                          .setPosition(sf::Vector2f(100, 100 + index * 60))
-                          .setSize(sf::Vector2f(200, 50))
-                          .setCallback([levelID, this](RectangularButton* btn) {
-                              notify("Level selected", btn, levelID);
-                          })
-                          .loadJson("background_basic")
-                          .build();
+        auto button =
+            builder.reset()
+                .setText(levelConfig.contains("name") ? levelConfig["name"]
+                                                      : "")
+                .setPosition(sf::Vector2f(100, 100 + index * 60))
+                .setSize(sf::Vector2f(200, 50))
+                .setCallback([levelID, this](RectangularButton* btn) {
+                    notify("Level selected", btn, levelID);
+                })
+                .loadJson("background_basic")
+                .build();
         levelButtons.push_back(std::move(button));
         index++;
     }
 }
 
 void LevelSelection::createBackgrounds() {
-    for (nlohmann::json levelConfig :
+    for (auto [key, levelConfig] :
          JSONLoader::getInstance().getAllLevels()) {
+        Logger::debug("Working on the level config: " +
+                      levelConfig.dump(4));
         auto texture = levelConfig.contains("background")
                            ? ResourceManager::getInstance().getTexture(
                                  levelConfig["background"])
                            : &GameConstants::BLANK_TEXTURE;
+        if (levelConfig.contains("background"))
+            Logger::debug(std::format("Loading background texture : {}",
+                                      levelConfig["background"].get<std::string>()));
+        else
+            Logger::debug("No background texture specified, using blank texture");
         if (texture) {
             auto sprite = std::make_unique<sf::Sprite>(*texture);
             Scaler::scaleSprite(*sprite, sf::Vector2f{400, 300});
@@ -74,6 +81,15 @@ void LevelSelection::draw(sf::RenderTarget& target,
     for (int i = 0; i < levelButtons.size(); i++) {
         if (levelButtons[i]->isHovered()) {
             target.draw(*levelBackgrounds[i]);
+            Logger::debug(
+                std::format("Drawing the {}-th background, at position {} {}, "
+                            "size {} {} and origin {} {}",
+                            i, levelBackgrounds[i]->getPosition().x,
+                            levelBackgrounds[i]->getPosition().y,
+                            levelBackgrounds[i]->getGlobalBounds().size.x,
+                            levelBackgrounds[i]->getGlobalBounds().size.y,
+                            levelBackgrounds[i]->getOrigin().x,
+                            levelBackgrounds[i]->getOrigin().y));
         }
         target.draw(*levelButtons[i]);
     }
