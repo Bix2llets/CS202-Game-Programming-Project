@@ -36,4 +36,7 @@ public:
     inline int getCurrentWave() const {
         return currentWave + 1;
     }
+    inline int getTotalWaves() const {
+        return waveInfo.size();
+    }
 };

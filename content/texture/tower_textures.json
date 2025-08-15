@@ -1,18 +1,18 @@
 [
     {
         "id": "rifle_base",
-        "path": "assets/texture/towers/rifle_base.png"
+        "path": "assets/texture/tower/rifle_base.png"
     },
     {
         "id": "rifle_turret",
-        "path": "assets/texture/towers/rifle_turret.png"
+        "path": "assets/texture/tower/rifle_turret.png"
     },
     {
         "id": "cannon_base",
-        "path": "assets/texture/towers/cannon_base.png"
+        "path": "assets/texture/tower/cannon_base.png"
     },
     {
         "id": "cannon_turret",
-        "path": "assets/texture/towers/cannon_turret.png"
+        "path": "assets/texture/tower/cannon_turret.png"
     }
 ]

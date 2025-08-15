@@ -57,8 +57,8 @@ private:
     
     // Wave Management
     int currentWave;
+    int totalWaves;
     std::unique_ptr<EnemyFactory> factory;
-    std::vector<std::vector<EnemyGroupInfo>> waveInfo;
     WaveManager waveManager;
     // Terrain map;  // game map for this level
 
@@ -145,6 +145,18 @@ public:
      */
     inline EntityManager &getEntityManager() { return entityManager; };
 
+    /**
+     * @brief Gets the weather manager for this level.
+     * @return Reference to the level's weather manager.
+     */
+    inline WeatherManager& getWeatherManager() { return weatherManager; }
+
+    /**
+     * @brief Gets the weather manager for this level (const version).
+     * @return Const reference to the level's weather manager.
+     */
+    inline const WeatherManager& getWeatherManager() const { return weatherManager; }
+
     inline Currency getBudget() const { return budget; }
     /**
      * @brief Registers UI components and event handlers for the level.
@@ -165,15 +177,13 @@ public:
     /**
      * @brief Advances to the next wave if available.
      */
-    inline void nextWave() {
-        if (currentWave < waveInfo.size() - 1) ++currentWave;
-    }
+    void nextWave();
 
     /**
      * @brief Checks if the level is finished (last wave completed).
      * @return True if the level is finished, false otherwise.
      */
-    inline bool isFinished() { return currentWave == waveInfo.size() - 1; }
+    inline bool isFinished() { return currentWave == totalWaves; }
 
     inline int getRemainingHealth() const { return health.getHealth(); }
 

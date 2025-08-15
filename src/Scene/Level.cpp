@@ -31,7 +31,7 @@
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
 Level::Level()
-    : currentWave{0},
+    : currentWave{0}, totalWaves{0},
       running{true},
       //   map(parameter),
       entityManager{*this},
@@ -40,6 +40,7 @@ Level::Level()
       upgradeMenu(*this),
       backgrounds(GameConstants::BLANK_TEXTURE),
       waveManager{*this},
+      weatherManager{*this},
       overlay{nullptr},
       randomManager() {
     health.setMaxHealth(200).setHealth(200);
@@ -106,6 +107,7 @@ void Level::update() {
 
     entityManager.update();
     waveManager.update();
+    weatherManager.update();
 }
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
@@ -114,6 +116,7 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     // map.render(state);
     Window::getInstance().getRenderWindow().draw(backgrounds, state);
     entityManager.render(state);
+    weatherManager.draw(target, state);
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.render(state);
     }
@@ -185,6 +188,16 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
         return;
     }
     waveManager.loadJSON(jsonFile);
+    currentWave = 0;
+    totalWaves = waveManager.getTotalWaves();
+}
+
+void Level::nextWave() {
+    if (currentWave < totalWaves) {
+        ++currentWave;
+        waveManager.nextWave();
+        weatherManager.changeWeatherForWave(currentWave - 1);
+    }
 }
 
 void Level::onLoad() {
@@ -252,11 +265,7 @@ void Level::onUnload() {
 }
 
 bool Level::isWaveFinished() {
-    std::vector<EnemyGroupInfo> &wave = waveInfo[currentWave];
-    for (EnemyGroupInfo &group : wave) {
-        if (group.quantity != 0) return false;
-    }
-    return true;
+    return waveManager.isCurrentWaveFinish();
 }
 
 bool Level::onKeyEvent(Key key, UserEvent event,
@@ -280,7 +289,7 @@ bool Level::onKeyEvent(Key key, UserEvent event,
         return true;
     }
     if (key == Key::N && event == UserEvent::Press) {
-        waveManager.nextWave();
+        nextWave();
         return true;
     }
     return false;
@@ -446,6 +455,10 @@ void Level::subscribeCallbacks() {
 
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);
+            
+            // Apply current weather effects to the new tower
+            weatherManager.applyWeatherToTower(*newTower);
+            
             entityManager.addTower(std::move(newTower));
         }
     });
@@ -520,8 +533,13 @@ void Level::subscribeCallbacks() {
     subscribe("spawn_enemy", [this](std::any sender, std::any data) {
         try {
             EnemySpawnInfo spawnInfo = std::any_cast<EnemySpawnInfo>(data);
-            entityManager.addEnemy(factory->createEnemy(
-                spawnInfo.enemyID, 0, spawnInfo.difficultyModifier));
+            auto enemy = factory->createEnemy(
+                spawnInfo.enemyID, 0, spawnInfo.difficultyModifier);
+            
+            // Apply current weather effects to the new enemy
+            weatherManager.applyWeatherToEnemy(*enemy);
+            
+            entityManager.addEnemy(std::move(enemy));
             // Logger::info(std::format("Spawning enemy: {}", enemyID));
         } catch (std::bad_any_cast &e) {
             Logger::error("spawn_enemy: Received illegal signal " +
@@ -572,8 +590,6 @@ void Level::subscribeCallbacks() {
               [this](std::any sender, std::any data) { renderPath = false; });
 
     subscribe("next_wave", [this](std::any sender, std::any data) {
-        if (waveManager.isCurrentWaveFinish()) {
-            waveManager.nextWave();
-        }
+        if(isWaveFinished()) nextWave();
     });
 }

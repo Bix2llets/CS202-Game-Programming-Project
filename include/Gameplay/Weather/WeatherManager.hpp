@@ -43,9 +43,8 @@ public:
 
     /**
      * @brief Update weather effects.
-     * @param deltaTime Time elapsed since last update.
      */
-    void update(float deltaTime);
+    void update();
 
     /**
      * @brief Set weather pattern for all waves.

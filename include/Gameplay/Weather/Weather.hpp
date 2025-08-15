@@ -49,9 +49,8 @@ public:
 
     /**
      * @brief Update weather effects.
-     * @param deltaTime Time elapsed since last update.
      */
-    virtual void update(float deltaTime) = 0;
+    virtual void update() = 0;
 
     /**
      * @brief Apply weather effects to a tower.

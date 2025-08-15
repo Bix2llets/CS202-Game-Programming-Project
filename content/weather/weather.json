@@ -1,0 +1,40 @@
+{
+    "sunny": {
+        "icon": "",
+        "has_overlay": false,
+        "overlay": {}
+    },
+    "rainy": {
+        "icon": "",
+        "has_overlay": true,
+        "overlay": {
+            "texture_id": "rifle_turret",
+            "width": 200,
+            "height": 200,
+            "animation_interval": 0.05,
+            "type": "linear",
+            "center_x": 0,
+            "center_y": 0,
+            "viewport" : {
+                "x": 0,
+                "y": 0,
+                "width": 6000,
+                "height": 200
+            }
+        }
+    },
+    "thunderstorm": {
+        "icon": "",
+        "has_overlay": false,
+        "overlay": {
+
+        }
+    },
+    "foggy": {
+        "icon": "",
+        "has_overlay": false,
+        "overlay": {
+
+        }
+    }
+}
