@@ -2,6 +2,7 @@
     "id": "preset_level_serpent_pass",
     "name": "Serpent's Pass",
     "background": "serpent_pass",
+    "description": "This old passage throught the forest formed when lumberjacks cut down the trees to make way for a road. The trees grew back, but the path remained. Now, unwanted creatures are travelling through this to get to the village. There is a wet curve where the dirt get muddy",
     "size": {
         "x": 1000,
         "y": 900

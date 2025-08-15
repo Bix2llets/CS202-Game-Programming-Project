@@ -6,5 +6,9 @@
     {
         "id": "pixel",
         "path": "assets/fonts/PixelGame.otf"
+    },
+    {
+        "id": "text",
+        "path": "assets/fonts/Faithful32xRegular.otf"
     }
 ]
