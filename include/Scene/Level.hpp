@@ -14,6 +14,7 @@
 #include "Core/KeyboardObserver.hpp"
 #include "Entity/Factory/EnemyFactory.hpp"
 #include "EntityManager.hpp"
+#include "Gameplay/Weather/WeatherManager.hpp"
 #include "Gameplay/Currency.hpp"
 #include "Gameplay/RadialUpgradeMenu.hpp"
 #include "Gameplay/Terrain/Path.hpp"
@@ -47,6 +48,7 @@ private:
     Currency budget;
     RandomManager randomManager;
     EntityManager entityManager;
+    WeatherManager weatherManager;
     
     bool renderPath = false;
     Path path;

@@ -253,25 +253,18 @@ void Tower::update() {
 
     if (combatBehaviorPointer) {
         if (timer.isAvailable()) {
-            std::vector<Enemy*> targets =
-                levelRef->getEntityManager().getEnemies();
+            std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
             if (targets.empty()) {
                 return;
             }
 
-            if (!combatBehaviorPointer->engage(targets)) {
-                if (turretAnimation.isRunning()) {
-                    turretAnimation.pause();
-                }
-            } else {
-                if (!turretAnimation.isRunning()) turretAnimation.resume();
+            if (combatBehaviorPointer->engage(targets)) {
+                turretAnimation.restart();
+                turretAnimation.resume();
             }
-
-            turretAnimation.restart();
 
             float fireRate = getStat(TowerStat::FIRE_RATE, 1.0f);
             float interval = (fireRate > 0.0f) ? (1.0f / fireRate) : 1.0f;
-            // timer.setTimeInterval(interval);
             timer.reset();
         }
 
