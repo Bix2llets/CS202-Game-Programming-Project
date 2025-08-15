@@ -270,6 +270,9 @@ void Tower::update() {
 
         if (mainTarget) {
             pointTurretTowards(mainTarget->getPosition());
+            if (!mainTarget->isAlive()) {
+                mainTarget = nullptr;
+            }
         }
     }
 

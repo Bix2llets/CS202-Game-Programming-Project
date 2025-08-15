@@ -8,10 +8,6 @@ int CombatBehavior::engage(const std::vector<Enemy*>& enemies) const {
     if (!targets.empty()) {
         base->setMainTarget(targets[0]); // Set the first target as the main target
         fireMode->fire(base, targets);
-        
-        if(base->getMainTarget() != nullptr) {
-            base->setMainTarget(nullptr); // Clear main target if it's not alive
-        }
         return true;
     }
 
