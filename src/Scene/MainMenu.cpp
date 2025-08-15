@@ -82,6 +82,10 @@ MainMenu::MainMenu() : Scene() {
     subscribe("Gameplay", [this](std::any, std::any) {
         SceneManager::getInstance().enqueueSceneChange("Gameplay");
     });
+    subscribe("Exit", [this](std::any, std::any) {
+        Logger::debug("Exiting game");
+        Window::getInstance().getRenderWindow().close();
+    });
 }
 
 void MainMenu::draw(sf::RenderTarget &target, sf::RenderStates state) const {

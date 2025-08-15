@@ -89,7 +89,7 @@ void Application::run() {
     fpsDisplay.setPosition({0.f, 0.f});
     fpsDisplay.setFillColor(sf::Color::White);
     fpsDisplay.setOutlineColor(sf::Color::Black);
-    while (isRunning) {
+    while (Window::getInstance().getRenderWindow().isOpen() && isRunning) {
         frameCount++;
         Window::getInstance().toggleUserMode();
         SceneManager::getInstance().updateSceneChange();
