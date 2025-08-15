@@ -61,7 +61,7 @@ Application::Application() : isRunning{true} {
     SceneManager::getInstance().enqueueSceneAdd(
         "Tower Test", std::make_unique<TowerRotationMockScene>());
     SceneManager::getInstance().enqueueSceneAdd(
-        "Test Scene", std::make_unique<LevelSelection>());
+        "Level Selection", std::make_unique<LevelSelection>());
 
     // SceneManager::getInstance().enqueueSceneChange(
     //     "Tower Test");  // Start with the tower test scene

@@ -19,7 +19,7 @@ MainMenu::MainMenu() : Scene() {
                      .loadJson("borderless_background_mainmenu")
                      .setCallback([this](RectangularButton *button) {
                          Logger::debug("Turning to gameplay");
-                         notify("Gameplay");
+                         notify("Level Selection");
                      })
                      .setBackground(ResourceManager::getInstance().getTexture(
                          "menu_button"))
@@ -79,8 +79,8 @@ MainMenu::MainMenu() : Scene() {
     subscribe("Setting", [this](std::any, std::any) {
         SceneManager::getInstance().enqueueSceneChange("Setting");
     });
-    subscribe("Gameplay", [this](std::any, std::any) {
-        SceneManager::getInstance().enqueueSceneChange("Gameplay");
+    subscribe("Level Selection", [this](std::any, std::any) {
+        SceneManager::getInstance().enqueueSceneChange("Level Selection");
     });
     subscribe("Exit", [this](std::any, std::any) {
         Logger::debug("Exiting game");

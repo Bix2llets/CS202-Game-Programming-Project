@@ -128,5 +128,9 @@
     {
         "id": "tower_info_background",
         "path": "assets/texture/button/towerinfobackground.png"
+    },
+    {
+        "id": "back_button",
+        "path": "assets/texture/button/backbutton.png"
     }
 ]

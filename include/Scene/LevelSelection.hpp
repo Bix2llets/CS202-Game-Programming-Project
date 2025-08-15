@@ -9,9 +9,10 @@ class LevelSelection : public Scene, public MouseObserver {
     private:
     std::vector<std::unique_ptr<RectangularButton>> levelButtons;
     std::vector<std::unique_ptr<sf::Sprite>> levelBackgrounds;
-    
+    std::unique_ptr<RectangularButton> backButton;
     void createButtons();
     void createBackgrounds();
+    void subscribeEvents();
     public:
     LevelSelection();
     ~LevelSelection();
