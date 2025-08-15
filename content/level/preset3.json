@@ -2,6 +2,7 @@
     "id": "preset_level_ship",
     "name": "Ship",
     "background": "ship",
+    "description": "A preset level with a ship background and basic enemy configuration.",
     "size": {
         "x": 1200,
         "y": 900

@@ -132,5 +132,9 @@
     {
         "id": "back_button",
         "path": "assets/texture/button/backbutton.png"
+    },
+    {
+        "id": "preview_background",
+        "path": "assets/texture/button/previewbackground.png"
     }
 ]
