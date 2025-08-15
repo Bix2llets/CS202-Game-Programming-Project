@@ -546,7 +546,10 @@ void Level::subscribeCallbacks() {
 
     subscribe("quit_level", [this](std::any sender, std::any data) {
         SceneManager::getInstance().enqueueSceneChange("Main menu");
-        notify("resume_game");
+
+        if (dynamic_cast<PauseScreen *>(overlay.get())) {
+            notify("resume_game");
+        }
     });
 
     subscribe("toggle_sound", [this](std::any sender, std::any data) {

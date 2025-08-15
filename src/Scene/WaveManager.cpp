@@ -47,6 +47,7 @@ void WaveManager::loadJSON(nlohmann::json jsonFile) {
 }
 
 void WaveManager::update() {
+    std::vector<decltype(processingHordes.begin())> deleteList;
     for (auto info = processingHordes.begin(); info != processingHordes.end(); info++) {
         EnemyGroupInfo* horde = &info->first;
 
@@ -62,9 +63,11 @@ void WaveManager::update() {
         if (horde->quantity == 0) {
             horde->spawnDelay.pause();
             horde->spawnDelay.reset();
-            processingHordes.erase(info);
+            deleteList.push_back(info);
         }
-        
+    }
+    for (auto it = deleteList.rbegin(); it != deleteList.rend(); ++it) {
+        processingHordes.erase(*it);
     }
 }
 
@@ -84,7 +87,7 @@ void WaveManager::setWave(int ID) {
     for (auto &group : waveInfo[currentWave]) {
         group.initialDelay.reset();
         group.spawnDelay.reset();
-        processingHordes.push_back({std::move(group), waveDifficulty});
+        processingHordes.push_back({group, waveDifficulty});
     }
 }
 
