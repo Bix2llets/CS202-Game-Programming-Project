@@ -31,5 +31,8 @@ class ButtonBase : public sf::Drawable, public MouseObserver {
         graphicState.resetAnimation();
     }
 
+    inline bool isHovered() {return graphicState.isHovered();}
+    inline bool isPressed() {return graphicState.isPressed();} 
+
 
 };

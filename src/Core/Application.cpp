@@ -17,6 +17,7 @@
 #include "Scene/Setting.hpp"
 #include "Utility/logger.hpp"
 #include "Core/LevelFactory.hpp"
+#include "Scene/LevelSelection.hpp"
 Application::Application() : isRunning{true} {
     if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
@@ -59,6 +60,8 @@ Application::Application() : isRunning{true} {
      SceneManager::getInstance().enqueueSceneAdd("Setting", std::make_unique<Setting>());
     SceneManager::getInstance().enqueueSceneAdd(
         "Tower Test", std::make_unique<TowerRotationMockScene>());
+    SceneManager::getInstance().enqueueSceneAdd(
+        "Level Selection", std::make_unique<LevelSelection>());
 
     // SceneManager::getInstance().enqueueSceneChange(
     //     "Tower Test");  // Start with the tower test scene
@@ -89,7 +92,7 @@ void Application::run() {
     fpsDisplay.setPosition({0.f, 0.f});
     fpsDisplay.setFillColor(sf::Color::White);
     fpsDisplay.setOutlineColor(sf::Color::Black);
-    while (isRunning) {
+    while (Window::getInstance().getRenderWindow().isOpen() && isRunning) {
         frameCount++;
         Window::getInstance().toggleUserMode();
         SceneManager::getInstance().updateSceneChange();

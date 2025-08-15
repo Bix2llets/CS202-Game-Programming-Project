@@ -78,7 +78,7 @@ bool RectangularButton::onMouseEvent(Mouse button, UserEvent event,
     if (event == UserEvent::Move) {
         if (contains(static_cast<sf::Vector2f>(windowPosition))) {
             graphicState.updateHoverState(true);
-            return true;
+            return false;
         } else {
             graphicState.updateHoverState(false);
             return false;
