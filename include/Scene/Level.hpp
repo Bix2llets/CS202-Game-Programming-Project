@@ -38,31 +38,39 @@
  * game logic, and rendering.
  */
 class Level : public Scene, public KeyboardObserver, public MouseObserver {
-    private:
+private:
+    bool running;
     std::string levelID;
-    // RandomManager must be constructed before members that may use it during Level construction
+
+    // Gameplay Related
+    Health health;
+    Currency budget;
     RandomManager randomManager;
     EntityManager entityManager;
-    std::unique_ptr<EnemyFactory> factory;
-    // Terrain map;  // game map for this level
-    std::vector<std::vector<EnemyGroupInfo>> waveInfo;
-    int currentWave;
-    bool running;
+    
+    bool renderPath = false;
+    Path path;
+    
     Tracker tracker;
+    
+    // Wave Management
+    int currentWave;
+    std::unique_ptr<EnemyFactory> factory;
+    std::vector<std::vector<EnemyGroupInfo>> waveInfo;
+    WaveManager waveManager;
+    // Terrain map;  // game map for this level
+
+    // GUI Related
     RadialUpgradeMenu upgradeMenu;
-    Currency budget;
     TowerMenu menu;
     TowerInfoPanel infoPanel;
     std::unique_ptr<Overlay> overlay;
-    Path path;
     sf::Sprite backgrounds;
-    bool renderPath = false;
-    Health health;
-    WaveManager waveManager;
-
+    
     std::unique_ptr<RectangularButton> pauseButton;
     std::unique_ptr<RectangularButton> nextWaveButton;
-    public:
+    
+public:
     Level();
 
     ~Level();

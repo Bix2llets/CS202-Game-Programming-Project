@@ -10,14 +10,14 @@
 class Level;
 
 class WaveManager {
-    private:
+private:
     std::vector<std::vector<EnemyGroupInfo>> waveInfo;
     std::list<std::pair<EnemyGroupInfo, float>> processingHordes;
     Level& parentLevel;
     int currentWave;
     float localDifficulty;
 
-    public:
+public:
     WaveManager(Level& parentLevel);
     void loadJSON(nlohmann::json jsonFile);
     void loadJSON(std::string jsonFileID);

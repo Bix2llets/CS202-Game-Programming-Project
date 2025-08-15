@@ -216,6 +216,15 @@ void TowerFactory::validateConfig(const nlohmann::json& config) {
             "TowerFactory: Field 'upgrades' must be an object");
     }
 
+    // Validate upgrades_list if it exists
+    if (config.contains("upgrades") && config["upgrades"].contains("upgrades_list")) {
+        const auto& upgradesJson = config["upgrades"];
+        if (!upgradesJson["upgrades_list"].is_array()) {
+            throw std::runtime_error(
+                "TowerFactory: Field 'upgrades.upgrades_list' must be an array");
+        }
+    }
+
     if (config.contains("behaviors") && !config["behaviors"].is_object()) {
         throw std::runtime_error(
             "TowerFactory: Field 'behaviors' must be an object");
@@ -229,22 +238,33 @@ void TowerFactory::parseUpgrades(const nlohmann::json& upgradesJson, TowerBuilde
         builder.setMaxTotalUpgrades(maxUpgrades);
     }
 
-    // Parse individual upgrade types
-    for (auto it = upgradesJson.begin(); it != upgradesJson.end(); ++it) {
-        const std::string& key = it.key();
+    // Parse upgrades from the upgrades_list array
+    if (upgradesJson.contains("upgrades_list") && upgradesJson["upgrades_list"].is_array()) {
+        const auto& upgradesList = upgradesJson["upgrades_list"];
         
-        // Skip non-numeric keys (like "max_total_upgrades", "upgrade_types")
-        if (key == "max_total_upgrades" || key == "upgrade_types") {
-            continue;
-        }
-        
-        try {
-            int typeId = std::stoi(key);
-            auto upgradeType = parseUpgradeType(typeId, it.value());
+        for (size_t i = 0; i < upgradesList.size(); ++i) {
+            int typeId = static_cast<int>(i + 1); // Start from 1 for compatibility
+            auto upgradeType = parseUpgradeType(typeId, upgradesList[i]);
             builder.addUpgradeType(typeId, std::move(upgradeType));
-        } catch (const std::invalid_argument&) {
-            // Skip non-numeric keys
-            continue;
+        }
+    } else {
+        // Fallback: Parse individual upgrade types using the old format (numbered keys)
+        for (auto it = upgradesJson.begin(); it != upgradesJson.end(); ++it) {
+            const std::string& key = it.key();
+            
+            // Skip non-numeric keys (like "max_total_upgrades", "upgrade_types", "upgrades_list")
+            if (key == "max_total_upgrades" || key == "upgrade_types" || key == "upgrades_list") {
+                continue;
+            }
+            
+            try {
+                int typeId = std::stoi(key);
+                auto upgradeType = parseUpgradeType(typeId, it.value());
+                builder.addUpgradeType(typeId, std::move(upgradeType));
+            } catch (const std::invalid_argument&) {
+                // Skip non-numeric keys
+                continue;
+            }
         }
     }
 }

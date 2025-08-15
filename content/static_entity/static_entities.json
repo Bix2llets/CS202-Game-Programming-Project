@@ -14,8 +14,8 @@
         "id": "rock_big_2",
         "name": "Big Rock",
         "texture": "rock_big_2",
-        "width": 24,
-        "height": 26,
+        "width": 120,
+        "height": 130,
         "remove_cost": {
             "scrap": 100,
             "petroleum": 0
@@ -25,8 +25,8 @@
         "id": "rock_big_3",
         "name": "Big Rock",
         "texture": "rock_big_3",
-        "width": 21,
-        "height": 27,
+        "width": 105,
+        "height": 135,
         "remove_cost": {
             "scrap": 100,
             "petroleum": 0
@@ -36,8 +36,8 @@
         "id": "rock_medium_1",
         "name": "Rock",
         "texture": "rock_medium_1",
-        "width": 14,
-        "height": 13,
+        "width": 70,
+        "height": 65,
         "remove_cost": {
             "scrap": 50,
             "petroleum": 0
@@ -47,8 +47,8 @@
         "id": "rock_medium_2",
         "name": "Rock",
         "texture": "rock_medium_2",
-        "width": 17,
-        "height": 17,
+        "width": 85,
+        "height": 85,
         "remove_cost": {
             "scrap": 50,
             "petroleum": 0
