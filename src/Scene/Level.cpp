@@ -18,8 +18,8 @@
 #include "Core/Window.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Enemy/EnemySpawnInfo.hpp"
-#include "Entity/Factory/TowerFactory.hpp"
 #include "Entity/Factory/StaticEntityFactory.hpp"
+#include "Entity/Factory/TowerFactory.hpp"
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/RectangularButtonBuilder.hpp"
 #include "GUIComponents/cursor.hpp"
@@ -45,10 +45,12 @@ Level::Level()
     health.setMaxHealth(200).setHealth(200);
 
     std::vector<std::unique_ptr<StaticEntity>> staticEntities;
-    staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile("rock_big_1", *this, sf::Vector2f(365, 310))));
-    // staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile("big_rock_2", *this, sf::Vector2f(100, 100))));
+    staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile(
+        "rock_big_1", *this, sf::Vector2f(365, 310))));
+    // staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile("big_rock_2",
+    // *this, sf::Vector2f(100, 100))));
 
-    for (auto& entity : staticEntities) {
+    for (auto &entity : staticEntities) {
         entityManager.addStaticEntity(std::move(entity));
     }
 
@@ -211,6 +213,9 @@ void Level::onLoad() {
                    InputManager::getInstance().getMouseState());
     subscribeMouse(Mouse::Middle, UserEvent::Move,
                    InputManager::getInstance().getMouseState());
+
+    subscribeMouse(Mouse::Right, UserEvent::Press,
+                   InputManager::getInstance().getMouseState());
     Window::getInstance().setLevelSize(
         sf::Vector2f{backgrounds.getGlobalBounds().size});
     Logger::debug(std::format("Level onLoad done on ", (void *)this));
@@ -241,6 +246,8 @@ void Level::onUnload() {
                      InputManager::getInstance().getMouseState());
     unSubscribeMouse(Mouse::Middle, UserEvent::Move,
                      InputManager::getInstance().getMouseState());
+    unSubscribeMouse(Mouse::Right, UserEvent::Press,
+                   InputManager::getInstance().getMouseState());
     Logger::debug(std::format("Level onUnLoad done on ", (void *)this));
 }
 

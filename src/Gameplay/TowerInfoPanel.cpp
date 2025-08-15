@@ -45,7 +45,7 @@ TowerInfoPanel::TowerInfoPanel()
     fireRateIcon.setScale({0.5f, 0.5f});
     maxTargetsIcon.setScale({0.5f, 0.5f});
 
-    background.setPosition({GameConstants::MENU_X, 120});
+    background.setPosition({GameConstants::MENU_X, 145});
     background.setSize(
         {GameConstants::DEFAULT_WINDOW_WIDTH - GameConstants::MENU_X,
          GameConstants::DEFAULT_WINDOW_HEIGHT});
