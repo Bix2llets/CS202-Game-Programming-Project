@@ -174,9 +174,21 @@ const sf::Font *const ResourceManager::getFont(const std::string &ID) const {
     return fonts.at(ID).get();
 }
 
-void ResourceManager::setSoundVolume(int volume) { soundVolume = volume; }
+void ResourceManager::setSoundVolume(int volume) {
+    soundVolume = volume;
+    soundVolume = std::clamp(soundVolume, 0, 100);
+    for (std::unique_ptr<sf::Sound> &sound : playingSounds) {
+        sound->setVolume(allowSound * soundVolume);
+    }
+}
 
-void ResourceManager::setMusicVolume(int volume) { musicVolume = volume; }
+void ResourceManager::setMusicVolume(int volume) {
+    musicVolume = volume;
+    musicVolume = std::clamp(musicVolume, 0, 100);
+    for (auto &[id, music] : musics) {
+        music->setVolume(allowMusic * musicVolume);
+    }
+}
 
 int ResourceManager::getSoundVolume() const { return soundVolume; }
 
@@ -192,15 +204,14 @@ void ResourceManager::validateJson(const nlohmann::json &jsonFile) {
 void ResourceManager::toggleMusic() {
     allowMusic = !allowMusic;
 
-    for (auto& [id, music] : musics) {
+    for (auto &[id, music] : musics) {
         music->setVolume(allowMusic * musicVolume);
     }
 }
 
-
 void ResourceManager::toggleSound() {
     allowSound = !allowSound;
-    for (std::unique_ptr<sf::Sound>& sound: playingSounds) {
+    for (std::unique_ptr<sf::Sound> &sound : playingSounds) {
         sound->setVolume(allowMusic * musicVolume);
     }
 }

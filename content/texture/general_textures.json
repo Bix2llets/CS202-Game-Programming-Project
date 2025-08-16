@@ -136,5 +136,25 @@
     {
         "id": "preview_background",
         "path": "assets/texture/button/previewbackground.png"
+    },
+    {
+        "id": "plus_button",
+        "path": "assets/texture/button/plusButton2.png"
+    },
+    {
+        "id": "minus_button",
+        "path": "assets/texture/button/minusButton2.png"
+    },
+    {
+        "id": "next_wave_button",
+        "path": "assets/texture/button/nextWave.png"
+    },
+    {
+        "id": "pause_button",
+        "path": "assets/texture/button/pauseButton.png"
+    },
+    {   
+        "id": "play_button",
+        "path": "assets/texture/button/playbutton.png"
     }
 ]

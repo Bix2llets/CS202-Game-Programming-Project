@@ -65,8 +65,10 @@ Level::Level()
                       .setCallback([this](RectangularButton *button) {
                           notify("pause_game");
                       })
-                      .setText("Pause")
                       .loadJson("borderless_background_basic")
+                      .setBackground(
+                          ResourceManager::getInstance().getTexture(
+                              "pause_button"))
                       .build();
 
     nextWaveButton = builder.reset()
@@ -77,8 +79,10 @@ Level::Level()
                          .setCallback([this](RectangularButton *button) {
                              notify("next_wave");
                          })
-                         .setText("Next Wave")
                          .loadJson("borderless_background_basic")
+                         .setBackground(
+                             ResourceManager::getInstance().getTexture(
+                                 "next_wave_button"))
                          .build();
     subscribeCallbacks();
 }
@@ -92,7 +96,12 @@ void Level::update() {
         overlay->update();
         return;
     }
-
+    static sf::Color overlay = sf::Color::Red;
+    overlay.a = 127;
+    if (!waveManager.isCurrentWaveFinish())
+        nextWaveButton->setOverlayColor(overlay);
+    else 
+        nextWaveButton->setOverlayColor(sf::Color::Transparent);
     menu.update();
     pauseButton->update();
     nextWaveButton->update();
@@ -553,6 +562,8 @@ void Level::subscribeCallbacks() {
         Cursor::getInstance().removeRenderImage();
         EnemyPanel::getInstance().clearEnemy();
         upgradeMenu.removeFocus();
+        pauseButton->setBackground(
+            ResourceManager::getInstance().getTexture("play_button"));
     });
     subscribe("resume_game", [this](std::any sender, std::any data) {
         overlay = nullptr;
@@ -560,6 +571,8 @@ void Level::subscribeCallbacks() {
         Cursor::getInstance().removeRenderImage();
         EnemyPanel::getInstance().clearEnemy();
         upgradeMenu.removeFocus();
+        pauseButton->setBackground(
+            ResourceManager::getInstance().getTexture("pause_button"));
     });
 
     subscribe("quit_level", [this](std::any sender, std::any data) {
