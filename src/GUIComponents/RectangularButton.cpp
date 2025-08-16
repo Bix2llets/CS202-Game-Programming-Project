@@ -7,8 +7,8 @@
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
-#include "Utility/lerp.hpp"
 #include "Utility/aligner.hpp"
+#include "Utility/lerp.hpp"
 RectangularButton::RectangularButton(Mediator& mediator) : mediator(mediator) {
     overlayColor = sf::Color::Transparent;
 }
@@ -32,13 +32,15 @@ void RectangularButton::draw(sf::RenderTarget& target,
 
     target.draw(rect, states);
 
-    sf::RectangleShape overlayRect;
-    overlayRect.setSize(rect.getSize() + sf::Vector2f{rect.getOutlineThickness() * 2.f,
-                                          rect.getOutlineThickness() * 2.f});
+    // sf::RectangleShape overlayRect;
+    // overlayRect.setSize(rect.getSize() +
+    //                     sf::Vector2f{rect.getOutlineThickness() * 2.f,
+    //                                  rect.getOutlineThickness() * 2.f});
 
-    overlayRect.setPosition(rect.getPosition());
-    Aligner::align(overlayRect, HorizontalAlignment::Left, VerticalAlignment::Top);
-    overlayRect.setFillColor(overlayColor);
+    // overlayRect.setPosition(rect.getPosition());
+    // Aligner::align(overlayRect, HorizontalAlignment::Left,
+    //                VerticalAlignment::Top);
+    // overlayRect.setFillColor(overlayColor);
     // ? Uncomment these lines to see the bounding box for the text of button
     // sf::RectangleShape textBound;
     // textBound.setSize(label->getLocalBounds().size);
@@ -51,7 +53,7 @@ void RectangularButton::draw(sf::RenderTarget& target,
     // target.draw(textBound, states);
     label->setFillColor(textColor);
     target.draw(*label, states);
-    target.draw(overlayRect);
+    // target.draw(overlayRect);
 }
 
 std::string RectangularButton::getLabel() const { return label->getString(); }
@@ -106,9 +108,19 @@ void RectangularButton::unSubscribeMouseAll(MouseState& mouseState) {
 
 void RectangularButton::update() {
     ButtonBase::update();
-    rect.setFillColor(graphicState.getFillColor());
-    rect.setOutlineColor(graphicState.getBorderColor());
-    label->setFillColor(graphicState.getFillColor());
+    sf::Color fillColor = graphicState.getFillColor();
+    sf::Color borderColor = graphicState.getBorderColor();
+    sf::Color textColor = graphicState.getTextColor();
+    if (overlayColor != sf::Color::Transparent) {
+        fillColor = ColorMixer::perceptualLerp(fillColor, overlayColor, 0.5f);
+        borderColor =
+            ColorMixer::perceptualLerp(borderColor, overlayColor, 0.5f);
+        textColor = ColorMixer::perceptualLerp(textColor, overlayColor, 0.5f);
+    }
+
+    rect.setFillColor(fillColor);
+    rect.setOutlineColor(borderColor);
+    label->setFillColor(textColor);
 }
 
 void RectangularButton::setDisplayText(std::string text) {
@@ -140,9 +152,7 @@ void RectangularButton::setBackground(const sf::Texture* tex) {
     rect.setTexture(tex);
 }
 
-sf::Vector2f RectangularButton::getSize() const {
-    return rect.getSize();
-}
+sf::Vector2f RectangularButton::getSize() const { return rect.getSize(); }
 
 void RectangularButton::setOverlayColor(const sf::Color& color) {
     overlayColor = color;
