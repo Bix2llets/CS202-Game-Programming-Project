@@ -194,7 +194,7 @@ void TowerInfoPanel::displayUpgrade(const UpgradeDetails* detail) {
     upgradeContents.clear();
 
     const auto& upgrades = currentUpgradeDetail->bonusStats.getAllStats();
-    upgradeContents.resize(upgrades.size(), sf::Text(*ResourceManager::getInstance().getFont("pixel")));
+    upgradeContents.resize(upgrades.size(), sf::Text(*ResourceManager::getInstance().getFont("text")));
     int index = 0;
     for (const auto& upgrade : upgrades) {
         std::string upgradeName = upgrade.first;
@@ -215,7 +215,8 @@ void TowerInfoPanel::displayUpgrade(const UpgradeDetails* detail) {
         float currentStat = referencingTower->getStat(upgrade.first);
         float nextStat = currentStat + upgrade.second;
         upgradeContents[index].setString(std::format("{}:\n{:.2f} -> {:.2f}", upgradeName, currentStat, nextStat));
-        upgradeContents[index].setCharacterSize(24);
+        upgradeContents[index].setCharacterSize(16);
+        upgradeContents[index].setLineSpacing(1.5f);
         if (upgrade.second > 0) {
             upgradeContents[index].setFillColor(sf::Color::Green);
         } else {
@@ -227,7 +228,8 @@ void TowerInfoPanel::displayUpgrade(const UpgradeDetails* detail) {
                                                  VerticalAlignment::Middle);
         upgradeContents[index].setPosition(
             {background.getPosition().x + 20,
-                upgradeTitle.getPosition().y + 50 + index * 30});
+                upgradeTitle.getPosition().y + 50 + index * 70});
+        index++;
     }
     this->previewClosingTimer.reset();
 }
