@@ -14,6 +14,8 @@ class GUIState {
 
     bool pressed;
     bool hovered;
+
+    sf::Color overlayColor;
     public:
     GUIState();
 
@@ -32,4 +34,7 @@ class GUIState {
 
     void loadStyle(const nlohmann::json &file);
     void loadStyle(const std::string &ID);
+
+    void setOverlayColor(const sf::Color &color);
+    void removeOverlayColor();
 };

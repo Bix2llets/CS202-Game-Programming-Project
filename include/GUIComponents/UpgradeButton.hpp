@@ -52,7 +52,4 @@ class UpgradeButton : public CircularButton {
 
     UpgradeManager* upgrades;
 
-    sf::Color getFillColor();
-    sf::Color getBorderColor();
-    sf::Color getTextColor();
 };

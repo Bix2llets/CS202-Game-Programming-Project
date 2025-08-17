@@ -1,9 +1,8 @@
 #include "GUIComponents/GUIState.hpp"
 
-#include "Utility/lerp.hpp"
 #include "Core/JSONLoader.hpp"
-GUIState::GUIState()
-    : pressed(false), hovered(false) {
+#include "Utility/lerp.hpp"
+GUIState::GUIState() : pressed(false), hovered(false) {
     hover.setTimeInterval(0.2f)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0.2f);
@@ -18,6 +17,7 @@ GUIState::GUIState()
     reversePress.setTimeInterval(0.2f)
         .setTimerMode(TimerMode::Single)
         .setRemainingTime(0.f);
+    overlayColor = sf::Color::Transparent;
 }
 void GUIState::resetAnimation() {
     hover.setRemainingTime(hover.getInterval());
@@ -77,16 +77,22 @@ sf::Color GUIState::getFillColor() const {
         result = ColorMixer::perceptualLerp(result, style.getHover().background,
                                             hover.getCompletionPercentage());
     } else {
-        result = ColorMixer::perceptualLerp(style.getHover().background, result,
-                                            reverseHover.getCompletionPercentage());
+        result =
+            ColorMixer::perceptualLerp(style.getHover().background, result,
+                                       reverseHover.getCompletionPercentage());
     }
 
     if (pressed) {
         result = ColorMixer::perceptualLerp(result, style.getClick().background,
                                             press.getCompletionPercentage());
     } else {
-        result = ColorMixer::perceptualLerp(style.getClick().background, result,
-                                            reversePress.getCompletionPercentage());
+        result =
+            ColorMixer::perceptualLerp(style.getClick().background, result,
+                                       reversePress.getCompletionPercentage());
+    }
+
+    if (overlayColor.a > 0) {
+        result = ColorMixer::perceptualLerp(result, overlayColor, 0.5f);
     }
 
     return result;
@@ -98,16 +104,21 @@ sf::Color GUIState::getTextColor() const {
         result = ColorMixer::perceptualLerp(result, style.getHover().text,
                                             hover.getCompletionPercentage());
     } else {
-        result = ColorMixer::perceptualLerp(style.getHover().text, result,
-                                            reverseHover.getCompletionPercentage());
+        result =
+            ColorMixer::perceptualLerp(style.getHover().text, result,
+                                       reverseHover.getCompletionPercentage());
     }
 
     if (pressed) {
         result = ColorMixer::perceptualLerp(result, style.getClick().text,
                                             press.getCompletionPercentage());
     } else {
-        result = ColorMixer::perceptualLerp(style.getClick().text, result,
-                                            reversePress.getCompletionPercentage());
+        result =
+            ColorMixer::perceptualLerp(style.getClick().text, result,
+                                       reversePress.getCompletionPercentage());
+    }
+    if (overlayColor.a > 0) {
+        result = ColorMixer::perceptualLerp(result, overlayColor, 0.5f);
     }
 
     return result;
@@ -119,26 +130,33 @@ sf::Color GUIState::getBorderColor() const {
         result = ColorMixer::perceptualLerp(result, style.getHover().border,
                                             hover.getCompletionPercentage());
     } else {
-        result = ColorMixer::perceptualLerp(style.getHover().border, result,
-                                            reverseHover.getCompletionPercentage());
+        result =
+            ColorMixer::perceptualLerp(style.getHover().border, result,
+                                       reverseHover.getCompletionPercentage());
     }
 
     if (pressed) {
         result = ColorMixer::perceptualLerp(result, style.getClick().border,
                                             press.getCompletionPercentage());
     } else {
-        result = ColorMixer::perceptualLerp(style.getClick().border, result,
-                                            reversePress.getCompletionPercentage());
+        result =
+            ColorMixer::perceptualLerp(style.getClick().border, result,
+                                       reversePress.getCompletionPercentage());
+    }
+    if (overlayColor.a > 0) {
+        result = ColorMixer::perceptualLerp(result, overlayColor, 0.5f);
     }
 
     return result;
 }
 
-void GUIState::loadStyle(const nlohmann::json &file) {
-    style.loadJson(file);
-}
+void GUIState::loadStyle(const nlohmann::json &file) { style.loadJson(file); }
 
 void GUIState::loadStyle(const std::string &ID) {
     nlohmann::json file = JSONLoader::getInstance().getStyle(ID);
     loadStyle(file);
 }
+
+void GUIState::setOverlayColor(const sf::Color &color) { overlayColor = color; }
+
+void GUIState::removeOverlayColor() { overlayColor = sf::Color::Transparent; }

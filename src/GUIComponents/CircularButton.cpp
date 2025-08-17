@@ -114,3 +114,11 @@ CircularButton& CircularButton::setCallback(
     onClickCallback = std::move(callback);
     return *this;
 }
+
+void CircularButton::setOverlayColor(const sf::Color& color) {
+    graphicState.setOverlayColor(color);
+}
+
+void CircularButton::removeOverlayColor() {
+    graphicState.removeOverlayColor();
+}

@@ -10,7 +10,6 @@
 #include "Utility/aligner.hpp"
 #include "Utility/lerp.hpp"
 RectangularButton::RectangularButton(Mediator& mediator) : mediator(mediator) {
-    overlayColor = sf::Color::Transparent;
 }
 
 void RectangularButton::setOnClick(
@@ -111,12 +110,6 @@ void RectangularButton::update() {
     sf::Color fillColor = graphicState.getFillColor();
     sf::Color borderColor = graphicState.getBorderColor();
     sf::Color textColor = graphicState.getTextColor();
-    if (overlayColor != sf::Color::Transparent) {
-        fillColor = ColorMixer::perceptualLerp(fillColor, overlayColor, 0.5f);
-        borderColor =
-            ColorMixer::perceptualLerp(borderColor, overlayColor, 0.5f);
-        textColor = ColorMixer::perceptualLerp(textColor, overlayColor, 0.5f);
-    }
 
     rect.setFillColor(fillColor);
     rect.setOutlineColor(borderColor);
@@ -155,9 +148,9 @@ void RectangularButton::setBackground(const sf::Texture* tex) {
 sf::Vector2f RectangularButton::getSize() const { return rect.getSize(); }
 
 void RectangularButton::setOverlayColor(const sf::Color& color) {
-    overlayColor = color;
+    graphicState.setOverlayColor(color);
 }
 
 void RectangularButton::removeOverlayColor() {
-    overlayColor = sf::Color::Transparent;
+    graphicState.removeOverlayColor();
 }

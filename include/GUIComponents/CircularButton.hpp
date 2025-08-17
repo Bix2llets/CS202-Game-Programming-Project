@@ -34,6 +34,8 @@ class CircularButton : public ButtonBase {
 
     inline int getRadius() const { return buttonShape.getRadius(); }
 
+    void setOverlayColor(const sf::Color& color);
+    void removeOverlayColor();
     private:
     sf::Sprite displaySprite;
     Mediator* parentMediator = nullptr;

@@ -54,8 +54,8 @@ void UpgradeButton::updatePriceTag() {
     petroleumText.setCharacterSize(24);
     scrapText.setCharacterSize(24);
 
-    petroleumText.setFillColor(getTextColor());
-    scrapText.setFillColor(getTextColor());
+    petroleumText.setFillColor(graphicState.getTextColor());
+    scrapText.setFillColor(graphicState.getTextColor());
 
     scrapIcon.setScale({0.5f, 0.5f});
     petrolIcon.setScale({0.5f, 0.5f});
@@ -134,9 +134,9 @@ void UpgradeButton::updatePriceTag() {
         priceTag.getSize() -
         sf::Vector2u{static_cast<unsigned int>(borderThickness) * 2,
                      static_cast<unsigned int>(borderThickness) * 2}));
-    background.setFillColor(getFillColor());
+    background.setFillColor(graphicState.getFillColor());
     background.setOutlineThickness(borderThickness);
-    background.setOutlineColor(getBorderColor());
+    background.setOutlineColor(graphicState.getBorderColor());
     priceTag.draw(background);
     priceTag.draw(priceSprite);
     priceTag.display();
@@ -161,9 +161,14 @@ void UpgradeButton::draw(sf::RenderTarget& target,
 void UpgradeButton::update() {
     ButtonBase::update();
 
-    sf::Color fillColor = getFillColor();
-    sf::Color borderColor = getBorderColor();
-    sf::Color textColor = getTextColor();
+    if (!canUpgrade && !isCapped) {
+        graphicState.setOverlayColor(sf::Color::Red);
+    } else {
+        graphicState.removeOverlayColor();
+    }
+    sf::Color fillColor = graphicState.getFillColor();
+    sf::Color borderColor = graphicState.getBorderColor();
+    sf::Color textColor = graphicState.getTextColor();
     updatePriceTag();
     buttonShape.setFillColor(fillColor);
     buttonShape.setOutlineColor(borderColor);
@@ -296,30 +301,6 @@ UpgradeButton& UpgradeButton::setCanUpgrade(bool val) {
     return *this;
 }
 
-sf::Color UpgradeButton::getFillColor() {
-    sf::Color fillColor = graphicState.getFillColor();
-    if (!isCapped && !canUpgrade) {
-        sf::Color mixColor = sf::Color::Red;
-        return ColorMixer::perceptualLerp(fillColor, mixColor, 0.5f);
-    }
-    return fillColor;
-}
-sf::Color UpgradeButton::getBorderColor() {
-    sf::Color borderColor = graphicState.getBorderColor();
-    if (!isCapped && !canUpgrade) {
-        sf::Color mixColor = sf::Color::Red;
-        return ColorMixer::perceptualLerp(borderColor, mixColor, 0.5f);
-    }
-    return borderColor;
-}
-sf::Color UpgradeButton::getTextColor() {
-    sf::Color textColor = graphicState.getTextColor();
-    if (!isCapped && !canUpgrade) {
-        sf::Color mixColor = sf::Color::Red;
-        return ColorMixer::perceptualLerp(textColor, mixColor, 0.5f);
-    }
-    return textColor;
-}
 
 UpgradeButton& UpgradeButton::setIsCapped(bool val) {
     isCapped = val;

@@ -113,5 +113,4 @@ class RectangularButton : public ButtonBase {
 
     bool contains(const sf::Vector2f& windowPosition);
     sf::Vector2f position;
-    sf::Color overlayColor;
 };

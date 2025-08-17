@@ -63,7 +63,14 @@ void StaticSellMenu::unFocus() {
 
 void StaticSellMenu::update() {
     if (focusedEntity == nullptr) return;
-
+    if (parentLevel.getBudget().getPetroleum().value <
+            focusedEntity->getRemoveCost().getPetroleum().value ||
+        parentLevel.getBudget().getScraps().value <
+            focusedEntity->getRemoveCost().getScraps().value) {
+        sellButton.setOverlayColor(sf::Color::Red);
+    } else {
+        sellButton.removeOverlayColor();
+    }
     sellButton.update();
 }
 
