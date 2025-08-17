@@ -24,7 +24,8 @@ void WaveManager::loadJSON(nlohmann::json jsonFile) {
     for (auto waveIt = waveConfiguration.begin();
          waveIt != waveConfiguration.end(); ++waveIt) {
         std::vector<EnemyGroupInfo> enemyGroups;
-        for (auto groupIt = waveIt->begin(); groupIt != waveIt->end();
+        Logger::debug(std::format("Loading wave: {}", (*waveIt).dump(4)));
+        for (auto groupIt = (*waveIt)["enemy_info"].begin(); groupIt != (*waveIt)["enemy_info"].end();
              ++groupIt) {
             EnemyGroupInfo groupInfo;
             groupInfo.id = (*groupIt)["id"];

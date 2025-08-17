@@ -8,123 +8,195 @@
         "y": 900
     },
     "waypoints": [
-        [-24, 30],
-        [0, 30],
-        [14, 26],
-        [25, 24],
-        [36, 24],
-        [42, 26],
-        [46, 29],
-        [49, 33],
-        [50, 38],
-        [50, 45],
-        [45, 55],
-        [42, 63],
-        [41, 73, 0.91],
-        [44, 83, 0.82],
-        [48, 90, 0.73],
-        [54, 94, 0.73],
-        [63, 95, 0.73],
-        [73, 91, 0.82],
-        [80, 84, 0.91],
-        [85, 82, 0.91],
-        [89, 83],
-        [92, 85],
-        [100, 93],
-        [111, 103],
-        [138, 106],
-        [156, 103],
-        [164, 93],
-        [161, 83],
-        [149, 74],
-        [117, 54],
-        [110, 39],
-        [113, 31],
-        [132, 26],
-        [155, 27],
-        [199, 35],
-        [220, 35]
+        [
+            -24,
+            30
+        ],
+        [
+            0,
+            30
+        ],
+        [
+            14,
+            26
+        ],
+        [
+            25,
+            24
+        ],
+        [
+            36,
+            24
+        ],
+        [
+            42,
+            26
+        ],
+        [
+            46,
+            29
+        ],
+        [
+            49,
+            33
+        ],
+        [
+            50,
+            38
+        ],
+        [
+            50,
+            45
+        ],
+        [
+            45,
+            55
+        ],
+        [
+            42,
+            63
+        ],
+        [
+            41,
+            73,
+            0.91
+        ],
+        [
+            44,
+            83,
+            0.82
+        ],
+        [
+            48,
+            90,
+            0.73
+        ],
+        [
+            54,
+            94,
+            0.73
+        ],
+        [
+            63,
+            95,
+            0.73
+        ],
+        [
+            73,
+            91,
+            0.82
+        ],
+        [
+            80,
+            84,
+            0.91
+        ],
+        [
+            85,
+            82,
+            0.91
+        ],
+        [
+            89,
+            83
+        ],
+        [
+            92,
+            85
+        ],
+        [
+            100,
+            93
+        ],
+        [
+            111,
+            103
+        ],
+        [
+            138,
+            106
+        ],
+        [
+            156,
+            103
+        ],
+        [
+            164,
+            93
+        ],
+        [
+            161,
+            83
+        ],
+        [
+            149,
+            74
+        ],
+        [
+            117,
+            54
+        ],
+        [
+            110,
+            39
+        ],
+        [
+            113,
+            31
+        ],
+        [
+            132,
+            26
+        ],
+        [
+            155,
+            27
+        ],
+        [
+            199,
+            35
+        ],
+        [
+            220,
+            35
+        ]
     ],
     "wave": [
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ]
+        {
+            "weather": "raining",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                },
+                {
+                    "id": "basic_enemy",
+                    "quantity": 20,
+                    "spawn_delay": 30,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.5
+        },
+        {
+            "weather": "raining",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                },
+                {
+                    "id": "basic_enemy",
+                    "quantity": 20,
+                    "spawn_delay": 30,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.5
+        }
     ]
 }

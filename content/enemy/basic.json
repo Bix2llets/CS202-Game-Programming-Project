@@ -4,11 +4,11 @@
         "name": "Basic enemy",
         "description": "The basic enemy, jack of all trades with low stats",
         "stats": {
-            "max_health": 100,
+            "max_health": 1000,
             "heal_amount": 0,
             "resistance": 0,
             "fire_resistance": 0,
-            "speed": 80,
+            "speed": 40,
             "reward": {
                 "petroleum": 0,
                 "scrap": 9
@@ -22,8 +22,7 @@
             "type": "circular",
             "center_x": 16,
             "center_y": 16,
-            "viewport" :
-            {
+            "viewport": {
                 "x": 0,
                 "y": 0,
                 "width": 256,
@@ -32,7 +31,7 @@
         },
         "type": "land",
         "spawn_effect": {
-            "effect_burn_level": 5,
+            "effect_burn_level": 0,
             "effect_burn_duration": 10
         }
     },
@@ -59,8 +58,7 @@
             "type": "circular",
             "center_x": 16,
             "center_y": 16,
-            "viewport" :
-            {
+            "viewport": {
                 "x": 0,
                 "y": 0,
                 "width": 256,
