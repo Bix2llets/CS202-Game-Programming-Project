@@ -7,7 +7,7 @@
 const char* Logger::RESET_COLOR = "\033[0m";
 
 bool Logger::isLogOn = false;
-bool Logger::isTraceOn = true;
+bool Logger::isTraceOn = false;
 bool Logger::isDebugOn = false;
 bool Logger::isInfoOn = false;
 bool Logger::isSuccessOn = true;

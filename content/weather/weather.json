@@ -1,40 +1,44 @@
-{
-    "sunny": {
+[
+    {
+        "id": "sunny",
         "icon": "",
         "has_overlay": false,
-        "overlay": {}
+        "overlay_animation": {}
     },
-    "rainy": {
+    {
+        "id": "raining",
         "icon": "",
         "has_overlay": true,
-        "overlay": {
-            "texture_id": "rifle_turret",
-            "width": 200,
-            "height": 200,
+        "overlay_animation": {
+            "texture_id": "raining_overlay",
+            "width": 400,
+            "height": 400,
             "animation_interval": 0.05,
-            "type": "linear",
+            "type": "circular",
             "center_x": 0,
             "center_y": 0,
             "viewport" : {
                 "x": 0,
                 "y": 0,
-                "width": 6000,
-                "height": 200
+                "width": 11200,
+                "height": 400
             }
         }
     },
-    "thunderstorm": {
+    {
+        "id": "thunderstorm",
         "icon": "",
         "has_overlay": false,
-        "overlay": {
+        "overlay_animation": {
 
         }
     },
-    "foggy": {
+    {
+        "id": "foggy",
         "icon": "",
         "has_overlay": false,
-        "overlay": {
+        "overlay_animation": {
 
         }
     }
-}
+]

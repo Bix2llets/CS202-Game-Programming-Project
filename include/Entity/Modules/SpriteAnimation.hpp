@@ -138,4 +138,10 @@ public:
      * @param tower Pointer to the Tower object.
      */
     void updateSpriteSize(float newWidth, float newHeight);
+
+    /**
+     * @brief Sets the position of the sprite animation.
+     * @param position The new position to set.
+     */
+    void setPosition(const sf::Vector2f& position);
 };

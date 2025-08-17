@@ -12,6 +12,7 @@
 enum class RandomType : std::size_t {
 	TerrainGeneration = 0,
 	EntityID,
+	EntityEffectId,
 	EnemyMovement,
 
 	COUNT // keep last: number of categories

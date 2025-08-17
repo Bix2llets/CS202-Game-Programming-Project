@@ -1,44 +1,42 @@
 /**
- * @file RainyWeather.cpp
- * @brief Implementation of the RainyWeather class.
+ * @file RainingWeather.cpp
+ * @brief Implementation of the RainingWeather class.
  */
 
-#include "Gameplay/Weather/Weathers/RainyWeather.hpp"
+#include "Gameplay/Weather/Weathers/RainingWeather.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Entity/Modules/EntityStat.hpp"
 #include "Scene/Level.hpp"
 #include "Utility/logger.hpp"
 
-RainyWeather::RainyWeather(Level& level) : Weather(WeatherType::Raining, level) {
+RainingWeather::RainingWeather(Level& level) : Weather(WeatherType::Raining, level) {
     // Load rain overlay texture
-    loadOverlay("rain_overlay");
-    Logger::debug("RainyWeather: Created rainy weather with effects");
+    loadOverlay("raining");
+    
+    float size = std::max(level.getMapSize().x, level.getMapSize().y);
+    Logger::critical("RainingWeather: Size " + std::to_string(size));
+    overlayAnimation.updateSpriteSize(size, size);
+    overlayAnimation.setPosition({0, 0});
+
+    Logger::critical("RainingWeather: Created rainy weather with effects");
 }
 
-void RainyWeather::update() {
-    // Rain animation or particle effects could be updated here
-    // For now, just maintain the overlay
+void RainingWeather::update() {
+    // Update rain animation or particle effects
+    overlayAnimation.update();
+    overlaySprite = overlayAnimation.getCurrentSprite();
 }
 
-void RainyWeather::applyToTower(Tower* tower) {
-    try {
-        // Reduce tower range by 15%
-        EntityStat* stats = tower->getStats();
-        // stats->setStat(stats->multiplier::RANGE)
-        // float currentRange = stats.getStat("range");
-        // float reducedRange = currentRange * (1.0f - TOWER_RANGE_REDUCTION);
-        // stats.setStat("range", reducedRange);
+void RainingWeather::applyToTower(Tower* tower) {
+    EntityStat* stats = tower->getStats();
+    stats->addStat(EntityStat::multiplier("range"), -TOWER_RANGE_REDUCTION);
         
-        // Logger::debug("RainyWeather: Applied rain effects to tower " + std::to_string(tower.getId()) + 
-        //              " - Range reduced from " + std::to_string(currentRange) + 
-        //              " to " + std::to_string(reducedRange));
-    } catch (const std::exception& e) {
-        Logger::error("RainyWeather: Failed to apply effects to tower: " + std::string(e.what()));
-    }
+    Logger::debug("RainingWeather: Applied rain effects to tower " + std::to_string(tower->getUniqueId()) + 
+                    " - Range reduced by " + std::to_string(TOWER_RANGE_REDUCTION * 100) + "%");
 }
 
-void RainyWeather::applyToEnemy(Enemy* enemy) {
+void RainingWeather::applyToEnemy(Enemy* enemy) {
     // try {
     //     EntityStat& stats = enemy.getStats();
         
@@ -60,31 +58,23 @@ void RainyWeather::applyToEnemy(Enemy* enemy) {
     //         stats.setStat("effect_burn_duration", reducedBurnDuration);
     //     }
         
-    //     Logger::debug("RainyWeather: Applied rain effects to enemy " + std::to_string(enemy.getId()) + 
+    //     Logger::debug("RainingWeather: Applied rain effects to enemy " + std::to_string(enemy.getId()) + 
     //                  " - Speed reduced from " + std::to_string(currentSpeed) + 
     //                  " to " + std::to_string(reducedSpeed));
     // } catch (const std::exception& e) {
-    //     Logger::error("RainyWeather: Failed to apply effects to enemy: " + std::string(e.what()));
+    //     Logger::error("RainingWeather: Failed to apply effects to enemy: " + std::string(e.what()));
     // }
 }
 
-void RainyWeather::removeFromTower(Tower* tower) {
-    // try {
-    //     // Restore tower range by reversing the reduction
-    //     EntityStat& stats = tower.getStats();
-    //     float currentRange = stats.getStat("range");
-    //     float originalRange = currentRange / (1.0f - TOWER_RANGE_REDUCTION);
-    //     stats.setStat("range", originalRange);
+void RainingWeather::removeFromTower(Tower* tower) {
+    EntityStat* stats = tower->getStats();
+    stats->addStat(EntityStat::multiplier("range"), TOWER_RANGE_REDUCTION);
         
-    //     Logger::debug("RainyWeather: Removed rain effects from tower " + std::to_string(tower.getId()) + 
-    //                  " - Range restored from " + std::to_string(currentRange) + 
-    //                  " to " + std::to_string(originalRange));
-    // } catch (const std::exception& e) {
-    //     Logger::error("RainyWeather: Failed to remove effects from tower: " + std::string(e.what()));
-    // }
+    Logger::debug("RainingWeather: Removed rain effects from tower " + std::to_string(tower->getUniqueId()) + 
+                    " - Range restored by " + std::to_string(TOWER_RANGE_REDUCTION * 100) + "%");
 }
 
-void RainyWeather::removeFromEnemy(Enemy* enemy) {
+void RainingWeather::removeFromEnemy(Enemy* enemy) {
     // try {
     //     EntityStat& stats = enemy.getStats();
         
@@ -106,10 +96,10 @@ void RainyWeather::removeFromEnemy(Enemy* enemy) {
     //         stats.setStat("effect_burn_duration", originalBurnDuration);
     //     }
         
-    //     Logger::debug("RainyWeather: Removed rain effects from enemy " + std::to_string(enemy.getId()) + 
+    //     Logger::debug("RainingWeather: Removed rain effects from enemy " + std::to_string(enemy.getId()) + 
     //                  " - Speed restored from " + std::to_string(currentSpeed) + 
     //                  " to " + std::to_string(originalSpeed));
     // } catch (const std::exception& e) {
-    //     Logger::error("RainyWeather: Failed to remove effects from enemy: " + std::string(e.what()));
+    //     Logger::error("RainingWeather: Failed to remove effects from enemy: " + std::string(e.what()));
     // }
 }

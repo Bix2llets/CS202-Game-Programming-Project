@@ -1,16 +1,16 @@
 /**
- * @file RainyWeather.hpp
- * @brief Declares the RainyWeather class.
+ * @file RainingWeather.hpp
+ * @brief Declares the RainingWeather class.
  */
 #pragma once
 
 #include "Gameplay/Weather/Weather.hpp"
 
 /**
- * @class RainyWeather
+ * @class RainingWeather
  * @brief Rainy weather that reduces tower range and enemy speed, affects burn effects.
  */
-class RainyWeather : public Weather {
+class RainingWeather : public Weather {
 private:
     static constexpr float TOWER_RANGE_REDUCTION = 0.15f; // 15% reduction
     static constexpr float ENEMY_SPEED_REDUCTION = 0.10f; // 10% reduction
@@ -18,7 +18,7 @@ private:
     static constexpr float BURN_DURATION_REDUCTION = 0.40f; // 40% reduction
 
 public:
-    RainyWeather(Level& level);
+    RainingWeather(Level& level);
     
     void update() override;
     void applyToTower(Tower* tower) override;

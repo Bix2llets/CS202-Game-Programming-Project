@@ -129,8 +129,10 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     Window::getInstance().toggleUserMode();
     // map.render(state);
     Window::getInstance().getRenderWindow().draw(backgrounds, state);
+    
     entityManager.render(state);
     weatherManager.draw(target, state);
+
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.render(state);
     }
@@ -192,9 +194,12 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
         // point[0].get<float>(),
         //                           point[1].get<float>()));
     }
+
     path.loadWaypoints(waypoints);
     loadWaves(jsonFile);
     Logger::success("Loaded waypoints");
+    
+    weatherManager.setUp();
     factory = std::make_unique<EnemyFactory>(waypoints, *this);
 }
 
@@ -205,7 +210,10 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
         Logger::error("Not an array");
         return;
     }
+
     waveManager.loadJSON(jsonFile);
+    weatherManager.loadJSON(jsonFile);
+    
     currentWave = 0;
     totalWaves = waveManager.getTotalWaves();
 }
@@ -214,7 +222,7 @@ void Level::nextWave() {
     if (currentWave < totalWaves) {
         ++currentWave;
         waveManager.nextWave();
-        weatherManager.changeWeatherForWave(currentWave - 1);
+        weatherManager.nextWave();
     }
 }
 
@@ -479,7 +487,6 @@ void Level::subscribeCallbacks() {
             budget.subtractScraps(newTower->getCost().getScraps().value);
             
             // Apply current weather effects to the new tower
-            weatherManager.applyWeatherToTower(newTower.get());
             entityManager.addTower(std::move(newTower));
         }
     });
@@ -558,7 +565,6 @@ void Level::subscribeCallbacks() {
                 spawnInfo.enemyID, 0, spawnInfo.difficultyModifier);
             
             // Apply current weather effects to the new enemy
-            weatherManager.applyWeatherToEnemy(enemy.get());
             entityManager.addEnemy(std::move(enemy));
             // Logger::info(std::format("Spawning enemy: {}", enemyID));
         } catch (std::bad_any_cast &e) {

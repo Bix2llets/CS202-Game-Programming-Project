@@ -1,6 +1,6 @@
 [
     {
-        "id": "rain_overlay",
-        "path": "assets/texture/weather/rain_overlay.png"
+        "id": "raining_overlay",
+        "path": "assets/texture/weather/raining_overlay.png"
     }
 ]

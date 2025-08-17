@@ -262,3 +262,9 @@ void SpriteAnimation::updateSpriteSize(float newWidth, float newHeight) {
         sprite.setScale({newWidth / width, newHeight / height});
     }
 }
+
+void SpriteAnimation::setPosition(const sf::Vector2f& position) {
+    for (sf::Sprite& sprite : sprites) {
+        sprite.setPosition(position);
+    }
+}

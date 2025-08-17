@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 class Tower;
 class Enemy;
@@ -11,8 +12,12 @@ namespace Combat {
  * @brief Abstract base class for tower target selection strategies
  */
 class TargetSelector {
+protected:
+   std::string name;
 public:
    virtual ~TargetSelector() = default;
+
+   std::string getName() const { return name; }
 
    /**
     * @brief Select targets from available enemies
@@ -30,6 +35,8 @@ public:
  */
 class NearestTargetSelector : public TargetSelector {
 public:
+   NearestTargetSelector() { name = "Nearest Target Selector"; }
+
    /**
     * @brief Select the nearest enemies to the tower
     *
@@ -46,6 +53,8 @@ public:
  */
 class FarthestTargetSelector : public TargetSelector {
 public:
+   FarthestTargetSelector() { name = "Farthest Target Selector"; }
+
    /**
     * @brief Select the farthest enemies from the tower
     *
@@ -62,6 +71,8 @@ public:
  */
 class LowestHealthTargetSelector : public TargetSelector {
 public:
+   LowestHealthTargetSelector() { name = "Lowest Health Target Selector"; }
+
    /**
     * @brief Select the enemies with the lowest health
     *
@@ -78,6 +89,8 @@ public:
  */
 class HighestHealthTargetSelector : public TargetSelector {
 public:
+   HighestHealthTargetSelector() { name = "Highest Health Target Selector"; }
+
    /**
     * @brief Select the enemies with the highest health
     *
@@ -91,6 +104,8 @@ public:
 
 class FirstTargetSelector : public TargetSelector {
 public:
+   FirstTargetSelector() { name = "First Target Selector"; }
+
     /**
      * @brief Select the first enemy in the line (aka the nearest to the end of the path). 
      *
@@ -104,6 +119,8 @@ public:
 
 class LastTargetSelector : public TargetSelector {
 public:
+   LastTargetSelector() { name = "Last Target Selector"; }
+
     /**
      * @brief Select the last enemy in the line (aka the farthest from the end of the path).
      *

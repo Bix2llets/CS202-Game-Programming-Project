@@ -6,6 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+#include "Entity/Modules/SpriteAnimation.hpp"
 
 /**
  * @enum WeatherType
@@ -31,8 +32,10 @@ class Weather : public sf::Drawable {
 protected:
     WeatherType type;
     Level& level;
-    sf::Sprite overlay;
+
     bool overlayActive;
+    sf::Sprite overlaySprite;
+    SpriteAnimation overlayAnimation;
 
 public:
     /**
@@ -98,7 +101,6 @@ public:
 protected:
     /**
      * @brief Load overlay texture for this weather.
-     * @param textureId ID of the texture to load.
      */
-    void loadOverlay(const std::string& textureId);
+    void loadOverlay(const std::string& weatherId);
 };

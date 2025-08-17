@@ -9,7 +9,7 @@
     },
     "waypoints": [
         [
-            -24,
+            -15,
             30
         ],
         [
@@ -157,13 +157,13 @@
             35
         ],
         [
-            220,
+            210,
             35
         ]
     ],
     "wave": [
         {
-            "weather": "raining",
+            "weather": "sunny",
             "enemy_info": [
                 {
                     "id": "basic_enemy",
@@ -173,8 +173,8 @@
                 },
                 {
                     "id": "basic_enemy",
-                    "quantity": 20,
-                    "spawn_delay": 30,
+                    "quantity": 10,
+                    "spawn_delay": 20,
                     "internal_delay": 1
                 }
             ],
@@ -191,12 +191,24 @@
                 },
                 {
                     "id": "basic_enemy",
-                    "quantity": 20,
+                    "quantity": 5,
                     "spawn_delay": 30,
                     "internal_delay": 1
                 }
             ],
             "local_difficulty": 0.5
+        },
+        {
+            "weather": "sunny",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 15,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.8
         }
     ]
 }
