@@ -108,17 +108,12 @@ void Enemy::update() {
     // }
     move();
     animation.update();
-    healTimer.update();
     attackDisplayTimer.update();
 
     sf::Color red = sf::Color::Red;
     sprite = changeSpriteContent(sprite, animation.getCurrentSprite());
     sprite.setColor(ColorMixer::perceptualLerp(red, sf::Color::White, attackDisplayTimer.getCompletionPercentage()));
     sprite.setRotation(path.angleByVertical());
-    while (healTimer.isAvailable()) {
-        healTimer.use();
-        health.heal(healAmount);
-    }
 }
 
 void Enemy::move() {

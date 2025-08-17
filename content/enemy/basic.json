@@ -5,9 +5,9 @@
         "description": "The basic enemy, jack of all trades with low stats",
         "stats": {
             "max_health": 100,
-            "heal_amount": 1,
-            "heal_interval": 0.5,
-            "resistance": 20,
+            "heal_amount": 0,
+            "resistance": 0,
+            "fire_resistance": 0,
             "speed": 80,
             "reward": {
                 "petroleum": 0,
@@ -32,12 +32,8 @@
         },
         "type": "land",
         "spawn_effect": {
-            "audio": [],
-            "visual": []
-        },
-        "death_effect": {
-            "audio": [],
-            "visual": []
+            "effect_burn_level": 5,
+            "effect_burn_duration": 10
         }
     },
     {
