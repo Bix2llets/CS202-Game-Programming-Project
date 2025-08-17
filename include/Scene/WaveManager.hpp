@@ -39,4 +39,6 @@ public:
     inline int getTotalWaves() const {
         return waveInfo.size();
     }
+
+    float getRemainingTime();
 };

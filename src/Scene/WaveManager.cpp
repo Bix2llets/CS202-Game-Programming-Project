@@ -1,10 +1,9 @@
 #include "Scene/WaveManager.hpp"
 
 #include "Core/JSONLoader.hpp"
+#include "Entity/Enemy/EnemySpawnInfo.hpp"
 #include "Scene/Level.hpp"
 #include "Utility/logger.hpp"
-
-#include "Entity/Enemy/EnemySpawnInfo.hpp"
 WaveManager::WaveManager(Level& parentLevel) : parentLevel{parentLevel} {
     localDifficulty = 0.f;
     currentWave = -1;
@@ -48,7 +47,8 @@ void WaveManager::loadJSON(nlohmann::json jsonFile) {
 
 void WaveManager::update() {
     std::vector<decltype(processingHordes.begin())> deleteList;
-    for (auto info = processingHordes.begin(); info != processingHordes.end(); info++) {
+    for (auto info = processingHordes.begin(); info != processingHordes.end();
+         info++) {
         EnemyGroupInfo* horde = &info->first;
 
         horde->initialDelay.update();
@@ -57,7 +57,8 @@ void WaveManager::update() {
         if (!horde->initialDelay.isAvailable()) continue;
         while (horde->spawnDelay.isAvailable() && horde->quantity) {
             horde->spawnDelay.use();
-            parentLevel.notify("spawn_enemy", *this, EnemySpawnInfo(horde->id, info->second));
+            parentLevel.notify("spawn_enemy", *this,
+                               EnemySpawnInfo(horde->id, info->second));
             horde->quantity--;
         }
         if (horde->quantity == 0) {
@@ -83,11 +84,11 @@ void WaveManager::setWave(int ID) {
     parentLevel.getWeatherManager().changeWeatherForWave(currentWave);
 
     float waveDifficulty;
-    if (getCurrentWave() % 5 == 0) 
+    if (getCurrentWave() % 5 == 0)
         waveDifficulty = localDifficulty * 2;
     else
         waveDifficulty = localDifficulty;
-    for (auto &group : waveInfo[currentWave]) {
+    for (auto& group : waveInfo[currentWave]) {
         group.initialDelay.reset();
         group.spawnDelay.reset();
         processingHordes.push_back({group, waveDifficulty});
@@ -101,4 +102,20 @@ void WaveManager::nextWave() {
         Logger::info("No more waves available, all waves completed.");
         parentLevel.notify("all_waves_completed", *this, currentWave);
     }
+}
+
+float WaveManager::getRemainingTime() {
+    if (processingHordes.empty()) return 0.f;
+    float remainingTime = 0.f;
+    for (const auto& horde : processingHordes) {
+        if (horde.first.quantity == 0)
+            remainingTime = std::max(remainingTime, 0.f);
+        else
+            remainingTime = std::max(
+                remainingTime, horde.first.spawnDelay.getRemainingTime() +
+                                   horde.first.initialDelay.getRemainingTime() +
+                                   (horde.first.quantity - 1) *
+                                       horde.first.spawnDelay.getInterval());
+    }
+    return remainingTime;
 }
