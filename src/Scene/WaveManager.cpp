@@ -79,9 +79,6 @@ void WaveManager::setWave(int ID) {
     currentWave = ID;
     localDifficulty = float(ID) / 10;
 
-    // Notify weather manager of wave change
-    parentLevel.getWeatherManager().changeWeatherForWave(currentWave);
-
     float waveDifficulty;
     if (getCurrentWave() % 5 == 0) 
         waveDifficulty = localDifficulty * 2;

@@ -12,13 +12,19 @@
 
 RainingWeather::RainingWeather(Level& level) : Weather(WeatherType::Raining, level) {
     // Load rain overlay texture
-    loadOverlay("rain_overlay");
+    loadOverlay("raining");
+    overlaySprite.setPosition({0, 0});
+
+    float size = std::max(level.getMapSize().x, level.getMapSize().y);
+    overlayAnimation.updateSpriteSize(size, size);
+
     Logger::debug("RainingWeather: Created rainy weather with effects");
 }
 
 void RainingWeather::update() {
-    // Rain animation or particle effects could be updated here
-    // For now, just maintain the overlay
+    // Update rain animation or particle effects
+    overlayAnimation.update();
+    overlaySprite = overlayAnimation.getCurrentSprite();
 }
 
 void RainingWeather::applyToTower(Tower* tower) {

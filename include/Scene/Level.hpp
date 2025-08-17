@@ -216,6 +216,8 @@ public:
 
     inline bool isRunning() { return running; }
 
+    inline sf::Vector2f getMapSize() const { return backgrounds.getGlobalBounds().size; }
+
     private:
     bool isPlacementValid(sf::Vector2f worldPosition);
 };

@@ -19,6 +19,9 @@ WeatherManager::WeatherManager(Level& level)
     
     // Start with sunny weather by default
     currentWeather = weatherInstances[WeatherType::Sunny].get();
+
+    waveWeatherPattern = std::vector<WeatherType>(100, WeatherType::Raining);
+
     Logger::info("WeatherManager: Initialized with sunny weather");
 }
 

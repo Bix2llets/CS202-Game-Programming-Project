@@ -1,17 +1,19 @@
-{
-    "sunny": {
+[
+    {
+        "id": "sunny",
         "icon": "",
         "has_overlay": false,
-        "overlay": {}
+        "overlay_animation": {}
     },
-    "rainy": {
+    {
+        "id": "raining",
         "icon": "",
         "has_overlay": true,
-        "overlay": {
+        "overlay_animation": {
             "texture_id": "rain_overlay",
             "width": 200,
             "height": 200,
-            "animation_interval": 0.05,
+            "animation_interval": 0.1,
             "type": "linear",
             "center_x": 0,
             "center_y": 0,
@@ -23,18 +25,20 @@
             }
         }
     },
-    "thunderstorm": {
+    {
+        "id": "thunderstorm",
         "icon": "",
         "has_overlay": false,
-        "overlay": {
+        "overlay_animation": {
 
         }
     },
-    "foggy": {
+    {
+        "id": "foggy",
         "icon": "",
         "has_overlay": false,
-        "overlay": {
+        "overlay_animation": {
 
         }
     }
-}
+]
