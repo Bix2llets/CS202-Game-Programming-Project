@@ -13,12 +13,13 @@
 RainingWeather::RainingWeather(Level& level) : Weather(WeatherType::Raining, level) {
     // Load rain overlay texture
     loadOverlay("raining");
-    overlaySprite.setPosition({0, 0});
-
+    
     float size = std::max(level.getMapSize().x, level.getMapSize().y);
+    Logger::critical("RainingWeather: Size " + std::to_string(size));
     overlayAnimation.updateSpriteSize(size, size);
+    overlayAnimation.setPosition({0, 0});
 
-    Logger::debug("RainingWeather: Created rainy weather with effects");
+    Logger::critical("RainingWeather: Created rainy weather with effects");
 }
 
 void RainingWeather::update() {
@@ -28,15 +29,11 @@ void RainingWeather::update() {
 }
 
 void RainingWeather::applyToTower(Tower* tower) {
-    try {
-        EntityStat* stats = tower->getStats();
-        stats->addStat(EntityStat::multiplier("range"), -TOWER_RANGE_REDUCTION);
+    EntityStat* stats = tower->getStats();
+    stats->addStat(EntityStat::multiplier("range"), -TOWER_RANGE_REDUCTION);
         
-        Logger::debug("RainingWeather: Applied rain effects to tower " + std::to_string(tower->getUniqueId()) + 
-                      " - Range reduced by " + std::to_string(TOWER_RANGE_REDUCTION * 100) + "%");
-    } catch (const std::exception& e) {
-        Logger::error("RainingWeather: Failed to apply effects to tower: " + std::string(e.what()));
-    }
+    Logger::debug("RainingWeather: Applied rain effects to tower " + std::to_string(tower->getUniqueId()) + 
+                    " - Range reduced by " + std::to_string(TOWER_RANGE_REDUCTION * 100) + "%");
 }
 
 void RainingWeather::applyToEnemy(Enemy* enemy) {
@@ -70,15 +67,11 @@ void RainingWeather::applyToEnemy(Enemy* enemy) {
 }
 
 void RainingWeather::removeFromTower(Tower* tower) {
-    try {
-        EntityStat* stats = tower->getStats();
-        stats->addStat(EntityStat::multiplier("range"), TOWER_RANGE_REDUCTION);
+    EntityStat* stats = tower->getStats();
+    stats->addStat(EntityStat::multiplier("range"), TOWER_RANGE_REDUCTION);
         
-        Logger::debug("RainingWeather: Removed rain effects from tower " + std::to_string(tower->getUniqueId()) + 
-                      " - Range restored by " + std::to_string(TOWER_RANGE_REDUCTION * 100) + "%");
-    } catch (const std::exception& e) {
-        Logger::error("RainingWeather: Failed to apply effects to tower: " + std::string(e.what()));
-    }
+    Logger::debug("RainingWeather: Removed rain effects from tower " + std::to_string(tower->getUniqueId()) + 
+                    " - Range restored by " + std::to_string(TOWER_RANGE_REDUCTION * 100) + "%");
 }
 
 void RainingWeather::removeFromEnemy(Enemy* enemy) {

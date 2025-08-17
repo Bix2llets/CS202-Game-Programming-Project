@@ -13,11 +13,11 @@
 #include "Scene/BlankScene.hpp"
 #include "Scene/MainMenu.hpp"
 #include "Scene/Mock/TestScene.hpp"
-#include "Scene/Mock/TowerRotationMockScene.hpp"
 #include "Scene/Setting.hpp"
 #include "Utility/logger.hpp"
 #include "Core/LevelFactory.hpp"
 #include "Scene/LevelSelection.hpp"
+
 Application::Application() : isRunning{true} {
     if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
@@ -58,8 +58,8 @@ Application::Application() : isRunning{true} {
     Logger::success("Resource loading");
     SceneManager::getInstance().enqueueSceneAdd("Main menu", std::make_unique<MainMenu>());
      SceneManager::getInstance().enqueueSceneAdd("Setting", std::make_unique<Setting>());
-    SceneManager::getInstance().enqueueSceneAdd(
-        "Tower Test", std::make_unique<TowerRotationMockScene>());
+    // SceneManager::getInstance().enqueueSceneAdd(
+        // "Tower Test", std::make_unique<TowerRotationMockScene>());
     SceneManager::getInstance().enqueueSceneAdd(
         "Level Selection", std::make_unique<LevelSelection>());
 

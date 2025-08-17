@@ -13,16 +13,39 @@
 #include "Utility/logger.hpp"
 
 WeatherManager::WeatherManager(Level& level) 
-    : level(level), currentWeather(nullptr), currentWaveIndex(-1) {
-    // Initialize all weather instances
+    : level(level), currentWeather(nullptr), currentWaveIndex(-1) {}
+
+void WeatherManager::loadJSON(const nlohmann::json& jsonFile) {
+    auto weatherConfig = jsonFile["wave"];
+
+    for (auto it = weatherConfig.begin(); it != weatherConfig.end(); ++it) {
+        if(!(*it).contains("weather")) {
+            waveWeatherPattern.push_back(WeatherType::Sunny); // Default to Sunny if no weather specified
+            Logger::warning("WeatherManager: No weather specified, defaulting to Sunny");
+            continue;
+        }
+        std::string wt = (*it)["weather"].get<std::string>();
+
+        if (wt == "sunny" || wt == "default") {
+            waveWeatherPattern.push_back(WeatherType::Sunny);
+        } else if (wt == "raining" || wt == "rainy" || wt == "rain") {
+            waveWeatherPattern.push_back(WeatherType::Raining);
+        } else if (wt == "thunderstorm" || wt == "thunder" || wt == "storm") {
+            waveWeatherPattern.push_back(WeatherType::Thunderstorm);
+        } else if (wt == "foggy" || wt == "fog") {
+            waveWeatherPattern.push_back(WeatherType::Foggy);
+        } else {
+            waveWeatherPattern.push_back(WeatherType::Sunny);
+            Logger::warning("WeatherManager: Unknown weather type '" + wt + "', defaulting to Sunny");
+        }
+    }
+
+    setUp();
+}
+
+void WeatherManager::setUp() {
     initializeWeatherInstances();
-    
-    // Start with sunny weather by default
-    currentWeather = weatherInstances[WeatherType::Sunny].get();
-
-    waveWeatherPattern = std::vector<WeatherType>(100, WeatherType::Raining);
-
-    Logger::info("WeatherManager: Initialized with sunny weather");
+    currentWeather = weatherInstances[waveWeatherPattern[0]].get();
 }
 
 WeatherManager::~WeatherManager() {

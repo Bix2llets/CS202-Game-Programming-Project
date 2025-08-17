@@ -41,9 +41,21 @@ public:
     ~WeatherManager();
 
     /**
+    * @brief Load weather data from JSON file.
+    * @param jsonFile JSON file containing weather data.
+    */
+    void loadJSON(const nlohmann::json& jsonFile);
+
+    /**
+     * @brief Set up weather manager.
+     */
+    void setUp();
+
+    /**
      * @brief Update weather effects.
      */
     void update();
+
 
     /**
      * @brief Set weather pattern for all waves.

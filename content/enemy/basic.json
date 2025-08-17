@@ -8,7 +8,7 @@
             "heal_amount": 0,
             "resistance": 0,
             "fire_resistance": 0,
-            "speed": 40,
+            "speed": 200,
             "reward": {
                 "petroleum": 0,
                 "scrap": 9

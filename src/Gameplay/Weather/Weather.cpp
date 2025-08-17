@@ -33,6 +33,7 @@ void Weather::loadOverlay(const std::string& weatherId) {
         if (weatherData.contains("overlay_animation")) {
             try {
                 overlayAnimation.loadJson(weatherData["overlay_animation"]);
+                Logger::debug("Weather: Loaded overlay animation for " + weatherId);
             } catch (const std::exception& e) {
                 overlayActive = false;
                 Logger::error("Weather: Failed to load overlay animation for " + weatherId + ": " + e.what());
