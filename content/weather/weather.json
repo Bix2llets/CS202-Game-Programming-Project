@@ -8,7 +8,7 @@
         "icon": "",
         "has_overlay": true,
         "overlay": {
-            "texture_id": "rifle_turret",
+            "texture_id": "rain_overlay",
             "width": 200,
             "height": 200,
             "animation_interval": 0.05,

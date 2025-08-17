@@ -5,7 +5,7 @@
 
 #include "Gameplay/Weather/WeatherManager.hpp"
 #include "Gameplay/Weather/Weathers/SunnyWeather.hpp"
-#include "Gameplay/Weather/Weathers/RainyWeather.hpp"
+#include "Gameplay/Weather/Weathers/RainingWeather.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Scene/Level.hpp"
@@ -13,9 +13,12 @@
 #include "Utility/logger.hpp"
 
 WeatherManager::WeatherManager(Level& level) 
-    : level(level), currentWaveIndex(-1) {
+    : level(level), currentWeather(nullptr), currentWaveIndex(-1) {
+    // Initialize all weather instances
+    initializeWeatherInstances();
+    
     // Start with sunny weather by default
-    currentWeather = createWeather(WeatherType::Sunny);
+    currentWeather = weatherInstances[WeatherType::Sunny].get();
     Logger::info("WeatherManager: Initialized with sunny weather");
 }
 
@@ -40,6 +43,10 @@ void WeatherManager::setWeatherPattern(const std::vector<WeatherType>& pattern) 
     }
 }
 
+void WeatherManager::nextWave() {
+    changeWeatherForWave(currentWaveIndex + 1);
+}
+
 void WeatherManager::changeWeatherForWave(int waveIndex) {
     if (waveIndex == currentWaveIndex) {
         return; // Already on this wave
@@ -55,8 +62,14 @@ void WeatherManager::changeWeatherForWave(int waveIndex) {
     // Clear current weather effects
     clearCurrentWeatherEffects();
     
-    // Create and apply new weather
-    currentWeather = createWeather(newWeatherType);
+    // Switch to the appropriate weather instance
+    auto it = weatherInstances.find(newWeatherType);
+    if (it != weatherInstances.end()) {
+        currentWeather = it->second.get();
+    } else {
+        currentWeather = weatherInstances[WeatherType::Sunny].get();
+        Logger::warning("WeatherManager: Unknown weather type, using Sunny");
+    }
     currentWaveIndex = waveIndex;
     
     // Apply new weather effects to all existing entities
@@ -80,52 +93,20 @@ WeatherType WeatherManager::getCurrentWeatherType() const {
     return WeatherType::Sunny;
 }
 
-void WeatherManager::applyWeatherToTower(Tower* tower) {
-    uint64_t towerId = tower->getUniqueId();
-    
-    // Only apply if not already affected
-    if (affectedTowers.find(towerId) == affectedTowers.end()) {
-        if (currentWeather) {
-            currentWeather->applyToTower(tower);
-            affectedTowers[towerId] = true;
-        }
-    }
+inline void WeatherManager::applyWeatherToTower(Tower* tower) {
+    currentWeather->applyToTower(tower);
 }
 
-void WeatherManager::applyWeatherToEnemy(Enemy* enemy) {
-    uint64_t enemyId = enemy->getUniqueId();
-    
-    // Only apply if not already affected
-    if (affectedEnemies.find(enemyId) == affectedEnemies.end()) {
-        if (currentWeather) {
-            currentWeather->applyToEnemy(enemy);
-            affectedEnemies[enemyId] = true;
-        }
-    }
+inline void WeatherManager::applyWeatherToEnemy(Enemy* enemy) {
+    currentWeather->applyToEnemy(enemy);
 }
 
-void WeatherManager::removeWeatherFromTower(Tower* tower) {
-    uint64_t towerId = tower->getUniqueId();
-    
-    // Only remove if currently affected
-    if (affectedTowers.find(towerId) != affectedTowers.end()) {
-        if (currentWeather) {
-            currentWeather->removeFromTower(tower);
-        }
-        affectedTowers.erase(towerId);
-    }
+inline void WeatherManager::removeWeatherFromTower(Tower* tower) {
+    currentWeather->removeFromTower(tower);
 }
 
-void WeatherManager::removeWeatherFromEnemy(Enemy* enemy) {
-    uint64_t enemyId = enemy->getUniqueId();
-    
-    // Only remove if currently affected
-    if (affectedEnemies.find(enemyId) != affectedEnemies.end()) {
-        if (currentWeather) {
-            currentWeather->removeFromEnemy(enemy);
-        }
-        affectedEnemies.erase(enemyId);
-    }
+inline void WeatherManager::removeWeatherFromEnemy(Enemy* enemy) {
+    currentWeather->removeFromEnemy(enemy);
 }
 
 void WeatherManager::draw(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -134,24 +115,16 @@ void WeatherManager::draw(sf::RenderTarget& target, sf::RenderStates states) con
     }
 }
 
-std::unique_ptr<Weather> WeatherManager::createWeather(WeatherType type) {
-    switch (type) {
-        case WeatherType::Sunny:
-            return std::make_unique<SunnyWeather>(level);
-        case WeatherType::Raining:
-            return std::make_unique<RainyWeather>(level);
-        case WeatherType::Thunderstorm:
-            // TODO: Implement ThunderstormWeather
-            Logger::warning("WeatherManager: Thunderstorm weather not implemented yet, using Rainy");
-            return std::make_unique<RainyWeather>(level);
-        case WeatherType::Foggy:
-            // TODO: Implement FoggyWeather
-            Logger::warning("WeatherManager: Foggy weather not implemented yet, using Sunny");
-            return std::make_unique<SunnyWeather>(level);
-        default:
-            Logger::warning("WeatherManager: Unknown weather type, using Sunny");
-            return std::make_unique<SunnyWeather>(level);
-    }
+void WeatherManager::initializeWeatherInstances() {
+    // Create all weather instances
+    weatherInstances[WeatherType::Sunny] = std::make_unique<SunnyWeather>(level);
+    weatherInstances[WeatherType::Raining] = std::make_unique<RainingWeather>(level);
+    
+    // TODO: Add other weather types when implemented
+    // weatherInstances[WeatherType::Thunderstorm] = std::make_unique<ThunderstormWeather>(level); // Temporary
+    // weatherInstances[WeatherType::Foggy] = std::make_unique<FoggyWeather>(level); // Temporary
+    
+    Logger::info("WeatherManager: Initialized all weather instances");
 }
 
 void WeatherManager::clearCurrentWeatherEffects() {
@@ -159,28 +132,16 @@ void WeatherManager::clearCurrentWeatherEffects() {
         return;
     }
     
-    // Remove weather effects from all affected towers
     EntityManager& entityManager = level.getEntityManager();
     
-    // for (auto it = affectedTowers.begin(); it != affectedTowers.end();) {
-    //     uint64_t towerId = it->first;
-    //     Tower* tower = entityManager.getEntity<Tower>(towerId);
-    //     if (tower) {
-    //         currentWeather->removeFromTower(*tower);
-    //     }
-    //     it = affectedTowers.erase(it);
-    // }
-    
-    // Remove weather effects from all affected enemies
-    // for (auto it = affectedEnemies.begin(); it != affectedEnemies.end();) {
-    //     uint64_t enemyId = it->first;
-    //     Enemy* enemy = entityManager.getEntity<Enemy>(enemyId);
-    //     if (enemy) {
-    //         currentWeather->removeFromEnemy(*enemy);
-    //     }
-    //     it = affectedEnemies.erase(it);
-    // }
-    
+    for (Tower* tower : entityManager.getTowers()) {
+        if (tower) removeWeatherFromTower(tower);
+    }
+
+    for (Enemy* enemy : entityManager.getEnemies()) {
+        if (enemy && enemy->isAlive()) removeWeatherFromEnemy(enemy);
+    }
+
     Logger::debug("WeatherManager: Cleared all current weather effects");
 }
 
@@ -189,24 +150,15 @@ void WeatherManager::applyCurrentWeatherEffects() {
         return;
     }
     
-    // Apply weather effects to all existing towers
     EntityManager& entityManager = level.getEntityManager();
     
-    // Get all towers and apply weather effects
-    // auto towers = entityManager.getEntitiesByType<Tower>();
-    // for (Tower* tower : towers) {
-    //     if (tower) {
-    //         applyWeatherToTower(*tower);
-    //     }
-    // }
-    
-    // Get all enemies and apply weather effects
-    // auto enemies = entityManager.getEntitiesByType<Enemy>();
-    // for (Enemy* enemy : enemies) {
-    //     if (enemy) {
-    //         applyWeatherToEnemy(*enemy);
-    //     }
-    // }
+    for (Tower* tower : entityManager.getTowers()) {
+        if (tower) applyWeatherToTower(tower);
+    }
+
+    for (Enemy* enemy : entityManager.getEnemies()) {
+        if (enemy && enemy->isAlive()) applyWeatherToEnemy(enemy);
+    }
     
     Logger::debug("WeatherManager: Applied weather effects to all existing entities");
 }

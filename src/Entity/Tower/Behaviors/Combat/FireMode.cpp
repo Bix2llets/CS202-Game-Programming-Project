@@ -11,9 +11,9 @@ int InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     if (!tower) return 0;
     
     // Set the main target to the first enemy in the vector (index 0)
-    if (!target.empty() && target[0] != nullptr) {
-        tower->setMainTarget(target[0]);
-    }
+    // if (!target.empty() && target[0] != nullptr) {
+    //     tower->setMainTarget(target[0]);
+    // }
     
     // Get damage from tower stats
     float damageValue = tower->getStat(TowerStat::DAMAGE, 0.0f);
@@ -48,9 +48,9 @@ int ProjectileFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     if (!tower) return 0;
     
     // Set the main target to the first enemy in the vector (index 0)
-    if (!target.empty() && target[0] != nullptr) {
-        tower->setMainTarget(target[0]);
-    }
+    // if (!target.empty() && target[0] != nullptr) {
+    //     tower->setMainTarget(target[0]);
+    // }
     
     // Check if tower is in a level (needed for projectile management)
     Level* level = tower->getLevelRef();
@@ -102,9 +102,9 @@ int ContinuousFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     if (!tower) return 0;
 
     // Set the main target to the first enemy in the vector (index 0)
-    if (!target.empty() && target[0] != nullptr) {
-        tower->setMainTarget(target[0]);
-    }
+    // if (!target.empty() && target[0] != nullptr) {
+    //     tower->setMainTarget(target[0]);
+    // }
     
     // TODO: Implement continuous fire mode  
     // This would apply damage over time while targets remain in range

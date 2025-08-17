@@ -132,12 +132,14 @@ void EntityManager::cleanup() {
 
 void EntityManager::addTower(std::unique_ptr<Tower> tower) {
     if (tower) {
+        level.getWeatherManager().applyWeatherToTower(tower.get());
         towers.push_back(std::move(tower));
     }
 }
 
 void EntityManager::addEnemy(std::unique_ptr<Enemy> enemy) {
     if (enemy) {
+        level.getWeatherManager().applyWeatherToEnemy(enemy.get());
         enemies.push_back(std::move(enemy));
     }
 }

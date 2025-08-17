@@ -21,14 +21,13 @@ class Enemy;
 class WeatherManager {
 private:
     Level& level;
-    std::unique_ptr<Weather> currentWeather;
+    Weather* currentWeather;
     std::vector<WeatherType> waveWeatherPattern;
     int currentWaveIndex;
     
-    // Cache for entities that have weather effects applied
-    std::unordered_map<uint64_t, bool> affectedTowers;
-    std::unordered_map<uint64_t, bool> affectedEnemies;
-
+    // Pre-created weather instances
+    std::unordered_map<WeatherType, std::unique_ptr<Weather>> weatherInstances;
+    
 public:
     /**
      * @brief Construct a new WeatherManager.
@@ -53,6 +52,11 @@ public:
     void setWeatherPattern(const std::vector<WeatherType>& pattern);
 
     /**
+     * @brief Move to the next wave.
+     */
+    void nextWave();
+
+    /**
      * @brief Change weather for a specific wave.
      * @param waveIndex Index of the wave (0-based).
      */
@@ -62,7 +66,7 @@ public:
      * @brief Get current weather.
      * @return const Weather* Pointer to current weather, or nullptr if none.
      */
-    const Weather* getCurrentWeather() const { return currentWeather.get(); }
+    const Weather* getCurrentWeather() const { return currentWeather; }
 
     /**
      * @brief Get current weather type.
@@ -74,25 +78,25 @@ public:
      * @brief Apply weather effects to a new tower.
      * @param tower Reference to the tower.
      */
-    void applyWeatherToTower(Tower* tower);
+    inline void applyWeatherToTower(Tower* tower);
 
     /**
      * @brief Apply weather effects to a new enemy.
      * @param enemy Reference to the enemy.
      */
-    void applyWeatherToEnemy(Enemy* enemy);
+    inline void applyWeatherToEnemy(Enemy* enemy);
 
     /**
      * @brief Remove weather effects from a tower.
      * @param tower Reference to the tower.
      */
-    void removeWeatherFromTower(Tower* tower);
+    inline void removeWeatherFromTower(Tower* tower);
 
     /**
      * @brief Remove weather effects from an enemy.
      * @param enemy Reference to the enemy.
      */
-    void removeWeatherFromEnemy(Enemy* enemy);
+    inline void removeWeatherFromEnemy(Enemy* enemy);
 
     /**
      * @brief Draw weather overlay.
@@ -103,11 +107,9 @@ public:
 
 private:
     /**
-     * @brief Create weather instance of specified type.
-     * @param type Weather type to create.
-     * @return std::unique_ptr<Weather> Created weather instance.
+     * @brief Initialize all weather instances.
      */
-    std::unique_ptr<Weather> createWeather(WeatherType type);
+    void initializeWeatherInstances();
 
     /**
      * @brief Remove current weather effects from all entities.
