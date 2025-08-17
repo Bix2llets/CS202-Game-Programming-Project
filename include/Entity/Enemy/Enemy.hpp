@@ -52,13 +52,12 @@ private:
     SpriteAnimation animation;
     Health health;  ///< Health component
     EntityEffect effects;  ///< Effect management component
-    Timer healTimer;
 
     Timer attackDisplayTimer;
-    float healAmount;
 
     std::unique_ptr<EnemyState> currentState;  ///< Current AI state
     EnemyType enemyType;  ///< Type of enemy (ground, aerial, etc.)
+    EntityStat originalStats;
     int petroleumReward;           ///< Reward for defeating this enemy
     int scrapReward;
 

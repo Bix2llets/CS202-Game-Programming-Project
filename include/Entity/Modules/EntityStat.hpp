@@ -68,13 +68,12 @@ namespace TowerStat {
 }
 
 namespace EnemyStat {
-    static inline const std::string HEALTH = "health";
+    static inline const std::string MAX_HEALTH = "max_health";
     static inline const std::string SPEED = "speed";
-    static inline const std::string ARMOR = "armor";
 
     static inline const std::string RESISTANCE = "resistance";
     static inline const std::string FIRE_RESISTANCE = "fire_resistance";
-    static inline const std::string REGENERATION = "regeneration";
+    static inline const std::string REGENERATION = "heal_amount";
 }
 
 class EntityStat {

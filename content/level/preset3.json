@@ -101,85 +101,59 @@
         ]
     ],
     "wave": [
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ],
-        [
-            {
-                "id": "basic_enemy",
-                "quantity": 10,
-                "spawn_delay": 0,
-                "internal_delay": 1
-            }
-        ]
+        {
+            "weather": "raining",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                },
+                {
+                    "id": "basic_enemy",
+                    "quantity": 20,
+                    "spawn_delay": 30,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.5
+        },
+        {
+            "weather": "raining",
+            "enemy_info": [
+                {
+                    "id": "fat",
+                    "quantity": 5,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.7
+        },
+        {
+            "weather": "raining",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 15,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.9
+        },
+        {
+            "weather": "raining",
+            "enemy_info": [
+                {
+                    "id": "fat",
+                    "quantity": 10,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 1.0
+        }
     ]
 }
