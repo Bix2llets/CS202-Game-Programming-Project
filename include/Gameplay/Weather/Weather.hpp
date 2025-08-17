@@ -27,7 +27,7 @@ class Level;
  * @class Weather
  * @brief Base class for weather effects that modify gameplay.
  */
-class Weather {
+class Weather : public sf::Drawable {
 protected:
     WeatherType type;
     Level& level;
@@ -56,32 +56,32 @@ public:
      * @brief Apply weather effects to a tower.
      * @param tower Reference to the tower.
      */
-    virtual void applyToTower(Tower& tower) = 0;
+    virtual void applyToTower(Tower* tower) = 0;
 
     /**
      * @brief Apply weather effects to an enemy.
      * @param enemy Reference to the enemy.
      */
-    virtual void applyToEnemy(Enemy& enemy) = 0;
+    virtual void applyToEnemy(Enemy* enemy) = 0;
 
     /**
      * @brief Remove weather effects from a tower.
      * @param tower Reference to the tower.
      */
-    virtual void removeFromTower(Tower& tower) = 0;
+    virtual void removeFromTower(Tower* tower) = 0;
 
     /**
      * @brief Remove weather effects from an enemy.
      * @param enemy Reference to the enemy.
      */
-    virtual void removeFromEnemy(Enemy& enemy) = 0;
+    virtual void removeFromEnemy(Enemy* enemy) = 0;
 
     /**
      * @brief Draw the weather overlay.
      * @param target Render target.
      * @param states Render states.
      */
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
     /**
      * @brief Get the weather type.

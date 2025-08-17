@@ -4,8 +4,8 @@
  */
 
 #include "Gameplay/Weather/WeatherManager.hpp"
-#include "Gameplay/Weather/SunnyWeather.hpp"
-#include "Gameplay/Weather/RainyWeather.hpp"
+#include "Gameplay/Weather/Weathers/SunnyWeather.hpp"
+#include "Gameplay/Weather/Weathers/RainyWeather.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Scene/Level.hpp"
@@ -80,8 +80,8 @@ WeatherType WeatherManager::getCurrentWeatherType() const {
     return WeatherType::Sunny;
 }
 
-void WeatherManager::applyWeatherToTower(Tower& tower) {
-    uint64_t towerId = tower.getUniqueId();
+void WeatherManager::applyWeatherToTower(Tower* tower) {
+    uint64_t towerId = tower->getUniqueId();
     
     // Only apply if not already affected
     if (affectedTowers.find(towerId) == affectedTowers.end()) {
@@ -92,8 +92,8 @@ void WeatherManager::applyWeatherToTower(Tower& tower) {
     }
 }
 
-void WeatherManager::applyWeatherToEnemy(Enemy& enemy) {
-    uint64_t enemyId = enemy.getUniqueId();
+void WeatherManager::applyWeatherToEnemy(Enemy* enemy) {
+    uint64_t enemyId = enemy->getUniqueId();
     
     // Only apply if not already affected
     if (affectedEnemies.find(enemyId) == affectedEnemies.end()) {
@@ -104,8 +104,8 @@ void WeatherManager::applyWeatherToEnemy(Enemy& enemy) {
     }
 }
 
-void WeatherManager::removeWeatherFromTower(Tower& tower) {
-    uint64_t towerId = tower.getUniqueId();
+void WeatherManager::removeWeatherFromTower(Tower* tower) {
+    uint64_t towerId = tower->getUniqueId();
     
     // Only remove if currently affected
     if (affectedTowers.find(towerId) != affectedTowers.end()) {
@@ -116,8 +116,8 @@ void WeatherManager::removeWeatherFromTower(Tower& tower) {
     }
 }
 
-void WeatherManager::removeWeatherFromEnemy(Enemy& enemy) {
-    uint64_t enemyId = enemy.getUniqueId();
+void WeatherManager::removeWeatherFromEnemy(Enemy* enemy) {
+    uint64_t enemyId = enemy->getUniqueId();
     
     // Only remove if currently affected
     if (affectedEnemies.find(enemyId) != affectedEnemies.end()) {

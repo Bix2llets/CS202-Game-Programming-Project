@@ -102,10 +102,10 @@ void Projectile::stopFlying() {
     flying = false;
     hitEnemies.clear(); // Clear hit enemies
 
-    std::unique_ptr<AreaEffect> areaEffect = AreaEffectFactory::createFromConfigFile("explosion", *levelRef, sourceId);
-    areaEffect->setPosition(position);
-    areaEffect->setUp(&stats); // Set up area effect with projectile stats
-    levelRef->getEntityManager().addAreaEffect(std::move(areaEffect));
+    // std::unique_ptr<AreaEffect> areaEffect = AreaEffectFactory::createFromConfigFile("explosion", *levelRef, sourceId);
+    // areaEffect->setPosition(position);
+    // areaEffect->setUp(&stats); // Set up area effect with projectile stats
+    // levelRef->getEntityManager().addAreaEffect(std::move(areaEffect));
 }
 
 void Projectile::loadSpriteAnimation(const nlohmann::json& spriteAnimationPath) {
@@ -140,7 +140,7 @@ void Projectile::bindToTower(Tower* tower) {
 
     source = tower;
     sourceId = tower->getUniqueId();
-    stats = *tower->getStats();
+    stats = *tower->getStats() + tower->getUpgradeManager()->getAllUpgradeBonuses();
     speed = stats.getStat(TowerStat::PROJECTILE_SPEED, 1.0f);
     pierceCount = stats.getStat(TowerStat::PROJECTILE_PIERCE_COUNT, pierceCount);
 }

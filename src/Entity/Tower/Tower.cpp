@@ -83,20 +83,20 @@ EntityStat* Tower::getStats() { return stats.get(); }
 
 float Tower::getStat(const std::string& statName, float defaultValue) const {
     // Get base stat with any multipliers
-    float baseStat =
-        stats ? stats->getStatWithBonus(statName, defaultValue) : defaultValue;
+    float baseStat = stats ? stats->getStatWithoutBonus(statName, defaultValue) : defaultValue;
 
     // Add upgrade bonuses
-    float upgradeBonus =
-        upgradeManager ? upgradeManager->getTotalStatBonus(statName) : 0.0f;
+    float upgradeBonus = upgradeManager ? upgradeManager->getTotalStatBonus(statName) : 0.0f;
 
-    return baseStat + upgradeBonus;
+    // Get multiplier
+    float statMultiplier = 1.0f + stats->getStatWithoutBonus(EntityStat::multiplier(statName), 0.0f);
+
+    return (baseStat + upgradeBonus) * statMultiplier;
 }
 
 float Tower::getBaseStat(const std::string& statName,
                          float defaultValue) const {
-    return stats ? stats->getStatWithBonus(statName, defaultValue)
-                 : defaultValue;
+    return stats ? stats->getStatWithoutBonus(statName, defaultValue) : defaultValue;
 }
 
 // Upgrade System Methods

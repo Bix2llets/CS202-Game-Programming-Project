@@ -466,8 +466,7 @@ void Level::subscribeCallbacks() {
             budget.subtractScraps(newTower->getCost().getScraps().value);
             
             // Apply current weather effects to the new tower
-            weatherManager.applyWeatherToTower(*newTower);
-            
+            weatherManager.applyWeatherToTower(newTower.get());
             entityManager.addTower(std::move(newTower));
         }
     });
@@ -546,8 +545,7 @@ void Level::subscribeCallbacks() {
                 spawnInfo.enemyID, 0, spawnInfo.difficultyModifier);
             
             // Apply current weather effects to the new enemy
-            weatherManager.applyWeatherToEnemy(*enemy);
-            
+            weatherManager.applyWeatherToEnemy(enemy.get());
             entityManager.addEnemy(std::move(enemy));
             // Logger::info(std::format("Spawning enemy: {}", enemyID));
         } catch (std::bad_any_cast &e) {

@@ -28,8 +28,8 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 0,
-    "fire_rate": 3.0,
+    "damage": 20,
+    "fire_rate": 1.5,
     "range": 360,
     "max_targets": 1,
     "projectile_speed": 18.0,
@@ -50,7 +50,8 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "fire_rate": 0.1
+              "fire_rate": 0.1,
+              "damage": 100
             }
           },
           "2": {

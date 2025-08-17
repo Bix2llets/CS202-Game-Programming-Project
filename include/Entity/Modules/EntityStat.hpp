@@ -98,23 +98,18 @@ public:
         return statName + "_multiplier";
     }
     
-    // static inline std::string flat(const std::string& statName) {
-    //     return statName + "_FLAT_BONUS";
-    // }
-    
     float getStat(const std::string& statName, float defaultValue = 0.0f) const {
+        float stat = getStatWithoutBonus(statName, defaultValue);
+        float statMultiplier = 1.0f + getStatWithoutBonus(multiplier(statName), 0.0f);
+        return stat * statMultiplier;
+    }
+
+    float getStatWithoutBonus(const std::string& statName, float defaultValue = 0.0f) const {
         auto it = stats.find(statName);
         if (it != stats.end()) {
             return it->second;
         }
         return defaultValue;
-    }
-
-    float getStatWithBonus(const std::string& statName, float defaultValue = 0.0f) const {
-        float stat = getStat(statName, defaultValue);
-        // float statFlatBonus = getStat(flat(statName), 0.0f);
-        float statMultiplier = 1.0f + getStat(multiplier(statName), 0.0f);
-        return stat * statMultiplier;
     }
 
     void setStat(const std::string& statName, float value) {
