@@ -243,6 +243,18 @@ bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
         }
         level.notify("unfocus_tower", nullptr);
 
+        StaticEntity* foundStaticEntity = nullptr;
+        for (auto& staticEntity : staticEntities) {
+            if (staticEntity->contains(worldPosition)) {
+                foundStaticEntity = staticEntity.get();
+                break;
+            }
+        }
+        if (foundStaticEntity) {
+            level.notify("focus_static_entity", foundStaticEntity);
+            return true;
+        }
+        level.notify("unfocus_static_entity", nullptr);
         return false;
     }
 
@@ -290,10 +302,21 @@ bool EntityManager::onScrollEvent(float delta,
     return false;
 }
 
-void EntityManager::removeTower(Tower* tower) {
+void EntityManager::remove(Tower* tower) {
     if (!tower) return;
     for (auto& x : towers) {
         if (x.get() == tower) {
+            x.reset();
+            break;
+        }
+    }
+    cleanup();
+}
+
+void EntityManager::remove(StaticEntity* staticEntity) {
+    if (!staticEntity) return;
+    for (auto& x : staticEntities) {
+        if (x.get() == staticEntity) {
             x.reset();
             break;
         }

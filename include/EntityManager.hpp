@@ -138,5 +138,6 @@ public:
                        const sf::Vector2f &windowPosition) override;
 
 
-   void removeTower(Tower* tower);
+   void remove(Tower* tower);
+   void remove(StaticEntity* StaticEntity);
 };

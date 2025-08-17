@@ -28,6 +28,8 @@
 #include "Scene/Scene.hpp"
 #include "Scene/WaveManager.hpp"
 #include "Gameplay/Randomness/RandomManager.hpp"
+#include "GUIComponents/StaticSellMenu.hpp" // Include for StaticSellMenu
+
 
 /**
  * @class Level
@@ -60,10 +62,11 @@ private:
     int totalWaves;
     std::unique_ptr<EnemyFactory> factory;
     WaveManager waveManager;
-    // Terrain map;  // game map for this level
+    // Terrain map;  // game map for this\ level
 
     // GUI Related
     RadialUpgradeMenu upgradeMenu;
+    StaticSellMenu staticSellMenu; // changed from StaticSellMenu staticSellMenu;
     TowerMenu menu;
     TowerInfoPanel infoPanel;
     std::unique_ptr<Overlay> overlay;

@@ -17,11 +17,14 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
     ring.setOutlineColor(sf::Color::Black);
     ring = Aligner::align(ring, HorizontalAlignment::Center,
                           VerticalAlignment::Middle);
-    sellBtn.setParentRadialMenu(this)
+    sellBtn.setParentMediator(this)
         .setRadius(35)
         .setDisplaySprite(
             sf::Sprite(*ResourceManager::getInstance().getTexture("sell_icon")))
-        .setStyle("background_basic");
+        .setStyle("background_basic")
+        .setCallback([this](CircularButton* button) {
+            notify("sell", button);
+        });
     subscribe("upgrade", [this, &parentLevel](std::any sender, std::any data) {
         try {
             int upgradeID = std::any_cast<int>(data);
@@ -93,7 +96,7 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
         displacement = displacement.rotatedBy(angle);
 
         upgradeButtons[i]
-            .setParentRadialMenu(this)
+            .setParentMediator(this)
             .setRadius(36)
             .setPosition(position + displacement)
             .setStyle(std::string("background_basic"))

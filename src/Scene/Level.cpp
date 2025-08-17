@@ -42,7 +42,8 @@ Level::Level()
       waveManager{*this},
       weatherManager{*this},
       overlay{nullptr},
-      randomManager() {
+      randomManager(),
+      staticSellMenu(*this) {
     health.setMaxHealth(200).setHealth(200);
 
     std::vector<std::unique_ptr<StaticEntity>> staticEntities;
@@ -114,6 +115,10 @@ void Level::update() {
         infoPanel.update();
     }
 
+    if (staticSellMenu.isDisplaying()) {
+        staticSellMenu.update();
+    }
+
     entityManager.update();
     waveManager.update();
     weatherManager.update();
@@ -129,6 +134,10 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     if (upgradeMenu.isDisplaying()) {
         upgradeMenu.render(state);
     }
+    if (staticSellMenu.isDisplaying()) {
+        staticSellMenu.render(state);
+    }
+    
     if (renderPath) path.draw(target, state);
 
     Window::getInstance().toggleGUIMode();
@@ -337,6 +346,10 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
     if (upgradeMenu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
         return true;
     }
+    if (staticSellMenu.onMouseEvent(mouse, event, worldPosition,
+                                   windowPosition)) {
+        return true;
+    }
     if (entityManager.onMouseEvent(mouse, event, worldPosition,
                                    windowPosition)) {
         return true;
@@ -479,7 +492,7 @@ void Level::subscribeCallbacks() {
             amount = amount * 0.6f;
             budget += amount;
             notify("unfocus_tower");
-            entityManager.removeTower(tower);
+            entityManager.remove(tower);
         } catch (std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on sell tower");
             return;
@@ -602,5 +615,39 @@ void Level::subscribeCallbacks() {
 
     subscribe("next_wave", [this](std::any sender, std::any data) {
         if(isWaveFinished()) nextWave();
+    });
+    subscribe("remove_static_entity", [this](std::any sender, std::any data) {
+        try {
+            StaticEntity *entity = std::any_cast<StaticEntity *>(sender);
+            entityManager.remove(entity);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on remove static entity");
+            return;
+        }
+    });
+    subscribe("sell_static_entity", [this](std::any sender, std::any data) {
+        try {
+            StaticEntity *entity = std::any_cast<StaticEntity *>(sender);
+            Currency amount = entity->getRemoveCost();
+            amount = amount * 0.6f;
+            budget -= amount;
+            notify("unfocus_static_entity");
+            entityManager.remove(entity);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on sell static entity");
+            return;
+        }
+    });
+    subscribe("focus_static_entity", [this](std::any sender, std::any data) {
+        try {
+            StaticEntity *entity = std::any_cast<StaticEntity *>(sender);
+            staticSellMenu.focusOn(entity);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on focus static entity");
+            return;
+        }
+    });
+    subscribe("unfocus_static_entity", [this](std::any sender, std::any data) {
+        staticSellMenu.unFocus();
     });
 }

@@ -15,7 +15,7 @@ class UpgradeButton : public CircularButton {
     UpgradeButton(const UpgradeButton&);
     UpgradeButton& setPosition(const sf::Vector2f& position);
     UpgradeButton& setRadius(int radius);
-    UpgradeButton& setParentRadialMenu(RadialUpgradeMenu* radialMenu);
+    UpgradeButton& setParentMediator(Mediator* radialMenu);
     UpgradeButton& setUpgradeManager(UpgradeManager &target);
     UpgradeButton& setUpgradeID(int id);
     UpgradeButton& setCanUpgrade(bool val);
@@ -45,7 +45,7 @@ class UpgradeButton : public CircularButton {
     sf::Sprite tagDisplay;
     sf::Sprite upgradeIcon;
 
-    RadialUpgradeMenu* parentRadialMenu;
+    Mediator* parentMediator;
     bool canUpgrade = false;
     bool isCapped = false;
     int upgradeID;

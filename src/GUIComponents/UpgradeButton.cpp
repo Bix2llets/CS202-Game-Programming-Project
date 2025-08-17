@@ -11,7 +11,7 @@
 #include "Utility/logger.hpp"
 UpgradeButton::UpgradeButton()
     : radius(0),
-      parentRadialMenu(nullptr),
+      parentMediator(nullptr),
       upgradeIcon(GameConstants::BLANK_TEXTURE),
       tagDisplay(GameConstants::BLANK_TEXTURE) {
     buttonShape.setFillColor(sf::Color::White);
@@ -176,7 +176,7 @@ void UpgradeButton::refreshInfo() {
         price = Currency(0, 0);
         upgradeIcon.setTexture(GameConstants::BLANK_TEXTURE);
         upgradeIcon.setTextureRect(sf::IntRect({0, 0}, {0, 0}));
-    } else if (parentRadialMenu) {
+    } else if (parentMediator) {
         price = upgrades->getNextUpgradeDetail(upgradeID)->cost;
         const UpgradeType* upgradeType = upgrades->getUpgradeType(upgradeID);
         if (upgradeType && ResourceManager::getInstance().getTexture(
@@ -193,9 +193,9 @@ void UpgradeButton::refreshInfo() {
     updateSpritePosition();
 }
 
-UpgradeButton& UpgradeButton::setParentRadialMenu(
-    RadialUpgradeMenu* radialMenu) {
-    parentRadialMenu = radialMenu;
+UpgradeButton& UpgradeButton::setParentMediator(
+    Mediator* radialMenu) {
+    parentMediator = radialMenu;
     return *this;
 }
 
@@ -218,12 +218,12 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
         if (graphicState.isPressed()) {
             graphicState.updatePressState(false);
             if (contains(windowPosition) && canUpgrade) {
-                parentRadialMenu->notify("upgrade", *this, upgradeID);
+                parentMediator->notify("upgrade", *this, upgradeID);
                 if (upgrades->isTotalUpgradeLimitReached()) {
-                    parentRadialMenu->notify("show_upgrade_preview", *this,
+                    parentMediator->notify("show_upgrade_preview", *this,
                                              nullptr);
                 } else
-                    parentRadialMenu->notify(
+                    parentMediator->notify(
                         "show_upgrade_preview", *this,
                         upgrades->getNextUpgradeDetail(upgradeID));
                 refreshInfo();
@@ -233,20 +233,20 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
     } else if (event == UserEvent::Move) {
         if (!graphicState.isHovered() && contains(windowPosition)) {
             graphicState.updateHoverState(true);
-            if (parentRadialMenu) {
+            if (parentMediator) {
                 if (upgrades->isTotalUpgradeLimitReached()) {
-                    parentRadialMenu->notify("show_upgrade_preview", *this,
+                    parentMediator->notify("show_upgrade_preview", *this,
                                              nullptr);
                 } else {
-                    parentRadialMenu->notify(
+                    parentMediator->notify(
                         "show_upgrade_preview", *this,
                         upgrades->getNextUpgradeDetail(upgradeID));
                 }
             }
         } else if (graphicState.isHovered() && !contains(windowPosition)) {
             graphicState.updateHoverState(false);
-            if (parentRadialMenu) {
-                parentRadialMenu->notify("hide_upgrade_preview", *this);
+            if (parentMediator) {
+                parentMediator->notify("hide_upgrade_preview", *this);
             }
         }
     }
@@ -262,7 +262,7 @@ bool UpgradeButton::onScrollEvent(float delta,
 UpgradeButton::UpgradeButton(const UpgradeButton& other)
     : CircularButton(other),
       radius(other.radius),
-      parentRadialMenu(other.parentRadialMenu),
+      parentMediator(other.parentMediator),
       upgradeID(other.upgradeID),
       canUpgrade(other.canUpgrade),
       price(other.price),
