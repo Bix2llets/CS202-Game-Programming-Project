@@ -72,6 +72,21 @@ void StaticSellMenu::update() {
         sellButton.removeOverlayColor();
     }
     sellButton.update();
+    Window::getInstance().toggleUserMode();
+    sf::Vector2f worldPosition = static_cast<sf::Vector2f>(
+        Window::getInstance().getRenderWindow().mapCoordsToPixel(
+            focusedEntity->getPosition()));
+    if (worldPosition.x < 0 + sellButton.getRadius()) worldPosition.x = sellButton.getRadius();
+    if (worldPosition.x + sellButton.getRadius() >
+        GameConstants::MENU_X - sellButton.getRadius()) {
+        worldPosition.x = GameConstants::MENU_X - sellButton.getRadius();
+    }
+    if (worldPosition.y < 0 + sellButton.getRadius()) worldPosition.y = sellButton.getRadius();
+    if (worldPosition.y + sellButton.getRadius() >
+        GameConstants::DEFAULT_WINDOW_HEIGHT - sellButton.getRadius()) {
+        worldPosition.y = GameConstants::DEFAULT_WINDOW_HEIGHT - sellButton.getRadius();
+    }
+    sellButton.setPosition(worldPosition);
 }
 
 bool StaticSellMenu::onMouseEvent(Mouse mouse, UserEvent event,
