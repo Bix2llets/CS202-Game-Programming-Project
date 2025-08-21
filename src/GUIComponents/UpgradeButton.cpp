@@ -5,7 +5,9 @@
 #include "Core/MouseState.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
+#include "Entity/Factory/TowerFactory.hpp"
 #include "Gameplay/RadialUpgradeMenu.hpp"
+#include "Scene/Level.hpp"
 #include "Utility/Scaler.hpp"
 #include "Utility/aligner.hpp"
 #include "Utility/logger.hpp"
@@ -152,7 +154,7 @@ void UpgradeButton::updatePriceTag() {
 void UpgradeButton::draw(sf::RenderTarget& target,
                          sf::RenderStates states) const {
     target.draw(buttonShape, states);
-    if (!isCapped) {
+    if (!isCapped || evolutionTower) {
         target.draw(upgradeIcon, states);
         target.draw(tagDisplay, states);
     }
@@ -161,7 +163,7 @@ void UpgradeButton::draw(sf::RenderTarget& target,
 void UpgradeButton::update() {
     ButtonBase::update();
 
-    if (!canUpgrade && !isCapped) {
+    if (!canUpgrade && !isCapped && !evolutionTower) {
         graphicState.setOverlayColor(sf::Color::Red);
     } else {
         graphicState.removeOverlayColor();
@@ -181,6 +183,18 @@ void UpgradeButton::refreshInfo() {
         price = Currency(0, 0);
         upgradeIcon.setTexture(GameConstants::BLANK_TEXTURE);
         upgradeIcon.setTextureRect(sf::IntRect({0, 0}, {0, 0}));
+        if (upgrades->canEvolve(upgradeID)) {
+            Scene& parentScene = parentMediator->getParentLevel();
+            evolutionTower = TowerFactory::createFromConfigFile(
+                upgrades->getEvolveTo(upgradeID),
+                static_cast<Scene&>(parentMediator->getParentLevel()), {0, 0});
+            evolutionTower->loadIcon();
+            upgradeIcon = (evolutionTower->getIcon());
+            upgradeIcon =
+                Aligner::align(upgradeIcon, HorizontalAlignment::Center,
+                               VerticalAlignment::Middle);
+            isCapped = false;
+        }
     } else if (parentMediator) {
         price = upgrades->getNextUpgradeDetail(upgradeID)->cost;
         const UpgradeType* upgradeType = upgrades->getUpgradeType(upgradeID);
@@ -189,7 +203,6 @@ void UpgradeButton::refreshInfo() {
             upgradeIcon = sf::Sprite(*ResourceManager::getInstance().getTexture(
                 upgradeType->getIconPath()));
         upgradeIcon = Aligner::align(upgradeIcon);
-
     } else {
         Logger::error("Parent radial menu is not set for UpgradeButton");
         return;
@@ -198,8 +211,7 @@ void UpgradeButton::refreshInfo() {
     updateSpritePosition();
 }
 
-UpgradeButton& UpgradeButton::setParentMediator(
-    Mediator* radialMenu) {
+UpgradeButton& UpgradeButton::setParentMediator(RadialUpgradeMenu* radialMenu) {
     parentMediator = radialMenu;
     return *this;
 }
@@ -226,12 +238,21 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
                 parentMediator->notify("upgrade", *this, upgradeID);
                 if (upgrades->isTotalUpgradeLimitReached()) {
                     parentMediator->notify("show_upgrade_preview", *this,
-                                             nullptr);
+                                           nullptr);
                 } else
                     parentMediator->notify(
                         "show_upgrade_preview", *this,
                         upgrades->getNextUpgradeDetail(upgradeID));
                 refreshInfo();
+                return true;
+            }
+
+            if (contains(windowPosition) && evolutionTower) {
+                std::string evolutionID = upgrades->getEvolveTo(upgradeID);
+                evolutionTower = nullptr;
+
+                parentMediator->notify("evolution", *this, evolutionID);
+                return true;
             }
             return false;
         }
@@ -241,7 +262,7 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
             if (parentMediator) {
                 if (upgrades->isTotalUpgradeLimitReached()) {
                     parentMediator->notify("show_upgrade_preview", *this,
-                                             nullptr);
+                                           nullptr);
                 } else {
                     parentMediator->notify(
                         "show_upgrade_preview", *this,
@@ -275,8 +296,8 @@ UpgradeButton::UpgradeButton(const UpgradeButton& other)
       upgradeIcon(other.upgradeIcon),
       tagDisplay(other.tagDisplay) {
     // Deep copy for priceTag (sf::RenderTexture)
-    // SFML RenderTexture cannot be copied directly, so we copy the texture if
-    // available
+    // SFML RenderTexture cannot be copied directly, so we copy the texture
+    // if available
     updatePriceTag();
 }
 
@@ -300,7 +321,6 @@ UpgradeButton& UpgradeButton::setCanUpgrade(bool val) {
     canUpgrade = val;
     return *this;
 }
-
 
 UpgradeButton& UpgradeButton::setIsCapped(bool val) {
     isCapped = val;

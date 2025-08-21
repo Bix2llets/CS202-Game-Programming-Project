@@ -1,15 +1,17 @@
 /**
  * @file StaticEntity.hpp
- * @brief Declares the StaticEntity class for static entities that can be removed with a cost.
+ * @brief Declares the StaticEntity class for static entities that can be
+ * removed with a cost.
  *
  * StaticEntity represents a game entity that doesn't move but has a texture,
  * dimensions, and a currency cost to remove it from the game.
  */
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 #include "Entity/Entity.hpp"
 #include "Gameplay/Currency.hpp"
-#include <SFML/Graphics.hpp>
 
 class Level;
 
@@ -22,18 +24,18 @@ class Level;
  * decorations, or removable terrain features.
  */
 class StaticEntity : public Entity {
-private:
+    private:
     std::string id;
     std::string name;
 
     Level* levelRef;
-    float textureWidth;  ///< Width of the entity's texture
-    float textureHeight; ///< Height of the entity's texture
-    Currency removeCost; ///< Cost required to remove this entity
+    float textureWidth;   ///< Width of the entity's texture
+    float textureHeight;  ///< Height of the entity's texture
+    Currency removeCost;  ///< Cost required to remove this entity
 
     friend class StaticEntityFactory;
 
-public:
+    public:
     /**
      * @brief Construct a new StaticEntity object.
      * @param scene Reference to the scene this entity belongs to.
@@ -51,7 +53,8 @@ public:
 
     /**
      * @brief Update the entity's state.
-     * Static entities typically don't need to update, but this can be overridden.
+     * Static entities typically don't need to update, but this can be
+     * overridden.
      */
     void update() override;
 
@@ -135,4 +138,6 @@ public:
 
     std::string getId() const { return id; }
     std::string getName() const { return name; }
+
+    bool intersects(sf::Vector2f points[4]) const;
 };

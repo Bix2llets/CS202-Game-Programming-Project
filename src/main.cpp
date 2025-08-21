@@ -9,7 +9,7 @@ int main() {
     // freopen("logs.txt", "w", stdout);
     // freopen("errors.txt", "w", stderr);
     
-    // Logger::setDebugState(true);
+    Logger::setDebugState(true);
     Logger::success("Program start");
     
     Application mainLoop;

@@ -43,5 +43,11 @@ class RadialUpgradeMenu : public Mediator, public MouseObserver {
 
     void update();
 
+    Level& getParentLevel();
+
+    Tower* getFocusedTower() const {
+        return refTower;
+    }
+
 
 };

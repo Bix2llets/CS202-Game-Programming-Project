@@ -3,10 +3,10 @@
 #include <SFML/Graphics.hpp>
 
 #include "Core/MouseObserver.hpp"
-#include "GUIComponents/ButtonBase.hpp"
-#include "Gameplay/Currency.hpp"
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
+#include "GUIComponents/ButtonBase.hpp"
 #include "GUIComponents/CircularButton.hpp"
+#include "Gameplay/Currency.hpp"
 class RadialUpgradeMenu;
 class UpgradeButton : public CircularButton {
     public:
@@ -15,41 +15,43 @@ class UpgradeButton : public CircularButton {
     UpgradeButton(const UpgradeButton&);
     UpgradeButton& setPosition(const sf::Vector2f& position);
     UpgradeButton& setRadius(int radius);
-    UpgradeButton& setParentMediator(Mediator* radialMenu);
-    UpgradeButton& setUpgradeManager(UpgradeManager &target);
+    UpgradeButton& setParentMediator(RadialUpgradeMenu* radialMenu);
+    UpgradeButton& setUpgradeManager(UpgradeManager& target);
     UpgradeButton& setUpgradeID(int id);
     UpgradeButton& setCanUpgrade(bool val);
     UpgradeButton& setIsCapped(bool val);
     UpgradeButton& setStyle(std::string configFile);
     void update() override;
-    
+
     void refreshInfo();
-    
+
     // * Mouse position is the world position of the cursor
     bool contains(const sf::Vector2f& mousePosition) override;
     void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-    
-    bool onMouseEvent(Mouse button, UserEvent event, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
-    bool onScrollEvent(float delta, const sf::Vector2f &worldPosition, const sf::Vector2f &windowPosition) override;
+
+    bool onMouseEvent(Mouse button, UserEvent event,
+                      const sf::Vector2f& worldPosition,
+                      const sf::Vector2f& windowPosition) override;
+    bool onScrollEvent(float delta, const sf::Vector2f& worldPosition,
+                       const sf::Vector2f& windowPosition) override;
 
     private:
-
-    const float TAG_OFFSET = 0.75f; 
+    const float TAG_OFFSET = 0.75f;
     void updatePriceTag();
     void updateSpritePosition();
     int radius;
-    
+    std::unique_ptr<Tower> evolutionTower;
+
     Currency price;
     sf::CircleShape buttonShape;
     sf::RenderTexture priceTag;
     sf::Sprite tagDisplay;
     sf::Sprite upgradeIcon;
 
-    Mediator* parentMediator;
+    RadialUpgradeMenu* parentMediator;
     bool canUpgrade = false;
     bool isCapped = false;
     int upgradeID;
 
     UpgradeManager* upgrades;
-
 };

@@ -7,10 +7,12 @@
  */
 
 #include "Entity/StaticEntity/StaticEntity.hpp"
-#include "Scene/Scene.hpp"
-#include "Utility/logger.hpp"
-#include "Utility/Scaler.hpp"
+
 #include "Scene/Level.hpp"
+#include "Scene/Scene.hpp"
+#include "Utility/Scaler.hpp"
+#include "Utility/logger.hpp"
+#include "Utility/CollisionChecker.hpp"
 
 StaticEntity::StaticEntity(Scene& scene) : Entity(scene) {
     levelRef = dynamic_cast<Level*>(&scene);
@@ -31,21 +33,16 @@ void StaticEntity::setRotation(const sf::Angle& rot) {
     sprite.setRotation(rot);
 }
 
-void  StaticEntity::draw(sf::RenderTarget& target, sf::RenderStates state) const {
+void StaticEntity::draw(sf::RenderTarget& target,
+                        sf::RenderStates state) const {
     target.draw(sprite, state);
 }
 
-void StaticEntity::setTextureWidth(float width) {
-    textureWidth = width;
-}
+void StaticEntity::setTextureWidth(float width) { textureWidth = width; }
 
-void StaticEntity::setTextureHeight(float height) {
-    textureHeight = height;
-}
+void StaticEntity::setTextureHeight(float height) { textureHeight = height; }
 
-void StaticEntity::setRemoveCost(const Currency& cost) {
-    removeCost = cost;
-}
+void StaticEntity::setRemoveCost(const Currency& cost) { removeCost = cost; }
 
 bool StaticEntity::canBeRemoved(const Currency& availableCurrency) const {
     return availableCurrency.canAfford(removeCost);
@@ -54,7 +51,8 @@ bool StaticEntity::canBeRemoved(const Currency& availableCurrency) const {
 void StaticEntity::loadSpriteTexture(const sf::Texture& texture) {
     sprite = sf::Sprite(texture);
     sf::Vector2u originalSize = texture.getSize();
-    sf::Vector2f origin = sf::Vector2f(originalSize.x / 2.f, originalSize.y / 2.f);
+    sf::Vector2f origin =
+        sf::Vector2f(originalSize.x / 2.f, originalSize.y / 2.f);
     sprite.setOrigin(origin);
     sprite = Scaler::scaleSprite(sprite, {textureWidth, textureHeight});
 
@@ -64,4 +62,13 @@ void StaticEntity::loadSpriteTexture(const sf::Texture& texture) {
 
 sf::FloatRect StaticEntity::getBounds() const {
     return sprite.getGlobalBounds();
+}
+
+bool StaticEntity::intersects(sf::Vector2f points[4]) const {
+    sf::FloatRect bound = getBounds();
+    sf::Vector2f baseBound[4] = {
+        bound.position, bound.position + sf::Vector2f{bound.size.x, 0},
+        bound.position + bound.size,
+        bound.position + sf::Vector2f{0, bound.size.y}};
+    return CollisionChecker::isQuadilateralCrossed(points, baseBound);
 }

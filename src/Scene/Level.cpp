@@ -414,6 +414,9 @@ bool Level::isPlacementValid(sf::Vector2f worldPosition) {
         return false;
     for (auto &tower : entityManager.getTowers())
         if (tower->intersects(towerBound)) return false;
+
+    for (auto &staticEntity : entityManager.getStaticEntities())
+        if (staticEntity->intersects(towerBound)) return false;
     const std::vector<Waypoint> &pathway = path.getWaypoints();
 
     for (int i = 0; i < pathway.size() - 1; i++) {
@@ -655,5 +658,24 @@ void Level::subscribeCallbacks() {
     });
     subscribe("unfocus_static_entity", [this](std::any sender, std::any data) {
         staticSellMenu.unFocus();
+    });
+    subscribe("evolution", [this](std::any sender, std::any data) {
+        try {
+            RadialUpgradeMenu* menu = std::any_cast<RadialUpgradeMenu *>(sender);
+            std::string evolutionID = std::any_cast<std::string>(data);
+            std::unique_ptr<Tower> evolutionTower =
+                TowerFactory::createFromConfigFile(
+                    evolutionID, *this,
+                    upgradeMenu.getFocusedTower()->getPosition());
+            
+            notify("sell_tower", upgradeMenu.getFocusedTower());
+            
+            infoPanel.setFocus(evolutionTower.get());
+            menu->setFocus(evolutionTower.get());
+            entityManager.addTower(std::move(evolutionTower));
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on add tower");
+            return;
+        }
     });
 }
