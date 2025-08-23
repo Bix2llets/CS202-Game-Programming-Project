@@ -557,8 +557,17 @@ void Level::subscribeCallbacks() {
         }
     });
 
-    subscribe("hide_upgrade_preview", [this](std::any sender, std::any data) {
+    subscribe("hide_preview", [this](std::any sender, std::any data) {
         infoPanel.clearDisplayUpgrade();
+    });
+
+    subscribe("show_evolution", [this](std::any sender, std::any data) {
+        try {
+            std::string evolutionID = std::any_cast<std::string>(data);
+            infoPanel.displayEvolution(evolutionID, this);
+        } catch (std::bad_any_cast &e) {
+            Logger::error("Sent illegal signal on show evolution");
+        }
     });
 
     subscribe("spawn_enemy", [this](std::any sender, std::any data) {

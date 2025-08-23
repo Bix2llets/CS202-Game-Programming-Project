@@ -61,9 +61,9 @@ std::unique_ptr<Enemy> EnemyFactory::createEnemy(const std::string &id,
     result->path.setWaypoints(&waypoints);
     result->path.setDistanceFromStart(distance);
     result->path.setSpeed(enemyFile["stats"]["speed"].get<float>() *
-                          (1 + localDifficulty / 10));
+                          (1 + localDifficulty / 10) * speedMultiplier);
     result->health.setMaxHealth(enemyFile["stats"]["max_health"].get<float>() *
-                                (1 + localDifficulty));
+                                (1 + localDifficulty) * healthMultiplier);
     result->health.setHealth(result->health.getMaxHealth());
     result->enemyType =
         (enemyFile["type"] == "land" ? EnemyType::Ground : EnemyType::Aerial);
