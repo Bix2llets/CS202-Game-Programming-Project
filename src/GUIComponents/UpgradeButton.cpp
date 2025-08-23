@@ -240,6 +240,12 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
                     parentMediator->notify("show_upgrade_preview", *this,
                                            nullptr);
                 } else
+                    if (upgrades->getNextUpgradeDetail(upgradeID) == nullptr &&
+                        upgrades->canEvolve(upgradeID))
+                        parentMediator->notify(
+                            "show_evolution", *this,
+                            upgrades->getEvolveTo(upgradeID));
+                    else
                     parentMediator->notify(
                         "show_upgrade_preview", *this,
                         upgrades->getNextUpgradeDetail(upgradeID));

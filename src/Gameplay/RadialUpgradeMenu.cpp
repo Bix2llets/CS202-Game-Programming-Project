@@ -194,28 +194,9 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
 
     sf::RenderTarget& target = Window::getInstance().getRenderWindow();
     Window::getInstance().toggleGUIMode();
-    target.draw(ring, state);
-
-    for (const auto& upgradeButton : upgradeButtons) {
-        target.draw(upgradeButton, state);
-    }
-
-    target.draw(sellBtn, state);
-
-    sf::CircleShape rangeIndicator;
-    rangeIndicator.setRadius(refTower->getStat(TowerStat::RANGE));
-    rangeIndicator.setOrigin(
-        {rangeIndicator.getRadius(), rangeIndicator.getRadius()});
-    rangeIndicator.setPosition(refTower->getPosition());
-    rangeIndicator.setFillColor(sf::Color(0, 0, 0, 100));
-    Window::getInstance().toggleUserMode();
-    target.draw(rangeIndicator);
-
-    
     sf::Vector2f targetSize = refTower->getIcon().getGlobalBounds().size;
-    float radius = std::max(targetSize.x, targetSize.y) /
-                   2.f;
-    
+    float radius = std::max(targetSize.x, targetSize.y) / 2.f;
+
     sf::CircleShape borderInner(radius + 1);
     sf::CircleShape borderOuter(radius);
     borderInner.setOrigin({borderInner.getRadius(), borderInner.getRadius()});
@@ -236,6 +217,22 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
     borderOuter.setRotation(sf::degrees(360.f / 8.f / 2.f));
     target.draw(borderOuter);
     target.draw(borderInner);
+
+    sf::CircleShape rangeIndicator;
+    rangeIndicator.setRadius(refTower->getStat(TowerStat::RANGE));
+    rangeIndicator.setOrigin(
+        {rangeIndicator.getRadius(), rangeIndicator.getRadius()});
+    rangeIndicator.setPosition(refTower->getPosition());
+    rangeIndicator.setFillColor(sf::Color(0, 0, 0, 100));
+    Window::getInstance().toggleUserMode();
+    target.draw(rangeIndicator);
+    target.draw(ring, state);
+
+    for (const auto& upgradeButton : upgradeButtons) {
+        target.draw(upgradeButton, state);
+    }
+
+    target.draw(sellBtn, state);
 }
 
 void RadialUpgradeMenu::update() {

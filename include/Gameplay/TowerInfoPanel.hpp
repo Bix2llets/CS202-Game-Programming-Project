@@ -18,8 +18,8 @@ class TowerInfoPanel : public MouseObserver, public Mediator {
     private:
     Tower* referencingTower;
 
-
     public:
+    
     TowerInfoPanel();
     TowerInfoPanel(const TowerInfoPanel& other) = delete;
     TowerInfoPanel& operator=(const TowerInfoPanel& other) = delete;
@@ -47,11 +47,13 @@ class TowerInfoPanel : public MouseObserver, public Mediator {
     Timer previewClosingTimer;
 
     const UpgradeDetails* currentUpgradeDetail = nullptr;
+    sf::Text enemySelectionStrat;
 
     std::vector<sf::Text> upgradeContents;
-    sf::Text evolutionContents;
+    sf::Text evolutionTitle;
+    sf::Text evolutionName;
     public:
-    static TowerInfoPanel& getInstance();
+    // static TowerInfoPanel& getInstance();
     void render(sf::RenderStates state = sf::RenderStates::Default) const;
     void setFocus(Tower* tower);
     void deFocus();

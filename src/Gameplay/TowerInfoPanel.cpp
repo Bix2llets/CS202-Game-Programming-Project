@@ -7,15 +7,17 @@
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
+#include "Entity/Tower/Behaviors/TowerBehavior.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "GUIComponents/RectangularButtonBuilder.hpp"
 #include "Scene/Level.hpp"
-#include "Utility/aligner.hpp"
 #include "Utility/Scaler.hpp"
-TowerInfoPanel& TowerInfoPanel::getInstance() {
-    static TowerInfoPanel instance;
-    return instance;
-}
+#include "Utility/aligner.hpp"
+#include "Utility/TargetSelectorCycle.hpp"
+// TowerInfoPanel& TowerInfoPanel::getInstance() {
+//     static TowerInfoPanel instance;
+//     return instance;
+// }
 
 TowerInfoPanel::TowerInfoPanel()
     : referencingTower(nullptr),
@@ -31,7 +33,9 @@ TowerInfoPanel::TowerInfoPanel()
       upgradeTitle(*ResourceManager::getInstance().getFont("pixel")),
       towerSprite(GameConstants::BLANK_TEXTURE),
       evolutionSprite(GameConstants::BLANK_TEXTURE),
-      evolutionContents(*ResourceManager::getInstance().getFont("pixel")) {
+      evolutionTitle(*ResourceManager::getInstance().getFont("pixel")),
+      evolutionName(*ResourceManager::getInstance().getFont("text")),
+      enemySelectionStrat{*ResourceManager::getInstance().getFont("text")} {
     rangeIcon = Aligner::align(rangeIcon, HorizontalAlignment::Center,
                                VerticalAlignment::Middle);
     damageIcon = Aligner::align(damageIcon, HorizontalAlignment::Center,
@@ -107,7 +111,7 @@ TowerInfoPanel::TowerInfoPanel()
     upgradeTitle = Aligner::align(upgradeTitle);
     upgradeTitle.setPosition(
         {background.getPosition().x + background.getSize().x / 2.f,
-         background.getPosition().y + 300});
+         background.getPosition().y + 320});
 
     previewClosingTimer.setRemainingTime(0.25f)
         .setTimeInterval(0.25f)
@@ -117,15 +121,49 @@ TowerInfoPanel::TowerInfoPanel()
         RectangularButtonBuilder(*this)
             .reset()
             .setSize({40, 40})
-            .setPosition({background.getPosition().x + 20,
-                          background.getPosition().y + 20})
+            .setPosition({background.getPosition().x + 0,
+                          background.getPosition().y + 255})
             .setCallback([this](RectangularButton* button) {
                 if (!referencingTower) return;
+                                this->notify("prev_mode", this, nullptr);
             })
             .loadJson("borderless_background_basic")
-            .setBackground(
-                ResourceManager::getInstance().getTexture("back_button"))
+            .setBackground(ResourceManager::getInstance().getTexture("prev"))
             .build();
+
+    nextModeButton =
+        RectangularButtonBuilder(*this)
+            .reset()
+            .setSize({40, 40})
+            .setPosition({background.getPosition().x + 160,
+                          background.getPosition().y + 255})
+            .setCallback([this](RectangularButton* button) {
+                if (!referencingTower) return;
+                this->notify("next_mode", this, nullptr);
+            })
+            .loadJson("borderless_background_basic")
+            .setBackground(ResourceManager::getInstance().getTexture("next"))
+            .build();
+
+    enemySelectionStrat.setPosition(
+        {(nextModeButton->getPosition().x + prevModeButton->getSize().x + prevModeButton->getPosition().x) /
+             2.f,
+         nextModeButton->getPosition().y + nextModeButton->getSize().y / 2.f});
+    enemySelectionStrat.setCharacterSize(16);
+    enemySelectionStrat.setFillColor(sf::Color::Black);
+
+    subscribe("next_mode", [this](std::any sender, std::any data) {
+        if (!referencingTower) return;
+        referencingTower->getCombatBehavior()->setTargetSelector(SelectorCycle::nextSelector(
+            referencingTower->getCombatBehavior()->getTargetSelector()));
+        update();
+    });
+    subscribe("prev_mode", [this](std::any sender, std::any data) {
+        if (!referencingTower) return;
+        referencingTower->getCombatBehavior()->setTargetSelector(SelectorCycle::prevSelector(
+            referencingTower->getCombatBehavior()->getTargetSelector()));
+        update();
+    });
 }
 
 void TowerInfoPanel::render(sf::RenderStates state) const {
@@ -145,13 +183,18 @@ void TowerInfoPanel::render(sf::RenderStates state) const {
     window.draw(towerName, state);
     window.draw(upgradeTitle);
 
+    window.draw(*nextModeButton);
+    window.draw(*prevModeButton);
+    window.draw(enemySelectionStrat);
+
     for (const auto& text : upgradeContents) {
         window.draw(text, state);
     }
 
     if (evolutionPreviewTower) {
         window.draw(evolutionSprite, state);
-        window.draw(evolutionContents, state);
+        window.draw(evolutionTitle, state);
+        window.draw(evolutionName, state);
     }
     // Render the tower information panel
     // This is a placeholder for actual rendering logic
@@ -178,6 +221,7 @@ void TowerInfoPanel::setFocus(Tower* tower) {
     towerName.setPosition(
         towerSprite.getPosition() -
         sf::Vector2f{0, towerSprite.getGlobalBounds().size.y / 2.f});
+
     update();
 }
 
@@ -198,6 +242,11 @@ void TowerInfoPanel::update() {
     fireRate.setString(std::format("{:.2f}", fireRateValue));
     maxTargets.setString(std::format("{:.2f}", maxTargetsValue));
 
+    enemySelectionStrat.setString(
+        referencingTower->getCombatBehavior()->getTargetSelector()->getName());
+    enemySelectionStrat =
+        Aligner::align(enemySelectionStrat, HorizontalAlignment::Center,
+                       VerticalAlignment::Middle);
     range = Aligner::align(range, HorizontalAlignment::Left,
                            VerticalAlignment::Middle);
     damage = Aligner::align(damage, HorizontalAlignment::Left,
@@ -206,6 +255,9 @@ void TowerInfoPanel::update() {
                               VerticalAlignment::Middle);
     maxTargets = Aligner::align(maxTargets, HorizontalAlignment::Left,
                                 VerticalAlignment::Middle);
+
+    prevModeButton->update();
+    nextModeButton->update();
 }
 
 void TowerInfoPanel::displayUpgrade(const UpgradeDetails* detail) {
@@ -265,7 +317,7 @@ void TowerInfoPanel::clearDisplayUpgrade() {
     if (!previewClosingTimer.isAvailable()) return;
     currentUpgradeDetail = nullptr;
     upgradeContents.clear();
-    evolutionContents.setString("");
+    evolutionTitle.setString("");
     evolutionSprite = sf::Sprite(GameConstants::BLANK_TEXTURE);
     evolutionPreviewTower = nullptr;
 }
@@ -274,14 +326,13 @@ bool TowerInfoPanel::onMouseEvent(Mouse button, UserEvent event,
                                   const sf::Vector2f& worldPosition,
                                   const sf::Vector2f& windowPosition) {
     if (!referencingTower) return false;
-    if (event == UserEvent::Press && button == Mouse::Left) {
-        if (prevModeButton->onMouseEvent(button, event, worldPosition,
-                                         windowPosition))
-            return true;
-        if (nextModeButton->onMouseEvent(button, event, worldPosition,
-                                         windowPosition))
-            return true;
-    }
+    if (prevModeButton->onMouseEvent(button, event, worldPosition,
+                                     windowPosition))
+        return true;
+    if (nextModeButton->onMouseEvent(button, event, worldPosition,
+                                     windowPosition))
+        return true;
+
     return false;
 }
 
@@ -337,29 +388,41 @@ void TowerInfoPanel::displayEvolution(const std::string& evolveTo,
         upgradeContents.back().setPosition(
             {background.getPosition().x + 20,
              upgradeTitle.getPosition().y + 50 +
-                 (upgradeContents.size() - 1) * 70});
+                 (upgradeContents.size() - 1) * 60});
     }
-    evolutionPreviewTower = TowerFactory::createFromConfigFile(evolveTo, *level);
+    evolutionPreviewTower =
+        TowerFactory::createFromConfigFile(evolveTo, *level);
     evolutionSprite = evolutionPreviewTower->getIcon();
-    evolutionSprite = Scaler::scaleSprite(
-        evolutionSprite, towerSprite.getGlobalBounds().size);
+    evolutionSprite = Scaler::scaleSprite(evolutionSprite,
+                                          towerSprite.getGlobalBounds().size);
     evolutionSprite =
 
         Aligner::align(evolutionSprite, HorizontalAlignment::Center,
                        VerticalAlignment::Middle);
 
-    evolutionContents.setString("EVOLUTION");
-    Aligner::align(evolutionContents);
+    evolutionTitle.setString("EVOLUTION");
+    Aligner::align(evolutionTitle);
 
-    evolutionContents.setCharacterSize(30);
-    evolutionContents.setFillColor(sf::Color::Black);
-    evolutionContents.setPosition(
+    evolutionTitle.setCharacterSize(30);
+    evolutionTitle.setFillColor(sf::Color::Black);
+    evolutionTitle.setPosition(
         {background.getPosition().x + background.getSize().x / 2.f,
          upgradeContents.back().getPosition().y +
              upgradeContents.back().getGlobalBounds().size.y / 2.f + 50});
 
     evolutionSprite.setPosition(
-        evolutionContents.getPosition() +
-        sf::Vector2f{0, evolutionContents.getGlobalBounds().size.y / 2.f} +
+        evolutionTitle.getPosition() +
+        sf::Vector2f{0, evolutionTitle.getGlobalBounds().size.y / 2.f} +
         sf::Vector2f{0, 50});
+
+    evolutionName.setString(evolutionPreviewTower->getName());
+    evolutionName.setCharacterSize(16);
+    evolutionName.setFillColor(sf::Color::Black);
+    evolutionName = Aligner::align(evolutionName, HorizontalAlignment::Center,
+                                   VerticalAlignment::Middle);
+    evolutionName.setPosition(
+        evolutionSprite.getPosition() +
+        sf::Vector2f{0, evolutionSprite.getGlobalBounds().size.y / 2.f} +
+        sf::Vector2f{0, evolutionName.getGlobalBounds().size.y / 2.f} +
+        sf::Vector2f{0, -10});
 }

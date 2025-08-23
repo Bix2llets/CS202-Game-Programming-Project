@@ -31,7 +31,8 @@
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
 Level::Level()
-    : currentWave{0}, totalWaves{0},
+    : currentWave{0},
+      totalWaves{0},
       running{true},
       //   map(parameter),
       entityManager{*this},
@@ -46,15 +47,15 @@ Level::Level()
       staticSellMenu(*this) {
     health.setMaxHealth(200).setHealth(200);
 
-    std::vector<std::unique_ptr<StaticEntity>> staticEntities;
-    staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile(
-        "rock_big_1", *this, sf::Vector2f(365, 310))));
+    // std::vector<std::unique_ptr<StaticEntity>> staticEntities;
+    // staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile(
+    //     "rock_big_1", *this, sf::Vector2f(365, 310))));
     // staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile("big_rock_2",
     // *this, sf::Vector2f(100, 100))));
 
-    for (auto &entity : staticEntities) {
-        entityManager.addStaticEntity(std::move(entity));
-    }
+    // for (auto &entity : staticEntities) {
+    //     entityManager.addStaticEntity(std::move(entity));
+    // }
 
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     RectangularButtonBuilder builder(*this);
@@ -67,24 +68,22 @@ Level::Level()
                           notify("pause_game");
                       })
                       .loadJson("borderless_background_basic")
-                      .setBackground(
-                          ResourceManager::getInstance().getTexture(
-                              "pause_button"))
+                      .setBackground(ResourceManager::getInstance().getTexture(
+                          "pause_button"))
                       .build();
 
-    nextWaveButton = builder.reset()
-                         .setSize(sf::Vector2f{50, 50})
-                         .setPosition(sf::Vector2f{
-                             GameConstants::MENU_X - 50 - 10,
+    nextWaveButton =
+        builder.reset()
+            .setSize(sf::Vector2f{50, 50})
+            .setPosition(
+                sf::Vector2f{GameConstants::MENU_X - 50 - 10,
                              GameConstants::DEFAULT_WINDOW_HEIGHT - 100 - 10})
-                         .setCallback([this](RectangularButton *button) {
-                             notify("next_wave");
-                         })
-                         .loadJson("borderless_background_basic")
-                         .setBackground(
-                             ResourceManager::getInstance().getTexture(
-                                 "next_wave_button"))
-                         .build();
+            .setCallback(
+                [this](RectangularButton *button) { notify("next_wave"); })
+            .loadJson("borderless_background_basic")
+            .setBackground(
+                ResourceManager::getInstance().getTexture("next_wave_button"))
+            .build();
     subscribeCallbacks();
 }
 
@@ -101,9 +100,10 @@ void Level::update() {
     overlay.a = 127;
     if (!waveManager.isCurrentWaveFinish())
         nextWaveButton->setOverlayColor(overlay);
-    else 
+    else
         nextWaveButton->setOverlayColor(sf::Color::Transparent);
     menu.update();
+    infoPanel.update();
     pauseButton->update();
     nextWaveButton->update();
 
@@ -129,7 +129,7 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     Window::getInstance().toggleUserMode();
     // map.render(state);
     Window::getInstance().getRenderWindow().draw(backgrounds, state);
-    
+
     entityManager.render(state);
     weatherManager.draw(target, state);
 
@@ -139,7 +139,7 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     if (staticSellMenu.isDisplaying()) {
         staticSellMenu.render(state);
     }
-    
+
     if (renderPath) path.draw(target, state);
 
     Window::getInstance().toggleGUIMode();
@@ -198,9 +198,30 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     path.loadWaypoints(waypoints);
     loadWaves(jsonFile);
     Logger::success("Loaded waypoints");
-    
+
     weatherManager.setUp();
     factory = std::make_unique<EnemyFactory>(waypoints, *this);
+
+    for (nlohmann::json obstacle: jsonFile["obstacles"]) {
+        if (obstacle.is_object() == false) {
+            continue;
+        }
+        if (!(obstacle.contains("type") && obstacle["type"].is_string() &&
+              obstacle.contains("position") && obstacle["position"].is_object() &&
+              obstacle["position"].contains("x") &&
+              obstacle["position"]["x"].is_number() &&
+              obstacle["position"].contains("y") &&
+              obstacle["position"]["y"].is_number())) {
+            continue;
+        }
+        sf::Vector2f position;
+        position.x = obstacle["position"]["x"].get<float>() * scale.x;
+        position.y = obstacle["position"]["y"].get<float>() * scale.y;
+        std::string type = obstacle["type"].get<std::string>();
+        entityManager.addStaticEntity(StaticEntityFactory::createFromConfigFile(
+            type, *this, position));
+        Logger::debug("Added obstacle of type " + type);
+    }
 }
 
 void Level::loadWaves(const nlohmann::json &jsonFile) {
@@ -213,7 +234,7 @@ void Level::loadWaves(const nlohmann::json &jsonFile) {
 
     waveManager.loadJSON(jsonFile);
     weatherManager.loadJSON(jsonFile);
-    
+
     currentWave = 0;
     totalWaves = waveManager.getTotalWaves();
 }
@@ -237,6 +258,8 @@ void Level::onLoad() {
     subscribeKeyboard(Key::F, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
     subscribeKeyboard(Key::N, UserEvent::Press,
+                      InputManager::getInstance().getKeyboardState());
+    subscribeKeyboard(Key::R, UserEvent::Press,
                       InputManager::getInstance().getKeyboardState());
     subscribeMouse(Mouse::Left, UserEvent::Press,
                    InputManager::getInstance().getMouseState());
@@ -270,6 +293,10 @@ void Level::onUnload() {
                         InputManager::getInstance().getKeyboardState());
     unSubscribeKeyboard(Key::F, UserEvent::Press,
                         InputManager::getInstance().getKeyboardState());
+    unSubscribeKeyboard(Key::N, UserEvent::Press,
+                        InputManager::getInstance().getKeyboardState());
+    unSubscribeKeyboard(Key::R, UserEvent::Press,
+                        InputManager::getInstance().getKeyboardState());
     // TODO: Unregister enemies and towers on left click, close side menu
     EnemyPanel::getInstance().clearEnemy();
     Cursor::getInstance().clearCarryingTower();
@@ -286,26 +313,34 @@ void Level::onUnload() {
     unSubscribeMouse(Mouse::Middle, UserEvent::Move,
                      InputManager::getInstance().getMouseState());
     unSubscribeMouse(Mouse::Right, UserEvent::Press,
-                   InputManager::getInstance().getMouseState());
+                     InputManager::getInstance().getMouseState());
     Logger::debug(std::format("Level onUnLoad done on ", (void *)this));
 }
 
-bool Level::isWaveFinished() {
-    return waveManager.isCurrentWaveFinish();
-}
+bool Level::isWaveFinished() { return waveManager.isCurrentWaveFinish(); }
 
 bool Level::onKeyEvent(Key key, UserEvent event,
                        const sf::Vector2f &worldPosition,
                        const sf::Vector2f &windowPosition) {
     if (key == Key::Space && event == UserEvent::Press) {
         if (!overlay) {
-            overlay = std::make_unique<GameoverScreen>(*this);
+            overlay = std::make_unique<PauseScreen>(*this);
             Cursor::getInstance().clearCarryingTower();
             Cursor::getInstance().removeRenderImage();
             EnemyPanel::getInstance().clearEnemy();
             upgradeMenu.removeFocus();
         } else {
             overlay = nullptr;
+        }
+        return true;
+    }
+    if (key == Key::R && event == UserEvent::Press) {
+        if (!overlay) {
+            overlay = std::make_unique<GameoverScreen>(*this);
+            Cursor::getInstance().clearCarryingTower();
+            Cursor::getInstance().removeRenderImage();
+            EnemyPanel::getInstance().clearEnemy();
+            upgradeMenu.removeFocus();
         }
         return true;
     }
@@ -338,10 +373,13 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
                                      windowPosition)) {
         return true;
     }
-    if (!infoPanel.isDisplaying())
+    if (!infoPanel.isDisplaying()) {
         if (menu.onMouseEvent(mouse, event, worldPosition, windowPosition)) {
             return true;
         }
+    } else if (infoPanel.onMouseEvent(mouse, event, worldPosition,
+                                      windowPosition))
+        return true;
 
     if (Cursor::getInstance().isDisplaying()) {
         if (isPlacementValid(worldPosition)) {
@@ -355,7 +393,7 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
         return true;
     }
     if (staticSellMenu.onMouseEvent(mouse, event, worldPosition,
-                                   windowPosition)) {
+                                    windowPosition)) {
         return true;
     }
     if (entityManager.onMouseEvent(mouse, event, worldPosition,
@@ -488,7 +526,7 @@ void Level::subscribeCallbacks() {
 
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);
-            
+
             // Apply current weather effects to the new tower
             entityManager.addTower(std::move(newTower));
         }
@@ -573,9 +611,9 @@ void Level::subscribeCallbacks() {
     subscribe("spawn_enemy", [this](std::any sender, std::any data) {
         try {
             EnemySpawnInfo spawnInfo = std::any_cast<EnemySpawnInfo>(data);
-            auto enemy = factory->createEnemy(
-                spawnInfo.enemyID, 0, spawnInfo.difficultyModifier);
-            
+            auto enemy = factory->createEnemy(spawnInfo.enemyID, 0,
+                                              spawnInfo.difficultyModifier);
+
             // Apply current weather effects to the new enemy
             entityManager.addEnemy(std::move(enemy));
             // Logger::info(std::format("Spawning enemy: {}", enemyID));
@@ -632,7 +670,7 @@ void Level::subscribeCallbacks() {
               [this](std::any sender, std::any data) { renderPath = false; });
 
     subscribe("next_wave", [this](std::any sender, std::any data) {
-        if(isWaveFinished()) nextWave();
+        if (isWaveFinished()) nextWave();
     });
     subscribe("remove_static_entity", [this](std::any sender, std::any data) {
         try {
@@ -670,18 +708,20 @@ void Level::subscribeCallbacks() {
     });
     subscribe("evolution", [this](std::any sender, std::any data) {
         try {
-            RadialUpgradeMenu* menu = std::any_cast<RadialUpgradeMenu *>(sender);
+            RadialUpgradeMenu *menu =
+                std::any_cast<RadialUpgradeMenu *>(sender);
             std::string evolutionID = std::any_cast<std::string>(data);
             std::unique_ptr<Tower> evolutionTower =
                 TowerFactory::createFromConfigFile(
                     evolutionID, *this,
                     upgradeMenu.getFocusedTower()->getPosition());
-            
+
             notify("sell_tower", upgradeMenu.getFocusedTower());
-            
+
             infoPanel.setFocus(evolutionTower.get());
             menu->setFocus(evolutionTower.get());
             entityManager.addTower(std::move(evolutionTower));
+            infoPanel.clearDisplayUpgrade();
         } catch (std::bad_any_cast &e) {
             Logger::error("Sent illegal signal on add tower");
             return;

@@ -35,7 +35,7 @@ public:
  */
 class NearestTargetSelector : public TargetSelector {
 public:
-   NearestTargetSelector() { name = "Nearest Target Selector"; }
+   NearestTargetSelector() { name = "Nearest"; }
 
    /**
     * @brief Select the nearest enemies to the tower
@@ -53,7 +53,7 @@ public:
  */
 class FarthestTargetSelector : public TargetSelector {
 public:
-   FarthestTargetSelector() { name = "Farthest Target Selector"; }
+   FarthestTargetSelector() { name = "Farthest"; }
 
    /**
     * @brief Select the farthest enemies from the tower
@@ -71,7 +71,7 @@ public:
  */
 class LowestHealthTargetSelector : public TargetSelector {
 public:
-   LowestHealthTargetSelector() { name = "Lowest Health Target Selector"; }
+   LowestHealthTargetSelector() { name = "Weak"; }
 
    /**
     * @brief Select the enemies with the lowest health
@@ -89,7 +89,7 @@ public:
  */
 class HighestHealthTargetSelector : public TargetSelector {
 public:
-   HighestHealthTargetSelector() { name = "Highest Health Target Selector"; }
+   HighestHealthTargetSelector() { name = "Strong"; }
 
    /**
     * @brief Select the enemies with the highest health
@@ -104,7 +104,7 @@ public:
 
 class FirstTargetSelector : public TargetSelector {
 public:
-   FirstTargetSelector() { name = "First Target Selector"; }
+   FirstTargetSelector() { name = "First"; }
 
     /**
      * @brief Select the first enemy in the line (aka the nearest to the end of the path). 
@@ -119,7 +119,7 @@ public:
 
 class LastTargetSelector : public TargetSelector {
 public:
-   LastTargetSelector() { name = "Last Target Selector"; }
+   LastTargetSelector() { name = "Last"; }
 
     /**
      * @brief Select the last enemy in the line (aka the farthest from the end of the path).
