@@ -149,6 +149,9 @@ public:
      */
     std::vector<std::string> getAvailableEvolutions() const;
 
+    bool canEvolve(int typeId) const;
+
+    std::string getEvolveTo(int typeId) const;
     /**
      * @brief Get the total number of upgrades purchased.
      * @return Current total upgrade count.

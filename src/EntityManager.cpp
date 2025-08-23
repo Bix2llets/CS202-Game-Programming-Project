@@ -217,7 +217,13 @@ size_t EntityManager::getTotalEntityCount() const {
 bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
                                  const sf::Vector2f& worldPosition,
                                  const sf::Vector2f& windowPosition) {
+    auto unFocusAll = [this]() {
+        level.notify("unfocus_tower", nullptr);
+        level.notify("unfocus_static_entity", nullptr);
+        EnemyPanel::getInstance().clearEnemy();
+    };
     if ((button == Mouse::Left && event == UserEvent::Press)) {
+        unFocusAll();
         Enemy* foundEnemy = nullptr;
         for (auto& enemy : enemies) {
             if (enemy->contains(worldPosition)) {
@@ -229,7 +235,6 @@ bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
             EnemyPanel::getInstance().setEnemy(*foundEnemy);
             return true;
         }
-        EnemyPanel::getInstance().clearEnemy();
 
         Tower* foundTower = nullptr;
         for (auto& tower : towers) {
@@ -243,7 +248,6 @@ bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
             level.notify("focus_tower", foundTower);
             return true;
         }
-        level.notify("unfocus_tower", nullptr);
 
         StaticEntity* foundStaticEntity = nullptr;
         for (auto& staticEntity : staticEntities) {
@@ -256,7 +260,6 @@ bool EntityManager::onMouseEvent(Mouse button, UserEvent event,
             level.notify("focus_static_entity", foundStaticEntity);
             return true;
         }
-        level.notify("unfocus_static_entity", nullptr);
         return false;
     }
 

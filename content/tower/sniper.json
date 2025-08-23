@@ -26,7 +26,7 @@
   "stats": {
     "damage": 80,
     "fire_rate": 0.5,
-    "range": 18
+    "range": 180
   },
   "behaviors": {
     "combat": {

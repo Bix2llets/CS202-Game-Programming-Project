@@ -1,24 +1,4 @@
 #pragma once
-/**
- * @file JSONLoader.hpp
- * @brief Declares the JSONLoader class for loading and retrieving game data
- * from JSON files.
- *
- * The JSONLoader class is responsible for loading all JSON files from the `mod`
- * and `content` folders, specifically from their `enemy`, `level`,
- * `projectile`, `area_effect`, and `tower` subfolders. It supports loading multiple JSON files
- * per type, each of which may contain a single object or an array of objects.
- * The loader provides efficient retrieval of JSON objects by type and ID,
- * ensuring that objects with the same ID but different types (e.g., enemy vs.
- * tower) are not confused.
- *
- * Usage:
- *   - Call loadAll() to load all JSON data from the relevant directories.
- *   - Use getEnemy(), getLevel(), getProjectile(), getAreaEffect(), or getTower() to retrieve a
- * specific object by ID.
- *   - Use getAllEnemies(), getAllLevels(), getAllProjectiles(), getAllAreaEffects(), or
- *     getAllTowers() to access all loaded objects of a type.
- */
 
 #include <json.hpp>
 #include <string>

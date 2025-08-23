@@ -164,3 +164,26 @@ void UpgradeManager::applyUpgrade(int typeId, int newLevel) {
     // Note: Stat recalculation will happen when Tower calls getTotalStatBonus()
     // This keeps the upgrade system decoupled from the tower's stat system
 }
+
+bool UpgradeManager::canEvolve(int typeId) const {
+    auto upgradeTypeIt = upgradeTypes.find(typeId);
+    if (upgradeTypeIt == upgradeTypes.end()) {
+        return false;
+    }
+
+    const UpgradeType* upgradeType = upgradeTypeIt->second.get();
+    int currentLevel = getCurrentLevel(typeId);
+
+    // Check if this upgrade type is at max level and has an evolution path
+    return currentLevel == upgradeType->getMaxLevel() && !upgradeType->getEvolveTo().empty();
+}
+
+std::string UpgradeManager::getEvolveTo(int typeId) const {
+    auto upgradeTypeIt = upgradeTypes.find(typeId);
+    if (upgradeTypeIt == upgradeTypes.end()) {
+        return "";
+    }
+
+    const UpgradeType* upgradeType = upgradeTypeIt->second.get();
+    return upgradeType->getEvolveTo();
+}

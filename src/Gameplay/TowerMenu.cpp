@@ -169,6 +169,8 @@ void TowerMenu::setTowerButtonDisplay() {
         // Logger::debug(std::format("{} {}",
         // towerSprite.getLocalBounds().size.x,
         //                           towerSprite.getLocalBounds().size.y));
+        // towerSprite = Scaler::scaleSprite(
+        //     towerSprite, {128, 128});
 
         int scrapCost = tower->getCost().getScraps().value;
         int petroleumCost = tower->getCost().getPetroleum().value;

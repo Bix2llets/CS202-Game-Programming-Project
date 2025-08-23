@@ -1,10 +1,12 @@
 #include "Gameplay/RadialUpgradeMenu.hpp"
 
+#include <any>
 #include <cmath>
 
 #include "Core/JSONLoader.hpp"
 #include "Core/ResourceManager.hpp"
 #include "Core/Window.hpp"
+#include "Entity/Factory/TowerFactory.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "Scene/Level.hpp"
 #include "Utility/Aligner.hpp"
@@ -22,9 +24,8 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
         .setDisplaySprite(
             sf::Sprite(*ResourceManager::getInstance().getTexture("sell_icon")))
         .setStyle("background_basic")
-        .setCallback([this](CircularButton* button) {
-            notify("sell", button);
-        });
+        .setCallback(
+            [this](CircularButton* button) { notify("sell", button); });
     subscribe("upgrade", [this, &parentLevel](std::any sender, std::any data) {
         try {
             int upgradeID = std::any_cast<int>(data);
@@ -55,6 +56,22 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
     });
     subscribe("hide_upgrade_preview", [this](std::any sender, std::any data) {
         this->parentLevel.notify("hide_upgrade_preview", *this);
+    });
+    subscribe("evolution", [this](std::any sender, std::any data) {
+        try {
+            std::string evolutionID = std::any_cast<std::string>(data);
+            if (evolutionID.empty()) {
+                Logger::error("RadialUpgradeMenu: Evolution ID is empty");
+                return;
+            }
+            this->parentLevel.notify("evolution", this, evolutionID);
+
+        } catch (std::bad_any_cast& e) {
+            Logger::error(
+                std::format("RadialUpgradeMenu: Bad any cast in evolution "
+                            "event handler: {}",
+                            e.what()));
+        }
     });
 }
 
@@ -248,3 +265,5 @@ void RadialUpgradeMenu::updatePositions() {
         position +
         sf::Vector2f(ring.getRadius() + 2, 0).rotatedBy(sf::degrees(90)));
 }
+
+Level& RadialUpgradeMenu::getParentLevel() { return parentLevel; }
