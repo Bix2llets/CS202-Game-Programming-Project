@@ -34,6 +34,8 @@ protected:
     Level& level;
 
     bool overlayActive;
+    float overlayOpacity;
+    float overlayOpacityChange;
     sf::Sprite overlaySprite;
     SpriteAnimation overlayAnimation;
 
@@ -97,6 +99,11 @@ public:
      * @return bool True if overlay should be drawn.
      */
     bool isOverlayActive() const { return overlayActive; }
+
+    inline float getOverlayOpacity() const { return overlayOpacity; }
+    inline float getOverlayOpacityChange() const { return overlayOpacityChange; }
+    inline void setOverlayOpacity(float opacity) { overlayOpacity = opacity; }
+    inline void setOverlayOpacityChange(float change) { overlayOpacityChange = change; }
 
 protected:
     /**

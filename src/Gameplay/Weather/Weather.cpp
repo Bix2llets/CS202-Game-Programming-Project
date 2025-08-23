@@ -11,8 +11,18 @@
 
 #include "Base/Constants.hpp"
 
+void Weather::update() {
+    if(overlayActive && overlayOpacityChange != 0.0f) {
+        overlayOpacity += overlayOpacityChange;
+        overlayOpacity = std::max(overlayOpacity, 0.0f);
+        overlayOpacity = std::min(overlayOpacity, 1.0f);
+    }
+}
+
 Weather::Weather(WeatherType weatherType, Level& level) 
     : type(weatherType), level(level), overlayActive(false), overlaySprite(GameConstants::BLANK_TEXTURE) {
+        overlayOpacity = 1.0f;
+        overlayOpacityChange = 0.0f;
 }
 
 void Weather::draw(sf::RenderTarget& target, sf::RenderStates states) const {

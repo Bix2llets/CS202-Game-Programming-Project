@@ -15,17 +15,19 @@ RainingWeather::RainingWeather(Level& level) : Weather(WeatherType::Raining, lev
     loadOverlay("raining");
     
     float size = std::max(level.getMapSize().x, level.getMapSize().y);
-    Logger::critical("RainingWeather: Size " + std::to_string(size));
+    Logger::debug("RainingWeather: Size " + std::to_string(size));
     overlayAnimation.updateSpriteSize(size, size);
     overlayAnimation.setPosition({0, 0});
-
-    Logger::critical("RainingWeather: Created rainy weather with effects");
+    
+    Logger::debug("RainingWeather: Created rainy weather with effects");
 }
 
 void RainingWeather::update() {
+    Weather::update();
     // Update rain animation or particle effects
     overlayAnimation.update();
     overlaySprite = overlayAnimation.getCurrentSprite();
+    overlaySprite.setColor(sf::Color(255, 255, 255, (int) (overlayOpacity * 255)));
 }
 
 void RainingWeather::applyToTower(Tower* tower) {

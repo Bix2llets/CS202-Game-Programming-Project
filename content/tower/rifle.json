@@ -29,7 +29,7 @@
   },
   "stats": {
     "damage": 30,
-    "fire_rate": 1,
+    "fire_rate": 10,
     "range": 200,
     "max_targets": 1,
     "effect_slow_level": 5,

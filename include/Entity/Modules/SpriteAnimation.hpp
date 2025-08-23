@@ -144,4 +144,10 @@ public:
      * @param position The new position to set.
      */
     void setPosition(const sf::Vector2f& position);
+
+    /**
+     * @brief Gets a reference to the vector of sprite frames.
+     * @return A reference to the vector of sf::Sprite frames.
+     */
+    std::vector<sf::Sprite>& getSprites() { return sprites; }
 };

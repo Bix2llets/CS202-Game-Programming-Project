@@ -16,6 +16,8 @@ SunnyWeather::SunnyWeather(Level& level) : Weather(WeatherType::Sunny, level) {
 }
 
 void SunnyWeather::update() {
+    // Call base class update for opacity handling
+    Weather::update();
     // Sunny weather has no special update logic
 }
 
