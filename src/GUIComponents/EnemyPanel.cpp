@@ -90,7 +90,7 @@ void EnemyPanel::update() {
         previousHealth = enemyHealth;
         isChanged = true;
         std::string content =
-            std::format("{} / {}", displayingEnemy->health.getHealth(),
+            std::format("{:.2f} / {:.2f}", displayingEnemy->health.getHealth(),
                         displayingEnemy->health.getMaxHealth());
 
         health.setString(content);

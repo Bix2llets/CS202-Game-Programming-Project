@@ -4,13 +4,13 @@
         "name": "Basic enemy",
         "description": "The basic enemy, jack of all trades with low stats",
         "stats": {
-            "max_health": 1000,
+            "max_health": 50,
             "heal_amount": 0,
             "resistance": 0,
             "fire_resistance": 0,
-            "speed": 200,
+            "speed": 80,
             "reward": {
-                "petroleum": 0,
+                "petroleum": 1,
                 "scrap": 9
             }
         },

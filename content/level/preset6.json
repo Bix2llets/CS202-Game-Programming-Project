@@ -4,8 +4,8 @@
     "background": "weird_forest",
     "description": "A preset level with a weird path.",
     "size": {
-        "x": 800,
-        "y": 600
+        "x": 1200,
+        "y": 900
     },
 
     "waypoints": [
@@ -58,7 +58,7 @@
             "local_difficulty": 0.5
         },
         {
-            "weather": "sunny",
+            "weather": "raining",
             "enemy_info": [
                 {
                     "id": "basic_enemy",
@@ -76,7 +76,7 @@
             "local_difficulty": 0.5
         },
         {
-            "weather": "sunny",
+            "weather": "thunderstorm",
             "enemy_info": [
                 {
                     "id": "basic_enemy",
@@ -94,7 +94,7 @@
             "local_difficulty": 0.5
         },
         {
-            "weather": "sunny",
+            "weather": "foggy",
             "enemy_info": [
                 {
                     "id": "basic_enemy",
@@ -121,7 +121,7 @@
             }
         },
         {
-            "type": "tree",
+            "type": "rock_big_2",
             "position": {
                 "x": 470,
                 "y": 280

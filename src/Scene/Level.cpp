@@ -46,6 +46,8 @@ Level::Level()
       randomManager(),
       staticSellMenu(*this) {
     health.setMaxHealth(200).setHealth(200);
+    budget.setScraps(500);
+    budget.setPetroleum(0);
 
     // std::vector<std::unique_ptr<StaticEntity>> staticEntities;
     // staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile(

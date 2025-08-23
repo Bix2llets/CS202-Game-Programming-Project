@@ -37,33 +37,33 @@ void RainingWeather::applyToTower(Tower* tower) {
 }
 
 void RainingWeather::applyToEnemy(Enemy* enemy) {
-    // try {
-    //     EntityStat& stats = enemy.getStats();
+    try {
+        EntityStat stats = enemy->getStats();
         
-    //     // Reduce enemy speed by 20%
-    //     float currentSpeed = stats.getStat("speed");
-    //     float reducedSpeed = currentSpeed * (1.0f - ENEMY_SPEED_REDUCTION);
-    //     stats.setStat("speed", reducedSpeed);
+    // Reduce enemy speed by 20%
+        float currentSpeed = stats.getStat("speed");
+        float reducedSpeed = currentSpeed * (1.0f - ENEMY_SPEED_REDUCTION);
+        enemy->setStat("speed", reducedSpeed);
         
-    //     // Reduce burn damage and duration if the enemy has burn effects
-    //     if (stats.hasStat("effect_burn_level")) {
-    //         float currentBurnDamage = stats.getStat("effect_burn_level");
-    //         float reducedBurnDamage = currentBurnDamage * (1.0f - BURN_DAMAGE_REDUCTION);
-    //         stats.setStat("effect_burn_level", reducedBurnDamage);
-    //     }
+        // Reduce burn damage and duration if the enemy has burn effects
+        if (stats.hasStat("effect_burn_level")) {
+            float currentBurnDamage = stats.getStat("effect_burn_level");
+            float reducedBurnDamage = currentBurnDamage * (1.0f - BURN_DAMAGE_REDUCTION);
+            enemy->setStat("effect_burn_level", reducedBurnDamage);
+        }
         
-    //     if (stats.hasStat("effect_burn_duration")) {
-    //         float currentBurnDuration = stats.getStat("effect_burn_duration");
-    //         float reducedBurnDuration = currentBurnDuration * (1.0f - BURN_DURATION_REDUCTION);
-    //         stats.setStat("effect_burn_duration", reducedBurnDuration);
-    //     }
+        if (stats.hasStat("effect_burn_duration")) {
+            float currentBurnDuration = stats.getStat("effect_burn_duration");
+            float reducedBurnDuration = currentBurnDuration * (1.0f - BURN_DURATION_REDUCTION);
+            enemy->setStat("effect_burn_duration", reducedBurnDuration);
+        }
         
-    //     Logger::debug("RainingWeather: Applied rain effects to enemy " + std::to_string(enemy.getId()) + 
-    //                  " - Speed reduced from " + std::to_string(currentSpeed) + 
-    //                  " to " + std::to_string(reducedSpeed));
-    // } catch (const std::exception& e) {
-    //     Logger::error("RainingWeather: Failed to apply effects to enemy: " + std::string(e.what()));
-    // }
+        // Logger::debug("RainingWeather: Applied rain effects to enemy " + std::to_string(enemy->getId()) + 
+        //              " - Speed reduced from " + std::to_string(currentSpeed) + 
+        //              " to " + std::to_string(reducedSpeed));
+    } catch (const std::exception& e) {
+        Logger::error("RainingWeather: Failed to apply effects to enemy: " + std::string(e.what()));
+    }
 }
 
 void RainingWeather::removeFromTower(Tower* tower) {

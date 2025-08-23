@@ -216,6 +216,13 @@ private:
     inline float getDistanceFromStart() const {
         return path.getDistanceFromStart();
     }
+
+    inline EntityStat getStats() const { return originalStats; }
+    void setStat(std::string id, float value) { originalStats.setStat(id, value);
+        if (id == "speed") {
+            path.setSpeed(originalStats.getStat("speed", 100.0f));
+        }
+    }
    protected:
     /**
      * @brief Called when the enemy dies.
