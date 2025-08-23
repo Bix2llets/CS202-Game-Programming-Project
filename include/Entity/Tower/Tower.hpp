@@ -2,7 +2,6 @@
 class Level;
 class Scene;
 class Enemy;
-class TowerBehavior;
 class CombatBehavior;
 class ResourceBehavior;
 class GlowingBehavior;
@@ -32,6 +31,7 @@ enum class BehaviorType;
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
 #include "Entity/Tower/Upgrades/UpgradeType.hpp"
 #include "Gameplay/Currency.hpp"
+#include "Entity/Tower/Behaviors/TowerBehavior.hpp"
 
 /**
  * @class Tower
@@ -450,4 +450,6 @@ class Tower : public Entity {
     Currency getTotalCost() const {
         return totalCost;
     }
+
+    void setTowerSelectionStrategy(TargetSelector* newStrat);
 };

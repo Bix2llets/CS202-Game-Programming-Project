@@ -7,11 +7,9 @@
 #include "Entity/Enemy/EnemyState.hpp"
 #include "Entity/Enemy/MovingState.hpp"
 #include "Entity/Modules/Effects/Effect.hpp"
-
 #include "GUIComponents/EnemyPanel.hpp"
-#include "Utility/lerp.hpp"
 #include "Utility/aligner.hpp"
-
+#include "Utility/lerp.hpp"
 #include "Utility/logger.hpp"
 
 // Deep-copying copy constructor
@@ -24,7 +22,7 @@ Enemy::Enemy(const Enemy &other)
       petroleumReward(other.petroleumReward),
       scrapReward(other.scrapReward) {}
 
-      Enemy::Enemy(const Enemy &&other)
+Enemy::Enemy(const Enemy &&other)
     : Entity(other),
       Damageable(other),
       currentState(other.currentState ? other.currentState->clone() : nullptr),
@@ -66,25 +64,25 @@ Enemy &Enemy::operator=(Enemy &&other) {
 void Enemy::update() {
     // Update effects first
     effects.update();
-    
+
     // Handle periodic damage/healing from effects
 
     auto tickingEffects = effects.getTickingEffects();
-    for (Effect* effect : tickingEffects) {
+    for (Effect *effect : tickingEffects) {
         if (effect->shouldTick()) {
             switch (effect->getType()) {
                 case EffectType::Burn:
                     this->onHit(effect->getLevel(), DamageType::Fire);
                     break;
-                    
+
                 case EffectType::NapalmBurn:
                     this->onHit(effect->getLevel(), DamageType::Napalm);
                     break;
-                    
+
                 case EffectType::Regeneration:
                     onHeal(effect->getLevel());
                     break;
-                    
+
                 default:
                     break;
             }
@@ -92,17 +90,16 @@ void Enemy::update() {
         }
     }
 
-    
     // Check for death after effect damage
     if (health.getHealth() <= 0) {
         changeState(std::make_unique<DyingState>());
         return;
     }
-    
+
     // Apply speed modifications to path
     float speedModifier = effects.getSpeedModifier();
     path.setEffectSpeedModifier(speedModifier);
-    
+
     // if (currentState) {
     //     currentState->update(this);
     // }
@@ -112,7 +109,8 @@ void Enemy::update() {
 
     sf::Color red = sf::Color::Red;
     sprite = changeSpriteContent(sprite, animation.getCurrentSprite());
-    sprite.setColor(ColorMixer::perceptualLerp(red, sf::Color::White, attackDisplayTimer.getCompletionPercentage()));
+    sprite.setColor(ColorMixer::perceptualLerp(
+        red, sf::Color::White, attackDisplayTimer.getCompletionPercentage()));
     sprite.setRotation(path.angleByVertical());
 }
 
@@ -141,33 +139,52 @@ void Enemy::changeState(std::unique_ptr<EnemyState> newState) {
 void Enemy::onHit(int damage, DamageType damageType) {
     // Apply damage modifiers from effects
     float damageModifier = effects.getDamageModifier();
-    
+
     // Apply fire resistance for fire damage (but NOT napalm)
     if (damageType == DamageType::Fire) {
         float fireResistance = effects.getFireResistance();
         damageModifier *= (1.0f - fireResistance);
     }
 
-    // Apply the final damage modifier (removed duplicate multiplication)
     int finalDamage = static_cast<int>(damage * damageModifier);
     if (finalDamage > 0) attackDisplayTimer.reset();
     health.setHealth(health.getHealth() - finalDamage);
-    
+
     // If enemy dies, change to dying state
     if (health.getHealth() <= 0) {
         changeState(std::make_unique<DyingState>());
     }
 }
 
-void Enemy::applyEffects(const EffectID effectId, const EntityStat& damagerStats) {
-    applyEffect(EffectType::Burn, damagerStats.getStat(EffectStat::BURN_LEVEL), damagerStats.getStat(EffectStat::BURN_DURATION), effectId);
-    applyEffect(EffectType::NapalmBurn, damagerStats.getStat(EffectStat::NAPALM_BURN_LEVEL), damagerStats.getStat(EffectStat::NAPALM_BURN_DURATION), effectId);
-    applyEffect(EffectType::Regeneration, damagerStats.getStat(EffectStat::REGENERATION_LEVEL), damagerStats.getStat(EffectStat::REGENERATION_DURATION), effectId);
-    applyEffect(EffectType::Vulnerable, damagerStats.getStat(EffectStat::VULNERABLE_LEVEL), damagerStats.getStat(EffectStat::VULNERABLE_DURATION), effectId);
-    applyEffect(EffectType::Resistance, damagerStats.getStat(EffectStat::RESISTANCE_LEVEL), damagerStats.getStat(EffectStat::RESISTANCE_DURATION), effectId);
-    applyEffect(EffectType::FireResistance, damagerStats.getStat(EffectStat::FIRE_RESISTANCE_LEVEL), damagerStats.getStat(EffectStat::FIRE_RESISTANCE_DURATION), effectId);
-    applyEffect(EffectType::Slow, damagerStats.getStat(EffectStat::SLOW_LEVEL), damagerStats.getStat(EffectStat::SLOW_DURATION), effectId);
-    applyEffect(EffectType::Energized, damagerStats.getStat(EffectStat::ENERGIZED_LEVEL), damagerStats.getStat(EffectStat::ENERGIZED_DURATION), effectId);
+void Enemy::applyEffects(const EffectID effectId,
+                         const EntityStat &damagerStats) {
+    applyEffect(EffectType::Burn, damagerStats.getStat(EffectStat::BURN_LEVEL),
+                damagerStats.getStat(EffectStat::BURN_DURATION), effectId);
+    applyEffect(EffectType::NapalmBurn,
+                damagerStats.getStat(EffectStat::NAPALM_BURN_LEVEL),
+                damagerStats.getStat(EffectStat::NAPALM_BURN_DURATION),
+                effectId);
+    applyEffect(EffectType::Regeneration,
+                damagerStats.getStat(EffectStat::REGENERATION_LEVEL),
+                damagerStats.getStat(EffectStat::REGENERATION_DURATION),
+                effectId);
+    applyEffect(EffectType::Vulnerable,
+                damagerStats.getStat(EffectStat::VULNERABLE_LEVEL),
+                damagerStats.getStat(EffectStat::VULNERABLE_DURATION),
+                effectId);
+    applyEffect(EffectType::Resistance,
+                damagerStats.getStat(EffectStat::RESISTANCE_LEVEL),
+                damagerStats.getStat(EffectStat::RESISTANCE_DURATION),
+                effectId);
+    applyEffect(EffectType::FireResistance,
+                damagerStats.getStat(EffectStat::FIRE_RESISTANCE_LEVEL),
+                damagerStats.getStat(EffectStat::FIRE_RESISTANCE_DURATION),
+                effectId);
+    applyEffect(EffectType::Slow, damagerStats.getStat(EffectStat::SLOW_LEVEL),
+                damagerStats.getStat(EffectStat::SLOW_DURATION), effectId);
+    applyEffect(EffectType::Energized,
+                damagerStats.getStat(EffectStat::ENERGIZED_LEVEL),
+                damagerStats.getStat(EffectStat::ENERGIZED_DURATION), effectId);
 }
 
 void Enemy::onDeath() {
@@ -195,12 +212,11 @@ sf::Sprite Enemy::changeSpriteContent(sf::Sprite current, sf::Sprite target) {
     return current;
 }
 
-Enemy::~Enemy() {
-    onDeath();
-}
+Enemy::~Enemy() { onDeath(); }
 
-void Enemy::applyEffect(EffectType type, int level, float duration, EffectID id) {
-    if(level <= 0 || duration <= 0) return;
+void Enemy::applyEffect(EffectType type, int level, float duration,
+                        EffectID id) {
+    if (level <= 0 || duration <= 0) return;
     auto effect = std::make_unique<Effect>(type, level, duration, id);
     effects.addEffect(std::move(effect));
 }

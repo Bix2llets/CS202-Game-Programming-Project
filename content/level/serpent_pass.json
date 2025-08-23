@@ -1,4 +1,4 @@
-{
+ {
     "id": "preset_level_serpent_pass",
     "name": "Serpent's Pass",
     "background": "serpent_pass",
@@ -233,6 +233,37 @@
                 }
             ],
             "local_difficulty": 0.8
+        }
+    ],
+    "obstacles": [
+        {
+            "type": "rock_big_1",
+            "position": {
+                "x": 87,
+                "y": 113
+            }
+        },
+        {
+            "type": "rock_big_2",
+            "position": {
+                "x": 129,
+                "y": 86
+            },
+            "size": {
+                "x": 70,
+                "y": 70
+            }
+        },
+        {
+            "type": "rock_big_3",
+            "position": {
+                "x": 148,
+                "y": 46
+            },
+            "size": {
+                "x": 80,
+                "y": 80
+            }
         }
     ]
 }

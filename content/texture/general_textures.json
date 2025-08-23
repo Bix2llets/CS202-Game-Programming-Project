@@ -156,5 +156,9 @@
     {   
         "id": "play_button",
         "path": "assets/texture/button/playbutton.png"
+    },
+    {
+        "id": "weird_forest",
+        "path": "assets/texture/map/weird_forest.png"
     }
 ]

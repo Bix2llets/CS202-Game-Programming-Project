@@ -10,7 +10,7 @@
             "fire_resistance": 0,
             "speed": 100,
             "reward": {
-                "petroleum": 0,
+                "petroleum": 1,
                 "scrap": 9
             }
         },

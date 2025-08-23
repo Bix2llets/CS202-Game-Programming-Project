@@ -1,0 +1,131 @@
+{
+    "id": "weid_forest",
+    "name": "Weird forest",
+    "background": "weird_forest",
+    "description": "A preset level with a weird path.",
+    "size": {
+        "x": 1200,
+        "y": 900
+    },
+
+    "waypoints": [
+        [
+            -10,
+            240
+        ],
+        [
+            120,
+            240
+        ],
+        [
+            200,
+            160
+        ],
+        [
+            320,
+            160
+        ],
+        [
+            420,
+            320
+        ],
+        [
+            560,
+            320
+        ],
+        [
+            680,
+            200
+        ]
+    ],
+    "wave": [
+        {
+            "weather": "sunny",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                },
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 20,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.5
+        },
+        {
+            "weather": "raining",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                },
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 20,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.5
+        },
+        {
+            "weather": "thunderstorm",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 0,
+                    "internal_delay": 1
+                },
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 20,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.5
+        },
+        {
+            "weather": "foggy",
+            "enemy_info": [
+                {
+                    "id": "basic_enemy",
+                    "quantity": 30,
+                    "spawn_delay": 0,
+                    "internal_delay": 0.5
+                },
+                {
+                    "id": "basic_enemy",
+                    "quantity": 10,
+                    "spawn_delay": 20,
+                    "internal_delay": 1
+                }
+            ],
+            "local_difficulty": 0.5
+        }
+    ],
+    "obstacles": [
+        {
+            "type": "rock_big_1",
+            "position": {
+                "x": 220,
+                "y": 200
+            }
+        },
+        {
+            "type": "rock_big_2",
+            "position": {
+                "x": 470,
+                "y": 280
+            }
+        }
+    ]
+}

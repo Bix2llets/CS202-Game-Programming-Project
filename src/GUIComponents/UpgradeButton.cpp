@@ -240,6 +240,12 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
                     parentMediator->notify("show_upgrade_preview", *this,
                                            nullptr);
                 } else
+                    if (upgrades->getNextUpgradeDetail(upgradeID) == nullptr &&
+                        upgrades->canEvolve(upgradeID))
+                        parentMediator->notify(
+                            "show_evolution", *this,
+                            upgrades->getEvolveTo(upgradeID));
+                    else
                     parentMediator->notify(
                         "show_upgrade_preview", *this,
                         upgrades->getNextUpgradeDetail(upgradeID));
@@ -261,18 +267,29 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
             graphicState.updateHoverState(true);
             if (parentMediator) {
                 if (upgrades->isTotalUpgradeLimitReached()) {
-                    parentMediator->notify("show_upgrade_preview", *this,
-                                           nullptr);
+                    if (upgrades->canEvolve(upgradeID))
+                        parentMediator->notify(
+                            "show_evolution", *this,
+                            upgrades->getEvolveTo(upgradeID));
+                    else
+                        parentMediator->notify("show_upgrade_preview", *this,
+                                               nullptr);
                 } else {
-                    parentMediator->notify(
-                        "show_upgrade_preview", *this,
-                        upgrades->getNextUpgradeDetail(upgradeID));
+                    if (upgrades->getNextUpgradeDetail(upgradeID) == nullptr &&
+                        upgrades->canEvolve(upgradeID))
+                        parentMediator->notify(
+                            "show_evolution", *this,
+                            upgrades->getEvolveTo(upgradeID));
+                    else
+                        parentMediator->notify(
+                            "show_upgrade_preview", *this,
+                            upgrades->getNextUpgradeDetail(upgradeID));
                 }
             }
         } else if (graphicState.isHovered() && !contains(windowPosition)) {
             graphicState.updateHoverState(false);
             if (parentMediator) {
-                parentMediator->notify("hide_upgrade_preview", *this);
+                parentMediator->notify("hide_preview", *this);
             }
         }
     }

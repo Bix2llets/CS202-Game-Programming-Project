@@ -95,6 +95,8 @@ void WeatherManager::setWeatherPattern(const std::vector<WeatherType>& pattern) 
     if (!pattern.empty() && currentWaveIndex <= 0) {
         changeWeatherForWave(0);
     }
+
+    
 }
 
 void WeatherManager::nextWave() {

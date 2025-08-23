@@ -43,6 +43,10 @@ void StaticSellMenu::draw(sf::RenderTarget& target, sf::RenderStates states) {
 
     sellButton.draw(target, states);
     target.draw(priceTag, states);
+
+
+
+    
 }
 
 void StaticSellMenu::focusOn(StaticEntity* entity) {
@@ -116,4 +120,18 @@ void StaticSellMenu::render(sf::RenderStates state) const {
     Window::getInstance().toggleGUIMode();
     target.draw(sellButton, state);
     target.draw(priceTag, state);
+
+    
+    sf::Vector2f size = focusedEntity->getBounds().size;
+    float radius = size.length() / 2;
+    
+    sf::CircleShape highlightCircle(radius);
+    highlightCircle.setOrigin({radius, radius});
+    highlightCircle.setPosition(focusedEntity->getPosition());
+    highlightCircle.setOutlineColor(sf::Color(116, 122, 118, 255));
+    highlightCircle.setOutlineThickness(6.f);
+    highlightCircle.setFillColor(sf::Color::Transparent);
+    highlightCircle.setPointCount(8);
+    Window::getInstance().toggleUserMode();
+    target.draw(highlightCircle, state);
 }

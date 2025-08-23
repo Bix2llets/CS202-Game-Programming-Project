@@ -54,8 +54,8 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
     subscribe("show_upgrade_preview", [this](std::any sender, std::any data) {
         this->parentLevel.notify("show_upgrade_preview", *this, data);
     });
-    subscribe("hide_upgrade_preview", [this](std::any sender, std::any data) {
-        this->parentLevel.notify("hide_upgrade_preview", *this);
+    subscribe("hide_preview", [this](std::any sender, std::any data) {
+        this->parentLevel.notify("hide_preview", *this);
     });
     subscribe("evolution", [this](std::any sender, std::any data) {
         try {
@@ -69,6 +69,22 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
         } catch (std::bad_any_cast& e) {
             Logger::error(
                 std::format("RadialUpgradeMenu: Bad any cast in evolution "
+                            "event handler: {}",
+                            e.what()));
+        }
+    });
+    subscribe("show_evolution", [this](std::any sender, std::any data) {
+        try {
+            std::string evolutionID = std::any_cast<std::string>(data);
+            if (evolutionID.empty()) {
+                Logger::error("RadialUpgradeMenu: Evolution ID is empty");
+                return;
+            }
+            this->parentLevel.notify("show_evolution", this, evolutionID);
+
+        } catch (std::bad_any_cast& e) {
+            Logger::error(
+                std::format("RadialUpgradeMenu: Bad any cast in show_evolution "
                             "event handler: {}",
                             e.what()));
         }
@@ -178,13 +194,29 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
 
     sf::RenderTarget& target = Window::getInstance().getRenderWindow();
     Window::getInstance().toggleGUIMode();
-    target.draw(ring, state);
+    sf::Vector2f targetSize = refTower->getIcon().getGlobalBounds().size;
+    float radius = std::max(targetSize.x, targetSize.y) / 2.f;
 
-    for (const auto& upgradeButton : upgradeButtons) {
-        target.draw(upgradeButton, state);
-    }
+    sf::CircleShape borderInner(radius + 1);
+    sf::CircleShape borderOuter(radius);
+    borderInner.setOrigin({borderInner.getRadius(), borderInner.getRadius()});
+    borderInner.setPosition(refTower->getPosition());
+    borderInner.setFillColor(sf::Color::Transparent);
+    borderInner.setOutlineColor(sf::Color(116, 122, 118, 255));
+    borderInner.setOutlineThickness(4.f);
 
-    target.draw(sellBtn, state);
+    borderInner.setPointCount(8);
+    borderInner.setRotation(sf::degrees(360.f / 8.f / 2.f));
+    borderOuter.setOrigin({borderOuter.getRadius(), borderOuter.getRadius()});
+    borderOuter.setPosition(refTower->getPosition());
+    borderOuter.setFillColor(sf::Color::Transparent);
+    borderOuter.setOutlineColor(sf::Color::Black);
+    borderOuter.setOutlineThickness(6.f);
+
+    borderOuter.setPointCount(8);
+    borderOuter.setRotation(sf::degrees(360.f / 8.f / 2.f));
+    target.draw(borderOuter);
+    target.draw(borderInner);
 
     sf::CircleShape rangeIndicator;
     rangeIndicator.setRadius(refTower->getStat(TowerStat::RANGE));
@@ -194,6 +226,13 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
     rangeIndicator.setFillColor(sf::Color(0, 0, 0, 100));
     Window::getInstance().toggleUserMode();
     target.draw(rangeIndicator);
+    target.draw(ring, state);
+
+    for (const auto& upgradeButton : upgradeButtons) {
+        target.draw(upgradeButton, state);
+    }
+
+    target.draw(sellBtn, state);
 }
 
 void RadialUpgradeMenu::update() {
