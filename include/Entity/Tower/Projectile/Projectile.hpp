@@ -38,7 +38,6 @@ enum class ProjectileTargetType {
  */
 class Projectile : public Entity {
 private:
-    Level* levelRef = nullptr; ///< Reference to Level if scene is a Level, else nullptr
     SpriteAnimation animation; ///< Animation for the projectile sprite
 
     std::string id; ///< Unique identifier for the projectile

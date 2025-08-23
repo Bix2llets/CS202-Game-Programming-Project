@@ -67,8 +67,9 @@ std::unique_ptr<Tower> TowerFactory::createFromJson(
         std::string baseTextureId;
         nlohmann::json turretAnimationPath;
         float textureWidth, textureHeight;
+        float turretWidth, turretHeight;
         
-        parseTextures(config["texture"], baseTextureId, textureWidth, textureHeight);
+        parseTextures(config["texture"], baseTextureId, textureWidth, textureHeight, turretWidth, turretHeight);
 
         // Set texture paths
         if (!baseTextureId.empty()) {
@@ -81,6 +82,7 @@ std::unique_ptr<Tower> TowerFactory::createFromJson(
 
         // Set texture dimensions
         builder.setTextureDimensions(textureWidth, textureHeight);
+        builder.setTurretDimensions(turretWidth, turretHeight);
     }
 
     // Set timer interval based on fire_rate if available
@@ -138,7 +140,9 @@ std::unique_ptr<EntityStat> TowerFactory::parseStats(
 void TowerFactory::parseTextures(const nlohmann::json& textureJson,
                                  std::string& baseTextureId,
                                  float& width,
-                                 float& height) {
+                                 float& height,
+                                 float& turretWidth,
+                                 float& turretHeight) {
     // Parse texture paths
     if (textureJson.contains("base")) {
         baseTextureId = textureJson["base"].get<std::string>();
@@ -155,6 +159,18 @@ void TowerFactory::parseTextures(const nlohmann::json& textureJson,
         height = textureJson["height"].get<float>();
     } else {
         height = 32.0f;  // Default height
+    }
+
+    if(textureJson.contains("turret_width")) {
+        turretWidth = textureJson["turret_width"].get<float>();
+    } else {
+        turretWidth = width; // Default to base width
+    }
+
+    if(textureJson.contains("turret_height")) {
+        turretHeight = textureJson["turret_height"].get<float>();
+    } else {
+        turretHeight = height; // Default to base height
     }
 
     // Log texture information for debugging

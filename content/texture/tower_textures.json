@@ -14,5 +14,9 @@
     {
         "id": "cannon_turret",
         "path": "assets/texture/tower/cannon_turret.png"
+    },
+    {
+        "id": "sniper_turret",
+        "path": "assets/texture/tower/sniper_turret.png"
     }
 ]

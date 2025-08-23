@@ -149,6 +149,12 @@ TowerBuilder& TowerBuilder::setTextureDimensions(float width, float height) {
     return *this;
 }
 
+TowerBuilder& TowerBuilder::setTurretDimensions(float width, float height) {
+    this->turretWidth = width;
+    this->turretHeight = height;
+    return *this;
+}
+
 std::unique_ptr<Tower> TowerBuilder::build() {
     if (isBuilt) {
         throw std::invalid_argument(
@@ -175,6 +181,8 @@ std::unique_ptr<Tower> TowerBuilder::build() {
     // Set texture dimensions
     tower->textureWidth = textureWidth;
     tower->textureHeight = textureHeight;
+    tower->turretWidth = turretWidth;
+    tower->turretHeight = turretHeight;
 
     // Set statistics if provided
     if (stats) {
@@ -230,6 +238,12 @@ void TowerBuilder::validate() const {
     if (textureWidth <= 0.0f || textureHeight <= 0.0f) {
         throw std::invalid_argument(
             "TowerBuilder: Texture dimensions must be positive.");
+    }
+
+    // Validate turret texture dimensions
+    if (turretWidth <= 0.0f || turretHeight <= 0.0f) {
+        throw std::invalid_argument(
+            "TowerBuilder: Turret texture dimensions must be positive.");
     }
 
     // Validate upgrade system consistency

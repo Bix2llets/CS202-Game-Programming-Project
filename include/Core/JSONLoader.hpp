@@ -84,6 +84,14 @@ public:
     const nlohmann::json& getWeather(const std::string& id) const;
 
     /**
+     * @brief Retrieve a JSON object by ID for the difficulty type.
+     * @param id The unique ID of the difficulty object.
+     * @return Reference to the JSON object if found, otherwise throws or
+     * returns a null reference.
+     */
+    const nlohmann::json& getDifficulty(const std::string& id) const;
+    
+    /**
      * @brief Retrieve a JSON object by ID for the music type.
      * @param id The unique ID of the music object.
      * @return Reference to the JSON object if found, otherwise throws or
@@ -166,6 +174,12 @@ public:
     const std::unordered_map<std::string, nlohmann::json>& getAllWeathers() const;
 
     /**
+     * @brief Retrieve all loaded difficulty objects.
+     * @return Const reference to the map of difficulty ID to JSON object.
+     */
+    const std::unordered_map<std::string, nlohmann::json>& getAllDifficulties() const;
+
+    /**
      * @brief Retrieve all loaded music objects.
      * @return Const reference to the map of music ID to JSON object.
      */
@@ -175,8 +189,7 @@ public:
      * @brief Retrieve all loaded texture objects.
      * @return Const reference to the map of texture ID to JSON object.
      */
-    const std::unordered_map<std::string, nlohmann::json>& getAllTextures()
-        const;
+    const std::unordered_map<std::string, nlohmann::json>& getAllTextures() const;
 
     /**
      * @brief Retrieve all loaded font objects.
@@ -221,6 +234,8 @@ public:
         staticEntities;  ///< Static entity objects by ID
     std::unordered_map<std::string, nlohmann::json>
         weathers;  ///< Weather objects by ID
+    std::unordered_map<std::string, nlohmann::json>
+        difficulties;  ///< Difficulty objects by ID
     std::unordered_map<std::string, nlohmann::json>
         textures;  ///< Texture objects by ID
     std::unordered_map<std::string, nlohmann::json>

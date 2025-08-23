@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
+#include <json.hpp>
 
 namespace GeneralStat {
     static inline const std::string WIDTH = "texture_width";
@@ -123,6 +124,16 @@ public:
         stats[statName] *= multiplier;
     }
 
+    void loadFromJson(const nlohmann::json& statsJson) {
+        // Parse all stats from the JSON
+        for (auto it = statsJson.begin(); it != statsJson.end(); ++it) {
+            const std::string& statName = it.key();
+            float statValue = it.value().get<float>();
+
+            setStat(statName, statValue);
+        }
+    }
+
     /**
      * @brief Check if a stat exists.
      * @param statName Name of the stat to check.
@@ -229,6 +240,30 @@ public:
         EntityStat result = *this;
         result -= other;
         return result;
+    }
+
+    /**
+     * @brief Multiply two EntityStat objects.
+     * @param other The EntityStat to multiply with.
+     * @return New EntityStat with multiplied values.
+     */
+    EntityStat operator*(const EntityStat& other) const {
+        EntityStat result = *this;
+        for (const auto& [statName, value] : other.stats) {
+            if (hasStat(statName)) {
+                result.setStat(statName, getStatWithoutBonus(statName) * value);
+            }
+        }
+        return result;
+    }
+
+    EntityStat& operator*=(const EntityStat& other) {
+        for (const auto& [statName, value] : other.stats) {
+            if (hasStat(statName)) {
+                setStat(statName, getStatWithoutBonus(statName) * value);
+            }
+        }
+        return *this;
     }
 
     /**

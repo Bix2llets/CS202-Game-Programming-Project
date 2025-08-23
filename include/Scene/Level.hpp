@@ -23,6 +23,8 @@
 #include "Gameplay/TowerMenu.hpp"
 #include "Gameplay/Tracker.hpp"
 #include "Gameplay/Waypoint.hpp"
+#include "Gameplay/Difficulty.hpp"
+
 #include "Scene/GroupInfo.hpp"
 #include "Scene/Overlays/Overlay.hpp"
 #include "Scene/Scene.hpp"
@@ -46,6 +48,7 @@ private:
     std::string levelID;
 
     // Gameplay Related
+    DifficultyLevel difficulty;
     Health health;
     Currency budget;
     RandomManager randomManager;
@@ -153,6 +156,8 @@ public:
      * @return Reference to the level's weather manager.
      */
     inline WeatherManager& getWeatherManager() { return weatherManager; }
+
+    inline DifficultyLevel& getDifficulty() { return difficulty; }
 
     /**
      * @brief Gets the weather manager for this level (const version).

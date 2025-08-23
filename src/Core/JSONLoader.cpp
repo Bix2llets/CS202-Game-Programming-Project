@@ -71,6 +71,7 @@ void JSONLoader::loadAll() {
                 {"tower", &towers},
                 {"static_entity", &staticEntities},
                 {"weather", &weathers},
+                {"difficulty", &difficulties},
                 {"texture", &textures},
                 {"font", &fonts},
                 {"sound", &sounds},
@@ -122,6 +123,13 @@ const nlohmann::json& JSONLoader::getMusic(const std::string& id) const {
     auto it = sounds.find(id);
     if (it == sounds.end())
         throw std::out_of_range("Sound ID not found: " + id);
+    return it->second;
+}
+
+const nlohmann::json& JSONLoader::getDifficulty(const std::string& id) const {
+    auto it = difficulties.find(id);
+    if (it == difficulties.end())
+        throw std::out_of_range("Difficulty ID not found: " + id);
     return it->second;
 }
 
@@ -223,6 +231,11 @@ JSONLoader::getAllStaticEntities() const {
 const std::unordered_map<std::string, nlohmann::json>&
 JSONLoader::getAllWeathers() const {
     return weathers;
+}
+
+const std::unordered_map<std::string, nlohmann::json>&
+JSONLoader::getAllDifficulties() const {
+    return difficulties;
 }
 
 const std::unordered_map<std::string, nlohmann::json>&

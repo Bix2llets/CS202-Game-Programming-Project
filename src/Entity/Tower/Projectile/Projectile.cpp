@@ -14,12 +14,11 @@
 #include <cstdint>
 
 Projectile::Projectile(Scene& scene, const std::string id)
-    : Entity(scene), levelRef(nullptr), id(id), type(ProjectileTargetType::Trajectory),
+    : Entity(scene), id(id), type(ProjectileTargetType::Trajectory),
       pierceCount(1), currentPierceCount(0), collisionDistance(5.0f),
       speed(0.0f), velocity(0.0f, 0.0f), flying(true), source(nullptr),
       targetEntity(nullptr), flightMode(nullptr) 
 {
-    levelRef = dynamic_cast<Level*>(&scene);
     // Assign uniqueId only after levelRef is determined
     if (levelRef) {
         uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
@@ -29,7 +28,7 @@ Projectile::Projectile(Scene& scene, const std::string id)
 }
 
 Projectile::Projectile(const Projectile& other) 
-    : Entity(other.scene), levelRef(other.levelRef), animation(other.animation), // Default construct animation
+    : Entity(other.scene), animation(other.animation), // Default construct animation
       id(other.id), type(other.type), rotateToTarget(other.rotateToTarget),
       pierceCount(other.pierceCount), currentPierceCount(other.currentPierceCount),
       collisionDistance(other.collisionDistance), speed(other.speed), velocity(other.velocity),
@@ -37,6 +36,7 @@ Projectile::Projectile(const Projectile& other)
       targetEntity(nullptr), targetLocation(other.targetLocation), flightMode(other.flightMode),
       source(nullptr) // Initialize source to null - will be set by bindToTower call
 {
+    levelRef = other.levelRef;
     // Reset flying state and hit enemies for the new projectile instance
     flying = true;
     // After copying, assign a fresh uniqueId in the context of the new scene/level

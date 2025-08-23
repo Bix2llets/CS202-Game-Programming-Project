@@ -24,13 +24,57 @@ class Tower;
 class Enemy;
 class Level;
 
+class WeatherStat {
+private:
+    float towerRangeReduction;
+    float enemySpeedReduction;
+    float burnDamageReduction;
+    float burnDurationReduction;
+public:
+    WeatherStat() {
+        towerRangeReduction = 0.0f;
+        enemySpeedReduction = 0.0f;
+        burnDamageReduction = 0.0f;
+        burnDurationReduction = 0.0f;
+    }
+
+    float getTowerRangeReduction() const { return towerRangeReduction; }
+    void setTowerRangeReduction(float value) { towerRangeReduction = value; }
+
+    float getEnemySpeedReduction() const { return enemySpeedReduction; }
+    void setEnemySpeedReduction(float value) { enemySpeedReduction = value; }
+
+    float getBurnDamageReduction() const { return burnDamageReduction; }
+    void setBurnDamageReduction(float value) { burnDamageReduction = value; }
+
+    float getBurnDurationReduction() const { return burnDurationReduction; }
+    void setBurnDurationReduction(float value) { burnDurationReduction = value; }
+
+    void loadFromJson(const nlohmann::json& statsJson) {
+        if (statsJson.contains("tower_range_reduction")) {
+            towerRangeReduction = statsJson["tower_range_reduction"].get<float>();
+        }
+        if (statsJson.contains("enemy_speed_reduction")) {
+            enemySpeedReduction = statsJson["enemy_speed_reduction"].get<float>();
+        }
+        if (statsJson.contains("burn_damage_reduction")) {
+            burnDamageReduction = statsJson["burn_damage_reduction"].get<float>();
+        }
+        if (statsJson.contains("burn_duration_reduction")) {
+            burnDurationReduction = statsJson["burn_duration_reduction"].get<float>();
+        }
+    }
+};
+
 /**
  * @class Weather
  * @brief Base class for weather effects that modify gameplay.
  */
 class Weather : public sf::Drawable {
 protected:
+    std::string id;
     WeatherType type;
+    WeatherStat stat;
     Level& level;
 
     bool overlayActive;
@@ -43,10 +87,11 @@ public:
     /**
      * @brief Construct a new Weather object.
      * @param weatherType The type of weather.
+     * @param id The unique identifier for this weather.
      * @param level Reference to the game level.
      */
-    Weather(WeatherType weatherType, Level& level);
-    
+    Weather(WeatherType weatherType, const std::string& id, Level& level);
+
     /**
      * @brief Virtual destructor.
      */

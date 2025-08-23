@@ -9,7 +9,7 @@
 #include "Scene/Level.hpp"
 #include "Utility/logger.hpp"
 
-SunnyWeather::SunnyWeather(Level& level) : Weather(WeatherType::Sunny, level) {
+SunnyWeather::SunnyWeather(Level& level) : Weather(WeatherType::Sunny, "sunny", level) {
     // No overlay for sunny weather
     overlayActive = false;
     Logger::debug("SunnyWeather: Created sunny weather (no effects)");

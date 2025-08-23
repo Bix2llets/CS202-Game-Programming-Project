@@ -12,8 +12,9 @@
 
 #include "Gameplay/Terrain/Terrain.hpp"
 #include "Gameplay/Waypoint.hpp"
+#include "Gameplay/Difficulty.hpp"
+
 class Enemy;
-enum class Difficulty;
 class Path;
 class Scene;
 
@@ -26,18 +27,15 @@ class Scene;
  * stats, position, and state based on game difficulty and map.
  */
 class EnemyFactory {
-   private:
-    static constexpr float REWARD_BASIC =
-        7;         ///< Base reward for defeating a basic enemy
+private:
+    static constexpr float REWARD_BASIC = 7;         ///< Base reward for defeating a basic enemy
     std::vector<Waypoint> waypoints;     ///< Reference to the game map for waypoint assignment
-    Scene &scene;  ///< Reference to the current scene
-    float
-        rewardMultiplier;  ///< Multiplier for enemy rewards based on difficulty
-    float speedMultiplier;  ///< Multiplier for enemy speed based on difficulty
-    float
-        healthMultiplier;  ///< Multiplier for enemy health based on difficulty
+    Scene& scene;  ///< Reference to the current scene
 
-   public:
+    float localDifficulty;
+    DifficultyLevel globalDifficulty;
+
+public:
     /**
      * @brief Construct a new EnemyFactory
      * @param difficulty Game difficulty setting
@@ -70,5 +68,5 @@ class EnemyFactory {
      * selected difficulty. It can be used to scale stats, costs, or other
      * properties when creating towers.
      */
-    void setDifficulty(Difficulty difficulty);
+    void setDifficulty(DifficultyLevel difficulty);
 };

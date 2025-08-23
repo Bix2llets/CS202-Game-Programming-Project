@@ -19,8 +19,9 @@ void Weather::update() {
     }
 }
 
-Weather::Weather(WeatherType weatherType, Level& level) 
-    : type(weatherType), level(level), overlayActive(false), overlaySprite(GameConstants::BLANK_TEXTURE) {
+Weather::Weather(WeatherType weatherType, const std::string& id, Level& level) 
+    : type(weatherType), id(id), level(level), overlayActive(false), overlaySprite(GameConstants::BLANK_TEXTURE) {
+        stat = level.getDifficulty().getWeatherModifier(id);
         overlayOpacity = 1.0f;
         overlayOpacityChange = 0.0f;
 }
@@ -53,4 +54,24 @@ void Weather::loadOverlay(const std::string& weatherId) {
             Logger::error("Weather: No overlay animation defined for " + weatherId);
         }
     }
+}
+
+void Weather::applyToTower(Tower* tower) {
+    EntityStat* stats = tower->getStats();
+    stats->addStat(EntityStat::multiplier("range"), -stat.getTowerRangeReduction());
+}
+
+void Weather::removeFromTower(Tower* tower) {
+    EntityStat* stats = tower->getStats();
+    stats->addStat(EntityStat::multiplier("range"), stat.getTowerRangeReduction());
+}
+
+void Weather::applyToEnemy(Enemy* enemy) {
+    // EntityStat* stats = enemy->getStats();
+    // stats->addStat(EntityStat::multiplier("speed"), -stat.getEnemySpeedReduction());
+}
+
+void Weather::removeFromEnemy(Enemy* enemy) {
+    // EntityStat* stats = enemy->getStats();
+    // stats->addStat(EntityStat::multiplier("speed"), stat.getEnemySpeedReduction());
 }
