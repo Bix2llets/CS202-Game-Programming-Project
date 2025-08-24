@@ -134,10 +134,7 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
             .setPosition(position + displacement)
             .setUpgradeManager(*upgradeManager)
             .setUpgradeID(i + 1);
-        if (upgradeManager->getUpgradeType(i + 1)->getEvolveTo() != "")
-            upgradeButtons[i].setStyle("upgrade_button_evolution");
-        else
-            upgradeButtons[i].setStyle("upgrade_button_no_evolution");
+        upgradeButtons[i].setStyle("upgrade_button_evolution");
 
         upgradeButtons[i].setUpgradeManager(*upgradeManager);
         upgradeButtons[i].setUpgradeID(i + 1);
