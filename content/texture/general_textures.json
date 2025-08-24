@@ -167,7 +167,7 @@
     },
     {
         "id": "weather_sun",
-        "path": "assets/texture/weather/ThunderStormIcon.png"
+        "path": "assets/texture/weather/SunnyIcon.png"
     },
     {
         "id": "weather_rain",

@@ -13,7 +13,8 @@
 #include "Utility/Logger.hpp"
 #include "Utility/Scaler.hpp"
 RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
-    : parentLevel{parentLevel} {
+    : parentLevel{parentLevel},
+      upgradeCountText(*ResourceManager::getInstance().getFont("text")) {
     ring.setFillColor(sf::Color(0, 0, 0, 0));
     ring.setOutlineThickness(4);
     ring.setOutlineColor(sf::Color::Black);
@@ -26,6 +27,12 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
         .setStyle("background_basic")
         .setCallback(
             [this](CircularButton* button) { notify("sell", button); });
+    upgradeCountText.setCharacterSize(16);
+    upgradeCountText.setFillColor(sf::Color::White);
+    upgradeCountText.setOutlineColor(sf::Color::Black);
+    upgradeCountText.setOutlineThickness(1.f);
+    upgradeCountText.setString("0/0");
+
     subscribe("upgrade", [this, &parentLevel](std::any sender, std::any data) {
         try {
             int upgradeID = std::any_cast<int>(data);
@@ -34,6 +41,9 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
                 upgradeManager->getNextUpgradeDetail(upgradeID)->cost);
 
             upgradeManager->upgrade(upgradeID);
+            upgradeCountText.setString(
+                std::format("{} / {}", upgradeManager->getTotalUpgradeCount(),
+                            upgradeManager->getMaxTotalUpgrades()));
 
         } catch (std::bad_any_cast& e) {
             Logger::error(std::format(
@@ -113,6 +123,10 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
     ring = Aligner::align(ring, HorizontalAlignment::Center,
                           VerticalAlignment::Middle);
 
+    upgradeCountText.setPosition({position.x + 20, position.y + 20});
+    upgradeCountText.setString(
+        std::format("{} / {}", upgradeManager->getTotalUpgradeCount(),
+                    upgradeManager->getMaxTotalUpgrades()));
     sf::Angle upgradeDisplayInterval = sf::degrees(360 * 4.f / 6.f);
     sf::Angle startingAngle =
         sf::degrees(0.f) + sf::degrees(60.f) + sf::degrees(90.f);
@@ -145,6 +159,7 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
         sf::Vector2f(newRadius + 2, 0).rotatedBy(sf::degrees(90)) + position);
 
     sellBtn.resetAnimation();
+
     update();
 }
 
@@ -234,6 +249,7 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
     }
 
     target.draw(sellBtn, state);
+    target.draw(upgradeCountText, state);
 }
 
 void RadialUpgradeMenu::update() {

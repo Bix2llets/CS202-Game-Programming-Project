@@ -100,11 +100,11 @@ bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
         rangePreview.setPosition(worldPosition);
 
         sf::Vector2f offset(10.f, -10.f);
-        if (worldPosition.x + offset.x + hoverText.getGlobalBounds().size.x >
+        if (windowPosition.x + offset.x + hoverText.getGlobalBounds().size.x >
             GameConstants::MENU_X) {
             offset.x = -10.f - hoverText.getGlobalBounds().size.x;
         }
-        if (worldPosition.y + offset.y + hoverText.getGlobalBounds().size.y < 0) {
+        if (windowPosition.y + offset.y + hoverText.getGlobalBounds().size.y < 0) {
             offset.y = 10.f + hoverText.getGlobalBounds().size.y;
         }
         hoverText.setPosition(windowPosition + offset);
