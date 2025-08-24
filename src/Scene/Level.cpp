@@ -30,6 +30,7 @@
 #include "Scene/Overlays/PauseScreen.hpp"
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
+#include "Scene/Overlays/WinningScreen.hpp"
 Level::Level()
     : currentWave{0},
       totalWaves{0},
@@ -98,12 +99,17 @@ void Level::update() {
         overlay->update();
         return;
     }
+    if (waveManager.isCompleted() && entityManager.getEnemies().empty()) {
+        overlay = std::make_unique<WinningScreen>(*this);
+        return;
+    }
     static sf::Color overlay = sf::Color::Red;
     overlay.a = 127;
     if (!waveManager.isCurrentWaveFinish())
         nextWaveButton->setOverlayColor(overlay);
     else
         nextWaveButton->setOverlayColor(sf::Color::Transparent);
+
     menu.update();
     infoPanel.update();
     pauseButton->update();
@@ -204,12 +210,13 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     weatherManager.setUp();
     factory = std::make_unique<EnemyFactory>(waypoints, *this);
 
-    for (nlohmann::json obstacle: jsonFile["obstacles"]) {
+    for (nlohmann::json obstacle : jsonFile["obstacles"]) {
         if (obstacle.is_object() == false) {
             continue;
         }
         if (!(obstacle.contains("type") && obstacle["type"].is_string() &&
-              obstacle.contains("position") && obstacle["position"].is_object() &&
+              obstacle.contains("position") &&
+              obstacle["position"].is_object() &&
               obstacle["position"].contains("x") &&
               obstacle["position"]["x"].is_number() &&
               obstacle["position"].contains("y") &&
@@ -220,8 +227,8 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
         position.x = obstacle["position"]["x"].get<float>() * scale.x;
         position.y = obstacle["position"]["y"].get<float>() * scale.y;
         std::string type = obstacle["type"].get<std::string>();
-        entityManager.addStaticEntity(StaticEntityFactory::createFromConfigFile(
-            type, *this, position));
+        entityManager.addStaticEntity(
+            StaticEntityFactory::createFromConfigFile(type, *this, position));
         Logger::debug("Added obstacle of type " + type);
     }
 }

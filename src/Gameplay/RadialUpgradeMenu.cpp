@@ -193,7 +193,7 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
     if (!displaying) return;
 
     sf::RenderTarget& target = Window::getInstance().getRenderWindow();
-    Window::getInstance().toggleGUIMode();
+    Window::getInstance().toggleUserMode();
     sf::Vector2f targetSize = refTower->getIcon().getGlobalBounds().size;
     float radius = std::max(targetSize.x, targetSize.y) / 2.f;
 
@@ -226,6 +226,7 @@ void RadialUpgradeMenu::render(sf::RenderStates state) const {
     rangeIndicator.setFillColor(sf::Color(0, 0, 0, 100));
     Window::getInstance().toggleUserMode();
     target.draw(rangeIndicator);
+    Window::getInstance().toggleGUIMode();
     target.draw(ring, state);
 
     for (const auto& upgradeButton : upgradeButtons) {
