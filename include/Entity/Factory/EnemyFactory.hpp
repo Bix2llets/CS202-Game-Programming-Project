@@ -32,7 +32,7 @@ private:
     std::vector<Waypoint> waypoints;     ///< Reference to the game map for waypoint assignment
     Scene& scene;  ///< Reference to the current scene
 
-    float localDifficulty;
+    // float localDifficulty;
     DifficultyLevel globalDifficulty;
 
 public:

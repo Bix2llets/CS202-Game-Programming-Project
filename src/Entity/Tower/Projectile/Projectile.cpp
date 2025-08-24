@@ -17,7 +17,7 @@ Projectile::Projectile(Scene& scene, const std::string id)
     : Entity(scene), id(id), type(ProjectileTargetType::Trajectory),
       pierceCount(1), currentPierceCount(0), collisionDistance(5.0f),
       speed(0.0f), velocity(0.0f, 0.0f), flying(true), source(nullptr),
-      targetEntity(nullptr), flightMode(nullptr) 
+      targetEntity(nullptr), flightMode(nullptr), onHitAreaEffect()
 {
     // Assign uniqueId only after levelRef is determined
     if (levelRef) {
@@ -39,6 +39,11 @@ Projectile::Projectile(const Projectile& other)
     levelRef = other.levelRef;
     // Reset flying state and hit enemies for the new projectile instance
     flying = true;
+
+    for (const auto& effect : other.onHitAreaEffect) {
+        onHitAreaEffect.push_back(std::make_unique<AreaEffect>(*effect));
+    }
+
     // After copying, assign a fresh uniqueId in the context of the new scene/level
     if (levelRef) {
         uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
@@ -102,10 +107,19 @@ void Projectile::stopFlying() {
     flying = false;
     hitEnemies.clear(); // Clear hit enemies
 
-    // std::unique_ptr<AreaEffect> areaEffect = AreaEffectFactory::createFromConfigFile("explosion", *levelRef, sourceId);
-    // areaEffect->setPosition(position);
-    // areaEffect->setUp(&stats); // Set up area effect with projectile stats
-    // levelRef->getEntityManager().addAreaEffect(std::move(areaEffect));
+    for (const auto& effect : onHitAreaEffect) {
+        // Create a copy of effect
+        auto effectCopy = std::make_unique<AreaEffect>(*effect);
+
+        Logger::critical("Projectile::stopFlying: Creating area effect copy");
+
+        effectCopy->setPosition(position);
+        levelRef->getEntityManager().addAreaEffect(std::move(effectCopy));
+
+        // effect->setPosition(position);
+        // effect->setUp(&stats);
+        // levelRef->getEntityManager().addAreaEffect(std::move(effect));
+    }
 }
 
 void Projectile::loadSpriteAnimation(const nlohmann::json& spriteAnimationPath) {
@@ -143,6 +157,11 @@ void Projectile::bindToTower(Tower* tower) {
     stats = *tower->getStats() + tower->getUpgradeManager()->getAllUpgradeBonuses();
     speed = stats.getStat(TowerStat::PROJECTILE_SPEED, 1.0f);
     pierceCount = stats.getStat(TowerStat::PROJECTILE_PIERCE_COUNT, pierceCount);
+
+    for (const auto& effect : onHitAreaEffect) {
+        effect->setUp(&stats);
+        effect->uniqueId = sourceId;
+    }
 }
 
 void Projectile::setUpFlightMode() {

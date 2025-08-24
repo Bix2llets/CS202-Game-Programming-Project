@@ -81,6 +81,18 @@ void DifficultyLevel::loadFromJson(const nlohmann::json& config) {
         name = id;
         Logger::warning("DifficultyLevel: Missing 'name' field");
     }
+
+    if(config.contains("icon")) {
+        if (config["icon"].is_string()) {
+            icon.setTexture(*ResourceManager::getInstance().getTexture(config["icon"].get<std::string>()));
+        } else {
+            icon = sf::Sprite(GameConstants::BLANK_TEXTURE);
+            Logger::warning("DifficultyLevel: 'icon' field is not a string");
+        }
+    } else {
+        icon = sf::Sprite(GameConstants::BLANK_TEXTURE);
+        Logger::warning("DifficultyLevel: 'icon' field is not a string");
+    }
     
     if (config.contains("icon")) {
         icon.setTexture(*ResourceManager::getInstance().getTexture(config["icon"].get<std::string>()));

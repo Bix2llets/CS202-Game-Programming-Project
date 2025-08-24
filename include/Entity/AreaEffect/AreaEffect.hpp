@@ -42,12 +42,14 @@ private:
     SpriteAnimation animation; // Animation for the area effect
 
     friend class AreaEffectFactory;
+    friend class Projectile;
     
     void applyTickEffect();
     bool isCollidedWith(const sf::Vector2f position) const;
 
 public:
     AreaEffect(Scene& scene, uint64_t sourceId);
+    AreaEffect(const AreaEffect& other); ///< Copy constructor (deep copy).
 
     ~AreaEffect() override = default;
 

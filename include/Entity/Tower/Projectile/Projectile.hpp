@@ -64,7 +64,7 @@ private:
 
     FlightMode* flightMode; ///< Flying behavior mode for the projectile
 
-    std::unique_ptr<AreaEffect> areaEffect; ///< Area effect when the projectile hits
+    std::vector<std::unique_ptr<AreaEffect>> onHitAreaEffect; ///< Area effect when the projectile hits
 
     /**
      * @brief Construct a new Projectile object (private, for factory use).
@@ -142,6 +142,7 @@ public:
     void setTargetType(ProjectileTargetType targetType) { type = targetType; }
     void setPierceCount(int count) { pierceCount = count; }
     void setCurrentPierceCount(int count) { currentPierceCount = count; }
+    void addOnHitAreaEffect(std::unique_ptr<AreaEffect> effect) { onHitAreaEffect.push_back(std::move(effect)); }
     void increaseCurrentPierceCount() { ++currentPierceCount; }
     void setCollisionDistance(float distance) { collisionDistance = distance; }
     void setRotateToTarget(bool rotate) { rotateToTarget = rotate; }

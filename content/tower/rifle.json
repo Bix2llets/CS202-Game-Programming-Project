@@ -31,10 +31,10 @@
   },
   "stats": {
     "damage": 30,
-    "fire_rate": 2.1,
+    "fire_rate": 2,
     "range": 210,
     "max_targets": 1,
-    "effect_slow_level": 5,
+    "effect_slow_level": 10,
     "effect_slow_duration": 1
   },
   "upgrades": {
@@ -50,21 +50,21 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "fire_rate": 0.5
+              "fire_rate": 0.3
             }
           },
           "2": {
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "fire_rate": 0.75
+              "fire_rate": 0.3
             }
           },
           "3": {
             "scrap": 150,
             "petroleum": 50,
             "bonus_stats": {
-              "fire_rate": 1
+              "fire_rate": 0.5
             }
           }
         },
@@ -80,14 +80,14 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "range": 50
+              "range": 30
             }
           },
           "2": {
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "range": 50
+              "range": 30
             }
           },
           "3": {
@@ -110,21 +110,21 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "damage": 10
+              "damage": 4
             }
           },
           "2": {
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "damage": 10
+              "damage": 4
             }
           },
           "3": {
             "scrap": 150,
             "petroleum": 50,
             "bonus_stats": {
-              "damage": 10
+              "damage": 8
             }
           }
         },
@@ -136,8 +136,7 @@
   "behaviors": {
     "combat": {
       "type": "instant",
-      "targeting": "first",
-      "effects": []
+      "targeting": "first"
     }
   }
 }
