@@ -20,6 +20,7 @@
         "flight_mode": "linear",
         "rotate_to_target": true,
         "pierce_through_targets_count": 3,
-        "collision_distance": 22
+        "collision_distance": 22,
+        "on_hit_area_effects": [ "explosion" ]
     }
 ]

@@ -2,6 +2,7 @@
 
 #include "Entity/Tower/Projectile/Projectile.hpp"
 #include "Entity/Tower/Projectile/FlightMode.hpp"
+#include "Entity/Factory/AreaEffectFactory.hpp"
 #include "Entity/Modules/SpriteAnimation.hpp"
 #include "Core/JSONLoader.hpp"
 #include "Utility/Logger.hpp"
@@ -23,7 +24,7 @@ std::unique_ptr<Projectile> ProjectileFactory::createFromJson(const nlohmann::js
         // Extract projectile ID
         std::string id = config["id"].get<std::string>();
         
-        if (false) Logger::info("ProjectileFactory: Creating projectile with ID: " + id);
+        Logger::info("ProjectileFactory: * Creating projectile with ID: " + id);
 
         // Create projectile instance
         auto projectile = std::make_unique<Projectile>(scene, id);
@@ -32,7 +33,7 @@ std::unique_ptr<Projectile> ProjectileFactory::createFromJson(const nlohmann::js
         if (config.contains("targeting")) {
             int targetingType = parseTargeting(config["targeting"]);
             projectile->setTargetType(static_cast<ProjectileTargetType>(targetingType));
-            if (false) Logger::debug("ProjectileFactory: Set targeting type for projectile " + id);
+            Logger::debug("ProjectileFactory: Set targeting type for projectile " + id);
         }
 
         // Parse and set collision behavior
@@ -40,7 +41,7 @@ std::unique_ptr<Projectile> ProjectileFactory::createFromJson(const nlohmann::js
             int pierceCount = config["pierce_through_targets_count"].get<int>();
             projectile->setPierceCount(pierceCount);
             projectile->setCurrentPierceCount(0);
-            if (false) Logger::debug("ProjectileFactory: Set pierce_through_targets_count to " + 
+            Logger::debug("ProjectileFactory: Set pierce_through_targets_count to " + 
                          std::to_string(pierceCount) + " for projectile " + id);
         }
 
@@ -48,7 +49,7 @@ std::unique_ptr<Projectile> ProjectileFactory::createFromJson(const nlohmann::js
         if (config.contains("collision_distance")) {
             float collisionDistance = parseCollisionDistance(config);
             projectile->setCollisionDistance(collisionDistance);
-            if (false) Logger::debug("ProjectileFactory: Set collision distance to " + 
+            Logger::debug("ProjectileFactory: Set collision distance to " + 
                          std::to_string(collisionDistance) + " for projectile " + id);
         }
 
@@ -56,8 +57,26 @@ std::unique_ptr<Projectile> ProjectileFactory::createFromJson(const nlohmann::js
         if (config.contains("rotate_to_target")) {
             bool rotateToTarget = config["rotate_to_target"].get<bool>();
             projectile->setRotateToTarget(rotateToTarget);
-            if (false) Logger::debug("ProjectileFactory: Set rotate_to_target to " + 
+            Logger::debug("ProjectileFactory: Set rotate_to_target to " + 
                          std::string(rotateToTarget ? "true" : "false") + " for projectile " + id);
+        }
+
+        if(config.contains("on_hit_area_effects")) {
+            for (const auto& effect : config["on_hit_area_effects"]) {
+                if (!effect.is_string()) {
+                    Logger::error("ProjectileFactory: Each element in 'on_hit_area_effects' must be a string");
+                    throw std::runtime_error("ProjectileFactory: Each element in 'on_hit_area_effects' must be a string");
+                }
+                // JSONLoader::getInstance().getAllDifficulties
+                std::string areaEffectId = effect.get<std::string>();
+                std::unique_ptr<AreaEffect> areaEffect = AreaEffectFactory::createFromConfigFile(areaEffectId, scene, projectile->getUniqueId());
+                if (areaEffect) {
+                    projectile->addOnHitAreaEffect(std::move(areaEffect));
+                    Logger::debug("ProjectileFactory: Added on-hit area effect for projectile " + areaEffectId);
+                } else {
+                    Logger::error("ProjectileFactory: Failed to create area effect for " + areaEffectId);
+                }
+            }
         }
 
         // Parse and set texture configuration
@@ -150,6 +169,13 @@ void ProjectileFactory::validateConfig(const nlohmann::json& config) {
         if (!config["rotate_to_target"].is_boolean()) {
             if (false) Logger::error("ProjectileFactory: Field 'rotate_to_target' must be a boolean");
             throw std::runtime_error("ProjectileFactory: Field 'rotate_to_target' must be a boolean");
+        }
+    }
+
+    if (config.contains("on_hit_area_effects")) {
+        if (!config["on_hit_area_effects"].is_array()) {
+            if (false) Logger::error("ProjectileFactory: Field 'on_hit_area_effects' must be an array");
+            throw std::runtime_error("ProjectileFactory: Field 'on_hit_area_effects' must be an array");
         }
     }
 

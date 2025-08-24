@@ -18,6 +18,25 @@ AreaEffect::AreaEffect(Scene& scene, uint64_t sourceId) : Entity(scene), sourceI
     }
 }
 
+AreaEffect::AreaEffect(const AreaEffect& other)
+    : Entity(other.scene), animation(other.animation), // Default construct animation
+      id(other.id), radius(other.radius), type(other.type),
+      lifeTimer(other.lifeTimer), tickTimer(other.tickTimer),
+      maxRepeats(other.maxRepeats), currentRepeats(0), active(true),
+      sourceId(other.sourceId), stats(other.stats) 
+{
+    levelRef = other.levelRef;
+    position = other.position;
+    rotation = other.rotation;
+    sprite = other.sprite;
+    // After copying, assign a fresh uniqueId in the context of the new scene/level
+    if (levelRef) {
+        uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
+    } else {
+        uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    }
+}
+
 void AreaEffect::setPosition(const sf::Vector2f& pos) {
     position = pos;
     sprite.setPosition(pos);
