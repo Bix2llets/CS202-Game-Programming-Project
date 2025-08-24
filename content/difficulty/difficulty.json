@@ -1,7 +1,7 @@
 [
     {
         "id": "easy",
-        "icon": "",
+        "icon": "heart",
         "name": "Easy",
         "description": "The easiest difficulty level.",
         "enemy_modifiers": {
@@ -34,7 +34,7 @@
     }, 
     {
         "id": "medium",
-        "icon": "",
+        "icon": "heart",
         "name": "Medium",
         "description": "The medium difficulty level.",
         "enemy_modifiers": {
@@ -67,7 +67,7 @@
     },
     {
         "id": "hard",
-        "icon": "",
+        "icon": "heart",
         "name": "Hard",
         "description": "The hard difficulty level.",
         "enemy_modifiers": {
@@ -100,7 +100,7 @@
     }, 
     {
         "id": "nightmare",
-        "icon": "",
+        "icon": "heart",
         "name": "Nightmare",
         "description": "The nightmare difficulty level.",
         "enemy_modifiers": {
