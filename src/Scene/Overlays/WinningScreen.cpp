@@ -88,7 +88,7 @@ WinningScreen::WinningScreen(Mediator &mediator)
         message1.getPosition() +
         sf::Vector2f(0, message1.getGlobalBounds().size.y + 20.f));
     title.setString("You win!");
-    title.setFillColor(sf::Color(0xBD4C14FF));
+    title.setFillColor(sf::Color::Green);
     title.setCharacterSize(90);
     title.setOutlineColor(sf::Color(0x39270FFF));
     title.setOutlineThickness(2);

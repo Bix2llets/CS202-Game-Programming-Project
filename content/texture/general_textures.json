@@ -160,5 +160,9 @@
     {
         "id": "weird_forest",
         "path": "assets/texture/map/weird_forest.png"
+    }, 
+    {
+        "id": "level_selection_background",
+        "path": "assets/texture/button/WidePane.png"
     }
 ]

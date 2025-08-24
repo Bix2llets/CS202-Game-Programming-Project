@@ -15,7 +15,8 @@
 #include "Utility/aligner.hpp"
 #include "Utility/logger.hpp"
 LevelSelection::LevelSelection()
-    : title(*ResourceManager::getInstance().getFont("pixel")) {
+    : title(*ResourceManager::getInstance().getFont("pixel")),
+      buttonBackgroundSprite(*ResourceManager::getInstance().getTexture("level_selection_background")) {
     createButtons();
     createBackgrounds();
     createTexts();
@@ -102,6 +103,10 @@ void LevelSelection::createBackgrounds() {
                 "Failed to load background texture, using blank texture");
         }
     }
+
+    buttonBackgroundSprite.setPosition(sf::Vector2f(0, GameConstants::DEFAULT_WINDOW_HEIGHT / 2.f));
+    Scaler::scaleSprite(buttonBackgroundSprite, sf::Vector2f(380, GameConstants::DEFAULT_WINDOW_HEIGHT * 10));
+    Aligner::align(buttonBackgroundSprite, HorizontalAlignment::Left, VerticalAlignment::Middle);
 }
 
 void LevelSelection::update() {
@@ -114,9 +119,9 @@ void LevelSelection::update() {
 void LevelSelection::draw(sf::RenderTarget& target,
                           sf::RenderStates state) const {
     Window::getInstance().toggleGUIMode();
+    target.draw(buttonBackgroundSprite, state);
     for (int i = 0; i < levelButtons.size(); i++) {
         if (levelButtons[i]->isHovered()) {
-            target.draw(*levelPreviewBackground, state);
             target.draw(*levelBackgrounds[i]);
             Logger::debug(
                 std::format("Drawing the {}-th background, at position {} {}, "
@@ -127,8 +132,9 @@ void LevelSelection::draw(sf::RenderTarget& target,
                             levelBackgrounds[i]->getGlobalBounds().size.y,
                             levelBackgrounds[i]->getOrigin().x,
                             levelBackgrounds[i]->getOrigin().y));
-            target.draw(levelDescriptions[i], state);
-            target.draw(levelTitles[i], state);
+                            target.draw(levelDescriptions[i], state);
+                            target.draw(levelTitles[i], state);
+                            target.draw(*levelPreviewBackground, state);
         }
         target.draw(*levelButtons[i]);
     }
@@ -215,7 +221,7 @@ void LevelSelection::createTexts() {
 
     Aligner::align(title);
     title.setPosition(
-        sf::Vector2f(GameConstants::DEFAULT_WINDOW_WIDTH / 2, title.getGlobalBounds().size.y + 20));
+        sf::Vector2f((380 + GameConstants::DEFAULT_WINDOW_WIDTH) / 2, title.getGlobalBounds().size.y + 20));
     title.setFillColor(sf::Color::White);
     title.setOutlineColor(sf::Color::Black);
     title.setOutlineThickness(2);

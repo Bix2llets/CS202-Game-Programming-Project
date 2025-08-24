@@ -15,6 +15,8 @@ class LevelSelection : public Scene, public MouseObserver {
     std::vector<sf::Text> levelDescriptions;
     std::vector<sf::Text> levelTitles;
     sf::Text title;
+
+    sf::Sprite buttonBackgroundSprite;
     void createButtons();
     void createBackgrounds();
     void createTexts();
