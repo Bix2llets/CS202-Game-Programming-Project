@@ -9,13 +9,15 @@
 #include "Scene/Level.hpp"
 #include "Utility/logger.hpp"
 
-SunnyWeather::SunnyWeather(Level& level) : Weather(WeatherType::Sunny, level) {
+SunnyWeather::SunnyWeather(Level& level) : Weather(WeatherType::Sunny, "sunny", level) {
     // No overlay for sunny weather
     overlayActive = false;
     Logger::debug("SunnyWeather: Created sunny weather (no effects)");
 }
 
 void SunnyWeather::update() {
+    // Call base class update for opacity handling
+    Weather::update();
     // Sunny weather has no special update logic
 }
 

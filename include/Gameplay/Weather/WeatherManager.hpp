@@ -22,6 +22,7 @@ class WeatherManager {
 private:
     Level& level;
     Weather* currentWeather;
+    Weather* previousWeather;
     std::vector<WeatherType> waveWeatherPattern;
     int currentWaveIndex;
     
@@ -90,25 +91,25 @@ public:
      * @brief Apply weather effects to a new tower.
      * @param tower Reference to the tower.
      */
-    inline void applyWeatherToTower(Tower* tower);
+    void applyWeatherToTower(Tower* tower);
 
     /**
      * @brief Apply weather effects to a new enemy.
      * @param enemy Reference to the enemy.
      */
-    inline void applyWeatherToEnemy(Enemy* enemy);
+    void applyWeatherToEnemy(Enemy* enemy);
 
     /**
      * @brief Remove weather effects from a tower.
      * @param tower Reference to the tower.
      */
-    inline void removeWeatherFromTower(Tower* tower);
+    void removeWeatherFromTower(Tower* tower);
 
     /**
      * @brief Remove weather effects from an enemy.
      * @param enemy Reference to the enemy.
      */
-    inline void removeWeatherFromEnemy(Enemy* enemy);
+    void removeWeatherFromEnemy(Enemy* enemy);
 
     /**
      * @brief Draw weather overlay.

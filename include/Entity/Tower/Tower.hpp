@@ -56,7 +56,6 @@ class Tower : public Entity {
     std::unique_ptr<GlowingBehavior> glowingBehaviorPointer;
     std::unique_ptr<UpgradeManager>
         upgradeManager;  ///< Manager for tower upgrades
-    Level* levelRef = nullptr;  ///< Reference to Level if scene is a Level, else nullptr
 
     // Tower identity and properties
     std::string id;           ///< Unique identifier for the tower type
@@ -79,6 +78,8 @@ class Tower : public Entity {
     // Texture dimensions
     float textureWidth;   ///< Desired width for tower textures
     float textureHeight;  ///< Desired height for tower textures
+    float turretWidth;    ///< Desired width for turret textures
+    float turretHeight;   ///< Desired height for turret textures
 
     // Target tracking
     Enemy* mainTarget;  ///< Current main target enemy for barrel tracking
@@ -105,6 +106,10 @@ class Tower : public Entity {
      * Handles cooldowns, targeting, and attacks.
      */
     void update();
+
+    void updateCombatBehavior();
+    void updateResourceBehavior();
+    void updateGlowingBehavior();
 
     /**
      * @brief Render the tower.
@@ -221,13 +226,6 @@ class Tower : public Entity {
     GlowingBehavior* getGlowingBehavior() const {
         return glowingBehaviorPointer.get();
     }
-
-    /**
-     * @brief Get the level reference if available.
-     * @return Reference to the level.
-     * @throws std::runtime_error if the scene is not a Level.
-     */
-    Level* getLevelRef() const { return levelRef; }
 
     /**
      * @brief Check if the tower is currently in a Level.
@@ -413,6 +411,9 @@ class Tower : public Entity {
      * @return float The height that textures should be scaled to.
      */
     float getTextureHeight() const { return textureHeight; }
+
+    float getTurretWidth() const { return turretWidth; }
+    float getTurretHeight() const { return turretHeight; }
 
     /**
      * @brief Get the current main target enemy.

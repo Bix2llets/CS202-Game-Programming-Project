@@ -113,8 +113,10 @@ void Cursor::setCarryingTower(std::string id) {
             sf::Mouse::getPosition(Window::getInstance().getRenderWindow()));
     rangePreview.setPosition(worldPosition);
 
-    previewTower.resize({32, 32});
-    
+    if (previewTower.resize({64, 64})) {
+        // Successfully resized the preview tower
+        Logger::debug("Preview tower resized successfully.");
+    }
 }
 void Cursor::clearCarryingTower() {
     carryingTowerId = "";

@@ -1,0 +1,134 @@
+[
+    {
+        "id": "easy",
+        "icon": "",
+        "name": "Easy",
+        "description": "The easiest difficulty level.",
+        "enemy_modifiers": {
+            "max_health": 0.9,
+            "heal_amount": 0,
+            "resistance": 0.8,
+            "fire_resistance": 0.8,
+            "speed": 0.9
+        },
+        "weather_modifiers": {
+            "sunny": {
+                "tower_range_reduction": 0,
+                "enemy_speed_reduction": 0,
+                "burn_damage_reduction": 0,
+                "burn_duration_reduction": 0
+            },
+            "raining": {
+                "tower_range_reduction": 0,
+                "enemy_speed_reduction": 0.1,
+                "burn_damage_reduction": 0.2,
+                "burn_duration_reduction": 0.2
+            },
+            "thunderstorm": {
+                "tower_range_reduction": 0.1,
+                "enemy_speed_reduction": 0.15,
+                "burn_damage_reduction": 0.3,
+                "burn_duration_reduction": 0.3
+            }
+        }
+    }, 
+    {
+        "id": "medium",
+        "icon": "",
+        "name": "Medium",
+        "description": "The medium difficulty level.",
+        "enemy_modifiers": {
+            "max_health": 1.0,
+            "heal_amount": 1.0,
+            "resistance": 1.0,
+            "fire_resistance": 1.0,
+            "speed": 1.0
+        },
+        "weather_modifiers": {
+            "sunny": {
+                "tower_range_reduction": 0,
+                "enemy_speed_reduction": 0,
+                "burn_damage_reduction": 0,
+                "burn_duration_reduction": 0
+            },
+            "raining": {
+                "tower_range_reduction": 0.15,
+                "enemy_speed_reduction": 0.1,
+                "burn_damage_reduction": 0.25,
+                "burn_duration_reduction": 0.25
+            },
+            "thunderstorm": {
+                "tower_range_reduction": 0.3,
+                "enemy_speed_reduction": 0.15,
+                "burn_damage_reduction": 0.35,
+                "burn_duration_reduction": 0.35
+            }
+        }
+    },
+    {
+        "id": "hard",
+        "icon": "",
+        "name": "Hard",
+        "description": "The hard difficulty level.",
+        "enemy_modifiers": {
+            "max_health": 1.1,
+            "heal_amount": 1.0,
+            "resistance": 1.1,
+            "fire_resistance": 1.1,
+            "speed": 1.0
+        },
+        "weather_modifiers": {
+            "sunny": {
+                "tower_range_reduction": 0,
+                "enemy_speed_reduction": 0,
+                "burn_damage_reduction": 0,
+                "burn_duration_reduction": 0
+            },
+            "raining": {
+                "tower_range_reduction": 0.2,
+                "enemy_speed_reduction": 0.1,
+                "burn_damage_reduction": 0.3,
+                "burn_duration_reduction": 0.3
+            },
+            "thunderstorm": {
+                "tower_range_reduction": 0.35,
+                "enemy_speed_reduction": 0.15,
+                "burn_damage_reduction": 0.4,
+                "burn_duration_reduction": 0.4
+            }
+        }
+    }, 
+    {
+        "id": "nightmare",
+        "icon": "",
+        "name": "Nightmare",
+        "description": "The nightmare difficulty level.",
+        "enemy_modifiers": {
+            "max_health": 1.2,
+            "heal_amount": 1.1,
+            "resistance": 1.1,
+            "fire_resistance": 1.1,
+            "speed": 1.1
+        },
+        "weather_modifiers": {
+            "sunny": {
+                "tower_range_reduction": 0,
+                "enemy_speed_reduction": 0,
+                "burn_damage_reduction": 0,
+                "burn_duration_reduction": 0
+            },
+            "raining": {
+                "tower_range_reduction": 0.25,
+                "enemy_speed_reduction": 0.05,
+                "burn_damage_reduction": 0.3,
+                "burn_duration_reduction": 0.3
+            },
+            "thunderstorm": {
+                "tower_range_reduction": 0.35,
+                "enemy_speed_reduction": 0.1,
+                "burn_damage_reduction": 0.4,
+                "burn_duration_reduction": 0.4
+            }
+        }
+    }
+]

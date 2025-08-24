@@ -170,6 +170,7 @@ void Level::loadFromJson(const std::string &pathToFile) {
 void Level::loadFromJson(const nlohmann::json &jsonFile) {
     backgrounds = sf::Sprite(
         *ResourceManager::getInstance().getTexture(jsonFile["background"]));
+    difficulty.loadFromConfigFile("nightmare");
     levelID = jsonFile["id"];
     sf::Vector2f scale;
     // scale.x = static_cast<float>(GameConstants::MAP_WIDTH) /
@@ -231,6 +232,7 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
             StaticEntityFactory::createFromConfigFile(type, *this, position));
         Logger::debug("Added obstacle of type " + type);
     }
+    factory->setDifficulty(difficulty);
 }
 
 void Level::loadWaves(const nlohmann::json &jsonFile) {

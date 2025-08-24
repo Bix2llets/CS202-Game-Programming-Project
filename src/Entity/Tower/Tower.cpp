@@ -25,7 +25,6 @@ Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const
     upgradeManager = std::make_unique<UpgradeManager>(this);
     setPosition(pos);
     setRotation(angle);
-    levelRef = dynamic_cast<Level*>(&scene);
     // Assign uniqueId only after levelRef is determined
     if (levelRef) {
         uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
@@ -35,8 +34,6 @@ Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const
     }
     timer.resume();
 }
-
-Tower::~Tower() = default;
 
 void Tower::addBehavior(std::unique_ptr<TowerBehavior> behavior) {
     if (!behavior) return;
@@ -196,7 +193,7 @@ void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
 
 void Tower::loadTurretSpriteAnimation(const nlohmann::json& turretAnimationPath) {
     turretAnimation.loadJson(turretAnimationPath);
-    turretAnimation.updateSpriteSize(textureWidth, textureHeight);
+    turretAnimation.updateSpriteSize(turretWidth, turretHeight);
     turretAnimation.setCurrentFrame(turretAnimation.getFrameCount() - 1);
     
     updateSpriteTurretAnimation();
@@ -223,7 +220,7 @@ void Tower::loadIcon() {
     // baseClone.setScale(sf::Vector2f(1.0f, 1.0f));
     // turretClone.setScale(sf::Vector2f(1.0f, 1.0f));
     baseClone = Scaler::scaleSprite(baseClone, {32.0f, 32.0f});
-    turretClone = Scaler::scaleSprite(turretClone, {32.0f, 32.0f});
+    turretClone = Scaler::scaleSprite(turretClone, {64.0f, 64.0f});
 
     // baseClone.setOrigin(baseClone.getLocalBounds().position + baseClone.getLocalBounds().size / 2.f);
 
@@ -245,12 +242,7 @@ void Tower::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(sprite, state);
 }
 
-void Tower::update() {
-    if (!levelRef) return;
-
-    timer.update();
-    turretAnimation.update();
-
+void Tower::updateCombatBehavior() {
     if (combatBehaviorPointer) {
         if (timer.isAvailable()) {
             std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
@@ -269,6 +261,15 @@ void Tower::update() {
             timer.reset();
         }
     }
+}
+
+void Tower::update() {
+    if (!levelRef) return;
+
+    timer.update();
+    turretAnimation.update();
+
+    updateCombatBehavior();
 
     updateSpriteTurretAnimation();
 }
@@ -284,3 +285,5 @@ bool Tower::intersects(sf::Vector2f points[4]) {
         bound.position + bound.size, bound.position + sf::Vector2f{0, bound.size.y}};
     return CollisionChecker::isQuadilateralCrossed(points, baseBound);
 }
+
+Tower::~Tower() = default;

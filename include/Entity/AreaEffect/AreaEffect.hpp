@@ -25,7 +25,6 @@ class AreaEffect : public Entity {
 private:
     std::string id;         // Unique identifier for the area effect
 
-    Level* levelRef;        // Cached Level pointer if scene is a Level
     float radius;           // Effect radius in world units
     DamageType type;        // Damage type
     

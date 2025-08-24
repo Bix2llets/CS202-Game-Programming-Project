@@ -2,9 +2,22 @@
 
 #include "Utility/logger.hpp"
 #include "Utility/Scaler.hpp"
+#include "Scene/Level.hpp"
+
+Entity::Entity(Scene &scene, const sf::Texture& texture) : scene(scene), sprite(texture) {
+    uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    levelRef = dynamic_cast<Level*>(&scene);
+}
+
+Entity::Entity(Scene &scene) : scene(scene), sprite(GameConstants::BLANK_TEXTURE) {
+    uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
+    levelRef = dynamic_cast<Level*>(&scene);
+}
+
 void Entity::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     target.draw(sprite);
 }
+
 void Entity::setPosition(const sf::Vector2f& pos) {
     position = pos;
     sprite.setPosition(position);

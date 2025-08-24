@@ -48,7 +48,9 @@ private:
     // Texture dimensions
     float textureWidth;
     float textureHeight;
-    
+    float turretWidth;
+    float turretHeight;
+
     // Complex components
     std::unique_ptr<EntityStat> stats;
     std::vector<std::unique_ptr<TowerBehavior>> behaviors;
@@ -166,7 +168,7 @@ public:
      * @return TowerBuilder& Reference to this builder for chaining.
      */
     TowerBuilder& setTextureDimensions(float width, float height);
-    
+    TowerBuilder& setTurretDimensions(float width, float height);
     /**
      * @brief Set the tower's statistics.
      * @param stats Unique pointer to tower statistics.

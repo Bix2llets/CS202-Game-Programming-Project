@@ -10,7 +10,6 @@
 #include "Utility/logger.hpp"
 
 AreaEffect::AreaEffect(Scene& scene, uint64_t sourceId) : Entity(scene), sourceId(sourceId) {
-    levelRef = dynamic_cast<Level*>(&scene);
     // Assign uniqueId only after levelRef is determined
     if (levelRef) {
         uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());

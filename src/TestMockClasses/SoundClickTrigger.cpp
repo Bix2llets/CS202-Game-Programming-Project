@@ -47,13 +47,18 @@ bool SoundClickTrigger::onMouseEvent(Mouse button, UserEvent event,
     return false;
 }
 
-bool SoundClickTrigger::onKeyEvent(Key key, UserEvent event,
-                                   const sf::Vector2f &worldPosition,
-                                   const sf::Vector2f &windowPosition) {
+bool SoundClickTrigger::onKeyEvent(Key key, UserEvent event, 
+    const sf::Vector2f &worldPosition, 
+    const sf::Vector2f &windowPosition) {
     Logger::info(std::to_string(static_cast<int>(key)));
     Logger::info(std::to_string(static_cast<int>(event)));
+    
+    return false;
 }
 
-bool SoundClickTrigger::onScrollEvent(float delta,
-                                      const sf::Vector2f &worldPosition,
-                                      const sf::Vector2f &windowPosition) {}
+bool SoundClickTrigger::onScrollEvent(float delta, 
+    const sf::Vector2f &worldPosition, 
+    const sf::Vector2f &windowPosition) {
+
+    return false;
+}

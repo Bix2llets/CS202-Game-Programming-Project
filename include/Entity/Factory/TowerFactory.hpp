@@ -84,7 +84,9 @@ private:
         const nlohmann::json& textureJson,
         std::string& baseTextureId,
         float& width,
-        float& height
+        float& height,
+        float& turretWidth,
+        float& turretHeight
     );
     
     /**
