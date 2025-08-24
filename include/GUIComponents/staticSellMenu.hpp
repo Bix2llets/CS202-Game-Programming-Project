@@ -17,6 +17,10 @@ class StaticSellMenu : public MouseObserver, public Mediator{
     CircularButton sellButton;
     sf::Sprite priceTag;
     StaticEntity* focusedEntity = nullptr;
+    sf::RenderTexture priceTagTexture;
+    sf::Sprite priceTagSprite;
+
+    void updateSpriteTag();
     public:
     StaticSellMenu(Level& parentLevel);
 

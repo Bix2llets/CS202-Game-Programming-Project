@@ -21,10 +21,10 @@
 
 TowerInfoPanel::TowerInfoPanel()
     : referencingTower(nullptr),
-      range(*ResourceManager::getInstance().getFont("pixel")),
-      damage(*ResourceManager::getInstance().getFont("pixel")),
-      fireRate(*ResourceManager::getInstance().getFont("pixel")),
-      maxTargets(*ResourceManager::getInstance().getFont("pixel")),
+      range(*ResourceManager::getInstance().getFont("text")),
+      damage(*ResourceManager::getInstance().getFont("text")),
+      fireRate(*ResourceManager::getInstance().getFont("text")),
+      maxTargets(*ResourceManager::getInstance().getFont("text")),
       rangeIcon{*ResourceManager::getInstance().getTexture("range_icon")},
       damageIcon{*ResourceManager::getInstance().getTexture("power_icon")},
       fireRateIcon{*ResourceManager::getInstance().getTexture("speed_icon")},
@@ -44,10 +44,10 @@ TowerInfoPanel::TowerInfoPanel()
                                   VerticalAlignment::Middle);
     maxTargetsIcon = Aligner::align(maxTargetsIcon, HorizontalAlignment::Center,
                                     VerticalAlignment::Middle);
-    range.setCharacterSize(25);
-    damage.setCharacterSize(25);
-    fireRate.setCharacterSize(25);
-    maxTargets.setCharacterSize(25);
+    range.setCharacterSize(16);
+    damage.setCharacterSize(16);
+    fireRate.setCharacterSize(16);
+    maxTargets.setCharacterSize(16);
     range.setFillColor(sf::Color::Black);
     damage.setFillColor(sf::Color::Black);
     fireRate.setFillColor(sf::Color::Black);

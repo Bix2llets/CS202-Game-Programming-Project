@@ -49,7 +49,7 @@ void LevelSelection::createButtons() {
                 .setText(levelConfig.contains("name") ? levelConfig["name"]
                                                       : "")
                 .setPosition(sf::Vector2f(
-                    100, GameConstants::DEFAULT_WINDOW_HEIGHT / 2 -
+                    60, GameConstants::DEFAULT_WINDOW_HEIGHT / 2 -
                              (previewButtonSize.y * levelCount +
                               verticalSpace * (levelCount - 1)) /
                                  2 +
