@@ -6,6 +6,8 @@
 #include "Entity/Tower/Upgrades/UpgradeManager.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include <algorithm>
+#include "Core/ResourceManager.hpp"
+#include "Core/JSONLoader.hpp"
 
 UpgradeResult UpgradeManager::upgrade(int typeId) {
     // Check if upgrade type exists
@@ -34,7 +36,6 @@ UpgradeResult UpgradeManager::upgrade(int typeId) {
         return UpgradeResult::InvalidLevel;
     }
 
-    // Check if player has sufficient funds
 
     Currency upgradeCost = upgradeType->getLevelDetails(nextLevel)->cost;
     ownerTower->addTotalCost(upgradeCost);
@@ -174,6 +175,13 @@ bool UpgradeManager::canEvolve(int typeId) const {
     const UpgradeType* upgradeType = upgradeTypeIt->second.get();
     int currentLevel = getCurrentLevel(typeId);
 
+    try {
+
+        JSONLoader::getInstance().getTower(upgradeType->getEvolveTo());
+    }
+    catch (...) {
+        return false;
+    }
     // Check if this upgrade type is at max level and has an evolution path
     return currentLevel == upgradeType->getMaxLevel() && !upgradeType->getEvolveTo().empty();
 }

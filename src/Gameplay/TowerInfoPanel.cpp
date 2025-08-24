@@ -276,6 +276,9 @@ void TowerInfoPanel::displayUpgrade(const UpgradeDetails* detail) {
     int index = 0;
     for (const auto& upgrade : upgrades) {
         std::string upgradeName = upgrade.first;
+        if (upgradeName.substr(0, 7) == "effect_") {
+            upgradeName = upgradeName.substr(7);
+        }
         for (int i = 0; i < upgradeName.size(); i++) {
             if (upgradeName[i] == '_') {
                 upgradeName[i] = ' ';

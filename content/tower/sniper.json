@@ -24,9 +24,14 @@
   "description": "A long-range tower that deals high damage to single targets. Effective against tough enemies.",
   "buildable": false,
   "stats": {
-    "damage": 80,
-    "fire_rate": 0.5,
-    "range": 180
+    "damage": 200,
+    "fire_rate": 0.75,
+    "range": 400,
+    "max_targets": 1,
+    "effect_slow_level": 5,
+    "effect_slow_duration": 1,
+    "effect_burn_level": 10,
+    "effect_burn_duration": 2
   },
   "behaviors": {
     "combat": {
