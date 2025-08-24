@@ -132,9 +132,12 @@ void RadialUpgradeMenu::setFocus(Tower* tower) {
             .setParentMediator(this)
             .setRadius(36)
             .setPosition(position + displacement)
-            .setStyle(std::string("background_basic"))
             .setUpgradeManager(*upgradeManager)
             .setUpgradeID(i + 1);
+        if (upgradeManager->getUpgradeType(i + 1)->getEvolveTo() != "")
+            upgradeButtons[i].setStyle("upgrade_button_evolution");
+        else
+            upgradeButtons[i].setStyle("upgrade_button_no_evolution");
 
         upgradeButtons[i].setUpgradeManager(*upgradeManager);
         upgradeButtons[i].setUpgradeID(i + 1);

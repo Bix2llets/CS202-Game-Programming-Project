@@ -5,6 +5,7 @@
 #include <optional>
 
 #include "Core/JSONLoader.hpp"
+#include "Core/ResourceManager.hpp"
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "Entity/Factory/TowerFactory.hpp"
@@ -12,7 +13,9 @@
 #include "Utility/aligner.hpp"
 std::unique_ptr<Cursor> Cursor::instance = nullptr;
 Cursor::Cursor()
-    : position(0.f, 0.f), renderImage{GameConstants::BLANK_TEXTURE} {
+    : position(0.f, 0.f),
+      renderImage{GameConstants::BLANK_TEXTURE},
+      hoverText(*ResourceManager::getInstance().getFont("text")) {
     setValidPlacement();
 }
 
@@ -33,8 +36,8 @@ void Cursor::setRenderImage(sf::Sprite sprite) {
     renderImage = sprite;
     displaying = true;
     renderImage.setPosition(position);
-    renderImage = Aligner::align(
-        renderImage, HorizontalAlignment::Center, VerticalAlignment::Middle);
+    renderImage = Aligner::align(renderImage, HorizontalAlignment::Center,
+                                 VerticalAlignment::Middle);
 }
 
 void Cursor::removeRenderImage() {
@@ -58,7 +61,8 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     Window::getInstance().toggleGUIMode();
     target.draw(outerRing, states);
     target.draw(shape, states);
-
+    target.draw(hoverText, states);
+        
     // Draw tower preview if available
 
     if (displaying) {
@@ -72,14 +76,14 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         Window::getInstance().toggleUserMode();
         target.draw(rangePreview);
         target.draw(renderImage, previewStates);
-        // sf::RectangleShape border(renderImage.getLocalBounds().size);
-        // Aligner::align(border, HorizontalAlignment::Center,
-        //                  VerticalAlignment::Middle);
-        // border.setPosition(renderImage.getPosition());
-        // border.setFillColor(sf::Color::Transparent);
-        // border.setOutlineColor(sf::Color::Red);
-        // border.setOutlineThickness(1.f);
-        // target.draw(border);
+        sf::RectangleShape border(renderImage.getLocalBounds().size);
+        Aligner::align(border, HorizontalAlignment::Center,
+                       VerticalAlignment::Middle);
+        border.setPosition(renderImage.getPosition());
+        border.setFillColor(sf::Color::Transparent);
+        border.setOutlineColor(sf::Color::Red);
+        border.setOutlineThickness(1.f);
+        target.draw(border);
 
         // float attackRadius = previewTower->getStat("range", 0);
         // sf::CircleShape attackPreview(radius);
@@ -94,6 +98,16 @@ bool Cursor::onMouseEvent(Mouse mouse, UserEvent event,
         position = windowPosition;
         renderImage.setPosition(worldPosition);
         rangePreview.setPosition(worldPosition);
+
+        sf::Vector2f offset(10.f, -10.f);
+        if (worldPosition.x + offset.x + hoverText.getGlobalBounds().size.x >
+            GameConstants::MENU_X) {
+            offset.x = -10.f - hoverText.getGlobalBounds().size.x;
+        }
+        if (worldPosition.y + offset.y + hoverText.getGlobalBounds().size.y < 0) {
+            offset.y = 10.f + hoverText.getGlobalBounds().size.y;
+        }
+        hoverText.setPosition(windowPosition + offset);
         // Logger::debug("processing moues movent in cursor");
 
         return true;
@@ -143,4 +157,15 @@ void Cursor::setInvalidPlacement() {
     color.a = 127;
     renderImage.setColor(color);
     rangePreview.setFillColor(color);
+}
+
+void Cursor::setHoverText(const std::string& text) {
+    // Implement hover text display logic here
+    hoverText.setString(text);
+    hoverText.setCharacterSize(14);            // Set appropriate character size
+    hoverText.setFillColor(sf::Color::White);  // Set text color
+    hoverText.setOutlineColor(sf::Color::Black);  // Set outline color
+    hoverText.setOutlineThickness(1.f);           // Set outline thickness
+    Aligner::align(hoverText, HorizontalAlignment::Left,
+                   VerticalAlignment::Bottom);
 }

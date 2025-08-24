@@ -135,7 +135,7 @@ void StaticSellMenu::render(sf::RenderStates state) const {
     highlightCircle.setPointCount(8);
     Window::getInstance().toggleUserMode();
     target.draw(highlightCircle, state);
-    Window::getInstance().toggleGUIMode();
+    // Window::getInstance().toggleGUIMode();
     target.draw(priceTag, state);
 }
 

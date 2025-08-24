@@ -18,5 +18,9 @@
     {
         "id": "sniper_turret",
         "path": "assets/texture/tower/sniper_turret.png"
+    },
+    {
+        "id": "submachine_turret",
+        "path": "assets/texture/tower/submachine_turret.png"
     }
 ]

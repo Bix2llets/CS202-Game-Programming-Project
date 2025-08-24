@@ -222,5 +222,69 @@
             "x": "centering",
             "y": "centering"
         }
+    },
+    {
+        "id": "upgrade_button_no_evolution",
+        "style": {
+            "normal": {
+                "background": "#FFFFFFFF",
+                "border": "#f59f00FF",
+                "text": "#212529FF"
+            },
+            "hover": {
+                "background": "#FFFFFF7F",
+                "border": "#f59f007F",
+                "text": "#212529FF"
+            },
+            "click": {
+                "background": "#0000007F",
+                "border": "#f59f007F",
+                "text": "#212529FF"
+            }
+        },
+        "border_radius": 4,
+        "border_width": 2,
+        "font": "text",
+        "font_size": 16,
+        "padding": [
+            12,
+            24
+        ],
+        "center": {
+            "x": "centering",
+            "y": "centering"
+        }
+    },
+    {
+        "id": "upgrade_button_evolution",
+        "style": {
+            "normal": {
+                "background": "#FFFFFFFF",
+                "border": "#212529FF",
+                "text": "#212529FF"
+            },
+            "hover": {
+                "background": "#FFFFFF7F",
+                "border": "#2125297F",
+                "text": "#212529FF"
+            },
+            "click": {
+                "background": "#0000007F",
+                "border": "#2125297F",
+                "text": "#212529FF"
+            }
+        },
+        "border_radius": 4,
+        "border_width": 2,
+        "font": "text",
+        "font_size": 16,
+        "padding": [
+            12,
+            24
+        ],
+        "center": {
+            "x": "centering",
+            "y": "centering"
+        }
     }
 ]

@@ -2,9 +2,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <iostream>  // Include for debug output
 #include <stdexcept>
-#include <cstdint>
 
 #include "Base/Constants.hpp"
 #include "Entity/Enemy/Enemy.hpp"
@@ -12,22 +12,30 @@
 #include "Scene/Level.hpp"
 #include "Scene/Scene.hpp"
 #include "Utility/CollisionChecker.hpp"
-
-#include "Utility/logger.hpp"
 #include "Utility/Scaler.hpp"
+#include "Utility/logger.hpp"
 
-Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos, const sf::Angle& angle)
-    : Entity(scene), id(id), name(""), description(""), buildable(true), cost(0, 0),
-      base(GameConstants::BLANK_TEXTURE), baseRotation(sf::radians(0.f)), textureWidth(32.0f), textureHeight(32.0f),
+Tower::Tower(Scene& scene, const std::string& id, const sf::Vector2f& pos,
+             const sf::Angle& angle)
+    : Entity(scene),
+      id(id),
+      name(""),
+      description(""),
+      buildable(true),
+      cost(0, 0),
+      base(GameConstants::BLANK_TEXTURE),
+      baseRotation(sf::radians(0.f)),
+      textureWidth(32.0f),
+      textureHeight(32.0f),
       icon(GameConstants::BLANK_TEXTURE),
-      mainTarget(nullptr) 
-{
+      mainTarget(nullptr) {
     upgradeManager = std::make_unique<UpgradeManager>(this);
     setPosition(pos);
     setRotation(angle);
     // Assign uniqueId only after levelRef is determined
     if (levelRef) {
-        uniqueId = static_cast<int64_t>(levelRef->getRandom(RandomType::EntityID).nextU64());
+        uniqueId = static_cast<int64_t>(
+            levelRef->getRandom(RandomType::EntityID).nextU64());
     } else {
         // Fallback: use address-based id when outside a Level context
         uniqueId = static_cast<int64_t>(reinterpret_cast<std::uintptr_t>(this));
@@ -80,31 +88,35 @@ EntityStat* Tower::getStats() { return stats.get(); }
 
 float Tower::getStat(const std::string& statName, float defaultValue) const {
     // Get base stat with any multipliers
-    float baseStat = stats ? stats->getStatWithoutBonus(statName, defaultValue) : defaultValue;
+    float baseStat = stats ? stats->getStatWithoutBonus(statName, defaultValue)
+                           : defaultValue;
 
     // Add upgrade bonuses
-    float upgradeBonus = upgradeManager ? upgradeManager->getTotalStatBonus(statName) : 0.0f;
+    float upgradeBonus =
+        upgradeManager ? upgradeManager->getTotalStatBonus(statName) : 0.0f;
 
     // Get multiplier
-    float statMultiplier = 1.0f + stats->getStatWithoutBonus(EntityStat::multiplier(statName), 0.0f);
+    float statMultiplier = 1.0f + stats->getStatWithoutBonus(
+                                      EntityStat::multiplier(statName), 0.0f);
 
     return (baseStat + upgradeBonus) * statMultiplier;
 }
 
 float Tower::getBaseStat(const std::string& statName,
                          float defaultValue) const {
-    return stats ? stats->getStatWithoutBonus(statName, defaultValue) : defaultValue;
+    return stats ? stats->getStatWithoutBonus(statName, defaultValue)
+                 : defaultValue;
 }
 
 // Upgrade System Methods
-UpgradeResult Tower::upgrade(int upgradeTypeId) 
-{
+UpgradeResult Tower::upgrade(int upgradeTypeId) {
     if (!upgradeManager) {
         return UpgradeResult::InvalidUpgradeType;
     }
 
     if (levelRef) {
-        // levelRef->notify("sell_tower", this, upgradeManager->getNextUpgradeDetail(upgradeTypeId)->cost);
+        // levelRef->notify("sell_tower", this,
+        // upgradeManager->getNextUpgradeDetail(upgradeTypeId)->cost);
         upgradeManager->upgrade(upgradeTypeId);
         return UpgradeResult::Success;
     }
@@ -191,11 +203,12 @@ void Tower::loadBaseSpriteTexture(const sf::Texture& texture) {
     base.setRotation(baseRotation);  // Use the stored base rotation
 }
 
-void Tower::loadTurretSpriteAnimation(const nlohmann::json& turretAnimationPath) {
+void Tower::loadTurretSpriteAnimation(
+    const nlohmann::json& turretAnimationPath) {
     turretAnimation.loadJson(turretAnimationPath);
     turretAnimation.updateSpriteSize(turretWidth, turretHeight);
     turretAnimation.setCurrentFrame(turretAnimation.getFrameCount() - 1);
-    
+
     updateSpriteTurretAnimation();
 }
 
@@ -206,7 +219,8 @@ void Tower::updateSpriteTurretAnimation() {
 }
 
 void Tower::loadIcon() {
-    if(iconRenderTexture.resize(static_cast<sf::Vector2u>(sf::Vector2f{textureWidth, textureHeight}))) {
+    if (iconRenderTexture.resize(static_cast<sf::Vector2u>(
+            sf::Vector2f{textureWidth, textureHeight}))) {
         // Logger::success("Base plate resized successfully");
     } else {
         Logger::error("Failed to resize base plate");
@@ -219,16 +233,22 @@ void Tower::loadIcon() {
     // Reset the scale to 1:1 for the icon
     // baseClone.setScale(sf::Vector2f(1.0f, 1.0f));
     // turretClone.setScale(sf::Vector2f(1.0f, 1.0f));
-    baseClone = Scaler::scaleSprite(baseClone, {32.0f, 32.0f});
-    turretClone = Scaler::scaleSprite(turretClone, {64.0f, 64.0f});
+    baseClone = Scaler::scaleSprite(baseClone,
+                                    {textureWidth / 2.f, textureHeight / 2.f});
+    turretClone = Scaler::scaleSprite(turretClone, {textureWidth, textureHeight});
 
-    // baseClone.setOrigin(baseClone.getLocalBounds().position + baseClone.getLocalBounds().size / 2.f);
+    // baseClone.setOrigin(baseClone.getLocalBounds().position +
+    // baseClone.getLocalBounds().size / 2.f);
 
-    // turretClone.setTextureRect({sf::Vector2i{0, 0}, {(int) textureWidth, (int) textureHeight}});
-    // turretClone.setOrigin(turretClone.getLocalBounds().position + turretClone.getLocalBounds().size / 2.f);
+    // turretClone.setTextureRect({sf::Vector2i{0, 0}, {(int) textureWidth,
+    // (int) textureHeight}});
+    // turretClone.setOrigin(turretClone.getLocalBounds().position +
+    // turretClone.getLocalBounds().size / 2.f);
 
-    baseClone.setPosition(static_cast<sf::Vector2f>(iconRenderTexture.getSize()) / 2.f);
-    turretClone.setPosition(static_cast<sf::Vector2f>(iconRenderTexture.getSize()) / 2.f);
+    baseClone.setPosition(
+        static_cast<sf::Vector2f>(iconRenderTexture.getSize()) / 2.f);
+    turretClone.setPosition(
+        static_cast<sf::Vector2f>(iconRenderTexture.getSize()) / 2.f);
 
     iconRenderTexture.draw(baseClone);
     iconRenderTexture.draw(turretClone);
@@ -245,7 +265,8 @@ void Tower::draw(sf::RenderTarget& target, sf::RenderStates state) const {
 void Tower::updateCombatBehavior() {
     if (combatBehaviorPointer) {
         if (timer.isAvailable()) {
-            std::vector<Enemy*> targets = levelRef->getEntityManager().getEnemies();
+            std::vector<Enemy*> targets =
+                levelRef->getEntityManager().getEnemies();
             if (targets.empty()) {
                 return;
             }
@@ -282,7 +303,8 @@ bool Tower::intersects(sf::Vector2f points[4]) {
     sf::Rect bound = base.getGlobalBounds();
     sf::Vector2f baseBound[4] = {
         bound.position, bound.position + sf::Vector2f{bound.size.x, 0},
-        bound.position + bound.size, bound.position + sf::Vector2f{0, bound.size.y}};
+        bound.position + bound.size,
+        bound.position + sf::Vector2f{0, bound.size.y}};
     return CollisionChecker::isQuadilateralCrossed(points, baseBound);
 }
 

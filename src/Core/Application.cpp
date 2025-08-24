@@ -4,6 +4,7 @@
 #include "Core/InputManager.hpp"
 #include "Core/JSONLoader.hpp"
 #include "Core/KeyboardState.hpp"
+#include "Core/LevelFactory.hpp"
 #include "Core/MouseState.hpp"
 #include "Core/SceneManager.hpp"
 #include "Core/TextInputProcessor.hpp"
@@ -11,35 +12,18 @@
 #include "GUIComponents/EnemyPanel.hpp"
 #include "GUIComponents/cursor.hpp"
 #include "Scene/BlankScene.hpp"
+#include "Scene/LevelSelection.hpp"
 #include "Scene/MainMenu.hpp"
 #include "Scene/Mock/TestScene.hpp"
 #include "Scene/Setting.hpp"
 #include "Utility/logger.hpp"
-#include "Core/LevelFactory.hpp"
-#include "Scene/LevelSelection.hpp"
 
 Application::Application() : isRunning{true} {
     if (Window::getInstance().getRenderWindow().isOpen())
         Logger::success("Window initialization success");
     else
         Logger::error("Window not intitialized");
-    Window::getInstance().getRenderWindow().setFramerateLimit(60);
-    Window::getInstance().getRenderWindow().setMouseCursorVisible(false);
     JSONLoader::getInstance().loadAll();
-
-    Cursor::getInstance().subscribeMouse(
-        Mouse::Left, UserEvent::Move,
-        InputManager::getInstance().getMouseState());
-    Cursor::getInstance().subscribeMouse(
-        Mouse::Right, UserEvent::Move,
-        InputManager::getInstance().getMouseState());
-    Cursor::getInstance().subscribeMouse(
-        Mouse::None, UserEvent::Move,
-        InputManager::getInstance().getMouseState());
-    Cursor::getInstance().subscribeMouse(
-        Mouse::Middle, UserEvent::Move,
-        InputManager::getInstance().getMouseState());
-    // * Loading the necessary sounds
     for (auto [id, soundFile] : JSONLoader::getInstance().getAllSounds())
         ResourceManager::getInstance().loadSound(soundFile);
 
@@ -54,12 +38,30 @@ Application::Application() : isRunning{true} {
 
     for (auto [id, levelFile] : JSONLoader::getInstance().getAllLevels())
         LevelFactory::getInstance().loadConfig(levelFile);
+    Window::getInstance().getRenderWindow().setFramerateLimit(60);
+    Window::getInstance().getRenderWindow().setMouseCursorVisible(false);
+
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Left, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Right, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::None, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    Cursor::getInstance().subscribeMouse(
+        Mouse::Middle, UserEvent::Move,
+        InputManager::getInstance().getMouseState());
+    // * Loading the necessary sounds
 
     Logger::success("Resource loading");
-    SceneManager::getInstance().enqueueSceneAdd("Main menu", std::make_unique<MainMenu>());
-     SceneManager::getInstance().enqueueSceneAdd("Setting", std::make_unique<Setting>());
+    SceneManager::getInstance().enqueueSceneAdd("Main menu",
+                                                std::make_unique<MainMenu>());
+    SceneManager::getInstance().enqueueSceneAdd("Setting",
+                                                std::make_unique<Setting>());
     // SceneManager::getInstance().enqueueSceneAdd(
-        // "Tower Test", std::make_unique<TowerRotationMockScene>());
+    // "Tower Test", std::make_unique<TowerRotationMockScene>());
     SceneManager::getInstance().enqueueSceneAdd(
         "Level Selection", std::make_unique<LevelSelection>());
 
@@ -67,7 +69,8 @@ Application::Application() : isRunning{true} {
     //     "Tower Test");  // Start with the tower test scene
 
     SceneManager::getInstance().enqueueSceneAdd(
-        "Gameplay", LevelFactory::getInstance().getLevel("preset_level_serpent_pass"));
+        "Gameplay",
+        LevelFactory::getInstance().getLevel("preset_level_serpent_pass"));
 
     SceneManager::getInstance().enqueueSceneChange("Main menu");
     // SceneManager::getInstance().enqueueSceneChange("Gameplay");
@@ -107,19 +110,23 @@ void Application::run() {
                 auto keyPress = event->getIf<sf::Event::KeyPressed>();
                 if (keyPress) {
                     if (keyPress->code == sf::Keyboard::Key::F1) {
-                        SceneManager::getInstance().enqueueSceneChange("Main menu");
+                        SceneManager::getInstance().enqueueSceneChange(
+                            "Main menu");
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F2) {
-                        SceneManager::getInstance().enqueueSceneChange("Tower Test");
+                        SceneManager::getInstance().enqueueSceneChange(
+                            "Tower Test");
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F3) {
-                        SceneManager::getInstance().enqueueSceneChange("Test Scene");
+                        SceneManager::getInstance().enqueueSceneChange(
+                            "Test Scene");
                         continue;
                     }
                     if (keyPress->code == sf::Keyboard::Key::F4) {
-                        SceneManager::getInstance().enqueueSceneChange("Custom Creation");
+                        SceneManager::getInstance().enqueueSceneChange(
+                            "Custom Creation");
                         continue;
                     }
                 }

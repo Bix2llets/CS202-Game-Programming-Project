@@ -11,13 +11,14 @@
 #include "Utility/Scaler.hpp"
 #include "Utility/aligner.hpp"
 #include "Utility/logger.hpp"
+#include "GUIComponents/cursor.hpp"
 UpgradeButton::UpgradeButton()
     : radius(0),
       parentMediator(nullptr),
       upgradeIcon(GameConstants::BLANK_TEXTURE),
       tagDisplay(GameConstants::BLANK_TEXTURE) {
     buttonShape.setFillColor(sf::Color::White);
-    buttonShape.setOutlineThickness(4);
+    buttonShape.setOutlineThickness(8);
     buttonShape.setOutlineColor(sf::Color::Black);
 
     buttonShape = Aligner::align(buttonShape, HorizontalAlignment::Center,
@@ -53,8 +54,8 @@ void UpgradeButton::updatePriceTag() {
     petroleumText.setString(std::to_string(price.getPetroleum().value));
     scrapText.setString(std::to_string(price.getScraps().value));
 
-    petroleumText.setCharacterSize(24);
-    scrapText.setCharacterSize(24);
+    petroleumText.setCharacterSize(graphicState.getStyle().getFontSize());
+    scrapText.setCharacterSize(graphicState.getStyle().getFontSize());
 
     petroleumText.setFillColor(graphicState.getTextColor());
     scrapText.setFillColor(graphicState.getTextColor());
@@ -258,6 +259,7 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
                 evolutionTower = nullptr;
 
                 parentMediator->notify("evolution", *this, evolutionID);
+                Cursor::getInstance().setHoverText("");
                 return true;
             }
             return false;
@@ -265,6 +267,11 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
     } else if (event == UserEvent::Move) {
         if (!graphicState.isHovered() && contains(windowPosition)) {
             graphicState.updateHoverState(true);
+            if (upgrades->getEvolveTo(upgradeID) != "") {
+                Cursor::getInstance().setHoverText("Can evolve");
+            } else {
+                Cursor::getInstance().setHoverText("Cannot evolve");
+            }
             if (parentMediator) {
                 if (upgrades->isTotalUpgradeLimitReached()) {
                     if (upgrades->canEvolve(upgradeID))
@@ -291,6 +298,7 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
             if (parentMediator) {
                 parentMediator->notify("hide_preview", *this);
             }
+            Cursor::getInstance().setHoverText("");
         }
     }
     return false;

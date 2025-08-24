@@ -27,6 +27,8 @@ class Cursor : public sf::Drawable, public MouseObserver {
     bool displaying;
     sf::CircleShape rangePreview;
     sf::RenderTexture previewTower;
+
+    sf::Text hoverText;
    private:
     std::string carryingTowerId;
     static std::unique_ptr<Cursor> instance;
@@ -59,5 +61,6 @@ class Cursor : public sf::Drawable, public MouseObserver {
     void setInvalidPlacement();
     void setValidPlacement();
 
+    void setHoverText(const std::string& text);
     inline bool isDisplaying() {return displaying;}
 };
