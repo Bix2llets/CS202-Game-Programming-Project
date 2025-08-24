@@ -11,9 +11,10 @@
  * @brief Default sunny weather with no special effects.
  */
 class SunnyWeather : public Weather {
-public:
+
+    public:
     SunnyWeather(Level& level);
-    
+
     void update() override;
     void applyToTower(Tower* tower) override;
     void applyToEnemy(Enemy* enemy) override;

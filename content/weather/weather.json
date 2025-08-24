@@ -1,13 +1,13 @@
 [
     {
         "id": "sunny",
-        "icon": "",
+        "icon": "weather_sun",
         "has_overlay": false,
         "overlay_animation": {}
     },
     {
         "id": "raining",
-        "icon": "",
+        "icon": "weather_rain",
         "has_overlay": true,
         "overlay_animation": {
             "texture_id": "raining_overlay",

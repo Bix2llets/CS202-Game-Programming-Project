@@ -6,18 +6,14 @@
 
 #include <SFML/Graphics.hpp>
 #include <memory>
+
 #include "Entity/Modules/SpriteAnimation.hpp"
 
 /**
  * @enum WeatherType
  * @brief Different types of weather conditions.
  */
-enum class WeatherType {
-    Sunny,
-    Raining,
-    Thunderstorm,
-    Foggy
-};
+enum class WeatherType { Sunny, Raining, Thunderstorm, Foggy };
 
 // Forward declarations
 class Tower;
@@ -25,12 +21,13 @@ class Enemy;
 class Level;
 
 class WeatherStat {
-private:
+    private:
     float towerRangeReduction;
     float enemySpeedReduction;
     float burnDamageReduction;
     float burnDurationReduction;
-public:
+
+    public:
     WeatherStat() {
         towerRangeReduction = 0.0f;
         enemySpeedReduction = 0.0f;
@@ -48,20 +45,26 @@ public:
     void setBurnDamageReduction(float value) { burnDamageReduction = value; }
 
     float getBurnDurationReduction() const { return burnDurationReduction; }
-    void setBurnDurationReduction(float value) { burnDurationReduction = value; }
+    void setBurnDurationReduction(float value) {
+        burnDurationReduction = value;
+    }
 
     void loadFromJson(const nlohmann::json& statsJson) {
         if (statsJson.contains("tower_range_reduction")) {
-            towerRangeReduction = statsJson["tower_range_reduction"].get<float>();
+            towerRangeReduction =
+                statsJson["tower_range_reduction"].get<float>();
         }
         if (statsJson.contains("enemy_speed_reduction")) {
-            enemySpeedReduction = statsJson["enemy_speed_reduction"].get<float>();
+            enemySpeedReduction =
+                statsJson["enemy_speed_reduction"].get<float>();
         }
         if (statsJson.contains("burn_damage_reduction")) {
-            burnDamageReduction = statsJson["burn_damage_reduction"].get<float>();
+            burnDamageReduction =
+                statsJson["burn_damage_reduction"].get<float>();
         }
         if (statsJson.contains("burn_duration_reduction")) {
-            burnDurationReduction = statsJson["burn_duration_reduction"].get<float>();
+            burnDurationReduction =
+                statsJson["burn_duration_reduction"].get<float>();
         }
     }
 };
@@ -71,7 +74,7 @@ public:
  * @brief Base class for weather effects that modify gameplay.
  */
 class Weather : public sf::Drawable {
-protected:
+    protected:
     std::string id;
     WeatherType type;
     WeatherStat stat;
@@ -81,9 +84,10 @@ protected:
     float overlayOpacity;
     float overlayOpacityChange;
     sf::Sprite overlaySprite;
+    sf::Sprite icon;
     SpriteAnimation overlayAnimation;
 
-public:
+    public:
     /**
      * @brief Construct a new Weather object.
      * @param weatherType The type of weather.
@@ -131,7 +135,8 @@ public:
      * @param target Render target.
      * @param states Render states.
      */
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    virtual void draw(sf::RenderTarget& target,
+                      sf::RenderStates states) const override;
 
     /**
      * @brief Get the weather type.
@@ -146,13 +151,19 @@ public:
     bool isOverlayActive() const { return overlayActive; }
 
     inline float getOverlayOpacity() const { return overlayOpacity; }
-    inline float getOverlayOpacityChange() const { return overlayOpacityChange; }
+    inline float getOverlayOpacityChange() const {
+        return overlayOpacityChange;
+    }
     inline void setOverlayOpacity(float opacity) { overlayOpacity = opacity; }
-    inline void setOverlayOpacityChange(float change) { overlayOpacityChange = change; }
+    inline void setOverlayOpacityChange(float change) {
+        overlayOpacityChange = change;
+    }
 
-protected:
+    inline sf::Sprite getIcon() const { return icon; };
+
+    protected:
     /**
      * @brief Load overlay texture for this weather.
      */
-    void loadOverlay(const std::string& weatherId);
+    void loadTexture(const std::string& weatherId);
 };

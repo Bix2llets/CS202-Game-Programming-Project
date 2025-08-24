@@ -31,6 +31,8 @@
 #include "Utility/CollisionChecker.hpp"
 #include "Utility/logger.hpp"
 #include "Scene/Overlays/WinningScreen.hpp"
+#include "Utility/Scaler.hpp"
+#include "Utility/aligner.hpp"
 Level::Level()
     : currentWave{0},
       totalWaves{0},
@@ -160,6 +162,36 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     }
     if (overlay) {
         overlay->render();
+    }
+
+    const Weather* currentWaveWeather = weatherManager.getCurrentWeather();
+    if (currentWaveWeather) {
+        sf::Sprite currentWeatherIcon = currentWaveWeather->getIcon();
+        Scaler::scaleSprite(currentWeatherIcon, {32.f, 32.f});
+        Aligner::align(currentWeatherIcon, HorizontalAlignment::Center, VerticalAlignment::Middle);
+        currentWeatherIcon.setPosition({GameConstants::MENU_X - 16.f - 10.f, 16.f + 10.f});
+        target.draw(currentWeatherIcon, state);
+
+        sf::RectangleShape backgroundBox;
+        backgroundBox.setSize({currentWeatherIcon.getGlobalBounds().size.x + 2.f, currentWeatherIcon.getGlobalBounds().size.y + 2.f});
+        backgroundBox.setFillColor(sf::Color(0, 0, 0, 0));
+        backgroundBox.setOutlineColor(sf::Color::Black);
+        backgroundBox.setOutlineThickness(1.f);
+        backgroundBox.setPosition(currentWeatherIcon.getPosition());
+        Aligner::align(backgroundBox, HorizontalAlignment::Center, VerticalAlignment::Middle);
+        target.draw(backgroundBox, state);
+        // Logger::debug("Drawing current weather icon");
+        
+
+    }
+    const Weather* nextWaveWeather = weatherManager.getNextWeather();
+    if (nextWaveWeather) {
+        sf::Sprite nextWeatherIcon = nextWaveWeather->getIcon();
+        Scaler::scaleSprite(nextWeatherIcon, {32.f, 32.f});
+        Aligner::align(nextWeatherIcon, HorizontalAlignment::Center, VerticalAlignment::Middle);
+        nextWeatherIcon.setPosition({GameConstants::MENU_X - 16.f - 10.f - 32.f - 10.f, 16.f + 10.f});
+        target.draw(nextWeatherIcon, state);
+        // Logger::debug("Drawing next weather icon");
     }
 }
 void Level::loadFromJson(const std::string &pathToFile) {

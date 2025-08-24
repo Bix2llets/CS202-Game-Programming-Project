@@ -20,7 +20,8 @@ void Weather::update() {
 }
 
 Weather::Weather(WeatherType weatherType, const std::string& id, Level& level) 
-    : type(weatherType), id(id), level(level), overlayActive(false), overlaySprite(GameConstants::BLANK_TEXTURE) {
+    : type(weatherType), id(id), level(level), overlayActive(false), overlaySprite(GameConstants::BLANK_TEXTURE),
+    icon(GameConstants::BLANK_TEXTURE) {
         stat = level.getDifficulty().getWeatherModifier(id);
         overlayOpacity = 1.0f;
         overlayOpacityChange = 0.0f;
@@ -32,10 +33,24 @@ void Weather::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 }
 
-void Weather::loadOverlay(const std::string& weatherId) {
+void Weather::loadTexture(const std::string& weatherId) {
     const nlohmann::json& weatherData = JSONLoader::getInstance().getWeather(weatherId);
 
     overlayActive = false;
+    if (weatherData.contains("icon")) {
+        std::string iconId = weatherData["icon"];
+        try {
+            icon = sf::Sprite(*ResourceManager::getInstance().getTexture(iconId));
+            Logger::debug("Weather: Loaded icon for " + iconId);
+        } catch (const std::exception& e) {
+            icon = sf::Sprite(GameConstants::BLANK_TEXTURE);
+            Logger::error("Weather: Failed to load icon for " + iconId + ": " + e.what());
+        }
+    } else {
+        icon = sf::Sprite(GameConstants::BLANK_TEXTURE);
+        Logger::error("Weather: No icon defined for " + weatherId);
+    }
+
     if (weatherData.contains("has_overlay")) {
         overlayActive = weatherData["has_overlay"];
     }

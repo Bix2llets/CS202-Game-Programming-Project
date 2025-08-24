@@ -164,5 +164,13 @@
     {
         "id": "level_selection_background",
         "path": "assets/texture/button/WidePane.png"
+    },
+    {
+        "id": "weather_sun",
+        "path": "assets/texture/weather/ThunderStormIcon.png"
+    },
+    {
+        "id": "weather_rain",
+        "path": "assets/texture/weather/RainingIcon.png"
     }
 ]
