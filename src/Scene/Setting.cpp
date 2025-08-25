@@ -77,8 +77,12 @@ void Setting::draw(sf::RenderTarget& target, sf::RenderStates states) const {
 void Setting::createButtons() {
     const sf::Vector2f buttonSize = {60, 60};
     RectangularButtonBuilder builder(*this);
+    sf::Vector2f screenMiddle = {GameConstants::DEFAULT_WINDOW_WIDTH / 2.f, GameConstants::DEFAULT_WINDOW_HEIGHT / 2.f};
+
+    float offsetX = 250;
+    float offsetY = 100;
     musicVolumeDecrement = builder.reset()
-                               .setPosition({100.f, 170.f})
+                               .setPosition({screenMiddle - sf::Vector2f{offsetX, offsetY} - buttonSize})
                                .setSize(buttonSize)
                                .setCallback([this](RectangularButton* button) {
                                    notify("Music Decrease");
@@ -90,7 +94,7 @@ void Setting::createButtons() {
                                .build();
 
     musicVolumeIncrement = builder.reset()
-                               .setPosition({600.f, 170.f})
+                               .setPosition({screenMiddle - sf::Vector2f{-offsetX, offsetY} - sf::Vector2f{0, buttonSize.y}})
                                .setSize(buttonSize)
                                .setCallback([this](RectangularButton* button) {
                                    notify("Music Increase");
@@ -101,7 +105,7 @@ void Setting::createButtons() {
                                        "plus_button"))
                                .build();
     soundVolumeDecrement = builder.reset()
-                               .setPosition({100.f, 370.f})
+                               .setPosition(screenMiddle - sf::Vector2f{offsetX, -offsetY} - sf::Vector2f{buttonSize.x, 0})
                                .setSize(buttonSize)
                                .setCallback([this](RectangularButton* button) {
                                    notify("Sound Decrease");
@@ -113,7 +117,7 @@ void Setting::createButtons() {
                                .build();
 
     soundVolumeIncrement = builder.reset()
-                               .setPosition({600.f, 370.f})
+                               .setPosition(screenMiddle + sf::Vector2f{offsetX, offsetY})
                                .setSize(buttonSize)
                                .setCallback([this](RectangularButton* button) {
                                    notify("Sound Increase");

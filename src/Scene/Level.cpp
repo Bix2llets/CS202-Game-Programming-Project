@@ -63,9 +63,9 @@ Level::Level(const std::string &difficultyId)
         difficulty.loadFromConfigFile("medium");
     }
 
-    health.setMaxHealth(difficulty.getMaxHealth()).setHealth(difficulty.getMaxHealth());
+    health.setMaxHealth(difficulty.getMaxHealth())
+        .setHealth(difficulty.getMaxHealth());
 
-    
     // Initialize components with difficulty settings
 
     MouseState &mouseState = InputManager::getInstance().getMouseState();
@@ -100,7 +100,6 @@ Level::Level(const std::string &difficultyId)
     waveCounterText.setFillColor(sf::Color::White);
     waveCounterText.setOutlineColor(sf::Color::Black);
     waveCounterText.setOutlineThickness(1.f);
-
 }
 
 Level::~Level() {
@@ -124,13 +123,16 @@ void Level::update() {
     else
         nextWaveButton->setOverlayColor(sf::Color::Transparent);
     std::string currentText = waveCounterText.getString();
-    std::string nextText = std::format("Wave: {}/{}", waveManager.getCurrentWave() + 1, waveManager.getTotalWaves());
+    std::string nextText =
+        std::format("Wave: {}/{}", waveManager.getCurrentWave() + 1,
+                    waveManager.getTotalWaves());
     if (currentText != nextText) {
         waveCounterText.setString(nextText);
-        Aligner::align(waveCounterText, HorizontalAlignment::Right, VerticalAlignment::Middle);
+        Aligner::align(waveCounterText, HorizontalAlignment::Right,
+                       VerticalAlignment::Middle);
         waveCounterText.setPosition(sf::Vector2f{
             GameConstants::MENU_X - 10.f,
-             10.f + waveCounterText.getGlobalBounds().size.y / 2.f});
+            10.f + waveCounterText.getGlobalBounds().size.y / 2.f});
     }
     menu.update();
     infoPanel.update();
@@ -217,7 +219,8 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
         Aligner::align(nextWeatherIcon, HorizontalAlignment::Center,
                        VerticalAlignment::Middle);
         nextWeatherIcon.setPosition(
-            {GameConstants::MENU_X - 16.f - 10.f - 32.f - 10.f, 32.f + 16.f + 10.f});
+            {GameConstants::MENU_X - 16.f - 10.f - 32.f - 10.f,
+             32.f + 16.f + 10.f});
         target.draw(nextWeatherIcon, state);
         // Logger::debug("Drawing next weather icon");
     }
@@ -266,14 +269,26 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
         //                           point[1].get<float>()));
     }
 
-    pathThickness = jsonFile.contains("path_thickness") ? jsonFile["path_thickness"].get<float>() : 32.f;
+    budget.setPetroleum(
+        jsonFile.contains("starting_resources") &&
+                jsonFile["starting_resources"].contains("petroleum")
+            ? jsonFile["starting_resources"]["petroleum"].get<int>()
+            : 30);
+    budget.setScraps(jsonFile.contains("starting_resources") &&
+                            jsonFile["starting_resources"].contains("scrap")
+                        ? jsonFile["starting_resources"]["scrap"].get<int>()
+                        : 300);
+    pathThickness = jsonFile.contains("path_thickness")
+                        ? jsonFile["path_thickness"].get<float>()
+                        : 32.f;
     path.loadWaypoints(waypoints);
     path.setPathThickness(pathThickness);
     loadWaves(jsonFile);
     Logger::success("Loaded waypoints");
 
     weatherManager.setUp();
-    // Create EnemyFactory with waypoints - difficulty will be set after obstacle loading
+    // Create EnemyFactory with waypoints - difficulty will be set after
+    // obstacle loading
     factory = std::make_unique<EnemyFactory>(waypoints, *this);
 
     for (nlohmann::json obstacle : jsonFile["obstacles"]) {
@@ -299,7 +314,8 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     }
     // Apply difficulty settings to EnemyFactory after creation
     factory->setDifficulty(difficulty);
-    Logger::debug("Applied " + difficulty.getName() + " difficulty to EnemyFactory");
+    Logger::debug("Applied " + difficulty.getName() +
+                  " difficulty to EnemyFactory");
 }
 
 void Level::loadWaves(const nlohmann::json &jsonFile) {
@@ -460,7 +476,8 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
         return true;
 
     if (Cursor::getInstance().isDisplaying()) {
-        if (isPlacementValid(Cursor::getInstance().getCarryingTowerID(), worldPosition)) {
+        if (isPlacementValid(Cursor::getInstance().getCarryingTowerID(),
+                             worldPosition)) {
             Cursor::getInstance().setValidPlacement();
         } else {
             Cursor::getInstance().setInvalidPlacement();
@@ -544,10 +561,8 @@ bool Level::isPlacementValid(std::string towerID, sf::Vector2f worldPosition) {
         sf::Vector2f pathRect[4] = {
             pathway[i].position + path.getPathThickness() / 2.f * normal,
             pathway[i].position - path.getPathThickness() / 2.F * normal,
-            pathway[i + 1].position +
-                path.getPathThickness() / 2.f * normal,
-            pathway[i + 1].position -
-                path.getPathThickness() / 2.f * normal};
+            pathway[i + 1].position + path.getPathThickness() / 2.f * normal,
+            pathway[i + 1].position - path.getPathThickness() / 2.f * normal};
         if (CollisionChecker::isQuadilateralCrossed(pathRect, towerBound))
             return false;
     };
@@ -562,7 +577,8 @@ void Level::subscribeCallbacks() {
             Window::getInstance().toggleUserMode();
 
             if (Cursor::getInstance().isDisplaying())
-                if (isPlacementValid(Cursor::getInstance().getCarryingTowerID(), 
+                if (isPlacementValid(
+                        Cursor::getInstance().getCarryingTowerID(),
                         Window::getInstance()
                             .getRenderWindow()
                             .mapPixelToCoords(static_cast<sf::Vector2i>(
@@ -580,7 +596,8 @@ void Level::subscribeCallbacks() {
             budget -= currency;
             Window::getInstance().toggleUserMode();
             if (Cursor::getInstance().isDisplaying())
-                if (isPlacementValid(Cursor::getInstance().getCarryingTowerID(),
+                if (isPlacementValid(
+                        Cursor::getInstance().getCarryingTowerID(),
                         Window::getInstance()
                             .getRenderWindow()
                             .mapPixelToCoords(static_cast<sf::Vector2i>(
@@ -593,13 +610,13 @@ void Level::subscribeCallbacks() {
         }
     });
     subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
-        std::pair<std::string, sf::Vector2f> castedData = std::any_cast<std::pair<std::string, sf::Vector2f>>(data);
+        std::pair<std::string, sf::Vector2f> castedData =
+            std::any_cast<std::pair<std::string, sf::Vector2f>>(data);
 
         if (isPlacementValid(castedData.first, castedData.second)) {
             std::unique_ptr<Tower> newTower =
                 std::move(TowerFactory::createFromConfigFile(
-                    castedData.first, *this,
-                    castedData.second));
+                    castedData.first, *this, castedData.second));
 
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);

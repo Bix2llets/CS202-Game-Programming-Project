@@ -180,9 +180,9 @@ void UpgradeButton::update() {
     ButtonBase::update();
 
     if (!canUpgrade && !isCapped && !evolutionTower) {
-        graphicState.setOverlayColor(sf::Color::Red);
+        graphicState.setOverlayColor(sf::Color::Red);   
     } else {
-        graphicState.removeOverlayColor();
+        graphicState.removeOverlayColor();  
     }
     sf::Color fillColor = graphicState.getFillColor();
     sf::Color borderColor = graphicState.getBorderColor();

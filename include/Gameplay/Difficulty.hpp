@@ -9,7 +9,7 @@
 #include <SFML/Graphics.hpp>
 #include <Core/JSONLoader.hpp> 
 #include <Entity/Modules/EntityStat.hpp>
-
+#include "Currency.hpp"
 // Forward declarations
 namespace sf {
     class Sprite;
