@@ -1,0 +1,74 @@
+{
+  "id": "sonic",
+  "texture": {
+    "width": 80,
+    "height": 80,
+    "turret_width": 160,
+    "turret_height": 160,
+    "base": "cannon_upgraded_base",
+    "turret_animation": {
+      "texture_id": "sonic_turret",
+      "width": 128,
+      "height": 128,
+      "animation_interval": 0.05,
+      "type": "linear",
+      "center_x": 64,
+      "center_y": 64,
+      "viewport" : {
+          "x": 0,
+          "y": 0,
+          "width": 640,
+          "height": 128
+      }
+    }
+  },
+  "name": "Sonic Tower",
+  "description": "A tower that emits powerful sonic waves to disrupt and damage enemies.",
+  "buildable": false,
+  "cost": {
+    "scrap": 100,
+    "petroleum": 0
+  },
+  "stats": {
+    "fire_rate": 0.3,
+    "range": 210,
+    "max_targets": 10000,
+    "damage_radius": 0,
+    "effect_napalm_burn_level": 5,
+    "effect_napalm_burn_duration": 8
+  },
+  "upgrades": {
+    "max_total_upgrades": 2,
+    "upgrade_types": 2,
+    "upgrades_list": [
+      {
+        "display_name": "Damage",
+        "description": "Increases tower damage by {bonus_damage}.",
+        "max_level": 2,
+        "upgrade_details": {
+          "1": {
+            "scrap": 50,
+            "petroleum": 50,
+            "bonus_stats": {
+              "effect_napalm_burn_duration": 4
+            }
+          },
+          "2": {
+            "scrap": 100,
+            "petroleum": 100,
+            "bonus_stats": {
+              "effect_napalm_burn_duration": 4
+            }
+          }
+        },
+        "icon": "range_icon"
+      }
+    ]
+  },
+  "behaviors": {
+    "combat": {
+      "type": "instant",
+      "targeting": "first"
+    }
+  }
+}
