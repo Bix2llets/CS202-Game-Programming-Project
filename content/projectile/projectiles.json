@@ -45,5 +45,28 @@
         "rotate_to_target": true,
         "pierce_through_targets_count": 3,
         "collision_distance": 28
+    },
+    {
+        "id": "rocket",
+        "texture": {
+            "texture_id": "rocket",
+            "width": 32,
+            "height": 32,
+            "animation_interval": 0.5,
+            "type": "circular",
+            "center_x": 16,
+            "center_y": 16,
+            "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 32,
+                "height": 32
+            }
+        },
+        "targeting": "target_entity",
+        "flight_mode": "linear",
+        "rotate_to_target": true,
+        "pierce_through_targets_count": 0,
+        "collision_distance": 24
     }
 ]

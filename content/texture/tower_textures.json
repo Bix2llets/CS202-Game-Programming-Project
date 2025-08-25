@@ -32,8 +32,16 @@
         "path": "assets/texture/tower/cannon_base.png"
     },
     {
+        "id": "cannon_upgraded_base",
+        "path": "assets/texture/tower/cannon_upgraded_base.png"
+    },
+    {
         "id": "cannon_turret",
         "path": "assets/texture/tower/cannon_turret.png"
+    },
+    {
+        "id": "rocket_launcher_turret",
+        "path": "assets/texture/tower/rocket_launcher_turret.png"
     },
 
 
