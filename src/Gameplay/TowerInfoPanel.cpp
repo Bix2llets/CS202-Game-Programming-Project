@@ -355,7 +355,10 @@ void TowerInfoPanel::displayEvolution(const std::string& evolveTo,
                                       Level* level) {
     if (!referencingTower) return;
     upgradeContents.clear();
-    const EntityStat* stats = referencingTower->getStats();
+
+    evolutionPreviewTower =
+        TowerFactory::createFromConfigFile(evolveTo, *level);
+    const EntityStat* stats = evolutionPreviewTower->getStats();
     for (auto [id, value] : stats->getAllStats()) {
         if (!(id == TowerStat::RANGE || id == TowerStat::DAMAGE ||
               id == TowerStat::FIRE_RATE || id == TowerStat::MAX_TARGETS)) {
@@ -402,8 +405,6 @@ void TowerInfoPanel::displayEvolution(const std::string& evolveTo,
              upgradeTitle.getPosition().y + 50 +
                  (upgradeContents.size() - 1) * 60});
     }
-    evolutionPreviewTower =
-        TowerFactory::createFromConfigFile(evolveTo, *level);
     evolutionSprite = evolutionPreviewTower->getIcon();
     evolutionSprite = Scaler::scaleSprite(evolutionSprite,
                                           towerSprite.getGlobalBounds().size);
