@@ -4,6 +4,14 @@
         "path": "assets/texture/tower/rifle_base.png"
     },
     {
+        "id": "machinegun_base",
+        "path": "assets/texture/tower/machinegun_base.png"
+    },
+    {
+        "id": "machinegun_turret",
+        "path": "assets/texture/tower/machinegun_turret.png"
+    },
+    {
         "id": "rifle_turret",
         "path": "assets/texture/tower/rifle_turret.png"
     },

@@ -271,7 +271,7 @@ void TowerFactory::parseUpgrades(const nlohmann::json& upgradesJson, TowerBuilde
             // Skip non-numeric keys (like "max_total_upgrades", "upgrade_types", "upgrades_list")
             if (key == "max_total_upgrades" || key == "upgrade_types" || key == "upgrades_list") {
                 continue;
-            }
+            }   
             
             try {
                 int typeId = std::stoi(key);

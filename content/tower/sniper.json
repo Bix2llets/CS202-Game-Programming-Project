@@ -28,12 +28,8 @@
   "stats": {
     "damage": 150,
     "fire_rate": 0.75,
-    "range": 400,
-    "max_targets": 1,
-    "effect_slow_level": 5,
-    "effect_slow_duration": 1,
-    "effect_burn_level": 10,
-    "effect_burn_duration": 2
+    "range": 420,
+    "max_targets": 1
   },
   "behaviors": {
     "combat": {

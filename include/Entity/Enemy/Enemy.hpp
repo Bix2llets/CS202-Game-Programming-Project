@@ -223,7 +223,13 @@ private:
             path.setSpeed(originalStats.getStat("speed", 100.0f));
         }
     }
-   protected:
+
+    inline bool isInRange(const sf::Vector2f& point, float range) const {
+        // Is distance from position to point <= range
+        return (position - point).length() <= range;
+    }
+
+protected:
     /**
      * @brief Called when the enemy dies.
      * Handles death logic, reward, and cleanup.

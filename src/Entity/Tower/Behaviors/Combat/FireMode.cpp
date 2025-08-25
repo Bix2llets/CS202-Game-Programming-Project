@@ -10,22 +10,25 @@ namespace Combat {
 int InstantFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     if (!tower) return 0;
     
-    // Set the main target to the first enemy in the vector (index 0)
-    // if (!target.empty() && target[0] != nullptr) {
-    //     tower->setMainTarget(target[0]);
-    // }
-    
-    // Get damage from tower stats
-    float damageValue = tower->getStat(TowerStat::DAMAGE, 0.0f);
-    int damage = static_cast<int>(damageValue);
+    EntityStat towerStats = *tower->getStats();
+    EntityStat bonusStats = tower->getUpgradeManager()->getAllUpgradeBonuses();
+    EntityStat combinedStats = towerStats + bonusStats;
     
     // Damage all enemies in the target vector
     for (Enemy* enemy : target) {
         if (enemy) {
-            enemy->onHit(damage);
-            EntityStat towerStats = *tower->getStats();
-            EntityStat bonusStats = tower->getUpgradeManager()->getAllUpgradeBonuses();
-            enemy->applyEffects(tower->getUniqueId(), towerStats + bonusStats);
+
+            float damageRadius = combinedStats.getStat(TowerStat::DAMAGE_RADIUS, 0.0f);
+            float accuracy = combinedStats.getStat(TowerStat::ACCURACY_RATE, 1.0f);
+
+            if (damageRadius > 0.0f) {
+                tower->getLevelRef()->getEntityManager().applyAreaDamage(
+                    enemy->getPosition(), combinedStats, tower->getUniqueId(), accuracy
+                );
+            } else {
+                enemy->onHit(combinedStats.getStat(TowerStat::DAMAGE, 0));
+                enemy->applyEffects(tower->getUniqueId(), combinedStats);
+            }
         }
     }
     
@@ -48,11 +51,6 @@ void ProjectileFireMode::setProjectile(std::unique_ptr<Projectile> proj) {
 
 int ProjectileFireMode::fire(Tower* tower, std::vector<Enemy*>& target) const {
     if (!tower) return 0;
-    
-    // Set the main target to the first enemy in the vector (index 0)
-    // if (!target.empty() && target[0] != nullptr) {
-    //     tower->setMainTarget(target[0]);
-    // }
     
     // Check if tower is in a level (needed for projectile management)
     Level* level = tower->getLevelRef();

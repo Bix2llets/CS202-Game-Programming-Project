@@ -202,6 +202,20 @@ std::vector<StaticEntity*> EntityManager::getStaticEntities() {
     return staticEntityPtrs;
 }
 
+void EntityManager::applyAreaDamage(const sf::Vector2f &position, EntityStat& stat, int sourceId, float accuracy) {
+    float radius = stat.getStat(TowerStat::DAMAGE_RADIUS, 0.0f);
+    for (auto& enemy : enemies) {
+        if (enemy && enemy->isAlive() && enemy->isInRange(position, radius)) {
+            if(level.getRandom(RandomType::ShotAccuracy).nextFloat(0.0f, 1.0f) > accuracy) {
+                continue; // Missed due to accuracy
+            }
+            
+            enemy->onHit(stat.getStat(TowerStat::DAMAGE, 0));
+            enemy->applyEffects(sourceId, stat);
+        }
+    }
+}
+
 void EntityManager::clear() {
     towers.clear();
     enemies.clear();

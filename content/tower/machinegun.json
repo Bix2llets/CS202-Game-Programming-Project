@@ -1,0 +1,76 @@
+{
+  "id": "machinegun",
+  "texture": {
+    "width": 84,
+    "height": 84,
+    "turret_width": 168,
+    "turret_height": 168,
+    "base": "machinegun_base",
+    "turret_animation": {
+      "texture_id": "machinegun_turret",
+      "width": 64,
+      "height": 64,
+      "animation_interval": 0.0333,
+      "type": "linear",
+      "center_x": 32,
+      "center_y": 32,
+      "viewport" : {
+          "x": 0,
+          "y": 0,
+          "width": 320,
+          "height": 64
+      }
+    }
+  },
+  "name": "Machine Gun Tower",
+  "description": "A rapid-fire tower that excels at taking down fast-moving targets.",
+  "buildable": false,
+  "cost": {
+    "scrap": 100,
+    "petroleum": 0
+  },
+  "stats": {
+    "damage": 8,
+    "fire_rate": 5.0,
+    "range": 200,
+    "max_targets": 1,
+    "damage_radius": 40,
+    "accuracy": 0.7,
+    "effect_slow_level": 10,
+    "effect_slow_duration": 0.5
+  },
+  "upgrades": {
+    "max_total_upgrades": 1,
+    "upgrade_types": 1,
+    "upgrades_list": [
+      {
+        "display_name": "Extended Range",
+        "description": "Extends tower range by {bonus_range}.",
+        "max_level": 2,
+        "upgrade_details": {
+          "1": {
+            "scrap": 50,
+            "petroleum": 50,
+            "bonus_stats": {
+              "range": 20
+            }
+          },
+          "2": {
+            "scrap": 100,
+            "petroleum": 100,
+            "bonus_stats": {
+              "range": 40
+            }
+          }
+        },
+        "icon": "range_icon"
+      }
+    ]
+  },
+  "behaviors": {
+    "combat": {
+      "type": "instant",
+      "targeting": "first"
+    }
+  }
+}

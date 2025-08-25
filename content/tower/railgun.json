@@ -1,0 +1,79 @@
+{
+  "id": "railgun",
+  "texture": {
+    "width": 84,
+    "height": 84,
+    "turret_width": 168,
+    "turret_height": 168,
+    "base": "machinegun_base",
+    "turret_animation": {
+      "texture_id": "sniper_turret",
+      "width": 64,
+      "height": 64,
+      "animation_interval": 0.05,
+      "type": "linear",
+      "center_x": 32,
+      "center_y": 32,
+      "viewport" : {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+      }
+    }
+  },
+  "name": "Railgun Tower",
+  "description": "A tower that fires high-velocity rounds capable of penetrating multiple targets.",
+  "buildable": false,
+  "cost": {
+    "scrap": 200,
+    "petroleum": 0
+  },
+  "stats": {
+    "damage": 60,
+    "fire_rate": 0.8,
+    "range": 320,
+    "max_targets": 1,
+    "projectile_speed": 22,
+    "projectile_range": 380,
+    "projectile_pierce_count": 5,
+    "projectile_starting_distance": 20
+  },
+  "upgrades": {
+    "max_total_upgrades": 2,
+    "upgrade_types": 2,
+    "upgrades_list": [
+      {
+        "display_name": "High-Caliber Rounds",
+        "description": "Increases damage by {bonus_damage}.",
+        "max_level": 2,
+        "upgrade_details": {
+          "1": {
+            "scrap": 50,
+            "petroleum": 50,
+            "bonus_stats": {
+              "damage": 5,
+              "projectile_pierce_count": 1
+            }
+          },
+          "2": {
+            "scrap": 100,
+            "petroleum": 100,
+            "bonus_stats": {
+              "damage": 10,
+              "projectile_pierce_count": 1
+            }
+          }
+        },
+        "icon": "power_icon"
+      }
+    ]
+  },
+  "behaviors": {
+    "combat": {
+      "type": "projectile",
+      "projectile": "cannon_ball",
+      "targeting": "last"
+    }
+  }
+}

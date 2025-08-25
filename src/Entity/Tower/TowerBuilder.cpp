@@ -290,14 +290,6 @@ void TowerBuilder::validate() const {
             //           << totalPossibleUpgrades << ")." << std::endl;
         }
     }
-
-    // Validate that non-buildable towers don't have upgrade types (per your
-    // requirements)
-    if (!buildable && !upgradeTypes.empty()) {
-        throw std::invalid_argument(
-            "TowerBuilder: Non-buildable towers should not have upgrade types "
-            "defined. They inherit upgrades during evolution.");
-    }
 }
 
 void TowerBuilder::loadTextures(Tower& tower) const {

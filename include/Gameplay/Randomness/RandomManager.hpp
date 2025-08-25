@@ -14,6 +14,7 @@ enum class RandomType : std::size_t {
 	EntityID,
 	EntityEffectId,
 	EnemyMovement,
+	ShotAccuracy,
 
 	COUNT // keep last: number of categories
 };

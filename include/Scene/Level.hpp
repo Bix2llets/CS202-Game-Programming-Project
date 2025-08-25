@@ -195,7 +195,7 @@ public:
 
     inline int getRemainingHealth() const { return health.getHealth(); }
 
-    private:
+private:
     /**
      * @brief Loads waypoints from the provided JSON file.
      * @param jsonFile The JSON object containing waypoint data.

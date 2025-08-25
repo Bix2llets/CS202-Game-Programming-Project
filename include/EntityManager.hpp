@@ -116,6 +116,8 @@ public:
     */
     std::vector<StaticEntity *> getStaticEntities();
 
+    void applyAreaDamage(const sf::Vector2f &position, EntityStat& stat, int sourceId, float accuracy);
+
     /**
      * @brief Clear all entities
      */
