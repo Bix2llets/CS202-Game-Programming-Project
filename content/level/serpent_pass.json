@@ -161,7 +161,11 @@
             35
         ]
     ],
-    "path_thickness": 96,
+    "path_thickness": 1,
+    "starting_resources": {
+        "scrap": 300,
+        "petroleum": 100
+    },
     "wave": [
         {
             "weather": "sunny",

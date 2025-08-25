@@ -32,11 +32,7 @@
                 "burn_duration_reduction": 0.3
             }
         },
-        "level_heatlh": 200,
-        "starting_resources": {
-            "scrap": 400,
-            "petroleum": 35
-        }
+        "level_heatlh": 200
     },
     {
         "id": "medium",
@@ -71,11 +67,7 @@
                 "burn_duration_reduction": 0.35
             }
         },
-        "level_heatlh": 150,
-        "starting_resources": {
-            "scrap": 300,
-            "petroleum": 30
-        }
+        "level_heatlh": 150
     },
     {
         "id": "hard",
@@ -110,11 +102,7 @@
                 "burn_duration_reduction": 0.4
             }
         },
-        "level_heatlh": 100,
-        "starting_resources": {
-            "scrap": 250,
-            "petroleum": 25
-        }
+        "level_heatlh": 100
     },
     {
         "id": "nightmare",
@@ -149,10 +137,6 @@
                 "burn_duration_reduction": 0.4
             }
         },
-        "level_heatlh": 75,
-        "starting_resources": {
-            "scrap": 200,
-            "petroleum": 20
-        }
+        "level_heatlh": 75
     }
 ]
