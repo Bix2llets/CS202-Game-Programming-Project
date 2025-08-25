@@ -30,7 +30,7 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 65,
+    "damage": 90,
     "fire_rate": 0.68,
     "range": 320,
     "max_targets": 1,

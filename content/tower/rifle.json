@@ -48,21 +48,21 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "fire_rate": 0.3
+              "fire_rate": 0.4
             }
           },
           "2": {
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "fire_rate": 0.3
+              "fire_rate": 0.4
             }
           },
           "3": {
             "scrap": 150,
             "petroleum": 50,
             "bonus_stats": {
-              "fire_rate": 0.5
+              "fire_rate": 0.8
             }
           }
         },
@@ -108,21 +108,21 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "damage": 4
+              "damage": 14
             }
           },
           "2": {
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "damage": 4
+              "damage": 16
             }
           },
           "3": {
             "scrap": 150,
             "petroleum": 50,
             "bonus_stats": {
-              "damage": 8
+              "damage": 18
             }
           }
         },

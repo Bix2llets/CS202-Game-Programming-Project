@@ -22,7 +22,7 @@
       }
     }
   },
-  "name": "Machine Gun Tower",
+  "name": "Machine Gun",
   "description": "A rapid-fire tower that excels at taking down fast-moving targets.",
   "buildable": false,
   "cost": {

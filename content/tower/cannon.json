@@ -30,8 +30,8 @@
     "petroleum": 50
   },
   "stats": {
-    "damage": 18,
-    "fire_rate": 1.0,
+    "damage": 32,
+    "fire_rate": 1.5,
     "range": 260,
     "max_targets": 1,
     "projectile_speed": 17.0,
@@ -52,7 +52,7 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "fire_rate": 0.1,
+              "fire_rate": 0.5,
               "damage": 100
             }
           },
@@ -60,14 +60,14 @@
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "fire_rate": 0.1
+              "fire_rate": 0.5
             }
           },
           "3": {
             "scrap": 150,
             "petroleum": 50,
             "bonus_stats": {
-              "fire_rate": 0.1
+              "fire_rate": 0.5
             }
           }
         },
@@ -83,21 +83,21 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "range": 20
+              "range": 80
             }
           },
           "2": {
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "range": 20
+              "range": 40
             }
           },
           "3": {
             "scrap": 150,
             "petroleum": 50,
             "bonus_stats": {
-              "range": 50
+              "range": 30
             }
           }
         },
@@ -113,7 +113,7 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "damage": 1,
+              "damage": 15,
               "effect_burn_level": 5,
               "effect_burn_duration": 2
             }
@@ -122,8 +122,9 @@
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "damage": 1,
-              "effect_burn_level": 3
+              "damage": 12,
+              "effect_burn_level": 3,
+              "effect_burn_duration": 3
             }
           },
           "3": {
@@ -131,7 +132,8 @@
             "petroleum": 50,
             "bonus_stats": {
               "damage": 1,
-              "effect_burn_level": 2
+              "effect_burn_level": 2,
+              "effect_burn_duration": 5
             }
           }
         },

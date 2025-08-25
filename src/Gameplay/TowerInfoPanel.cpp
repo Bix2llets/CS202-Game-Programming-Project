@@ -441,8 +441,6 @@ void TowerInfoPanel::displayEvolution(const std::string& evolveTo,
     evolutionName = Aligner::align(evolutionName, HorizontalAlignment::Center,
                                    VerticalAlignment::Middle);
     evolutionName.setPosition(
-        evolutionSprite.getPosition() +
-        sf::Vector2f{0, evolutionSprite.getGlobalBounds().size.y / 2.f} +
-        sf::Vector2f{0, evolutionName.getGlobalBounds().size.y / 2.f} +
-        sf::Vector2f{0, -10});
+        evolutionTitle.getPosition() +
+        sf::Vector2f{0, 64.f});
 }
