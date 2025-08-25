@@ -4,17 +4,29 @@
         "path": "assets/texture/tower/rifle_base.png"
     },
     {
-        "id": "machinegun_base",
-        "path": "assets/texture/tower/machinegun_base.png"
+        "id": "rifle_turret",
+        "path": "assets/texture/tower/rifle_turret.png"
+    },
+
+    
+    {
+        "id": "rifle_upgraded_base",
+        "path": "assets/texture/tower/rifle_upgraded_base.png"
     },
     {
         "id": "machinegun_turret",
         "path": "assets/texture/tower/machinegun_turret.png"
     },
     {
-        "id": "rifle_turret",
-        "path": "assets/texture/tower/rifle_turret.png"
+        "id": "sniper_turret",
+        "path": "assets/texture/tower/sniper_turret.png"
     },
+    {
+        "id": "railgun_turret",
+        "path": "assets/texture/tower/railgun_turret.png"
+    },
+
+
     {
         "id": "cannon_base",
         "path": "assets/texture/tower/cannon_base.png"
@@ -23,10 +35,8 @@
         "id": "cannon_turret",
         "path": "assets/texture/tower/cannon_turret.png"
     },
-    {
-        "id": "sniper_turret",
-        "path": "assets/texture/tower/sniper_turret.png"
-    },
+
+
     {
         "id": "submachine_turret",
         "path": "assets/texture/tower/submachine_turret.png"

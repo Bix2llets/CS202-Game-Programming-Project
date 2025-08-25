@@ -111,14 +111,8 @@ void Projectile::stopFlying() {
         // Create a copy of effect
         auto effectCopy = std::make_unique<AreaEffect>(*effect);
 
-        Logger::critical("Projectile::stopFlying: Creating area effect copy");
-
         effectCopy->setPosition(position);
         levelRef->getEntityManager().addAreaEffect(std::move(effectCopy));
-
-        // effect->setPosition(position);
-        // effect->setUp(&stats);
-        // levelRef->getEntityManager().addAreaEffect(std::move(effect));
     }
 }
 

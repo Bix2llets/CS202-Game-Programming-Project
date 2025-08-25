@@ -5,7 +5,7 @@
     "height": 84,
     "turret_width": 168,
     "turret_height": 168,
-    "base": "rifle_base",
+    "base": "rifle_upgraded_base",
     "turret_animation": {
       "texture_id": "sniper_turret",
       "width": 64,

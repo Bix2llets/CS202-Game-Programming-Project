@@ -5,9 +5,9 @@
     "height": 84,
     "turret_width": 168,
     "turret_height": 168,
-    "base": "machinegun_base",
+    "base": "rifle_upgraded_base",
     "turret_animation": {
-      "texture_id": "sniper_turret",
+      "texture_id": "railgun_turret",
       "width": 64,
       "height": 64,
       "animation_interval": 0.05,
@@ -30,12 +30,12 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 60,
-    "fire_rate": 0.8,
-    "range": 320,
+    "damage": 75,
+    "fire_rate": 0.68,
+    "range": 350,
     "max_targets": 1,
-    "projectile_speed": 22,
-    "projectile_range": 380,
+    "projectile_speed": 26,
+    "projectile_range": 420,
     "projectile_pierce_count": 5,
     "projectile_starting_distance": 20
   },
@@ -52,7 +52,7 @@
             "scrap": 50,
             "petroleum": 50,
             "bonus_stats": {
-              "damage": 5,
+              "damage": 10,
               "projectile_pierce_count": 1
             }
           },
@@ -72,7 +72,7 @@
   "behaviors": {
     "combat": {
       "type": "projectile",
-      "projectile": "cannon_ball",
+      "projectile": "railgun_bullet",
       "targeting": "last"
     }
   }

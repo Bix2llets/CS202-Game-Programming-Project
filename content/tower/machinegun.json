@@ -5,7 +5,7 @@
     "height": 84,
     "turret_width": 168,
     "turret_height": 168,
-    "base": "machinegun_base",
+    "base": "rifle_upgraded_base",
     "turret_animation": {
       "texture_id": "machinegun_turret",
       "width": 64,

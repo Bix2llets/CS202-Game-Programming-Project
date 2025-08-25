@@ -22,5 +22,28 @@
         "pierce_through_targets_count": 3,
         "collision_distance": 22,
         "on_hit_area_effects": [ "explosion" ]
+    },
+    {
+        "id": "railgun_bullet",
+        "texture": {
+            "texture_id": "railgun_bullet",
+            "width": 32,
+            "height": 32,
+            "animation_interval": 0.5,
+            "type": "linear",
+            "center_x": 16,
+            "center_y": 16,
+            "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 32,
+                "height": 32
+            }
+        },
+        "targeting": "trajectory",
+        "flight_mode": "linear",
+        "rotate_to_target": true,
+        "pierce_through_targets_count": 3,
+        "collision_distance": 28
     }
 ]

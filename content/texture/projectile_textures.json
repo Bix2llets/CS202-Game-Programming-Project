@@ -2,5 +2,9 @@
     {
         "id": "cannon_ball",
         "path": "assets/texture/projectiles/cannon_ball.png"
+    },
+    {
+        "id": "railgun_bullet",
+        "path": "assets/texture/projectiles/railgun_bullet.png"
     }
 ]
