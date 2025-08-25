@@ -177,6 +177,7 @@ public:
      */
     void resetAllUpgrades();
 
+    int getTotalUpgrades() const { return totalUpgradeCount; }
 private:
     /**
      * @brief Apply an upgrade level (internal method).

@@ -302,10 +302,14 @@ void TowerInfoPanel::displayUpgrade(const UpgradeDetails* detail) {
         upgradeContents[index].setCharacterSize(16);
         upgradeContents[index].setLineSpacing(1.5f);
         if (upgrade.second > 0) {
-            upgradeContents[index].setFillColor(sf::Color::Green);
+            upgradeContents[index].setFillColor(sf::Color(0x84c138FF));
         } else {
-            upgradeContents[index].setFillColor(sf::Color::Red);
+            upgradeContents[index].setFillColor(sf::Color(0xCD4A4CFF));
         }
+
+
+        upgradeContents[index].setOutlineColor(sf::Color::Black);
+        upgradeContents[index].setOutlineThickness(1.0f);
 
         upgradeContents[index] =
             Aligner::align(upgradeContents[index], HorizontalAlignment::Left,
@@ -380,12 +384,13 @@ void TowerInfoPanel::displayEvolution(const std::string& evolveTo,
         upgradeContents.back().setCharacterSize(16);
         upgradeContents.back().setLineSpacing(1.5f);
         if (value > referencingTower->getStat(id)) {
-            upgradeContents.back().setFillColor(sf::Color::Green);
+            upgradeContents.back().setFillColor(sf::Color(0x84c138FF));
         } else if (value < referencingTower->getStat(id)) {
-            upgradeContents.back().setFillColor(sf::Color::Red);
+            upgradeContents.back().setFillColor(sf::Color(0xCD4A4CFF));
         } else
             upgradeContents.back().setFillColor(sf::Color::Black);
-
+        upgradeContents.back().setOutlineColor(sf::Color::Black);
+        upgradeContents.back().setOutlineThickness(1.0f);   
         upgradeContents.back() =
             Aligner::align(upgradeContents.back(), HorizontalAlignment::Left,
                            VerticalAlignment::Middle);
@@ -418,7 +423,7 @@ void TowerInfoPanel::displayEvolution(const std::string& evolveTo,
 
     if (evolutionTitlePosition.y + evolutionTitle.getGlobalBounds().size.y + 10.f > GameConstants::DEFAULT_WINDOW_HEIGHT) {
         evolutionTitlePosition.y =
-            GameConstants::DEFAULT_WINDOW_HEIGHT - evolutionTitle.getGlobalBounds().size.y - 10.f;
+            GameConstants::DEFAULT_WINDOW_HEIGHT - 2 * evolutionTitle.getGlobalBounds().size.y - 10.f;
     }
     evolutionTitle.setPosition(evolutionTitlePosition);
 

@@ -252,7 +252,7 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
             graphicState.updatePressState(false);
             if (contains(windowPosition) && canUpgrade) {
                 parentMediator->notify("upgrade", this, upgradeID);
-                if (upgrades->isTotalUpgradeLimitReached()) {
+                if (upgrades->getTotalUpgrades() != upgrades->getMaxTotalUpgrades() - 1) {
                     parentMediator->notify("show_upgrade_preview", this,
                                            nullptr);
                 } else

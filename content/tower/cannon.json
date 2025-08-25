@@ -26,8 +26,8 @@
   "description": "A powerful tower that fires heavy projectiles at a slow rate. Effective against stronger targets.",
   "buildable": true,
   "cost": {
-    "scrap": 200,
-    "petroleum": 0
+    "scrap": 100,
+    "petroleum": 50
   },
   "stats": {
     "damage": 20,
@@ -72,7 +72,7 @@
           }
         },
         "icon": "speed_icon",
-        "evolve_to": "machinegun"
+        "evolve_to": ""
       },
       {
         "display_name": "Extended Range",
@@ -102,7 +102,7 @@
           }
         },
         "icon": "range_icon",
-        "evolve_to": "sniper"
+        "evolve_to": ""
       },
       {
         "display_name": "High-Caliber Rounds",
@@ -113,26 +113,30 @@
             "scrap": 50,
             "petroleum": 0,
             "bonus_stats": {
-              "damage": 1
+              "damage": 1,
+              "effect_burn_level": 5,
+              "effect_slow_duration": 2
             }
           },
           "2": {
             "scrap": 75,
             "petroleum": 25,
             "bonus_stats": {
-              "damage": 1
+              "damage": 1,
+              "effect_burn_level": 3
             }
           },
           "3": {
             "scrap": 150,
             "petroleum": 50,
             "bonus_stats": {
-              "damage": 1
+              "damage": 1,
+              "effect_burn_level": 2
             }
           }
         },
         "icon": "power_icon",
-        "evolve_to": "railgun"
+        "evolve_to": ""
       }
     ]
   },

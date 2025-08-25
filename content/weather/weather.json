@@ -27,7 +27,7 @@
     },
     {
         "id": "thunderstorm",
-        "icon": "weather_rain",
+        "icon": "weather_thunder",
         "has_overlay": true,
         "overlay_animation": {
             "texture_id": "raining_overlay",

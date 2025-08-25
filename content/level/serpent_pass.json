@@ -189,7 +189,7 @@
                     "internal_delay": 0.5
                 },
                 {
-                    "id": "basic",
+                    "id": "runner",
                     "quantity": 6,
                     "spawn_delay": 10,
                     "internal_delay": 0.2
@@ -219,7 +219,7 @@
             "weather": "thunderstorm",
             "enemy_info": [
                 {
-                    "id": "basic",
+                    "id": "runner",
                     "quantity": 20,
                     "spawn_delay": 0,
                     "internal_delay": 0.6
@@ -285,7 +285,7 @@
                     "internal_delay": 0.4
                 },
                 {
-                    "id": "basic",
+                    "id": "runner",
                     "quantity": 20,
                     "spawn_delay": 5,
                     "internal_delay": 0.25

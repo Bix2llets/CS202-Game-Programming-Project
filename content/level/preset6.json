@@ -48,13 +48,13 @@
             "weather": "sunny",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
+                    "id": "basic",
                     "quantity": 10,
                     "spawn_delay": 0,
                     "internal_delay": 1
                 },
                 {
-                    "id": "basic_enemy",
+                    "id": "basic",
                     "quantity": 10,
                     "spawn_delay": 20,
                     "internal_delay": 1
@@ -66,13 +66,13 @@
             "weather": "raining",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
+                    "id": "runner",
                     "quantity": 10,
                     "spawn_delay": 0,
                     "internal_delay": 1
                 },
                 {
-                    "id": "basic_enemy",
+                    "id": "basic",
                     "quantity": 10,
                     "spawn_delay": 20,
                     "internal_delay": 1
@@ -84,13 +84,13 @@
             "weather": "thunderstorm",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
+                    "id": "basic",
                     "quantity": 10,
                     "spawn_delay": 0,
                     "internal_delay": 1
                 },
                 {
-                    "id": "basic_enemy",
+                    "id": "vampire",
                     "quantity": 10,
                     "spawn_delay": 20,
                     "internal_delay": 1
@@ -102,13 +102,13 @@
             "weather": "foggy",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
+                    "id": "runner",
                     "quantity": 30,
                     "spawn_delay": 0,
                     "internal_delay": 0.5
                 },
                 {
-                    "id": "basic_enemy",
+                    "id": "basic",
                     "quantity": 10,
                     "spawn_delay": 20,
                     "internal_delay": 1
