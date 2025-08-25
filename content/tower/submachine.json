@@ -30,12 +30,12 @@
     "petroleum": 10
   },
   "stats": {
-    "damage": 25,
+    "damage": 0,
     "fire_rate": 5,
     "range": 160,
     "max_targets": 1,
-    "effect_slow_level": 5,
-    "effect_slow_duration": 1
+    "effect_slow_level": 500,
+    "effect_slow_duration": 10
   },
   "upgrades": {
     "max_total_upgrades": 5,

@@ -28,7 +28,7 @@ TowerInfoPanel::TowerInfoPanel()
       rangeIcon{*ResourceManager::getInstance().getTexture("range_icon")},
       damageIcon{*ResourceManager::getInstance().getTexture("power_icon")},
       fireRateIcon{*ResourceManager::getInstance().getTexture("speed_icon")},
-      maxTargetsIcon{*ResourceManager::getInstance().getTexture("sell_icon")},
+      maxTargetsIcon{*ResourceManager::getInstance().getTexture("crosshair")},
       towerName(*ResourceManager::getInstance().getFont("pixel")),
       upgradeTitle(*ResourceManager::getInstance().getFont("pixel")),
       towerSprite(GameConstants::BLANK_TEXTURE),
