@@ -3,6 +3,8 @@
 #include <vector>
 #include "GUIComponents/RectangularButton.hpp"
 #include <memory>
+#include "Scene/Overlays/Overlay.hpp"
+#include "Scene/Overlays/DifficultySelection.hpp"
 #include "Core/MouseObserver.hpp"
 class LevelSelection : public Scene, public MouseObserver {
 
@@ -17,6 +19,9 @@ class LevelSelection : public Scene, public MouseObserver {
     sf::Text title;
 
     sf::Sprite buttonBackgroundSprite;
+
+    std::string selectedLevelId;
+    std::unique_ptr<DifficultySelection> difficultySelectionOverlay;
     void createButtons();
     void createBackgrounds();
     void createTexts();

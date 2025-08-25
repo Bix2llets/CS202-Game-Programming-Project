@@ -11,6 +11,7 @@
 
 SunnyWeather::SunnyWeather(Level& level) : Weather(WeatherType::Sunny, "sunny", level) {
     // No overlay for sunny weather
+    loadTexture(id);
     overlayActive = false;
     Logger::debug("SunnyWeather: Created sunny weather (no effects)");
 }

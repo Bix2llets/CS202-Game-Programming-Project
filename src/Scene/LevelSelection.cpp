@@ -10,13 +10,16 @@
 #include "Core/UserEvent.hpp"
 #include "Core/Window.hpp"
 #include "GUIComponents/RectangularButtonBuilder.hpp"
+#include "Scene/Overlays/DifficultySelection.hpp"
 #include "Utility/Scaler.hpp"
 #include "Utility/TextJustifier.hpp"
 #include "Utility/aligner.hpp"
 #include "Utility/logger.hpp"
 LevelSelection::LevelSelection()
     : title(*ResourceManager::getInstance().getFont("pixel")),
-      buttonBackgroundSprite(*ResourceManager::getInstance().getTexture("level_selection_background")) {
+      buttonBackgroundSprite(*ResourceManager::getInstance().getTexture(
+          "level_selection_background")),
+      difficultySelectionOverlay{nullptr} {
     createButtons();
     createBackgrounds();
     createTexts();
@@ -50,10 +53,10 @@ void LevelSelection::createButtons() {
                                                       : "")
                 .setPosition(sf::Vector2f(
                     60, GameConstants::DEFAULT_WINDOW_HEIGHT / 2 -
-                             (previewButtonSize.y * levelCount +
-                              verticalSpace * (levelCount - 1)) /
-                                 2 +
-                             index * (previewButtonSize.y + verticalSpace)))
+                            (previewButtonSize.y * levelCount +
+                             verticalSpace * (levelCount - 1)) /
+                                2 +
+                            index * (previewButtonSize.y + verticalSpace)))
                 .setSize(previewButtonSize)
                 .setCallback([levelID, this](RectangularButton* btn) {
                     notify("Level selected", btn, levelID);
@@ -104,16 +107,26 @@ void LevelSelection::createBackgrounds() {
         }
     }
 
-    buttonBackgroundSprite.setPosition(sf::Vector2f(0, GameConstants::DEFAULT_WINDOW_HEIGHT / 2.f));
-    Scaler::scaleSprite(buttonBackgroundSprite, sf::Vector2f(380, GameConstants::DEFAULT_WINDOW_HEIGHT * 10));
-    Aligner::align(buttonBackgroundSprite, HorizontalAlignment::Left, VerticalAlignment::Middle);
+    buttonBackgroundSprite.setPosition(
+        sf::Vector2f(0, GameConstants::DEFAULT_WINDOW_HEIGHT / 2.f));
+    Scaler::scaleSprite(
+        buttonBackgroundSprite,
+        sf::Vector2f(380, GameConstants::DEFAULT_WINDOW_HEIGHT * 10));
+    Aligner::align(buttonBackgroundSprite, HorizontalAlignment::Left,
+                   VerticalAlignment::Middle);
 }
 
 void LevelSelection::update() {
+    if (difficultySelectionOverlay) {
+        difficultySelectionOverlay->update();
+    }
     for (auto& button : levelButtons) {
         button->update();
     }
     backButton->update();
+    
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 
 void LevelSelection::draw(sf::RenderTarget& target,
@@ -123,28 +136,35 @@ void LevelSelection::draw(sf::RenderTarget& target,
     for (int i = 0; i < levelButtons.size(); i++) {
         if (levelButtons[i]->isHovered()) {
             target.draw(*levelBackgrounds[i]);
-            Logger::debug(
-                std::format("Drawing the {}-th background, at position {} {}, "
-                            "size {} {} and origin {} {}",
-                            i, levelBackgrounds[i]->getPosition().x,
-                            levelBackgrounds[i]->getPosition().y,
-                            levelBackgrounds[i]->getGlobalBounds().size.x,
-                            levelBackgrounds[i]->getGlobalBounds().size.y,
-                            levelBackgrounds[i]->getOrigin().x,
-                            levelBackgrounds[i]->getOrigin().y));
-                            target.draw(levelDescriptions[i], state);
-                            target.draw(levelTitles[i], state);
-                            target.draw(*levelPreviewBackground, state);
+            // Logger::debug(
+            //     std::format("Drawing the {}-th background, at position {} {}, "
+            //                 "size {} {} and origin {} {}",
+                            // i, levelBackgrounds[i]->getPosition().x,
+                            // levelBackgrounds[i]->getPosition().y,
+                            // levelBackgrounds[i]->getGlobalBounds().size.x,
+                            // levelBackgrounds[i]->getGlobalBounds().size.y,
+                            // levelBackgrounds[i]->getOrigin().x,
+                            // levelBackgrounds[i]->getOrigin().y));
+            target.draw(levelDescriptions[i], state);
+            target.draw(levelTitles[i], state);
+            target.draw(*levelPreviewBackground, state);
         }
         target.draw(*levelButtons[i]);
     }
     target.draw(*backButton, state);
     target.draw(title, state);
+
+    if (difficultySelectionOverlay) {
+        difficultySelectionOverlay->render();
+    }
 }
 
 bool LevelSelection::onMouseEvent(Mouse button, UserEvent event,
                                   const sf::Vector2f& worldPosition,
                                   const sf::Vector2f& windowPosition) {
+    if (difficultySelectionOverlay)
+        return difficultySelectionOverlay->onMouseEvent(
+            button, event, worldPosition, windowPosition);
     for (auto& btn : levelButtons) {
         if (btn->onMouseEvent(button, event, worldPosition, windowPosition)) {
             return true;
@@ -194,15 +214,48 @@ void LevelSelection::subscribeEvents() {
     subscribe("Level selected", [this](std::any sender, std::any data) {
         try {
             std::string levelID = std::any_cast<std::string>(data);
-            SceneManager::getInstance().enqueueSceneAdd(
-                "Gameplay", LevelFactory::getInstance().getLevel(levelID));
-            SceneManager::getInstance().enqueueSceneChange("Gameplay");
+            selectedLevelId = levelID;
+            difficultySelectionOverlay =
+                std::make_unique<DifficultySelection>(*this, levelID);
+            // SceneManager::getInstance().enqueueSceneAdd(
+            //     "Gameplay", LevelFactory::getInstance().getLevel(levelID));
+            // SceneManager::getInstance().enqueueSceneChange("Gameplay");
         } catch (const std::bad_any_cast& e) {
             Logger::error("Failed to cast level ID: " + std::string(e.what()));
         }
     });
     subscribe("Back", [this](std::any sender, std::any data) {
         SceneManager::getInstance().enqueueSceneChange("Main menu");
+    });
+
+    // Add event handlers for DifficultySelection overlay
+    subscribe("close_difficulty_selection", [this](std::any sender, std::any data) {
+        Logger::debug("Closing difficulty selection overlay");
+        difficultySelectionOverlay.reset();
+    });
+
+    subscribe("start_level_with_difficulty", [this](std::any sender, std::any data) {
+        try {
+            std::pair<std::string, std::string> levelDifficultyPair = 
+                std::any_cast<std::pair<std::string, std::string>>(data);
+            
+            std::string levelID = levelDifficultyPair.first;
+            std::string difficultyID = levelDifficultyPair.second;
+            
+            Logger::debug("Starting level '" + levelID + "' with difficulty '" + difficultyID + "'");
+            
+            // Create level with specified difficulty
+            auto level = LevelFactory::getInstance().getLevel(levelID, difficultyID);
+        if (level) {
+            SceneManager::getInstance().enqueueSceneAdd("Gameplay", std::move(level));
+                SceneManager::getInstance().enqueueSceneChange("Gameplay");
+                difficultySelectionOverlay.reset(); // Close overlay
+            } else {
+                Logger::error("Failed to create level '" + levelID + "' with difficulty '" + difficultyID + "'");
+            }
+        } catch (const std::bad_any_cast& e) {
+            Logger::error("Failed to cast level-difficulty pair: " + std::string(e.what()));
+        }
     });
 }
 
@@ -221,12 +274,13 @@ void LevelSelection::createTexts() {
 
     Aligner::align(title);
     title.setPosition(
-        sf::Vector2f((380 + GameConstants::DEFAULT_WINDOW_WIDTH) / 2, title.getGlobalBounds().size.y + 20));
+        sf::Vector2f((380 + GameConstants::DEFAULT_WINDOW_WIDTH) / 2,
+                     title.getGlobalBounds().size.y + 20));
     title.setFillColor(sf::Color::White);
     title.setOutlineColor(sf::Color::Black);
     title.setOutlineThickness(2);
 
-    for (auto [id, jsonFile]: JSONLoader::getInstance().getAllLevels()) {
+    for (auto [id, jsonFile] : JSONLoader::getInstance().getAllLevels()) {
         sf::Text description(*font);
         description.setFillColor(sf::Color::Black);
         description.setOutlineColor(sf::Color::White);
@@ -238,17 +292,16 @@ void LevelSelection::createTexts() {
             content = "No description available";
         }
 
-        description = TextJustifier::createJustified(
-            content, *font, 16, 500.f, sf::Color::Black);
+        description = TextJustifier::createJustified(content, *font, 16, 500.f,
+                                                     sf::Color::Black);
 
         Aligner::align(description);
-        description.setPosition(
-            sf::Vector2f(800, 750));
-        
+        description.setPosition(sf::Vector2f(800, 750));
+
         levelDescriptions.push_back(description);
     }
 
-    for (auto [id, jsonFile]: JSONLoader::getInstance().getAllLevels()) {
+    for (auto [id, jsonFile] : JSONLoader::getInstance().getAllLevels()) {
         sf::Text titleText(*font);
         // titleText.setOutlineThickness(1);
         std::string content;
@@ -258,13 +311,12 @@ void LevelSelection::createTexts() {
             content = "No name available";
         }
 
-        titleText = TextJustifier::createJustified(
-            content, *font, 28, 500.f, sf::Color::Black);
+        titleText = TextJustifier::createJustified(content, *font, 28, 500.f,
+                                                   sf::Color::Black);
 
         Aligner::align(titleText);
-        titleText.setPosition(
-            sf::Vector2f(800, 225));
-        
+        titleText.setPosition(sf::Vector2f(800, 225));
+
         levelTitles.push_back(titleText);
     }
 }

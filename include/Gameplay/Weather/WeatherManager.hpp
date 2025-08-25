@@ -5,8 +5,9 @@
 #pragma once
 
 #include <memory>
-#include <vector>
 #include <unordered_map>
+#include <vector>
+
 #include "Weather.hpp"
 
 // Forward declarations
@@ -19,17 +20,17 @@ class Enemy;
  * @brief Manages weather effects and their application to game entities.
  */
 class WeatherManager {
-private:
+    private:
     Level& level;
     Weather* currentWeather;
     Weather* previousWeather;
     std::vector<WeatherType> waveWeatherPattern;
     int currentWaveIndex;
-    
+
     // Pre-created weather instances
     std::unordered_map<WeatherType, std::unique_ptr<Weather>> weatherInstances;
-    
-public:
+
+    public:
     /**
      * @brief Construct a new WeatherManager.
      * @param level Reference to the game level.
@@ -42,9 +43,9 @@ public:
     ~WeatherManager();
 
     /**
-    * @brief Load weather data from JSON file.
-    * @param jsonFile JSON file containing weather data.
-    */
+     * @brief Load weather data from JSON file.
+     * @param jsonFile JSON file containing weather data.
+     */
     void loadJSON(const nlohmann::json& jsonFile);
 
     /**
@@ -56,7 +57,6 @@ public:
      * @brief Update weather effects.
      */
     void update();
-
 
     /**
      * @brief Set weather pattern for all waves.
@@ -79,7 +79,9 @@ public:
      * @brief Get current weather.
      * @return const Weather* Pointer to current weather, or nullptr if none.
      */
-    const Weather* getCurrentWeather() const { return currentWeather; }
+    const Weather* getCurrentWeather() const;
+
+    const Weather* getNextWeather() const;
 
     /**
      * @brief Get current weather type.
@@ -118,7 +120,7 @@ public:
      */
     void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-private:
+    private:
     /**
      * @brief Initialize all weather instances.
      */

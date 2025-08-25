@@ -56,11 +56,17 @@ TowerMenu::TowerMenu(const Currency& currencyRef, Level* level)
 }
 
 void TowerMenu::update() {
-    scrapDisplay.setString(std::to_string(level->getBudget().getScraps().value));
-    petroleumDisplay.setString(std::to_string(level->getBudget().getPetroleum().value));
-    healthDisplay.setString(std::to_string(level->getRemainingHealth()));;
+    scrapDisplay.setString(
+        std::to_string(level->getBudget().getScraps().value));
+    petroleumDisplay.setString(
+        std::to_string(level->getBudget().getPetroleum().value));
+    healthDisplay.setString(std::to_string(level->getRemainingHealth()));
+    ;
 
     for (auto& button : towerButtons) button->update();
+
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 void TowerMenu::render(sf::RenderStates state) const {
     sf::RenderWindow& window = Window::getInstance().getRenderWindow();
@@ -75,7 +81,7 @@ void TowerMenu::render(sf::RenderStates state) const {
 
     window.draw(scrapDisplay, state);
     window.draw(petroleumDisplay, state);
-    window.draw(scrapIcon, state); 
+    window.draw(scrapIcon, state);
     window.draw(petrolIcon, state);
     window.draw(healthIcon, state);
     window.draw(healthDisplay, state);
@@ -102,37 +108,39 @@ void TowerMenu::setResourceDisplay() {
     Scaler::scaleSprite(healthIcon, {24.f, 24.f});
 
     Aligner::align(petroleumDisplay, HorizontalAlignment::Left,
-                                  VerticalAlignment::Middle);
+                   VerticalAlignment::Middle);
     Aligner::align(scrapDisplay, HorizontalAlignment::Left,
-                                  VerticalAlignment::Middle);
+                   VerticalAlignment::Middle);
     Aligner::align(healthDisplay, HorizontalAlignment::Left,
-                                  VerticalAlignment::Middle);
-
+                   VerticalAlignment::Middle);
 
     Aligner::align(healthIcon, HorizontalAlignment::Center,
-                                  VerticalAlignment::Middle);
+                   VerticalAlignment::Middle);
     Aligner::align(scrapIcon, HorizontalAlignment::Center,
-                                  VerticalAlignment::Middle);
-    Aligner::align(petrolIcon, HorizontalAlignment::Center, 
-                                  VerticalAlignment::Middle);
+                   VerticalAlignment::Middle);
+    Aligner::align(petrolIcon, HorizontalAlignment::Center,
+                   VerticalAlignment::Middle);
 
     scrapIcon.setPosition(
         position +
-        sf::Vector2f{borderSize.x + 10 + scrapIcon.getGlobalBounds().size.x / 2, 40});
+        sf::Vector2f{borderSize.x + 10 + scrapIcon.getGlobalBounds().size.x / 2,
+                     40});
     scrapDisplay.setPosition(
         scrapIcon.getPosition() +
         sf::Vector2f{scrapIcon.getGlobalBounds().size.x / 2.f, 0.f} +
         sf::Vector2f{10, 0});
     petrolIcon.setPosition(
         position +
-        sf::Vector2f{borderSize.x + 10 + petrolIcon.getGlobalBounds().size.x / 2,
-                     80});
+        sf::Vector2f{
+            borderSize.x + 10 + petrolIcon.getGlobalBounds().size.x / 2, 80});
     petroleumDisplay.setPosition(
         petrolIcon.getPosition() +
         sf::Vector2f{petrolIcon.getGlobalBounds().size.x / 2.f, 0.f} +
         sf::Vector2f{10, 0});
-    healthIcon.setPosition(position +
-                           sf::Vector2f{borderSize.x + 10 + healthIcon.getGlobalBounds().size.x / 2, 120});
+    healthIcon.setPosition(
+        position +
+        sf::Vector2f{
+            borderSize.x + 10 + healthIcon.getGlobalBounds().size.x / 2, 120});
     healthDisplay.setPosition(
         healthIcon.getPosition() +
         sf::Vector2f{healthIcon.getGlobalBounds().size.x / 2.f, 0.f} +
@@ -275,9 +283,11 @@ void TowerMenu::onUnload() {
 void TowerMenu::registerMessages() {
     subscribe("tower_button_pressed", [this](std::any sender, std::any id) {
         std::string towerId = std::any_cast<std::string>(id);
-        
+
         sf::Sprite iconScaled = towerList[towerId]->getIcon();
-        iconScaled = Scaler::scaleSprite(iconScaled, {towerList[towerId]->getTextureWidth() * 2, towerList[towerId]->getTextureHeight() * 2});
+        iconScaled = Scaler::scaleSprite(
+            iconScaled, {towerList[towerId]->getTextureWidth() * 2,
+                         towerList[towerId]->getTextureHeight() * 2});
         Cursor::getInstance().setRenderImage(iconScaled);
         Cursor::getInstance().setCarryingTower(towerId);
         isTowerSelected = true;
@@ -292,8 +302,10 @@ void TowerMenu::registerMessages() {
     });
     subscribe("press_outside", [this](std::any sender, std::any data) {
         if (isTowerSelected == false) return;
-        sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
-        level->notify("place_tower_cursor", 0, worldPosition);
+        std::pair<std::string, sf::Vector2f> forwardData =
+            std::any_cast<std::pair<std::string, sf::Vector2f>>(data);
+        // let the compiler deduce the pair types
+        level->notify("place_tower_cursor", 0, forwardData);
 
         Cursor::getInstance().removeRenderImage();
         Cursor::getInstance().clearCarryingTower();
@@ -327,7 +339,9 @@ bool TowerMenu::onMouseEvent(Mouse mouse, UserEvent event,
             return true;
         }
         if (isTowerSelected) {
-            notify("press_outside", 0, worldPosition);
+            notify("press_outside", 0,
+                   std::make_pair(Cursor::getInstance().getCarryingTowerID(),
+                                  worldPosition));
             return true;
         }
         return false;

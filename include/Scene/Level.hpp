@@ -74,12 +74,13 @@ private:
     TowerInfoPanel infoPanel;
     std::unique_ptr<Overlay> overlay;
     sf::Sprite backgrounds;
-    
+    sf::Text waveCounterText;
     std::unique_ptr<RectangularButton> pauseButton;
     std::unique_ptr<RectangularButton> nextWaveButton;
     
 public:
     Level();
+    Level(const std::string& difficultyId);
 
     ~Level();
     /**
@@ -212,6 +213,7 @@ private:
      */
     void subscribeCallbacks();
 
+
     public:
     bool onKeyEvent(Key key, UserEvent event, const sf::Vector2f &worldPosition,
                     const sf::Vector2f &windowPosition);
@@ -227,5 +229,5 @@ private:
     inline sf::Vector2f getMapSize() const { return backgrounds.getGlobalBounds().size; }
 
     private:
-    bool isPlacementValid(sf::Vector2f worldPosition);
+    bool isPlacementValid(std::string towerID, sf::Vector2f worldPosition);
 };

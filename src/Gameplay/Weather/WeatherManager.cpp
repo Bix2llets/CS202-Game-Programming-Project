@@ -278,3 +278,29 @@ void WeatherManager::applyCurrentWeatherEffects() {
     
     Logger::debug("WeatherManager: Applied weather effects to all existing entities");
 }
+
+const Weather* WeatherManager::getNextWeather() const {
+    if (waveWeatherPattern.empty())
+        return nullptr;
+    
+    int nextIndex = currentWaveIndex + 1;
+    if (nextIndex >= static_cast<int>(waveWeatherPattern.size()))
+        return nullptr; // No next weather
+    
+    WeatherType nextType = waveWeatherPattern[nextIndex];
+    auto it = weatherInstances.find(nextType);
+    if (it != weatherInstances.end()) {
+        return it->second.get();
+    }
+    
+    return nullptr; // Should not happen
+}
+
+const Weather* WeatherManager::getCurrentWeather() const {
+    WeatherType currentWaveIndex = getCurrentWeatherType();
+    auto it = weatherInstances.find(currentWaveIndex);
+    if (it == weatherInstances.end()) {
+        return nullptr;
+    }
+    return it->second.get();
+}

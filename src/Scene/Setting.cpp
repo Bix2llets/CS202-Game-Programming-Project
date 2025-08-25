@@ -24,8 +24,12 @@ Setting::Setting() : musicVolumeDisplay(*ResourceManager::getInstance().getFont(
 
     musicVolumeDisplay.setCharacterSize(24);
     soundVolumeDisplay.setCharacterSize(24);
-    musicVolumeDisplay.setFillColor(sf::Color::Black);
-    soundVolumeDisplay.setFillColor(sf::Color::Black);
+    musicVolumeDisplay.setFillColor(sf::Color::White);
+    musicVolumeDisplay.setOutlineColor(sf::Color::Black);
+    musicVolumeDisplay.setOutlineThickness(2);
+    soundVolumeDisplay.setFillColor(sf::Color::White);
+    soundVolumeDisplay.setOutlineColor(sf::Color::Black);
+    soundVolumeDisplay.setOutlineThickness(2);
 }
 
 void Setting::onLoad() {
@@ -60,6 +64,7 @@ void Setting::update() {
         (soundVolumeDecrement->getPosition().x + soundVolumeDecrement->getSize().x + soundVolumeIncrement->getPosition().x) / 2.f,
         (soundVolumeDecrement->getPosition().y + soundVolumeDecrement->getSize().y / 2.f)
     });
+    resolveQueue();
 }
 
 void Setting::draw(sf::RenderTarget& target, sf::RenderStates states) const {

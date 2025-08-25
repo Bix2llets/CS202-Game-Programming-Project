@@ -94,6 +94,9 @@ void StaticSellMenu::update() {
             GameConstants::DEFAULT_WINDOW_HEIGHT - sellButton.getRadius();
     }
     sellButton.setPosition(worldPosition);
+    
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 
 bool StaticSellMenu::onMouseEvent(Mouse mouse, UserEvent event,

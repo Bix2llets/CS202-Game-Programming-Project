@@ -71,4 +71,14 @@ class LevelFactory {
      * found.
      */
     std::unique_ptr<Level> getLevel(const std::string &ID);
+
+    /**
+     * @brief Returns a unique_ptr to the Scene for the level whose id matches
+     * levelName, with the specified difficulty.
+     * @param ID The id of the level to instantiate.
+     * @param difficultyId The id of the difficulty to use.
+     * @return std::unique_ptr<Scene> for the requested level, or nullptr if not
+     * found.
+     */
+    std::unique_ptr<Level> getLevel(const std::string &ID, const std::string &difficultyId);
 };

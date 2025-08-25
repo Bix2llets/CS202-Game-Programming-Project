@@ -45,6 +45,9 @@ void PauseScreen::update() {
     for (std::unique_ptr<RectangularButton>& button : buttons) {
         button->update();
     }
+    
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 
 void PauseScreen::render() const {

@@ -117,6 +117,9 @@ void GameoverScreen::update() {
     for (const auto &button : buttons) {
         button->update();
     }
+    
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 
 void GameoverScreen::render() const {

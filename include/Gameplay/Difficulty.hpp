@@ -38,9 +38,11 @@ private:
     std::string id;
 
     sf::Sprite icon;
-
+    int index;
     EntityStat enemyModifier;
     std::unordered_map<std::string, WeatherStat> weatherModifiers;
+
+    int maxHealth;
 
 public:
     /**
@@ -106,4 +108,7 @@ public:
      * @param jsonID The JSON ID to load configuration for.
      */
     void loadFromConfigFile(const std::string& jsonID);
+
+    inline int getIndex() const { return index; }
+    inline int getMaxHealth() const { return maxHealth; }   
 };

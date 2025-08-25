@@ -163,7 +163,7 @@
     ],
     "wave": [
         {
-            "weather": "raining",
+            "weather": "sunny",
             "enemy_info": [
                 {
                     "id": "basic_enemy",

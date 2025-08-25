@@ -22,6 +22,8 @@ class RadialUpgradeMenu : public Mediator, public MouseObserver {
     UpgradeManager* upgradeManager = nullptr;
     Tower* refTower = nullptr;
 
+    sf::Text upgradeCountText;
+
     void updatePositions();
 
     public:

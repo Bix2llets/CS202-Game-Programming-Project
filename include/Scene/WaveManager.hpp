@@ -34,7 +34,7 @@ public:
         return currentWave == waveInfo.size() - 1 && processingHordes.empty();
     }
     inline int getCurrentWave() const {
-        return currentWave + 1;
+        return currentWave;
     }
     inline int getTotalWaves() const {
         return waveInfo.size();

@@ -12,7 +12,7 @@
 
 RainingWeather::RainingWeather(Level& level) : Weather(WeatherType::Raining, "raining", level) {
     // Load rain overlay texture
-    loadOverlay(id);
+    loadTexture(id);
     
     float size = std::max(level.getMapSize().x, level.getMapSize().y);
     Logger::debug("RainingWeather: Size " + std::to_string(size));

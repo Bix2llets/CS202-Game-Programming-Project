@@ -25,4 +25,5 @@ public:
     void applyToEnemy(Enemy* enemy) override;
     void removeFromTower(Tower* tower) override;
     void removeFromEnemy(Enemy* enemy) override;
+
 };

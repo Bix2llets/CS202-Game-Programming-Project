@@ -28,14 +28,17 @@
 #include "Gameplay/TowerInfoPanel.hpp"
 #include "Scene/Overlays/GameoverScreen.hpp"
 #include "Scene/Overlays/PauseScreen.hpp"
-#include "Utility/CollisionChecker.hpp"
-#include "Utility/logger.hpp"
 #include "Scene/Overlays/WinningScreen.hpp"
-Level::Level()
+#include "Utility/CollisionChecker.hpp"
+#include "Utility/Scaler.hpp"
+#include "Utility/aligner.hpp"
+#include "Utility/logger.hpp"
+Level::Level() : Level("medium") {}
+
+Level::Level(const std::string &difficultyId)
     : currentWave{0},
       totalWaves{0},
       running{true},
-      //   map(parameter),
       entityManager{*this},
       menu{budget, this},
       tracker(*this),
@@ -45,20 +48,23 @@ Level::Level()
       weatherManager{*this},
       overlay{nullptr},
       randomManager(),
-      staticSellMenu(*this) {
-    health.setMaxHealth(200).setHealth(200);
-    budget.setScraps(500);
-    budget.setPetroleum(0);
+      staticSellMenu(*this),
+      waveCounterText(*ResourceManager::getInstance().getFont("text")) {
+    // Health and budget will be set by initializeComponentsWithDifficulty()
 
-    // std::vector<std::unique_ptr<StaticEntity>> staticEntities;
-    // staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile(
-    //     "rock_big_1", *this, sf::Vector2f(365, 310))));
-    // staticEntities.push_back(move(StaticEntityFactory::createFromConfigFile("big_rock_2",
-    // *this, sf::Vector2f(100, 100))));
+    // Load specified difficulty
+    try {
+        difficulty.loadFromConfigFile(difficultyId);
+        Logger::success("Loaded difficulty: " + difficultyId + " for level");
+    } catch (const std::exception &e) {
+        Logger::error("Failed to load difficulty '" + difficultyId +
+                      "': " + e.what());
+        Logger::warning("Falling back to medium difficulty");
+        difficulty.loadFromConfigFile("medium");
+    }
 
-    // for (auto &entity : staticEntities) {
-    //     entityManager.addStaticEntity(std::move(entity));
-    // }
+    health.setMaxHealth(difficulty.getMaxHealth()).setHealth(difficulty.getMaxHealth());
+    // Initialize components with difficulty settings
 
     MouseState &mouseState = InputManager::getInstance().getMouseState();
     RectangularButtonBuilder builder(*this);
@@ -88,6 +94,11 @@ Level::Level()
                 ResourceManager::getInstance().getTexture("next_wave_button"))
             .build();
     subscribeCallbacks();
+    waveCounterText.setCharacterSize(16);
+    waveCounterText.setFillColor(sf::Color::White);
+    waveCounterText.setOutlineColor(sf::Color::Black);
+    waveCounterText.setOutlineThickness(1.f);
+
 }
 
 Level::~Level() {
@@ -97,6 +108,7 @@ Level::~Level() {
 void Level::update() {
     if (overlay) {
         overlay->update();
+        resolveQueue();
         return;
     }
     if (waveManager.isCompleted() && entityManager.getEnemies().empty()) {
@@ -109,7 +121,15 @@ void Level::update() {
         nextWaveButton->setOverlayColor(overlay);
     else
         nextWaveButton->setOverlayColor(sf::Color::Transparent);
-
+    std::string currentText = waveCounterText.getString();
+    std::string nextText = std::format("Wave: {}/{}", waveManager.getCurrentWave() + 1, waveManager.getTotalWaves());
+    if (currentText != nextText) {
+        waveCounterText.setString(nextText);
+        Aligner::align(waveCounterText, HorizontalAlignment::Right, VerticalAlignment::Middle);
+        waveCounterText.setPosition(sf::Vector2f{
+            GameConstants::MENU_X - 10.f,
+             10.f + waveCounterText.getGlobalBounds().size.y / 2.f});
+    }
     menu.update();
     infoPanel.update();
     pauseButton->update();
@@ -130,6 +150,9 @@ void Level::update() {
     entityManager.update();
     waveManager.update();
     weatherManager.update();
+
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 
 void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
@@ -161,6 +184,42 @@ void Level::draw(sf::RenderTarget &target, sf::RenderStates state) const {
     if (overlay) {
         overlay->render();
     }
+
+    const Weather *currentWaveWeather = weatherManager.getCurrentWeather();
+    if (currentWaveWeather) {
+        sf::Sprite currentWeatherIcon = currentWaveWeather->getIcon();
+        Scaler::scaleSprite(currentWeatherIcon, {32.f, 32.f});
+        Aligner::align(currentWeatherIcon, HorizontalAlignment::Center,
+                       VerticalAlignment::Middle);
+        currentWeatherIcon.setPosition(
+            {GameConstants::MENU_X - 16.f - 10.f, 32.f + 16.f + 10.f});
+        target.draw(currentWeatherIcon, state);
+
+        sf::RectangleShape backgroundBox;
+        backgroundBox.setSize(
+            {currentWeatherIcon.getGlobalBounds().size.x + 2.f,
+             currentWeatherIcon.getGlobalBounds().size.y + 2.f});
+        backgroundBox.setFillColor(sf::Color(0, 0, 0, 0));
+        backgroundBox.setOutlineColor(sf::Color::Black);
+        backgroundBox.setOutlineThickness(2.f);
+        backgroundBox.setPosition(currentWeatherIcon.getPosition());
+        Aligner::align(backgroundBox, HorizontalAlignment::Center,
+                       VerticalAlignment::Middle);
+        target.draw(backgroundBox, state);
+        // Logger::debug("Drawing current weather icon");
+    }
+    const Weather *nextWaveWeather = weatherManager.getNextWeather();
+    if (nextWaveWeather) {
+        sf::Sprite nextWeatherIcon = nextWaveWeather->getIcon();
+        Scaler::scaleSprite(nextWeatherIcon, {32.f, 32.f});
+        Aligner::align(nextWeatherIcon, HorizontalAlignment::Center,
+                       VerticalAlignment::Middle);
+        nextWeatherIcon.setPosition(
+            {GameConstants::MENU_X - 16.f - 10.f - 32.f - 10.f, 32.f + 16.f + 10.f});
+        target.draw(nextWeatherIcon, state);
+        // Logger::debug("Drawing next weather icon");
+    }
+    target.draw(waveCounterText, state);
 }
 void Level::loadFromJson(const std::string &pathToFile) {
     nlohmann::json jsonFile = nlohmann::json::parse(std::ifstream(pathToFile));
@@ -170,7 +229,8 @@ void Level::loadFromJson(const std::string &pathToFile) {
 void Level::loadFromJson(const nlohmann::json &jsonFile) {
     backgrounds = sf::Sprite(
         *ResourceManager::getInstance().getTexture(jsonFile["background"]));
-    difficulty.loadFromConfigFile("nightmare");
+    // Note: difficulty is now loaded in constructor, not here
+    Logger::success("Level loaded with difficulty: " + difficulty.getName());
     levelID = jsonFile["id"];
     sf::Vector2f scale;
     // scale.x = static_cast<float>(GameConstants::MAP_WIDTH) /
@@ -209,6 +269,7 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
     Logger::success("Loaded waypoints");
 
     weatherManager.setUp();
+    // Create EnemyFactory with waypoints - difficulty will be set after obstacle loading
     factory = std::make_unique<EnemyFactory>(waypoints, *this);
 
     for (nlohmann::json obstacle : jsonFile["obstacles"]) {
@@ -232,7 +293,9 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
             StaticEntityFactory::createFromConfigFile(type, *this, position));
         Logger::debug("Added obstacle of type " + type);
     }
+    // Apply difficulty settings to EnemyFactory after creation
     factory->setDifficulty(difficulty);
+    Logger::debug("Applied " + difficulty.getName() + " difficulty to EnemyFactory");
 }
 
 void Level::loadWaves(const nlohmann::json &jsonFile) {
@@ -393,7 +456,7 @@ bool Level::onMouseEvent(Mouse mouse, UserEvent event,
         return true;
 
     if (Cursor::getInstance().isDisplaying()) {
-        if (isPlacementValid(worldPosition)) {
+        if (isPlacementValid(Cursor::getInstance().getCarryingTowerID(), worldPosition)) {
             Cursor::getInstance().setValidPlacement();
         } else {
             Cursor::getInstance().setInvalidPlacement();
@@ -420,13 +483,12 @@ bool Level::onScrollEvent(float delta, const sf::Vector2f &worldPosition,
     return false;
 }
 
-bool Level::isPlacementValid(sf::Vector2f worldPosition) {
+bool Level::isPlacementValid(std::string towerID, sf::Vector2f worldPosition) {
     Window::getInstance().toggleUserMode();
     if (menu.contains((sf::Vector2f)Window::getInstance()
                           .getRenderWindow()
                           .mapCoordsToPixel(worldPosition)))
         return false;
-    std::string towerID = Cursor::getInstance().getCarryingTowerID();
 
     nlohmann::json obj = JSONLoader::getInstance().getTower(towerID);
 
@@ -496,7 +558,7 @@ void Level::subscribeCallbacks() {
             Window::getInstance().toggleUserMode();
 
             if (Cursor::getInstance().isDisplaying())
-                if (isPlacementValid(
+                if (isPlacementValid(Cursor::getInstance().getCarryingTowerID(), 
                         Window::getInstance()
                             .getRenderWindow()
                             .mapPixelToCoords(static_cast<sf::Vector2i>(
@@ -514,7 +576,7 @@ void Level::subscribeCallbacks() {
             budget -= currency;
             Window::getInstance().toggleUserMode();
             if (Cursor::getInstance().isDisplaying())
-                if (isPlacementValid(
+                if (isPlacementValid(Cursor::getInstance().getCarryingTowerID(),
                         Window::getInstance()
                             .getRenderWindow()
                             .mapPixelToCoords(static_cast<sf::Vector2i>(
@@ -527,13 +589,13 @@ void Level::subscribeCallbacks() {
         }
     });
     subscribe("place_tower_cursor", [this](std::any sender, std::any data) {
-        sf::Vector2f worldPosition = std::any_cast<sf::Vector2f>(data);
+        std::pair<std::string, sf::Vector2f> castedData = std::any_cast<std::pair<std::string, sf::Vector2f>>(data);
 
-        if (isPlacementValid(worldPosition)) {
+        if (isPlacementValid(castedData.first, castedData.second)) {
             std::unique_ptr<Tower> newTower =
                 std::move(TowerFactory::createFromConfigFile(
-                    Cursor::getInstance().getCarryingTowerID(), *this,
-                    worldPosition));
+                    castedData.first, *this,
+                    castedData.second));
 
             budget.subtractPetroleum(newTower->getCost().getPetroleum().value);
             budget.subtractScraps(newTower->getCost().getScraps().value);
