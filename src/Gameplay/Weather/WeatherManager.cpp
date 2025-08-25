@@ -6,6 +6,7 @@
 #include "Gameplay/Weather/WeatherManager.hpp"
 #include "Gameplay/Weather/Weathers/SunnyWeather.hpp"
 #include "Gameplay/Weather/Weathers/RainingWeather.hpp"
+#include "Gameplay/Weather/Weathers/ThunderstormWeather.hpp"
 #include "Entity/Tower/Tower.hpp"
 #include "Entity/Enemy/Enemy.hpp"
 #include "Scene/Level.hpp"
@@ -235,11 +236,8 @@ void WeatherManager::initializeWeatherInstances() {
     // Create all weather instances
     weatherInstances[WeatherType::Sunny] = std::make_unique<SunnyWeather>(level);
     weatherInstances[WeatherType::Raining] = std::make_unique<RainingWeather>(level);
+    weatherInstances[WeatherType::Thunderstorm] = std::make_unique<ThunderstormWeather>(level);
 
-    // TODO: Add other weather types when implemented
-    // weatherInstances[WeatherType::Thunderstorm] = std::make_unique<ThunderstormWeather>(level); // Temporary
-    // weatherInstances[WeatherType::Foggy] = std::make_unique<FoggyWeather>(level); // Temporary
-    
     Logger::info("WeatherManager: Initialized all weather instances");
 }
 

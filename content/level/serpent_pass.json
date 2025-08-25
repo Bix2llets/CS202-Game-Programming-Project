@@ -161,79 +161,115 @@
             35
         ]
     ],
-    "path_thickness": 1,
+    "path_thickness": 96,
     "wave": [
         {
             "weather": "sunny",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
+                    "id": "basic",
                     "quantity": 10,
                     "spawn_delay": 0,
-                    "internal_delay": 1
-                },
-                {
-                    "id": "basic_enemy",
-                    "quantity": 10,
-                    "spawn_delay": 20,
-                    "internal_delay": 1
+                    "internal_delay": 0.5
                 }
             ],
-            "local_difficulty": 0.5
+            "local_difficulty": 0.2
         },
         {
             "weather": "sunny",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
+                    "id": "basic",
                     "quantity": 10,
                     "spawn_delay": 0,
-                    "internal_delay": 1
+                    "internal_delay": 0.5
                 },
                 {
-                    "id": "basic_enemy",
+                    "id": "basic",
                     "quantity": 5,
-                    "spawn_delay": 30,
-                    "internal_delay": 1
+                    "spawn_delay": 10,
+                    "internal_delay": 0.2
                 }
             ],
-            "local_difficulty": 0.5
+            "local_difficulty": 0.2
         },
         {
             "weather": "raining",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
-                    "quantity": 15,
+                    "id": "basic",
+                    "quantity": 20,
                     "spawn_delay": 0,
-                    "internal_delay": 1
+                    "internal_delay": 0.5
                 }
             ],
-            "local_difficulty": 0.8
+            "local_difficulty": 0.2
         },
         {
             "weather": "thunderstorm",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
-                    "quantity": 15,
+                    "id": "basic",
+                    "quantity": 20,
                     "spawn_delay": 0,
-                    "internal_delay": 1
+                    "internal_delay": 0.5
                 }
             ],
-            "local_difficulty": 0.8
+            "local_difficulty": 0.3
         },
         {
             "weather": "raining",
             "enemy_info": [
                 {
-                    "id": "basic_enemy",
-                    "quantity": 15,
+                    "id": "basic",
+                    "quantity": 20,
                     "spawn_delay": 0,
-                    "internal_delay": 1
+                    "internal_delay": 0.4
                 }
             ],
-            "local_difficulty": 0.8
+            "local_difficulty": 0.3
+        },
+        {
+            "weather": "thunderstorm",
+            "enemy_info": [
+                {
+                    "id": "basic",
+                    "quantity": 20,
+                    "spawn_delay": 0,
+                    "internal_delay": 0.4
+                }
+            ],
+            "local_difficulty": 0.3
+        },
+        {
+            "weather": "raining",
+            "enemy_info": [
+                {
+                    "id": "basic",
+                    "quantity": 15,
+                    "spawn_delay": 0,
+                    "internal_delay": 0.5
+                }
+            ],
+            "local_difficulty": 0.3
+        },
+        {
+            "weather": "sunny",
+            "enemy_info": [
+                {
+                    "id": "basic",
+                    "quantity": 30,
+                    "spawn_delay": 0,
+                    "internal_delay": 0.4
+                },
+                {
+                    "id": "basic",
+                    "quantity": 20,
+                    "spawn_delay": 0,
+                    "internal_delay": 0.3
+                }
+            ],
+            "local_difficulty": 0.4
         }
     ],
     "obstacles": [
@@ -368,14 +404,14 @@
             "type": "tree_medium_5",
             "position": {
                 "x": 29,
-                "y": 8
+                "y": 159
             }
         },
         {
             "type": "tree_medium_5",
             "position": {
-                "x": 29,
-                "y": 8
+                "x": 24,
+                "y": -3
             }
         },
         {

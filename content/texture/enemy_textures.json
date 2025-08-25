@@ -1,6 +1,14 @@
 [
     {
-        "id": "basic_enemy",
-        "path": "assets/texture/enemy/coin-Sheet.png"
+        "id": "enemy_basic",
+        "path": "assets/texture/enemy/basic.png"
+    },
+    {
+        "id": "enemy_vampire",
+        "path": "assets/texture/enemy/vampire.png"
+    },
+    {
+        "id": "enemy_runner",
+        "path": "assets/texture/enemy/runner.png"
     }
 ]

@@ -27,10 +27,22 @@
     },
     {
         "id": "thunderstorm",
-        "icon": "",
+        "icon": "weather_rain",
         "has_overlay": false,
         "overlay_animation": {
-
+            "texture_id": "thunderstorm_overlay",
+            "width": 400,
+            "height": 400,
+            "animation_interval": 0.05,
+            "type": "circular",
+            "center_x": 0,
+            "center_y": 0,
+            "viewport" : {
+                "x": 0,
+                "y": 0,
+                "width": 11200,
+                "height": 400
+            }
         }
     },
     {

@@ -82,11 +82,15 @@ void Weather::removeFromTower(Tower* tower) {
 }
 
 void Weather::applyToEnemy(Enemy* enemy) {
-    // EntityStat* stats = enemy->getStats();
-    // stats->addStat(EntityStat::multiplier("speed"), -stat.getEnemySpeedReduction());
+    EntityStat stats = enemy->getStats();
+    float currentSpeed = stats.getStat("speed");
+    float reducedSpeed = currentSpeed * (1.0f - stat.getEnemySpeedReduction());
+    enemy->setStat("speed", reducedSpeed);
 }
 
 void Weather::removeFromEnemy(Enemy* enemy) {
-    // EntityStat* stats = enemy->getStats();
-    // stats->addStat(EntityStat::multiplier("speed"), stat.getEnemySpeedReduction());
+    EntityStat stats = enemy->getStats();
+    float currentSpeed = stats.getStat("speed");
+    float restoredSpeed = currentSpeed / (1.0f - stat.getEnemySpeedReduction());
+    enemy->setStat("speed", restoredSpeed);
 }

@@ -7,13 +7,15 @@
 #include "Gameplay/Weather/Weather.hpp"
 
 /**
- * @class RainingWeather
- * @brief Rainy weather that reduces tower range and enemy speed, affects burn effects.
+ * @class ThunderstormWeather
+ * @brief Thunderstorm weather that reduces tower range and enemy speed, affects burn effects.
  */
-class RainingWeather : public Weather {
+class ThunderstormWeather : public Weather {
+private:
+    Timer timer;
 public:
-    RainingWeather(Level& level);
-    
+    ThunderstormWeather(Level& level);
+
     void update() override;
     void applyToTower(Tower* tower) override;
     void applyToEnemy(Enemy* enemy) override;

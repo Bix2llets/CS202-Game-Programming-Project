@@ -1,6 +1,6 @@
 [
     {
-        "id": "basic_enemy",
+        "id": "basic",
         "name": "Basic enemy",
         "description": "The basic enemy, jack of all trades with low stats",
         "stats": {
@@ -10,22 +10,22 @@
             "fire_resistance": 0,
             "speed": 100,
             "reward": {
-                "petroleum": 1,
-                "scrap": 9
+                "petroleum": 5,
+                "scrap": 10
             }
         },
         "sprite": {
-            "texture_id": "basic_enemy",
+            "texture_id": "enemy_basic",
             "width": 32,
             "height": 32,
-            "animation_interval": 0.25,
+            "animation_interval": 0.5,
             "type": "circular",
             "center_x": 16,
             "center_y": 16,
             "viewport": {
                 "x": 0,
                 "y": 0,
-                "width": 256,
+                "width": 64,
                 "height": 32
             }
         },
@@ -33,46 +33,6 @@
         "spawn_effect": {
             "effect_burn_level": 0,
             "effect_burn_duration": 10
-        }
-    },
-    {
-        "id": "fat",
-        "name": "Fat Fucker",
-        "description": "Fat Fucker",
-        "stats": {
-            "max_health": 3000,
-            "heal_amount": 0,
-            "heal_interval": 5.0,
-            "resistance": 30,
-            "speed": 50,
-            "reward": {
-                "petroleum": 0,
-                "scrap": 9
-            }
-        },
-        "sprite": {
-            "texture_id": "basic_enemy",
-            "width": 32,
-            "height": 32,
-            "animation_interval": 0.05,
-            "type": "circular",
-            "center_x": 16,
-            "center_y": 16,
-            "viewport": {
-                "x": 0,
-                "y": 0,
-                "width": 256,
-                "height": 32
-            }
-        },
-        "type": "land",
-        "spawn_effect": {
-            "audio": [],
-            "visual": []
-        },
-        "death_effect": {
-            "audio": [],
-            "visual": []
         }
     }
 ]
