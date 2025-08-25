@@ -26,7 +26,7 @@
 class Path : public sf::Drawable {
     std::vector<Waypoint> waypoints;  ///< Paths of waypoints in the map
 
-   public:
+    public:
     /**
      * @brief Default constructor
      */
@@ -68,9 +68,13 @@ class Path : public sf::Drawable {
         return *this;
     }
 
-   private:
+    void setPathThickness(float thickness);
+    inline float getPathThickness() const { return pathThickness ; };
+
+    private:
     sf::RenderTexture getPathTexture() const;
     sf::RenderTexture getMaskTexture() const;
     std::unique_ptr<sf::Sprite> pathSprite;
     std::unique_ptr<sf::Texture> pathTexture;
+    float pathThickness = 32.f;
 };

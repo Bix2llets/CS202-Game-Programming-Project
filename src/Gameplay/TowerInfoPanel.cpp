@@ -12,8 +12,8 @@
 #include "GUIComponents/RectangularButtonBuilder.hpp"
 #include "Scene/Level.hpp"
 #include "Utility/Scaler.hpp"
-#include "Utility/aligner.hpp"
 #include "Utility/TargetSelectorCycle.hpp"
+#include "Utility/aligner.hpp"
 // TowerInfoPanel& TowerInfoPanel::getInstance() {
 //     static TowerInfoPanel instance;
 //     return instance;
@@ -125,7 +125,7 @@ TowerInfoPanel::TowerInfoPanel()
                           background.getPosition().y + 255})
             .setCallback([this](RectangularButton* button) {
                 if (!referencingTower) return;
-                                this->notify("prev_mode", this, nullptr);
+                this->notify("prev_mode", this, nullptr);
             })
             .loadJson("borderless_background_basic")
             .setBackground(ResourceManager::getInstance().getTexture("prev"))
@@ -146,7 +146,8 @@ TowerInfoPanel::TowerInfoPanel()
             .build();
 
     enemySelectionStrat.setPosition(
-        {(nextModeButton->getPosition().x + prevModeButton->getSize().x + prevModeButton->getPosition().x) /
+        {(nextModeButton->getPosition().x + prevModeButton->getSize().x +
+          prevModeButton->getPosition().x) /
              2.f,
          nextModeButton->getPosition().y + nextModeButton->getSize().y / 2.f});
     enemySelectionStrat.setCharacterSize(16);
@@ -154,13 +155,15 @@ TowerInfoPanel::TowerInfoPanel()
 
     subscribe("next_mode", [this](std::any sender, std::any data) {
         if (!referencingTower) return;
-        referencingTower->getCombatBehavior()->setTargetSelector(SelectorCycle::nextSelector(
-            referencingTower->getCombatBehavior()->getTargetSelector()));
+        referencingTower->getCombatBehavior()->setTargetSelector(
+            SelectorCycle::nextSelector(
+                referencingTower->getCombatBehavior()->getTargetSelector()));
     });
     subscribe("prev_mode", [this](std::any sender, std::any data) {
         if (!referencingTower) return;
-        referencingTower->getCombatBehavior()->setTargetSelector(SelectorCycle::prevSelector(
-            referencingTower->getCombatBehavior()->getTargetSelector()));
+        referencingTower->getCombatBehavior()->setTargetSelector(
+            SelectorCycle::prevSelector(
+                referencingTower->getCombatBehavior()->getTargetSelector()));
     });
 }
 
@@ -219,7 +222,6 @@ void TowerInfoPanel::setFocus(Tower* tower) {
     towerName.setPosition(
         towerSprite.getPosition() -
         sf::Vector2f{0, towerSprite.getGlobalBounds().size.y / 2.f});
-
 }
 
 void TowerInfoPanel::deFocus() {
@@ -255,7 +257,7 @@ void TowerInfoPanel::update() {
 
     prevModeButton->update();
     nextModeButton->update();
-    
+
     // Process queued events at the end of the update cycle
     resolveQueue();
 }
@@ -408,10 +410,17 @@ void TowerInfoPanel::displayEvolution(const std::string& evolveTo,
 
     evolutionTitle.setCharacterSize(30);
     evolutionTitle.setFillColor(sf::Color::Black);
-    evolutionTitle.setPosition(
-        {background.getPosition().x + background.getSize().x / 2.f,
-         upgradeContents.back().getPosition().y +
-             upgradeContents.back().getGlobalBounds().size.y / 2.f + 50});
+
+    sf::Vector2f evolutionTitlePosition = {
+        background.getPosition().x + background.getSize().x / 2.f,
+        upgradeContents.back().getPosition().y +
+            upgradeContents.back().getGlobalBounds().size.y / 2.f + 50};
+
+    if (evolutionTitlePosition.y + evolutionTitle.getGlobalBounds().size.y + 10.f > GameConstants::DEFAULT_WINDOW_HEIGHT) {
+        evolutionTitlePosition.y =
+            GameConstants::DEFAULT_WINDOW_HEIGHT - evolutionTitle.getGlobalBounds().size.y - 10.f;
+    }
+    evolutionTitle.setPosition(evolutionTitlePosition);
 
     evolutionSprite.setPosition(
         evolutionTitle.getPosition() +

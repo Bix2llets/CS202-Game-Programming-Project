@@ -76,14 +76,14 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
         Window::getInstance().toggleUserMode();
         target.draw(rangePreview);
         target.draw(renderImage, previewStates);
-        // sf::RectangleShape border(renderImage.getLocalBounds().size);
-        // Aligner::align(border, HorizontalAlignment::Center,
-        //                VerticalAlignment::Middle);
-        // border.setPosition(renderImage.getPosition());
-        // border.setFillColor(sf::Color::Transparent);
-        // border.setOutlineColor(sf::Color::Red);
-        // border.setOutlineThickness(1.f);
-        // target.draw(border);
+        sf::RectangleShape border(renderImage.getLocalBounds().size);
+        Aligner::align(border, HorizontalAlignment::Center,
+                       VerticalAlignment::Middle);
+        border.setPosition(renderImage.getPosition());
+        border.setFillColor(sf::Color::Transparent);
+        border.setOutlineColor(sf::Color::White);
+        border.setOutlineThickness(2.f);
+        target.draw(border);
 
         // float attackRadius = previewTower->getStat("range", 0);
         // sf::CircleShape attackPreview(radius);

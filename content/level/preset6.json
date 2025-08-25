@@ -38,6 +38,7 @@
             200
         ]
     ],
+    "path_thickness": 32,
     "wave": [
         {
             "weather": "sunny",

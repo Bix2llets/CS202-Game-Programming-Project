@@ -32,13 +32,16 @@
                 "burn_duration_reduction": 0.3
             }
         },
-        "level_heatlh": 200
-    }, 
+        "level_heatlh": 200,
+        "starting_resources": {
+            "scrap": 400,
+            "petroleum": 35
+        }
+    },
     {
         "id": "medium",
         "icon": "heart",
         "name": "Medium",
-
         "index": 1,
         "description": "The medium difficulty level.",
         "enemy_modifiers": {
@@ -68,7 +71,11 @@
                 "burn_duration_reduction": 0.35
             }
         },
-        "level_heatlh": 150
+        "level_heatlh": 150,
+        "starting_resources": {
+            "scrap": 300,
+            "petroleum": 30
+        }
     },
     {
         "id": "hard",
@@ -103,8 +110,12 @@
                 "burn_duration_reduction": 0.4
             }
         },
-        "level_heatlh": 100
-    }, 
+        "level_heatlh": 100,
+        "starting_resources": {
+            "scrap": 250,
+            "petroleum": 25
+        }
+    },
     {
         "id": "nightmare",
         "icon": "heart",
@@ -138,6 +149,10 @@
                 "burn_duration_reduction": 0.4
             }
         },
-        "level_heatlh": 75
+        "level_heatlh": 75,
+        "starting_resources": {
+            "scrap": 200,
+            "petroleum": 20
+        }
     }
 ]

@@ -161,6 +161,7 @@
             35
         ]
     ],
+    "path_thickness": 1,
     "wave": [
         {
             "weather": "sunny",
@@ -211,7 +212,7 @@
             "local_difficulty": 0.8
         },
         {
-            "weather": "sunny",
+            "weather": "thunderstorm",
             "enemy_info": [
                 {
                     "id": "basic_enemy",

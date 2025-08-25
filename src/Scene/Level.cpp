@@ -64,6 +64,8 @@ Level::Level(const std::string &difficultyId)
     }
 
     health.setMaxHealth(difficulty.getMaxHealth()).setHealth(difficulty.getMaxHealth());
+
+    
     // Initialize components with difficulty settings
 
     MouseState &mouseState = InputManager::getInstance().getMouseState();
@@ -264,7 +266,9 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
         //                           point[1].get<float>()));
     }
 
+    pathThickness = jsonFile.contains("path_thickness") ? jsonFile["path_thickness"].get<float>() : 32.f;
     path.loadWaypoints(waypoints);
+    path.setPathThickness(pathThickness);
     loadWaves(jsonFile);
     Logger::success("Loaded waypoints");
 
@@ -541,12 +545,12 @@ bool Level::isPlacementValid(std::string towerID, sf::Vector2f worldPosition) {
         sf::Vector2f normal = {pathVector.y, -pathVector.x};
         normal = normal.normalized();
         sf::Vector2f pathRect[4] = {
-            pathway[i].position + GameConstants::PATH_THICKNESS / 2.f * normal,
-            pathway[i].position - GameConstants::PATH_THICKNESS / 2.F * normal,
+            pathway[i].position + path.getPathThickness() / 2.f * normal,
+            pathway[i].position - path.getPathThickness() / 2.F * normal,
             pathway[i + 1].position +
-                GameConstants::PATH_THICKNESS / 2.f * normal,
+                path.getPathThickness() / 2.f * normal,
             pathway[i + 1].position -
-                GameConstants::PATH_THICKNESS / 2.f * normal};
+                path.getPathThickness() / 2.f * normal};
         if (CollisionChecker::isQuadilateralCrossed(pathRect, towerBound))
             return false;
     };

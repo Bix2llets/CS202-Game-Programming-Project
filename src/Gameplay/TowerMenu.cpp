@@ -303,7 +303,8 @@ void TowerMenu::registerMessages() {
     subscribe("press_outside", [this](std::any sender, std::any data) {
         if (isTowerSelected == false) return;
         std::pair<std::string, sf::Vector2f> forwardData =
-            std::any_cast<std::pair<std::string, sf::Vector2f>>(data);
+            std::any_cast<std::pair<std::
+            string, sf::Vector2f>>(data);
         // let the compiler deduce the pair types
         level->notify("place_tower_cursor", 0, forwardData);
 
