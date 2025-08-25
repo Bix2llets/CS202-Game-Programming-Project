@@ -95,7 +95,7 @@ std::unique_ptr<Tower> TowerFactory::createFromJson(
     }
 
     // Parse and configure upgrade system (only for buildable towers)
-    if (isBuildable && config.contains("upgrades")) {
+    if (config.contains("upgrades")) {
         parseUpgrades(config["upgrades"], builder);
     }
 
