@@ -10,5 +10,9 @@
     {
         "id": "enemy_runner",
         "path": "assets/texture/enemy/runner.png"
+    },
+    {
+        "id": "enemy_fat",
+        "path": "assets/texture/enemy/fat.png"
     }
 ]
