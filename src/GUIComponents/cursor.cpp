@@ -81,7 +81,7 @@ void Cursor::draw(sf::RenderTarget& target, sf::RenderStates states) const {
                        VerticalAlignment::Middle);
         border.setPosition(renderImage.getPosition());
         border.setFillColor(sf::Color::Transparent);
-        border.setOutlineColor(sf::Color::White);
+        border.setOutlineColor({255, 255, 255, 63});
         border.setOutlineThickness(2.f);
         target.draw(border);
 

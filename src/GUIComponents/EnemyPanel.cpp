@@ -110,19 +110,19 @@ EnemyPanel::EnemyPanel()
         statBackdrop.getPosition() +
         sf::Vector2f{statBackdrop.getSize().x - 20.f - 8.f, statBackdrop.getSize().y - 16.f - 16.f});
     napalmIcon.setPosition(burnIcon.getPosition() +
-                           sf::Vector2f{-16.f - 5.f, 0.f});
+                           sf::Vector2f{-6.f - 5.f, 0.f});
     regenIcon.setPosition(napalmIcon.getPosition() +
-                          sf::Vector2f{-16.f - 5.f, 0.f});
+                          sf::Vector2f{-6.f - 5.f, 0.f});
     vulnerableIcon.setPosition(regenIcon.getPosition() +
-                               sf::Vector2f{-16.f - 5.f, 0.f});
+                               sf::Vector2f{-6.f - 5.f, 0.f});
     resistanceIcon.setPosition(vulnerableIcon.getPosition() +
-                               sf::Vector2f{-16.f - 5.f, 0.f});
+                               sf::Vector2f{-6.f - 5.f, 0.f});
     fireResistanceIcon.setPosition(resistanceIcon.getPosition() +
-                                   sf::Vector2f{-16.f - 5.f, 0.f});
+                                   sf::Vector2f{-6.f - 5.f, 0.f});
     energizedIcon.setPosition(fireResistanceIcon.getPosition() +
-                              sf::Vector2f{-16.f - 5.f, 0.f});
+                              sf::Vector2f{-6.f - 5.f, 0.f});
     slowIcon.setPosition(energizedIcon.getPosition() +
-                         sf::Vector2f{-16.f - 5.f, 0.f});
+                         sf::Vector2f{-6.f - 5.f, 0.f});
 }
 
 void EnemyPanel::update() {
@@ -134,8 +134,7 @@ void EnemyPanel::update() {
         previousHealth = enemyHealth;
         isChanged = true;
         std::string content =
-            std::format("{:.2f} / {:.2f}", displayingEnemy->health.getHealth(),
-                        displayingEnemy->health.getMaxHealth());
+            std::format("{:.0f}", displayingEnemy->health.getHealth());
 
         health.setString(content);
         healthBar.setSize({statBackdrop.getSize().x * enemyHealth /
@@ -147,7 +146,7 @@ void EnemyPanel::update() {
     if (currentSpeed != previousSpeed) {
         previousSpeed = currentSpeed;
         isChanged = true;
-        speed.setString(std::format("{:.2f}", previousSpeed));
+        speed.setString(std::format("{:.0f}", previousSpeed));
     }
     if (isChanged) calibrate();
 }
@@ -159,8 +158,7 @@ void EnemyPanel::setEnemy(const Enemy& enemy) {
     name.setString(displayingEnemy->name);
     Logger::debug(displayingEnemy->name);
     std::string content =
-        std::format("{} / {}", displayingEnemy->health.getHealth(),
-                    displayingEnemy->health.getMaxHealth());
+        std::format("{:.0f}", displayingEnemy->health.getHealth());
 
     health.setString(content);
     healthBar.setSize(
@@ -168,7 +166,7 @@ void EnemyPanel::setEnemy(const Enemy& enemy) {
              displayingEnemy->health.getMaxHealth(),
          statBackdrop.getSize().y});
 
-    speed.setString(std::format("{:.2f}", displayingEnemy->getSpeed()));
+    speed.setString(std::format("{:.0f}", displayingEnemy->getSpeed()));
 
     fixOrigin(health);
     fixOrigin(speed);

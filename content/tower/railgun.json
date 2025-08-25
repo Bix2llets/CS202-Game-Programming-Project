@@ -22,7 +22,7 @@
       }
     }
   },
-  "name": "Railgun Tower",
+  "name": "Railgun",
   "description": "A tower that fires high-velocity rounds capable of penetrating multiple targets.",
   "buildable": false,
   "cost": {
@@ -34,7 +34,7 @@
     "fire_rate": 0.68,
     "range": 320,
     "max_targets": 1,
-    "projectile_speed": 26,
+    "projectile_speed": 50,
     "projectile_range": 420,
     "projectile_pierce_count": 5,
     "projectile_starting_distance": 20
