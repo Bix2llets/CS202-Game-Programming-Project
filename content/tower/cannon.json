@@ -30,7 +30,7 @@
     "petroleum": 50
   },
   "stats": {
-    "damage": 20,
+    "damage": 18,
     "fire_rate": 1.0,
     "range": 260,
     "max_targets": 1,
@@ -72,12 +72,12 @@
           }
         },
         "icon": "speed_icon",
-        "evolve_to": ""
+        "evolve_to": "rocket_launcher"
       },
       {
         "display_name": "Extended Range",
         "description": "Extends tower range by {bonus_range}.",
-        "max_level": 3,
+        "max_level": 1,
         "upgrade_details": {
           "1": {
             "scrap": 50,
@@ -97,7 +97,7 @@
             "scrap": 150,
             "petroleum": 50,
             "bonus_stats": {
-              "range": 20
+              "range": 50
             }
           }
         },
@@ -107,7 +107,7 @@
       {
         "display_name": "High-Caliber Rounds",
         "description": "Increases damage by {bonus_damage}.",
-        "max_level": 3,
+        "max_level": 1,
         "upgrade_details": {
           "1": {
             "scrap": 50,
@@ -115,7 +115,7 @@
             "bonus_stats": {
               "damage": 1,
               "effect_burn_level": 5,
-              "effect_slow_duration": 2
+              "effect_burn_duration": 2
             }
           },
           "2": {

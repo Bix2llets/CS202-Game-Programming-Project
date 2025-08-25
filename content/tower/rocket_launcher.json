@@ -1,0 +1,86 @@
+{
+  "id": "rocket_launcher",
+  "texture": {
+    "width": 80,
+    "height": 80,
+    "turret_width": 160,
+    "turret_height": 160,
+    "base": "cannon_upgraded_base",
+    "turret_animation": {
+      "texture_id": "rocket_launcher_turret",
+      "width": 64,
+      "height": 64,
+      "animation_interval": 0.1,
+      "type": "linear",
+      "center_x": 32,
+      "center_y": 32,
+      "viewport" : {
+          "x": 0,
+          "y": 0,
+          "width": 192,
+          "height": 64
+      }
+    }
+  },
+  "name": "Rocket Launcher",
+  "description": "A powerful tower that fires heavy projectiles at a slow rate. Effective against stronger targets.",
+  "buildable": false,
+  "cost": {
+    "scrap": 200,
+    "petroleum": 0
+  },
+  "stats": {
+    "damage": 36,
+    "fire_rate": 0.5,
+    "range": 300,
+    "max_targets": 3,
+    "projectile_speed": 9.0,
+    "projectile_range": 400,
+    "projectile_pierce_count": 0,
+    "projectile_starting_distance": 20,
+    "effect_vulnerable_level": 15,
+    "effect_vulnerable_duration": 2
+  },
+  "upgrades": {
+    "max_total_upgrades": 5,
+    "upgrade_types": 3,
+    "upgrades_list": [
+      {
+        "display_name": "Rapid Fire",
+        "description": "Increases fire rate by {bonus_fire_rate}.",
+        "max_level": 2,
+        "upgrade_details": {
+          "1": {
+            "scrap": 100,
+            "petroleum": 100,
+            "bonus_stats": {
+              "max_targets": 1,
+              "range": 30,
+              "effect_vulnerable_level": 5,
+              "effect_vulnerable_duration": 1
+            }
+        },
+        "2": {
+            "scrap": 150,
+            "petroleum": 150,
+            "bonus_stats": {
+                "max_targets": 1,
+                "range": 40,
+                "effect_vulnerable_level": 5,
+                "effect_vulnerable_duration": 1
+            }
+          }
+        },
+        "icon": "speed_icon",
+        "evolve_to": ""
+      }
+    ]
+  },
+  "behaviors": {
+    "combat": {
+      "type": "projectile",
+      "projectile": "rocket",
+      "targeting": "first"
+    }
+  }
+}

@@ -69,6 +69,9 @@ void Projectile::update() {
     // Update projectile's flight mode behavior
     if (flightMode) {
         flightMode->update(this);
+        if(rotateToTarget) {
+            setRotation((targetLocation - position).angle() + sf::degrees(90));
+        }
     }
     
     if (pierceCount == 0 && targetEntity) {
