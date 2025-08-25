@@ -21,6 +21,14 @@ class EnemyPanel : public sf::Drawable {
     EnemyPanel& operator=(EnemyPanel&& rhs) = delete;
     constexpr static sf::Vector2f popupPosition = {200.f, 800.f};
 
+    sf::Sprite burnIcon;
+    sf::Sprite napalmIcon;
+    sf::Sprite regenIcon;
+    sf::Sprite vulnerableIcon;
+    sf::Sprite resistanceIcon;
+    sf::Sprite fireResistanceIcon;
+    sf::Sprite energizedIcon;
+    sf::Sprite slowIcon;
    public:
     static EnemyPanel& getInstance();
     // * For enemy reference

@@ -109,7 +109,7 @@ sf::RenderTexture Path::getPathTexture() const {
             // Perpendicular vector for thickness
             sf::Vector2f perp(-dir.y, dir.x);
 
-            float thickness = GameConstants::PATH_THICKNESS;  
+            float thickness = pathThickness;  
 
             // Offset points
             sf::Vector2f offset = (perp * (thickness / 2.f));
@@ -157,4 +157,9 @@ sf::RenderTexture Path::getPathTexture() const {
     state.blendMode = sf::BlendNone;
     pathComb.draw(pathway, state);
     return std::move(pathComb);
+}
+
+void Path::setPathThickness(float thickness) {
+    pathThickness = thickness;
+    loadWaypoints(waypoints);
 }

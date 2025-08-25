@@ -307,7 +307,7 @@ void RadialUpgradeMenu::updatePositions() {
     ring.setPosition(position);
     ring = Aligner::align(ring, HorizontalAlignment::Center,
                           VerticalAlignment::Middle);
-
+    upgradeCountText.setPosition({position.x + 20, position.y + 20});
     for (int i = 0; i < upgradeButtons.size(); i++) {
         sf::Angle angle;
         if (upgradeButtons.size() == 1) {

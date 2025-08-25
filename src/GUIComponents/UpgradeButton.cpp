@@ -154,6 +154,21 @@ void UpgradeButton::updatePriceTag() {
 
 void UpgradeButton::draw(sf::RenderTarget& target,
                          sf::RenderStates states) const {
+    int level = upgrades->getUpgradeType(upgradeID) == nullptr
+                    ? 0
+                    : upgrades->getCurrentLevel(upgradeID);
+
+    for (int i = 1; i <= level; i++) {
+        sf::CircleShape levelIndicator;
+        levelIndicator.setRadius(radius + buttonShape.getOutlineThickness() + i * 4);
+        levelIndicator.setOrigin(
+            {levelIndicator.getRadius(), levelIndicator.getRadius()});
+        levelIndicator.setPosition(buttonShape.getPosition());
+        levelIndicator.setFillColor(sf::Color::Transparent);
+        levelIndicator.setOutlineThickness(3);
+        levelIndicator.setOutlineColor(buttonShape.getOutlineColor());
+        target.draw(levelIndicator, states);
+    }
     target.draw(buttonShape, states);
     if (!isCapped || evolutionTower) {
         target.draw(upgradeIcon, states);

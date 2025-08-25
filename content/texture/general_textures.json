@@ -184,5 +184,38 @@
     {
         "id": "backward_button",
         "path": "assets/texture/button/reverseArrowButton.png"
+    },
+    {
+        "id": "burn_icon",
+        "path": "assets/texture/effect/fire.png"
+    },
+    {
+        "id": "napalm_icon",
+        "path": "assets/texture/effect/napalm.png"
+    },
+    {
+        "id": "regen_icon",
+        "path": "assets/texture/effect/heal.png"
+    },
+    {
+        "id": "vulnerable_icon",
+        "path": "assets/texture/effect/vulnerable.png"
+    },
+    {
+        "id": "resistance_icon",
+        "path": "assets/texture/effect/resistance.png"
+    },
+    {
+        "id": "fire_resistance_icon",
+        "path": "assets/texture/effect/FireResistance.png"
+    },
+    {
+        "id": "slow_icon",
+        "path": "assets/texture/effect/slow.png"
+    },
+    {
+        "id": "energized_icon",
+        "path": "assets/texture/effect/energized.png"
     }
+
 ]

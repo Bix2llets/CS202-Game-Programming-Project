@@ -77,6 +77,8 @@ private:
     sf::Text waveCounterText;
     std::unique_ptr<RectangularButton> pauseButton;
     std::unique_ptr<RectangularButton> nextWaveButton;
+
+    float pathThickness;
     
 public:
     Level();

@@ -4,11 +4,11 @@
 #include <string>
 
 #include "Core/ResourceManager.hpp"
-#include "Entity/Enemy/Enemy.hpp"
-#include "Utility/logger.hpp"
-
 #include "Core/Window.hpp"
+#include "Entity/Enemy/Enemy.hpp"
 #include "Utility/Scaler.hpp"
+#include "Utility/aligner.hpp"
+#include "Utility/logger.hpp"
 EnemyPanel& EnemyPanel::getInstance() {
     static EnemyPanel instance;
     return instance;
@@ -20,7 +20,19 @@ EnemyPanel::EnemyPanel()
       speed(*ResourceManager::getInstance().getFont("pixel")),
       healthIcon(*ResourceManager::getInstance().getTexture("heart")),
       speedIcon(*ResourceManager::getInstance().getTexture("movement_speed")),
-      name{*ResourceManager::getInstance().getFont("pixel")} {
+      name{*ResourceManager::getInstance().getFont("pixel")},
+      burnIcon{*ResourceManager::getInstance().getTexture("burn_icon")},
+      napalmIcon{*ResourceManager::getInstance().getTexture("napalm_icon")},
+      regenIcon{*ResourceManager::getInstance().getTexture("regen_icon")},
+      vulnerableIcon{
+          *ResourceManager::getInstance().getTexture("vulnerable_icon")},
+      resistanceIcon{
+          *ResourceManager::getInstance().getTexture("resistance_icon")},
+      fireResistanceIcon{
+          *ResourceManager::getInstance().getTexture("fire_resistance_icon")},
+      energizedIcon{
+          *ResourceManager::getInstance().getTexture("energized_icon")},
+      slowIcon{*ResourceManager::getInstance().getTexture("slow_icon")} {
     enemyBackdrop.setPosition(popupPosition);
     enemyBackdrop.setRadius(40.f);
     enemyBackdrop.setFillColor(sf::Color{189, 193, 198, 255});
@@ -79,6 +91,38 @@ EnemyPanel::EnemyPanel()
     speed.setPosition(speedIcon.getPosition() +
                       sf::Vector2f{speedIcon.getGlobalBounds().size.x, 0} +
                       sf::Vector2f{10.f, 0.f});
+    auto configureIcon = [](sf::Sprite& icon) {
+        Scaler::scaleSprite(icon, {12.f, 12.f});
+        Aligner::align(icon, HorizontalAlignment::Center,
+                       VerticalAlignment::Middle);
+    };
+
+    configureIcon(burnIcon);
+    configureIcon(napalmIcon);
+    configureIcon(regenIcon);
+    configureIcon(vulnerableIcon);
+    configureIcon(resistanceIcon);
+    configureIcon(fireResistanceIcon);
+    configureIcon(energizedIcon);
+    configureIcon(slowIcon);
+
+    burnIcon.setPosition(
+        statBackdrop.getPosition() +
+        sf::Vector2f{statBackdrop.getSize().x - 20.f - 8.f, statBackdrop.getSize().y - 16.f - 16.f});
+    napalmIcon.setPosition(burnIcon.getPosition() +
+                           sf::Vector2f{-16.f - 5.f, 0.f});
+    regenIcon.setPosition(napalmIcon.getPosition() +
+                          sf::Vector2f{-16.f - 5.f, 0.f});
+    vulnerableIcon.setPosition(regenIcon.getPosition() +
+                               sf::Vector2f{-16.f - 5.f, 0.f});
+    resistanceIcon.setPosition(vulnerableIcon.getPosition() +
+                               sf::Vector2f{-16.f - 5.f, 0.f});
+    fireResistanceIcon.setPosition(resistanceIcon.getPosition() +
+                                   sf::Vector2f{-16.f - 5.f, 0.f});
+    energizedIcon.setPosition(fireResistanceIcon.getPosition() +
+                              sf::Vector2f{-16.f - 5.f, 0.f});
+    slowIcon.setPosition(energizedIcon.getPosition() +
+                         sf::Vector2f{-16.f - 5.f, 0.f});
 }
 
 void EnemyPanel::update() {
@@ -119,9 +163,10 @@ void EnemyPanel::setEnemy(const Enemy& enemy) {
                     displayingEnemy->health.getMaxHealth());
 
     health.setString(content);
-    healthBar.setSize({statBackdrop.getSize().x * displayingEnemy->health.getHealth() /
-                           displayingEnemy->health.getMaxHealth(),
-                       statBackdrop.getSize().y});
+    healthBar.setSize(
+        {statBackdrop.getSize().x * displayingEnemy->health.getHealth() /
+             displayingEnemy->health.getMaxHealth(),
+         statBackdrop.getSize().y});
 
     speed.setString(std::format("{:.2f}", displayingEnemy->getSpeed()));
 
@@ -192,10 +237,43 @@ void EnemyPanel::draw(sf::RenderTarget& target, sf::RenderStates state) const {
     sf::Sprite ringSprite(ringTexture.getTexture());
 
     ringSprite.setOrigin(ringSprite.getLocalBounds().size / 2.f);
+    Window::getInstance().toggleUserMode();
     ringSprite.setPosition(displayingEnemy->position);
     // Draw the ring texture to the target
-    Window::getInstance().toggleUserMode();
     target.draw(ringSprite, state);
+    Window::getInstance().toggleGUIMode();
+
+    if (displayingEnemy->getEffects().hasEffectType(EffectType::Burn)) {
+        target.draw(burnIcon, state);
+    }
+
+    if (displayingEnemy->getEffects().hasEffectType(EffectType::NapalmBurn)) {
+        target.draw(napalmIcon, state);
+    }
+
+    if (displayingEnemy->getEffects().hasEffectType(EffectType::Regeneration)) {
+        target.draw(regenIcon, state);
+    }
+
+    if (displayingEnemy->getEffects().hasEffectType(EffectType::Vulnerable)) {
+        target.draw(vulnerableIcon, state);
+    }
+
+    if (displayingEnemy->getEffects().hasEffectType(EffectType::Resistance)) {
+        target.draw(resistanceIcon, state);
+    }
+
+    if (displayingEnemy->getEffects().hasEffectType(EffectType::FireResistance)) {
+        target.draw(fireResistanceIcon, state);
+    }
+
+    if (displayingEnemy->getEffects().hasEffectType(EffectType::Energized)) {
+        target.draw(energizedIcon, state);
+    }
+
+    if (displayingEnemy->getEffects().hasEffectType(EffectType::Slow)) {
+        target.draw(slowIcon, state);
+    }
 }
 
 void EnemyPanel::clearEnemy() {
