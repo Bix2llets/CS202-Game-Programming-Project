@@ -30,3 +30,12 @@ std::unique_ptr<Level> LevelFactory::getLevel(const std::string &ID) {
     result->loadFromJson(levelConfiguration.at(ID));
     return std::move(result);
 }
+
+std::unique_ptr<Level> LevelFactory::getLevel(const std::string &ID, const std::string &difficultyId) {
+    if (levelConfiguration.find(ID) == levelConfiguration.end()) 
+        return nullptr;
+    std::unique_ptr<Level> result;
+    result = std::make_unique<Level>(difficultyId);
+    result->loadFromJson(levelConfiguration.at(ID));
+    return std::move(result);
+}

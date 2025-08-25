@@ -156,13 +156,11 @@ TowerInfoPanel::TowerInfoPanel()
         if (!referencingTower) return;
         referencingTower->getCombatBehavior()->setTargetSelector(SelectorCycle::nextSelector(
             referencingTower->getCombatBehavior()->getTargetSelector()));
-        update();
     });
     subscribe("prev_mode", [this](std::any sender, std::any data) {
         if (!referencingTower) return;
         referencingTower->getCombatBehavior()->setTargetSelector(SelectorCycle::prevSelector(
             referencingTower->getCombatBehavior()->getTargetSelector()));
-        update();
     });
 }
 
@@ -222,7 +220,6 @@ void TowerInfoPanel::setFocus(Tower* tower) {
         towerSprite.getPosition() -
         sf::Vector2f{0, towerSprite.getGlobalBounds().size.y / 2.f});
 
-    update();
 }
 
 void TowerInfoPanel::deFocus() {
@@ -258,6 +255,9 @@ void TowerInfoPanel::update() {
 
     prevModeButton->update();
     nextModeButton->update();
+    
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 
 void TowerInfoPanel::displayUpgrade(const UpgradeDetails* detail) {

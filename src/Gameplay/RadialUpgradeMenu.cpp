@@ -39,11 +39,13 @@ RadialUpgradeMenu::RadialUpgradeMenu(Level& parentLevel)
             parentLevel.notify(
                 "subtract_currency", *this,
                 upgradeManager->getNextUpgradeDetail(upgradeID)->cost);
+            UpgradeButton* btn = std::any_cast<UpgradeButton*>(sender);
 
             upgradeManager->upgrade(upgradeID);
             upgradeCountText.setString(
                 std::format("{} / {}", upgradeManager->getTotalUpgradeCount(),
                             upgradeManager->getMaxTotalUpgrades()));
+            btn->refreshInfo();
 
         } catch (std::bad_any_cast& e) {
             Logger::error(std::format(
@@ -270,6 +272,9 @@ void RadialUpgradeMenu::update() {
     updatePositions();
     for (auto& button : upgradeButtons) button.update();
     sellBtn.update();
+    
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 
 void RadialUpgradeMenu::updatePositions() {

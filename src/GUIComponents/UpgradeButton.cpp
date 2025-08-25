@@ -236,21 +236,20 @@ bool UpgradeButton::onMouseEvent(Mouse button, UserEvent event,
         if (graphicState.isPressed()) {
             graphicState.updatePressState(false);
             if (contains(windowPosition) && canUpgrade) {
-                parentMediator->notify("upgrade", *this, upgradeID);
+                parentMediator->notify("upgrade", this, upgradeID);
                 if (upgrades->isTotalUpgradeLimitReached()) {
-                    parentMediator->notify("show_upgrade_preview", *this,
+                    parentMediator->notify("show_upgrade_preview", this,
                                            nullptr);
                 } else
                     if (upgrades->getNextUpgradeDetail(upgradeID) == nullptr &&
                         upgrades->canEvolve(upgradeID))
                         parentMediator->notify(
-                            "show_evolution", *this,
+                            "show_evolution", this,
                             upgrades->getEvolveTo(upgradeID));
                     else
                     parentMediator->notify(
-                        "show_upgrade_preview", *this,
+                        "show_upgrade_preview", this,
                         upgrades->getNextUpgradeDetail(upgradeID));
-                refreshInfo();
                 return true;
             }
 

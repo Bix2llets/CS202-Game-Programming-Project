@@ -3,6 +3,7 @@
         "id": "easy",
         "icon": "heart",
         "name": "Easy",
+        "index": 0,
         "description": "The easiest difficulty level.",
         "enemy_modifiers": {
             "max_health": 0.9,
@@ -30,12 +31,15 @@
                 "burn_damage_reduction": 0.3,
                 "burn_duration_reduction": 0.3
             }
-        }
+        },
+        "level_heatlh": 200
     }, 
     {
         "id": "medium",
         "icon": "heart",
         "name": "Medium",
+
+        "index": 1,
         "description": "The medium difficulty level.",
         "enemy_modifiers": {
             "max_health": 1.0,
@@ -63,12 +67,14 @@
                 "burn_damage_reduction": 0.35,
                 "burn_duration_reduction": 0.35
             }
-        }
+        },
+        "level_heatlh": 150
     },
     {
         "id": "hard",
         "icon": "heart",
         "name": "Hard",
+        "index": 2,
         "description": "The hard difficulty level.",
         "enemy_modifiers": {
             "max_health": 1.1,
@@ -96,12 +102,14 @@
                 "burn_damage_reduction": 0.4,
                 "burn_duration_reduction": 0.4
             }
-        }
+        },
+        "level_heatlh": 100
     }, 
     {
         "id": "nightmare",
         "icon": "heart",
         "name": "Nightmare",
+        "index": 3,
         "description": "The nightmare difficulty level.",
         "enemy_modifiers": {
             "max_health": 1.2,
@@ -129,6 +137,7 @@
                 "burn_damage_reduction": 0.4,
                 "burn_duration_reduction": 0.4
             }
-        }
+        },
+        "level_heatlh": 75
     }
 ]

@@ -172,5 +172,17 @@
     {
         "id": "weather_rain",
         "path": "assets/texture/weather/RainingIcon.png"
+    },
+    {
+        "id" : "next_button",
+        "path": "assets/texture/button/playbutton.png"
+    },
+    {
+        "id" : "forward_button",
+        "path": "assets/texture/button/playbutton.png"
+    },
+    {
+        "id": "backward_button",
+        "path": "assets/texture/button/reverseArrowButton.png"
     }
 ]

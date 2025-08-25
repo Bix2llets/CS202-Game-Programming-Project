@@ -101,6 +101,9 @@ void MainMenu::update() {
     playButton->update();
     settingButton->update();
     exitButton->update();
+    
+    // Process queued events at the end of the update cycle
+    resolveQueue();
 }
 
 void MainMenu::testSceneSwitching() {
