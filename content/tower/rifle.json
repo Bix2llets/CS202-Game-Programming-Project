@@ -1,10 +1,10 @@
 {
   "id": "rifle",
   "texture": {
-    "width": 84,
-    "height": 84,
-    "turret_width": 168,
-    "turret_height": 168,
+    "width": 80,
+    "height": 80,
+    "turret_width": 160,
+    "turret_height": 160,
     "base": "rifle_base",
     "turret_animation": {
       "texture_id": "rifle_turret",

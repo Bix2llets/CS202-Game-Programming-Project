@@ -11,8 +11,6 @@
  * @brief Thunderstorm weather that reduces tower range and enemy speed, affects burn effects.
  */
 class ThunderstormWeather : public Weather {
-private:
-    Timer timer;
 public:
     ThunderstormWeather(Level& level);
 

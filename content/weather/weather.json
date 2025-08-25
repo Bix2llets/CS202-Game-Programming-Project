@@ -28,9 +28,9 @@
     {
         "id": "thunderstorm",
         "icon": "weather_rain",
-        "has_overlay": false,
+        "has_overlay": true,
         "overlay_animation": {
-            "texture_id": "thunderstorm_overlay",
+            "texture_id": "raining_overlay",
             "width": 400,
             "height": 400,
             "animation_interval": 0.05,

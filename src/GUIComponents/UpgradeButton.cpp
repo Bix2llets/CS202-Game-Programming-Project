@@ -166,7 +166,7 @@ void UpgradeButton::draw(sf::RenderTarget& target,
         levelIndicator.setPosition(buttonShape.getPosition());
         levelIndicator.setFillColor(sf::Color::Transparent);
         levelIndicator.setOutlineThickness(3);
-        levelIndicator.setOutlineColor(buttonShape.getOutlineColor());
+        levelIndicator.setOutlineColor(sf::Color::White);
         target.draw(levelIndicator, states);
     }
     target.draw(buttonShape, states);

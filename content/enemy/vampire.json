@@ -1,0 +1,38 @@
+[
+    {
+        "id": "vampire",
+        "name": "Vampire",
+        "description": "A creature of the night that drains the life from its victims.",
+        "stats": {
+            "max_health": 200,
+            "heal_amount": 10,
+            "resistance": 0,
+            "fire_resistance": 0,
+            "speed": 70,
+            "reward": {
+                "petroleum": 12,
+                "scrap": 25
+            }
+        },
+        "sprite": {
+            "texture_id": "enemy_vampire",
+            "width": 32,
+            "height": 32,
+            "animation_interval": 0.5,
+            "type": "circular",
+            "center_x": 16,
+            "center_y": 16,
+            "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 64,
+                "height": 32
+            }
+        },
+        "type": "land",
+        "spawn_effect": {
+            "effect_regeneration_level": 20,
+            "effect_regeneration_duration": 6
+        }
+    }
+]

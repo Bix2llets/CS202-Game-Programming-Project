@@ -161,10 +161,10 @@
             35
         ]
     ],
-    "path_thickness": 1,
+    "path_thickness": 96,
     "starting_resources": {
-        "scrap": 300,
-        "petroleum": 100
+        "scrap": 400,
+        "petroleum": 50
     },
     "wave": [
         {
@@ -172,12 +172,12 @@
             "enemy_info": [
                 {
                     "id": "basic",
-                    "quantity": 10,
+                    "quantity": 12,
                     "spawn_delay": 0,
-                    "internal_delay": 0.5
+                    "internal_delay": 0.6
                 }
             ],
-            "local_difficulty": 0.2
+            "local_difficulty": 0.15
         },
         {
             "weather": "sunny",
@@ -190,7 +190,7 @@
                 },
                 {
                     "id": "basic",
-                    "quantity": 5,
+                    "quantity": 6,
                     "spawn_delay": 10,
                     "internal_delay": 0.2
                 }
@@ -202,9 +202,15 @@
             "enemy_info": [
                 {
                     "id": "basic",
-                    "quantity": 20,
+                    "quantity": 10,
                     "spawn_delay": 0,
                     "internal_delay": 0.5
+                },
+                {
+                    "id": "vampire",
+                    "quantity": 2,
+                    "spawn_delay": 5,
+                    "internal_delay": 1.5
                 }
             ],
             "local_difficulty": 0.2
@@ -216,7 +222,7 @@
                     "id": "basic",
                     "quantity": 20,
                     "spawn_delay": 0,
-                    "internal_delay": 0.5
+                    "internal_delay": 0.6
                 }
             ],
             "local_difficulty": 0.3
@@ -238,9 +244,15 @@
             "enemy_info": [
                 {
                     "id": "basic",
-                    "quantity": 20,
+                    "quantity": 15,
                     "spawn_delay": 0,
                     "internal_delay": 0.4
+                },
+                {
+                    "id": "vampire",
+                    "quantity": 3,
+                    "spawn_delay": 6,
+                    "internal_delay": 1.6
                 }
             ],
             "local_difficulty": 0.3
@@ -261,16 +273,64 @@
             "weather": "sunny",
             "enemy_info": [
                 {
+                    "id": "vampire",
+                    "quantity": 1,
+                    "spawn_delay": 0,
+                    "internal_delay": 0.5
+                },
+                {
                     "id": "basic",
                     "quantity": 30,
-                    "spawn_delay": 0,
+                    "spawn_delay": 2,
                     "internal_delay": 0.4
                 },
                 {
                     "id": "basic",
                     "quantity": 20,
+                    "spawn_delay": 5,
+                    "internal_delay": 0.25
+                },
+                {
+                    "id": "vampire",
+                    "quantity": 3,
+                    "spawn_delay": 9,
+                    "internal_delay": 1.5
+                }
+            ],
+            "local_difficulty": 0.3
+        },
+        {
+            "weather": "sunny",
+            "enemy_info": [
+                {
+                    "id": "basic",
+                    "quantity": 10,
                     "spawn_delay": 0,
-                    "internal_delay": 0.3
+                    "internal_delay": 0.4
+                },
+                {
+                    "id": "basic",
+                    "quantity": 10,
+                    "spawn_delay": 5,
+                    "internal_delay": 0.4
+                }
+            ],
+            "local_difficulty": 0.4
+        },
+        {
+            "weather": "sunny",
+            "enemy_info": [
+                {
+                    "id": "vampire",
+                    "quantity": 5,
+                    "spawn_delay": 0,
+                    "internal_delay": 0.6
+                },
+                {
+                    "id": "vampire",
+                    "quantity": 5,
+                    "spawn_delay": 8,
+                    "internal_delay": 0.6
                 }
             ],
             "local_difficulty": 0.4

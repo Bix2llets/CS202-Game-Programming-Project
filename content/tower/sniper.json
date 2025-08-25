@@ -1,10 +1,9 @@
 {
-  "id": "sniper",
   "texture": {
-    "width": 84,
-    "height": 84,
-    "turret_width": 168,
-    "turret_height": 168,
+    "width": 80,
+    "height": 80,
+    "turret_width": 160,
+    "turret_height": 160,
     "base": "rifle_upgraded_base",
     "turret_animation": {
       "texture_id": "sniper_turret",
@@ -24,12 +23,42 @@
   },
   "name": "Sniper Tower",
   "description": "A long-range tower that deals high damage to single targets. Effective against tough enemies.",
-  "buildable": false,
+  "buildable": true,
   "stats": {
     "damage": 160,
-    "fire_rate": 0.75,
+    "fire_rate": 0.8,
     "range": 420,
     "max_targets": 1
+  },
+  "upgrades": {
+    "max_total_upgrades": 2,
+    "upgrade_types": 2,
+    "upgrades_list": [
+      {
+        "display_name": "Extended Range",
+        "description": "Extends tower range by {bonus_range}.",
+        "max_level": 3,
+        "upgrade_details": {
+          "1": {
+            "scrap": 50,
+            "petroleum": 0,
+            "bonus_stats": {
+              "damage": 12,
+              "range": 50
+            }
+          },
+          "2": {
+            "scrap": 100,
+            "petroleum": 100,
+            "bonus_stats": {
+              "damage": 20,
+              "range": 80
+            }
+          }
+        },
+        "icon": "range_icon"
+      }
+    ]
   },
   "behaviors": {
     "combat": {

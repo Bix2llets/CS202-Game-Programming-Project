@@ -1,10 +1,10 @@
 {
   "id": "machinegun",
   "texture": {
-    "width": 84,
-    "height": 84,
-    "turret_width": 168,
-    "turret_height": 168,
+    "width": 80,
+    "height": 80,
+    "turret_width": 160,
+    "turret_height": 160,
     "base": "rifle_upgraded_base",
     "turret_animation": {
       "texture_id": "machinegun_turret",
@@ -30,18 +30,18 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 8,
-    "fire_rate": 5.0,
+    "damage": 7,
+    "fire_rate": 4.8,
     "range": 200,
     "max_targets": 1,
-    "damage_radius": 40,
+    "damage_radius": 36,
     "accuracy": 0.7,
-    "effect_slow_level": 10,
+    "effect_slow_level": 8,
     "effect_slow_duration": 0.5
   },
   "upgrades": {
-    "max_total_upgrades": 1,
-    "upgrade_types": 1,
+    "max_total_upgrades": 2,
+    "upgrade_types": 2,
     "upgrades_list": [
       {
         "display_name": "Extended Range",
@@ -52,14 +52,16 @@
             "scrap": 50,
             "petroleum": 50,
             "bonus_stats": {
-              "range": 20
+              "range": 20,
+              "fire_rate": 0.5
             }
           },
           "2": {
             "scrap": 100,
             "petroleum": 100,
             "bonus_stats": {
-              "range": 40
+              "range": 30,
+              "fire_rate": 0.6
             }
           }
         },
