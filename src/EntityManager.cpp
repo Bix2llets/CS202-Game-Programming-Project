@@ -43,12 +43,7 @@ void EntityManager::update() {
 
 void EntityManager::render(sf::RenderStates state) const {
     // Render static entities
-    for (const auto& entity : staticEntities) {
-        if (entity) {
-            Window::getInstance().getRenderWindow().draw(*entity, state);
-        }
-    }
-
+    
     // Render towers
     for (const auto& tower : towers) {
         if (tower) {
@@ -69,7 +64,12 @@ void EntityManager::render(sf::RenderStates state) const {
             Window::getInstance().getRenderWindow().draw(*enemy, state);
         }
     }
-
+    
+    for (const auto& entity : staticEntities) {
+        if (entity) {
+            Window::getInstance().getRenderWindow().draw(*entity, state);
+        }
+    }
     // Render projectiles
     for (const auto& projectile : projectiles) {
         if (projectile) {
