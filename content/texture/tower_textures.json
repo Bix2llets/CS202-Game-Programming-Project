@@ -43,6 +43,10 @@
         "id": "rocket_launcher_turret",
         "path": "assets/texture/tower/rocket_launcher_turret.png"
     },
+    {
+        "id": "sonic_turret",
+        "path": "assets/texture/tower/sonic_turret.png"
+    },
 
 
     {

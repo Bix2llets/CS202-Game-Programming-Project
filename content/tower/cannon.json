@@ -107,7 +107,7 @@
       {
         "display_name": "High-Caliber Rounds",
         "description": "Increases damage by {bonus_damage}.",
-        "max_level": 1,
+        "max_level": 3,
         "upgrade_details": {
           "1": {
             "scrap": 50,
@@ -136,7 +136,7 @@
           }
         },
         "icon": "power_icon",
-        "evolve_to": ""
+        "evolve_to": "sonic"
       }
     ]
   },
