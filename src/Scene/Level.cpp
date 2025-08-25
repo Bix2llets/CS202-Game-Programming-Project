@@ -289,8 +289,11 @@ void Level::loadFromJson(const nlohmann::json &jsonFile) {
         position.x = obstacle["position"]["x"].get<float>() * scale.x;
         position.y = obstacle["position"]["y"].get<float>() * scale.y;
         std::string type = obstacle["type"].get<std::string>();
-        entityManager.addStaticEntity(
-            StaticEntityFactory::createFromConfigFile(type, *this, position));
+        
+        std::unique_ptr<StaticEntity> staticEntity = StaticEntityFactory::createFromConfigFile(type, *this, position);
+        staticEntity->setPosition2(position);
+        entityManager.addStaticEntity(move(staticEntity));
+    
         Logger::debug("Added obstacle of type " + type);
     }
     // Apply difficulty settings to EnemyFactory after creation

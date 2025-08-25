@@ -18,5 +18,33 @@
     {
         "id": "rock_medium_2",
         "path": "assets/texture/static_entity/rock_medium_2.png"
+    },
+    {
+        "id": "tree_medium_1",
+        "path": "assets/texture/static_entity/tree_medium_1.png"
+    },
+    {
+        "id": "tree_medium_2",
+        "path": "assets/texture/static_entity/tree_medium_2.png"
+    },
+    {
+        "id": "tree_medium_3",
+        "path": "assets/texture/static_entity/tree_medium_3.png"
+    },
+    {
+        "id": "tree_medium_4",
+        "path": "assets/texture/static_entity/tree_medium_4.png"
+    },
+    {
+        "id": "tree_medium_5",
+        "path": "assets/texture/static_entity/tree_medium_5.png"
+    },
+    {
+        "id": "tree_small_1",
+        "path": "assets/texture/static_entity/tree_small_1.png"
+    },
+    {
+        "id": "tree_small_2",
+        "path": "assets/texture/static_entity/tree_small_2.png"
     }
 ]

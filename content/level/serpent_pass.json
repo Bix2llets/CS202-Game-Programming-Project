@@ -239,15 +239,15 @@
         {
             "type": "rock_big_1",
             "position": {
-                "x": 87,
-                "y": 113
+                "x": 54,
+                "y": 46
             }
         },
         {
             "type": "rock_big_2",
             "position": {
-                "x": 129,
-                "y": 86
+                "x": 7,
+                "y": 61
             },
             "size": {
                 "x": 70,
@@ -257,12 +257,159 @@
         {
             "type": "rock_big_3",
             "position": {
-                "x": 148,
-                "y": 46
+                "x": 143,
+                "y": 37
             },
             "size": {
                 "x": 80,
                 "y": 80
+            }
+        },
+        {
+            "type": "rock_medium_1",
+            "position": {
+                "x": 22,
+                "y": 37
+            }
+        }, 
+        {
+            "type": "rock_medium_2",
+            "position": {
+                "x": 78,
+                "y": 100
+            }
+        },
+        {
+            "type": "tree_medium_1",
+            "position": {
+                "x": 0,
+                "y": 38
+            }
+        },
+        {
+            "type": "tree_medium_1",
+            "position": {
+                "x": 78,
+                "y": 27
+            }
+        },
+        {
+            "type": "tree_medium_1",
+            "position": {
+                "x": 126,
+                "y": 76
+            }
+        },
+        {
+            "type": "tree_medium_1",
+            "position": {
+                "x": -3,
+                "y": 134
+            }
+        },
+        {
+            "type": "tree_medium_1",
+            "position": {
+                "x": 180,
+                "y": 4
+            }
+        },
+        {
+            "type": "tree_medium_2",
+            "position": {
+                "x": 106,
+                "y": 73
+            }
+        },
+        {
+            "type": "tree_medium_2",
+            "position": {
+                "x": 50,
+                "y": 6
+            }
+        },
+        {
+            "type": "tree_medium_2",
+            "position": {
+                "x": 170,
+                "y": 160
+            }
+        },
+        {
+            "type": "tree_medium_3",
+            "position": {
+                "x": 82,
+                "y": 57
+            }
+        },
+        {
+            "type": "tree_medium_3",
+            "position": {
+                "x": -1,
+                "y": -2
+            }
+        },
+        {
+            "type": "tree_medium_4",
+            "position": {
+                "x": 104,
+                "y": 3
+            }
+        },
+        {
+            "type": "tree_medium_4",
+            "position": {
+                "x": 93,
+                "y": 109
+            }
+        },
+        {
+            "type": "tree_medium_5",
+            "position": {
+                "x": 29,
+                "y": 8
+            }
+        },
+        {
+            "type": "tree_medium_5",
+            "position": {
+                "x": 29,
+                "y": 8
+            }
+        },
+        {
+            "type": "tree_medium_5",
+            "position": {
+                "x": 121,
+                "y": 0
+            }
+        },
+        {
+            "type": "tree_small_1",
+            "position": {
+                "x": 57,
+                "y": 32
+            }
+        },
+        {
+            "type": "tree_small_1",
+            "position": {
+                "x": 180,
+                "y": 137
+            }
+        },
+        {
+            "type": "tree_small_2",
+            "position": {
+                "x": 162,
+                "y": 8
+            }
+        },
+        {
+            "type": "tree_small_2",
+            "position": {
+                "x": 70,
+                "y": -3
             }
         }
     ]

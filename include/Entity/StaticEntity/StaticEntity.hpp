@@ -64,6 +64,8 @@ class StaticEntity : public Entity {
      */
     void setPosition(const sf::Vector2f& pos) override;
 
+    void setPosition2(const sf::Vector2f& pos);
+
     /**
      * @brief Set the rotation of the entity.
      * @param rot New rotation.

@@ -25,7 +25,14 @@ void StaticEntity::update() {
 
 void StaticEntity::setPosition(const sf::Vector2f& pos) {
     position = pos;
-    sprite.setPosition(pos);
+    sprite.setPosition(position);
+}
+
+void StaticEntity::setPosition2(const sf::Vector2f& pos) {
+    sf::Vector2f sz = sprite.getOrigin();
+    sf::Vector2f sc = sprite.getScale();
+    position = {pos.x + sz.x * sc.x, pos.y + sz.y * sc.y};
+    sprite.setPosition(position);
 }
 
 void StaticEntity::setRotation(const sf::Angle& rot) {
