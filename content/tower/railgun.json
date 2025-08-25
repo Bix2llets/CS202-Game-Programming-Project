@@ -30,9 +30,9 @@
     "petroleum": 0
   },
   "stats": {
-    "damage": 75,
+    "damage": 65,
     "fire_rate": 0.68,
-    "range": 350,
+    "range": 320,
     "max_targets": 1,
     "projectile_speed": 26,
     "projectile_range": 420,
@@ -52,7 +52,7 @@
             "scrap": 50,
             "petroleum": 50,
             "bonus_stats": {
-              "damage": 10,
+              "damage": 8,
               "projectile_pierce_count": 1
             }
           },
@@ -60,7 +60,7 @@
             "scrap": 100,
             "petroleum": 100,
             "bonus_stats": {
-              "damage": 10,
+              "damage": 12,
               "projectile_pierce_count": 1
             }
           }
