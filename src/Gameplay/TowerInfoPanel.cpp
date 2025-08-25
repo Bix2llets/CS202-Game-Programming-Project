@@ -442,4 +442,10 @@ void TowerInfoPanel::displayEvolution(const std::string& evolveTo,
         sf::Vector2f{0, evolutionSprite.getGlobalBounds().size.y / 2.f} +
         sf::Vector2f{0, evolutionName.getGlobalBounds().size.y / 2.f} +
         sf::Vector2f{0, -10});
+    if (evolutionName.getPosition().y + evolutionName.getGlobalBounds().size.y > GameConstants::DEFAULT_WINDOW_HEIGHT) {
+        evolutionName.setPosition(
+            {evolutionName.getPosition().x,
+             GameConstants::DEFAULT_WINDOW_HEIGHT - evolutionName.getGlobalBounds().size.y - 10.f});
+    }
+
 }
