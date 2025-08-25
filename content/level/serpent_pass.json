@@ -334,6 +334,24 @@
                 }
             ],
             "local_difficulty": 0.4
+        },
+        {
+            "weather": "sunny",
+            "enemy_info": [
+                {
+                    "id": "fat",
+                    "quantity": 5,
+                    "spawn_delay": 0,
+                    "internal_delay": 2.5
+                },
+                {
+                    "id": "runner",
+                    "quantity": 20,
+                    "spawn_delay": 0,
+                    "internal_delay": 0.36
+                }
+            ],
+            "local_difficulty": 0.4
         }
     ],
     "obstacles": [

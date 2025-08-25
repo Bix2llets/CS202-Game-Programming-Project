@@ -1,0 +1,40 @@
+[
+    {
+        "id": "fat",
+        "name": "Fat",
+        "description": "A large and slow creature that relies on its bulk to withstand attacks.",
+        "stats": {
+            "max_health": 600,
+            "heal_amount": 5,
+            "resistance": 0,
+            "fire_resistance": 40,
+            "speed": 75,
+            "reward": {
+                "petroleum": 24,
+                "scrap": 54
+            }
+        },
+        "sprite": {
+            "texture_id": "enemy_fat",
+            "width": 40,
+            "height": 40,
+            "animation_interval": 0.8,
+            "type": "circular",
+            "center_x": 20,
+            "center_y": 20,
+            "viewport": {
+                "x": 0,
+                "y": 0,
+                "width": 80,
+                "height": 40
+            }
+        },
+        "type": "land",
+        "spawn_effect": {
+            "effect_resistance_level": 60,
+            "effect_resistance_duration": 8,
+            "effect_slow_level": 50,
+            "effect_slow_duration": 8
+        }
+    }
+]
